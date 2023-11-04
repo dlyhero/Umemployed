@@ -1,0 +1,16 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<h1>DashBoard</h1>
+{% if request.user.is_applicant %}
+
+<h1>Applicant</h1>
+
+
+{% elif request.user.is_recruiter %}
+
+<h1>Recruiter</h1>
+{% endif %}
+
+
+{% endblock content %}
