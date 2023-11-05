@@ -105,6 +105,7 @@ SOCIALACCOUNT_PROVIDERS = {
         # credentials, or list them here:
         'APP': {
             'client_id': '38566500036-r4qeg9h4joadlb0ev7lkgocb1nh4knvd.apps.googleusercontent.com',
+            # 'callbackURL': '/accounts/google/google/login/callback',
             'secret': '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',
             'key': ''
         }
@@ -125,6 +126,8 @@ EMAIL_PORT = 587 #new
 EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
 EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
 EMAIL_USE_TLS = True #new
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
