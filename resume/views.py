@@ -1,3 +1,113 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Resume
+from .form import UpdateResumeForm
+from .form import UpdateResumeForm2
+from .form import UpdateResumeForm3
+from users.models import User
+from django.shortcuts import get_object_or_404
+from .models import SkillCategory
+from .models import Skill
 
-# Create your views here.
+def update_resume(request):
+    if request.user.is_applicant:
+        try:
+            resume = Resume.objects.get(user=request.user)
+        except Resume.DoesNotExist:
+            resume = None
+
+        if request.method == 'POST':
+            form = UpdateResumeForm(request.POST, request.FILES, instance=resume)
+            if form.is_valid():
+                var = form.save(commit=False)
+                var.user = request.user
+                var.save()
+
+                # Update user.has_resume field
+                user = request.user
+                user.has_resume = True
+                user.save()
+
+                messages.info(request, 'Your resume info has been updated.')
+                return redirect('dashboard')
+            else:
+                messages.warning(request, 'Something went wrong')
+        else:
+            form = UpdateResumeForm(instance=resume)
+            
+
+        context = {'form': form}
+        return render(request, 'resume/update_resume.html', context)
+    else:
+        messages.warning(request, "Permission Denied")
+        return redirect('dashboard')
+    
+def applicant_onboarding_part2(request):
+    if request.user.is_applicant:
+        resume = get_object_or_404(Resume, user=request.user)
+
+        if request.method == 'POST':
+            form = UpdateResumeForm2(request.POST, instance=resume)
+            if form.is_valid():
+                # Save the resume info
+                form.save()
+
+                # Process the selected skill category and skills
+                category_id = request.POST.get('category')
+                skills_ids = request.POST.getlist('skills')
+
+                category = SkillCategory.objects.get(id=category_id)
+                skills = Skill.objects.filter(id__in=skills_ids)
+
+                # Update the resume with the selected category and skills
+                resume.category = category
+                resume.skills.set(skills)
+                resume.save()
+
+                messages.info(request, 'Your resume information has been updated.')
+                return redirect('dashboard')
+            else:
+                messages.warning(request, 'Something went wrong')
+        else:
+            form = UpdateResumeForm2(instance=resume)
+
+        # Retrieve the available skill categories for the form
+        skill_categories = SkillCategory.objects.all()
+
+        context = {
+            'form': form,
+            'skill_categories': skill_categories,
+        }
+        return render(request, 'resume/applicant_onboarding_part2.html', context)
+    else:
+        messages.warning(request, "Permission Denied")
+        return redirect('dashboard')
+
+def applicant_onboarding_part3(request):
+    if request.user.is_applicant:
+        resume = get_object_or_404(Resume, user=request.user)
+
+        if request.method == 'POST':
+            form = UpdateResumeForm3(request.POST, instance=resume)
+            if form.is_valid():
+                # Save the resume info
+                form.save()
+                messages.info(request, 'Your resume information has been updated.')
+                return redirect('dashboard')
+            else:
+                messages.warning(request, 'Something went wrong')
+        else:
+            form = UpdateResumeForm3(instance=resume)
+        
+        context = {
+            'form': form
+        }
+        return render(request, 'resume/applicant_onboarding_part3.html', context)
+    else:
+        messages.warning(request, "Permission Denied")
+        return redirect('dashboard')
+
+def resume_details(request, pk):
+    resume = get_object_or_404(Resume, pk=pk)
+    context = {'resume': resume}
+    return render(request, 'resume/resume_details.html', context)

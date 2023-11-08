@@ -1,0 +1,54 @@
+pip install requests
+
+import requests
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Resume
+from .forms import UpdateResumeForm
+from users.models import User
+from django.shortcuts import get_object_or_404
+
+def update_resume(request):
+    if request.user.is_applicant:
+        try:
+            resume = Resume.objects.get(user=request.user)
+        except Resume.DoesNotExist:
+            resume = None
+
+        if request.method == 'POST':
+            form = UpdateResumeForm(request.POST, request.FILES, instance=resume)
+            if form.is_valid():
+                var = form.save(commit=False)
+                var.user = request.user
+                var.save()
+
+                # Upload the file to the separate server
+                file_data = request.FILES['cv'].read()
+
+                # Make a POST request to the separate server
+                upload_url = 'http://your-different-server/upload'  # Replace with the actual upload URL
+                response = requests.post(upload_url, files={'cv': file_data})
+
+                if response.status_code == 200:
+                    # File upload successful on the separate server
+                    messages.info(request, 'Your resume info has been updated.')
+                else:
+                    # File upload failed on the separate server
+                    messages.warning(request, 'Failed to upload resume.')
+
+                # Update user.has_resume field
+                user = request.user
+                user.has_resume = True
+                user.save()
+
+                return redirect('dashboard')
+            else:
+                messages.warning(request, 'Something went wrong')
+        else:
+            form = UpdateResumeForm(instance=resume)
+
+        context = {'form': form}
+        return render(request, 'resume/update_resume.html', context)
+    else:
+        messages.warning(request, "Permission Denied")
+        return redirect('dashboard')

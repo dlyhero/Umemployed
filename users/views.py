@@ -18,7 +18,7 @@ def login_user(request):
             login(request, user)
             return redirect('dashboard')  # Update the target name to match the appropriate URL name
         else:
-            messages.warning(request, 'Something went wrong')
+            messages.warning(request, 'Email or password incorrect')
             return redirect('login')
     else:
         return render(request, 'users/login.html')
@@ -67,7 +67,7 @@ def register_recruiter(request):
 def logout_user(request):
     logout(request)
     messages.info(request, 'Your session has ended')
-    return redirect('logout')  # Update the target name to match the appropriate URL name
+    return redirect('home')  # Update the target name to match the appropriate URL name
 
 def home(request):
     return render(request, 'users/home.html')
