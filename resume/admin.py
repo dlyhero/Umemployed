@@ -4,3 +4,5 @@ from .models import *
 admin.site.register(Skill)
 admin.site.register(SkillCategory)
 admin.site.register(Resume)
+admin.site.register(Education)
+admin.site.register(Experience)

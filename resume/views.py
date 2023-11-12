@@ -1,13 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Resume
-from .form import UpdateResumeForm
-from .form import UpdateResumeForm2
-from .form import UpdateResumeForm3
+from .models import Resume, SkillCategory, Skill
+from .forms import UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3
 from users.models import User
-from django.shortcuts import get_object_or_404
-from .models import SkillCategory
-from .models import Skill
 
 def update_resume(request):
     if request.user.is_applicant:
@@ -29,25 +24,24 @@ def update_resume(request):
                 user.save()
 
                 messages.info(request, 'Your resume info has been updated.')
-                return redirect('dashboard')
+                return redirect('onboarding-2')
             else:
                 messages.warning(request, 'Something went wrong')
         else:
             form = UpdateResumeForm(instance=resume)
-            
 
         context = {'form': form}
         return render(request, 'resume/update_resume.html', context)
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
-    
+
 def applicant_onboarding_part2(request):
     if request.user.is_applicant:
         resume = get_object_or_404(Resume, user=request.user)
 
         if request.method == 'POST':
-            form = UpdateResumeForm2(request.POST, instance=resume)
+            form = UpdateResumeForm2(request.POST, request.FILES, instance=resume)
             if form.is_valid():
                 # Save the resume info
                 form.save()
@@ -65,7 +59,7 @@ def applicant_onboarding_part2(request):
                 resume.save()
 
                 messages.info(request, 'Your resume information has been updated.')
-                return redirect('dashboard')
+                return redirect('onboarding-3')
             else:
                 messages.warning(request, 'Something went wrong')
         else:
@@ -88,17 +82,18 @@ def applicant_onboarding_part3(request):
         resume = get_object_or_404(Resume, user=request.user)
 
         if request.method == 'POST':
-            form = UpdateResumeForm3(request.POST, instance=resume)
+            form = UpdateResumeForm3(request.POST, request.FILES, instance=resume)
             if form.is_valid():
-                # Save the resume info
-                form.save()
+                var = form.save(commit=False)
+                var.save()
+
                 messages.info(request, 'Your resume information has been updated.')
                 return redirect('dashboard')
             else:
                 messages.warning(request, 'Something went wrong')
         else:
             form = UpdateResumeForm3(instance=resume)
-        
+
         context = {
             'form': form
         }

@@ -6,16 +6,14 @@
 <div class="row mt-5">
   <div class="card mx-auto" style="width: 40rem">
     <div class="card-body">
-      <h5 class="card-title mb-3">Finally !!!</h5>
+      <h5 class="card-title mb-3">Step 3: Work Experience and Education</h5>
 
       <form method="post" enctype="multipart/form-data">
-        {% csrf_token %} {{form|crispy}}
+        {% csrf_token %}
+        {{ form|crispy }}
 
         <div class="d-flex justify-content-between">
-          <button
-            class="btn btn-secondary"
-            onclick="event.preventDefault(); window.location.href='{% url 'onboarding-2' %}'"
-          >
+          <button class="btn btn-secondary" onclick="event.preventDefault(); window.location.href='{% url 'onboarding-2' %}'">
             Back
           </button>
 
