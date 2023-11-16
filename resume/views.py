@@ -3,6 +3,7 @@ from django.contrib import messages
 from .models import Resume, SkillCategory, Skill
 from .forms import UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3
 from users.models import User
+from job.models import Job
 
 def update_resume(request):
     if request.user.is_applicant:
@@ -88,7 +89,7 @@ def applicant_onboarding_part3(request):
                 var.save()
 
                 messages.info(request, 'Your resume information has been updated.')
-                return redirect('dashboard')
+                return redirect('matching_jobs')
             else:
                 messages.warning(request, 'Something went wrong')
         else:
@@ -102,6 +103,17 @@ def applicant_onboarding_part3(request):
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
 
+
+def get_matching_jobs(user_job_title):
+    matching_jobs = Job.objects.filter(requirements__icontains=user_job_title)
+    return matching_jobs
+
+def display_matching_jobs(request):
+    user_resume = Resume.objects.get(user=request.user)
+    user_job_title = user_resume.job_title
+    matching_jobs = get_matching_jobs(user_job_title)
+    context = {'matching_jobs': matching_jobs}
+    return render(request, 'job/matching_jobs.html',context )
 def resume_details(request, pk):
     resume = get_object_or_404(Resume, pk=pk)
     context = {'resume': resume}

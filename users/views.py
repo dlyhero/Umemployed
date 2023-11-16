@@ -7,6 +7,8 @@ from .forms import RegisterUserForm
 from resume.models import Resume
 from company.models import Company
 
+def home(request):
+    return render(request, 'website/home.html')
 # login a user
 def login_user(request):
     if request.method == 'POST':
@@ -68,6 +70,3 @@ def logout_user(request):
     logout(request)
     messages.info(request, 'Your session has ended')
     return redirect('home')  # Update the target name to match the appropriate URL name
-
-def home(request):
-    return render(request, 'users/home.html')

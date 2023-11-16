@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'resume',
     'company',
     'dashboard',
+    'job',
+    'website',
     'widget_tweaks',
     'crispy_forms',
     'crispy_bootstrap5',
