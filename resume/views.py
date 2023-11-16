@@ -104,16 +104,68 @@ def applicant_onboarding_part3(request):
         return redirect('dashboard')
 
 
-def get_matching_jobs(user_job_title):
-    matching_jobs = Job.objects.filter(requirements__icontains=user_job_title)
-    return matching_jobs
+def calculate_skill_match(applicant_skills, job_skills):
+    common_skills = applicant_skills.intersection(job_skills)
+    match_percentage = (len(common_skills) / len(job_skills)) * 100
+    return match_percentage, job_skills - common_skills  # Missing skills
 
 def display_matching_jobs(request):
     user_resume = Resume.objects.get(user=request.user)
     user_job_title = user_resume.job_title
-    matching_jobs = get_matching_jobs(user_job_title)
+    user_skills = set(user_resume.skills.all())  # Assuming skills are stored in a ManyToManyField
+
+    matching_jobs_data = get_matching_jobs(user_job_title, user_skills)
+
+    matching_jobs = []
+    for job_data in matching_jobs_data:
+        job = job_data['job']
+        job_skills = set(job.requirements.all())
+        match_percentage, missing_skills = calculate_skill_match(user_skills, job_skills)
+        job_dict = {
+            'company': {
+                'logo': {'url': job.company.logo.url},
+                'name': job.company.name
+            },
+            'title': job.title,
+            'location': job.location,
+            'is_available': job.is_available,
+            'salary': job.salary,
+            'match_percentage': match_percentage,
+            'missing_skills': list(missing_skills)  # Convert set to list for iteration in HTML
+        }
+        matching_jobs.append(job_dict)
+
     context = {'matching_jobs': matching_jobs}
-    return render(request, 'job/matching_jobs.html',context )
+    return render(request, 'job/matching_jobs.html', context)
+
+
+def get_matching_jobs(user_job_title, user_skills):
+    job_by_title = Job.objects.filter(title__icontains=user_job_title)
+    matching_jobs = []
+
+    for job in job_by_title:
+        job_skills = set(job.requirements.all())
+        match_percentage, missing_skills = calculate_skill_match(user_skills, job_skills)
+        matching_jobs.append({'job': job, 'match_percentage': match_percentage, 'missing_skills': missing_skills})
+
+    return matching_jobs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def resume_details(request, pk):
     resume = get_object_or_404(Resume, pk=pk)
     context = {'resume': resume}

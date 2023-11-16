@@ -22,10 +22,11 @@ class SkillCategory(models.Model):
 
 class Skill(models.Model):
     name = models.CharField(max_length=100)
-    category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE)
+    categories = models.ManyToManyField(SkillCategory)  # Change ForeignKey to ManyToManyField
 
     def __str__(self):
         return self.name
+
     
 class Education(models.Model):
     resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
