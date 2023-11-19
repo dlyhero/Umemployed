@@ -4,6 +4,9 @@ from .models import Resume, SkillCategory, Skill
 from .forms import UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3
 from users.models import User
 from job.models import Job
+from geopy.distance import geodesic
+from geopy.geocoders import OpenCage
+geocoder = OpenCage('70d694d4b6824310a0a7e3a4f5041ce3')  # Replace 'YOUR_API_KEY' with your actual OpenCage API key
 
 def update_resume(request):
     if request.user.is_applicant:
@@ -109,6 +112,41 @@ def calculate_skill_match(applicant_skills, job_skills):
     match_percentage = (len(common_skills) / len(job_skills)) * 100
     return match_percentage, job_skills - common_skills  # Missing skills
 
+def calculate_proximity_percentage(user_location, job_location):
+    user_coordinates = get_coordinates(user_location)
+    job_coordinates = get_coordinates(job_location)
+    if user_coordinates and job_coordinates:
+        distance_km = geodesic(user_coordinates, job_coordinates).km
+        if distance_km <= 50:  # Adjust the proximity threshold as needed
+            return 10  # Assign an additional 10% match for jobs within 50 km
+    return 0
+
+def get_coordinates(location):
+    try:
+        result = geocoder.geocode(location)
+        if result:
+            latitude = result[0]['geometry']['lat']
+            longitude = result[0]['geometry']['lng']
+            return latitude, longitude
+    except Exception as e:
+        print(f"Error retrieving coordinates for {location}: {e}")
+    
+    return None
+
+def get_matching_jobs(user_job_title, user_skills):
+    all_jobs = Job.objects.all()
+    matching_jobs = []
+
+    for job in all_jobs:
+        job_skills = set(job.requirements.all())
+        if job_skills.intersection(user_skills):
+            match_percentage, missing_skills = calculate_skill_match(user_skills, job_skills)
+            proximity_percentage = calculate_proximity_percentage(user_job_title, job.location)  # Fix the parameter to user_job_title
+            total_match_percentage = match_percentage + proximity_percentage
+            matching_jobs.append({'job': job, 'match_percentage': total_match_percentage, 'missing_skills': missing_skills})
+    
+    return matching_jobs
+
 def display_matching_jobs(request):
     user_resume = Resume.objects.get(user=request.user)
     user_job_title = user_resume.job_title
@@ -137,20 +175,6 @@ def display_matching_jobs(request):
 
     context = {'matching_jobs': matching_jobs}
     return render(request, 'job/matching_jobs.html', context)
-
-
-def get_matching_jobs(user_job_title, user_skills):
-    job_by_title = Job.objects.filter(title__icontains=user_job_title)
-    matching_jobs = []
-
-    for job in job_by_title:
-        job_skills = set(job.requirements.all())
-        match_percentage, missing_skills = calculate_skill_match(user_skills, job_skills)
-        matching_jobs.append({'job': job, 'match_percentage': match_percentage, 'missing_skills': missing_skills})
-
-    return matching_jobs
-
-
 
 
 
