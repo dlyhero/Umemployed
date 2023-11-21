@@ -1,0 +1,19 @@
+{% extends 'users/base.html' %} {% block content %}
+
+<h1>Quiz Results</h1>
+<p>Score: {{ score }} / {{ total_questions }}</p>
+<ul>
+  {% for response in quiz_responses %}
+  <li>
+    Question: {{ response.answer.question.text }}
+    <br />
+    Selected Answer: {{ response.answer.text }} {% if response.is_correct %}
+    <span style="color: green">(Correct)</span>
+    {% else %}
+    <span style="color: red">(Incorrect)</span>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock content %}

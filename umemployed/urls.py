@@ -24,7 +24,8 @@ urlpatterns = [
     #for the resume app
     path('resume/', include('resume.urls')),
     path('job/',include('job.urls')),
-    path('jobs/',include('website.urls'))
+    path('jobs/',include('website.urls')),
+    path('onboarding/', include('onboarding.urls'))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

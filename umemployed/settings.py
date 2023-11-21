@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'geopy',
+    'onboarding',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
