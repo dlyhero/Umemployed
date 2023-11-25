@@ -1,19 +1,66 @@
-{% extends 'users/base.html' %} {% block content %}
+{% extends 'users/base.html' %} 
+{% block content %}
+<style>
+  .box {
+    border: 2px solid #ccc;
+    padding: 20px;
+    margin: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+  }
+  .box ul {
+    list-style: none;
+    padding: 0;
+  }
+  .box li {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  .box span.correct {
+    color: green;
+    font-weight: bold;
+  }
+  .box span.incorrect {
+    color: red;
+    font-weight: bold;
+  }
+</style>
 
-<h1>Quiz Results</h1>
-<p>Score: {{ score }} / {{ total_questions }}</p>
-<ul>
-  {% for response in quiz_responses %}
-  <li>
-    Question: {{ response.answer.question.text }}
-    <br />
-    Selected Answer: {{ response.answer.text }} {% if response.is_correct %}
-    <span style="color: green">(Correct)</span>
-    {% else %}
-    <span style="color: red">(Incorrect)</span>
-    {% endif %}
-  </li>
-  {% endfor %}
-</ul>
-
+<center><h1 class="">Quiz Results</h1>
+<p>Score: {{ score }} / {{ total_questions }}</p></center>
+<div class="box">
+  <ul>
+    {% for response in quiz_responses %}
+    <li>
+      <strong>Question {{ forloop.counter }}: </strong> {{ response.answer.question.question }}
+      <ul>
+        {% for option in response.answer.question.generalknowledgeanswer_set.all %}
+        <li>
+          {% if response.answer.id == option.id %}
+            {% if option.is_correct %}
+              <span class="correct">&#10004; Correct</span> <!-- Correct answer provided by the user -->
+            {% else %}
+              <span class="incorrect">&#10008; Failed</span> <!-- Incorrect answer provided by the user -->
+            {% endif %}
+          {% endif %}
+          {{ option.answer }}
+          {% if option.is_correct %}
+            <span class="correct">[Correct Answer]</span> <!-- Display correct answer from the database -->
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </li>
+    {% empty %}
+    <li>No responses found</li>
+    {% endfor %}
+  </ul>
+ <center> <div>
+    <button type="button" class="btn btn-primary">Proceed to Next Phase</button>
+  </div>
+</center>
+</div>
 {% endblock content %}

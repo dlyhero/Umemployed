@@ -4,6 +4,7 @@ from .models import Resume, SkillCategory, Skill
 from .forms import UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3
 from users.models import User
 from job.models import Job
+from onboarding.views import general_knowledge_quiz
 from geopy.distance import geodesic
 from geopy.geocoders import OpenCage
 geocoder = OpenCage('70d694d4b6824310a0a7e3a4f5041ce3')  # Replace 'YOUR_API_KEY' with your actual OpenCage API key

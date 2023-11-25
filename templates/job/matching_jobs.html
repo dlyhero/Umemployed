@@ -40,7 +40,7 @@
                                                 {% endfor %}
                                             </div>
                                         {% else %}
-                                            <p>Congratulations! You have all required skills.</p>
+                                            <p> Nice Move! You have all required skills.</p>
                                         {% endif %}
                                     </div>
                                    
@@ -49,12 +49,13 @@
                             </div> 
                                     <div class="mt-3">
                                         {% comment %} <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a> {% endcomment %}
-                                        <a class="btn btn-primary" href="">Apply Now</a>
+                                        <a class="btn btn-primary" href="{% url 'general_knowledge_quiz' %}">Apply Now</a>
                                     </div>
                         </div>
                         {% endfor %}
                     {% else %}
                         <!-- No matching jobs message -->
+                        <h1> Sorry! There is no job that matches your skills, You can try some of our courses here to build your skills! </h1>
                     {% endif %}
                 </div>
             </div>
