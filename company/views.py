@@ -6,7 +6,7 @@ from users.models import User
 from .forms import UpdateCompanyForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-
+from resume.views import calculate_skill_match
 
 
 #update company
@@ -40,3 +40,37 @@ def company_details(request, pk):
     company = get_object_or_404(Company, pk=pk)
     context = {'company': company}
     return render(request, 'company/company_details.html', context)
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from job.models import Job, Application
+from resume.models import Resume
+
+def view_applications(request, company_id):
+    # Check if the current user is the owner of the company
+    current_user = request.user
+    company = Company.objects.get(id=company_id)
+    if company.user != current_user:
+        return HttpResponse("You are not authorized to view this page.")
+
+    jobs = Job.objects.filter(company=company)
+    job_applications = {}
+    for job in jobs:
+        applications = Application.objects.filter(job=job)
+        job_applications[job] = applications
+
+    # Calculate match percentage for each application
+    for job, applications in job_applications.items():
+        for application in applications:
+            user = application.user
+            resume = Resume.objects.get(user=user)
+            applicant_skills = set(resume.skills.all())
+            job_skills = set(job.requirements.all())
+            match_percentage, missing_skills = calculate_skill_match(applicant_skills, job_skills)
+            application.matching_percentage = match_percentage
+
+    context = {
+        'company': company,
+        'job_applications': job_applications,
+    }
+    return render(request, 'company/view_applications.html', context)

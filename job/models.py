@@ -17,3 +17,8 @@ class Job(models.Model):
     def __str__(self):
         return self.title
     
+class Application(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, default=1)
+    quiz_score = models.IntegerField(default=0)
+    matching_percentage = models.FloatField(default=0.0)

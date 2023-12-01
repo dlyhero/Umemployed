@@ -165,6 +165,7 @@ def display_matching_jobs(request):
                 'logo': {'url': job.company.logo.url},
                 'name': job.company.name
             },
+            'id':job.id,
             'title': job.title,
             'location': job.location,
             'is_available': job.is_available,
@@ -173,6 +174,8 @@ def display_matching_jobs(request):
             'missing_skills': list(missing_skills)  # Convert set to list for iteration in HTML
         }
         matching_jobs.append(job_dict)
+    for job in matching_jobs:
+        print(job)
 
     context = {'matching_jobs': matching_jobs}
     return render(request, 'job/matching_jobs.html', context)

@@ -1,0 +1,95 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="sidebar">
+        <!-- Sidebar content goes here -->
+        <h2>Company Dashboard</h2>
+        <ul>
+            <li><i class="bi bi-house-door"></i> <a href="#">Home</a></li>
+            <li><i class="bi bi-briefcase"></i> <a href="#">Jobs</a></li>
+            <li><i class="bi bi-person-check"></i> <a href="#">Applicants</a></li>
+            <li><i class="bi bi-file-person"></i> <a href="#">Employees</a></li>
+            <li><i class="bi bi-graph-up"></i> <a href="#">Analytics</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <!-- Content area goes here -->
+        <h1>Company Dashboard</h1>
+        <h2>Applications for {{ company.name }}</h2>
+
+        {% for job, applications in job_applications.items %}
+            <h3>{{ job.title }}</h3>
+            <ul>
+                {% for application in applications %}
+                    <li>
+                        <strong><i class="bi bi-person"></i> Applicant:</strong> {{ application.user.username }}<br>
+                        <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> {{ application.matching_percentage }}%<br>
+                        <!-- Add other application details as needed -->
+                        <button class="btn btn-primary"><i class="bi bi-eye"></i> View Details</button>
+                        <button class="btn btn-danger"><i class="bi bi-x"></i> Reject</button>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+
+        {% if applications|length == 0 %}
+            <p>No applications found with a match percentage of 70% or higher.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /* CSS styles for the dashboard container */
+    .dashboard-container {
+        display: flex;
+    }
+
+    /* CSS styles for the sidebar */
+    .sidebar {
+        width: 250px;
+        background-color: #f0f0f0;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .sidebar h2 {
+        margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 10px;
+    }
+
+    .sidebar i {
+        margin-right: 10px;
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    /* CSS styles for the content area */
+    .content {
+        flex-grow: 1;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    /* CSS styles for the application details */
+    .application {
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
