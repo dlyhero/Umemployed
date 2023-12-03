@@ -25,7 +25,7 @@
                 {% for application in applications %}
                     <li>
                         <strong><i class="bi bi-person"></i> Applicant:</strong> {{ application.user.username }}<br>
-                        <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> {{ application.matching_percentage }}%<br>
+                        <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> {{ application.overall_match_percentage }}%<br>
                         <!-- Add other application details as needed -->
                         <button class="btn btn-primary"><i class="bi bi-eye"></i> View Details</button>
                         <button class="btn btn-danger"><i class="bi bi-x"></i> Reject</button>

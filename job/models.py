@@ -16,9 +16,26 @@ class Job(models.Model):
 
     def __str__(self):
         return self.title
-    
+from resume.models import Resume
+
+from job.utils import calculate_skill_match
+
 class Application(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default=1)
     quiz_score = models.IntegerField(default=0)
     matching_percentage = models.FloatField(default=0.0)
+    overall_match_percentage = models.FloatField(default=0.0)  # New field
+
+    def save(self, *args, **kwargs):
+        applicant_resume = Resume.objects.get(user=self.user)
+        applicant_skills = set(applicant_resume.skills.all())
+        job_skills = set(self.job.requirements.all())
+        match_percentage, missing_skills = calculate_skill_match(applicant_skills, job_skills)
+        
+        self.matching_percentage = match_percentage
+
+        overall_match_percentage = (0.7 * match_percentage) + (3 * self.quiz_score)
+        self.overall_match_percentage = overall_match_percentage
+
+        super().save(*args, **kwargs)

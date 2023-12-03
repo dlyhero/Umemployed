@@ -68,4 +68,5 @@ def apply_job(request, job_id):
     application.save()
     context = {'job',job}
     # Redirect to a success page or perform other actions
-    return redirect('general_knowledge_quiz')
+    messages.success(request,"Your Application has been submitted for Review")
+    return redirect('/resume/matching-jobs')

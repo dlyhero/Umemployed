@@ -68,6 +68,12 @@ def view_applications(request, company_id):
             job_skills = set(job.requirements.all())
             match_percentage, missing_skills = calculate_skill_match(applicant_skills, job_skills)
             application.matching_percentage = match_percentage
+            # Calculate the quiz score (assumed to be stored in application.quiz_score)
+            quiz_score = application.quiz_score
+
+            # Calculate the overall score using match percentage and quiz score
+            overall_score = match_percentage * 0.7 + (quiz_score / 10) * 0.3
+            application.overall_score = overall_score
 
     context = {
         'company': company,
