@@ -30,7 +30,7 @@
 </style>
 
 <center><h1 class="">Quiz Results</h1>
-<p>Score: {{ score }} / {{ total_questions }}</p></center>
+<p>Score: {{ quiz_score }} / {{ total_questions }}</p></center>
 <div class="box">
   <ul>
     {% for response in quiz_responses %}
@@ -43,7 +43,7 @@
             {% if option.is_correct %}
               <span class="correct">&#10004; Correct</span> <!-- Correct answer provided by the user -->
             {% else %}
-              <span class="incorrect">&#10008; Failed</span> <!-- Incorrect answer provided by the user -->
+              <span class="incorrect">&#10008; Incorrect</span> <!-- Incorrect answer provided by the user -->
             {% endif %}
           {% endif %}
           {{ option.answer }}
@@ -58,9 +58,10 @@
     <li>No responses found</li>
     {% endfor %}
   </ul>
- <center> <div>
+</div>
+<center>
+  <div>
     <button type="button" class="btn btn-primary">Proceed to Next Phase</button>
   </div>
 </center>
-</div>
 {% endblock content %}

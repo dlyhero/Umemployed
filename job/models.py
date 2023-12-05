@@ -26,13 +26,21 @@ class Application(models.Model):
     quiz_score = models.IntegerField(default=0)
     matching_percentage = models.FloatField(default=0.0)
     overall_match_percentage = models.FloatField(default=0.0)  # New field
+    has_completed_quiz = models.BooleanField(default=False)  # New field
 
     def save(self, *args, **kwargs):
+        if self.pk is None:
+            from onboarding.models import QuizResponse
+            # New application, calculate the quiz score based on the associated job
+            quiz_responses = QuizResponse.objects.filter(application=self)
+            score = quiz_responses.filter(answer__is_correct=True).count()
+            self.quiz_score = score
+
         applicant_resume = Resume.objects.get(user=self.user)
         applicant_skills = set(applicant_resume.skills.all())
         job_skills = set(self.job.requirements.all())
         match_percentage, missing_skills = calculate_skill_match(applicant_skills, job_skills)
-        
+
         self.matching_percentage = match_percentage
 
         overall_match_percentage = (0.7 * match_percentage) + (3 * self.quiz_score)
