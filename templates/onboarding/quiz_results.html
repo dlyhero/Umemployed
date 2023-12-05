@@ -31,7 +31,7 @@
 
 <center><h1 class="">Quiz Results</h1>
 <p>Score: {{ quiz_score }} / {{ total_questions }}</p></center>
-<div class="box">
+{% comment %} <div class="box">
   <ul>
     {% for response in quiz_responses %}
     <li>
@@ -58,7 +58,9 @@
     <li>No responses found</li>
     {% endfor %}
   </ul>
-</div>
+</div> {% endcomment %}
+
+<h1 class="text-center mt-50">You have completed this phase of the applicant</h1>
 <center>
   <div>
     <button type="button" class="btn btn-primary">Proceed to Next Phase</button>

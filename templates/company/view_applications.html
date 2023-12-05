@@ -17,25 +17,45 @@
     <div class="content">
         <!-- Content area goes here -->
         <h1>Company Dashboard</h1>
-        <h2>Applications for {{ company.name }}</h2>
+        <h2>{{ company.name }}</h2>
 
         {% for job, applications in job_applications.items %}
+        <div class="job">
             <h3>{{ job.title }}</h3>
             <ul>
                 {% for application in applications %}
-                    <li>
+                {% if application.overall_match_percentage >= 70 %}
+                <li class="application">
+                    <div class="application-details">
                         <strong><i class="bi bi-person"></i> Applicant:</strong> {{ application.user.username }}<br>
                         <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> {{ application.overall_match_percentage }}%<br>
+                    </div>
+                    <div class="application-actions">
                         <!-- Add other application details as needed -->
                         <button class="btn btn-primary"><i class="bi bi-eye"></i> View Details</button>
                         <button class="btn btn-danger"><i class="bi bi-x"></i> Reject</button>
-                    </li>
+                    </div>
+                </li>
+                {% else %}
+                <li class="application">
+                    <div class="application-details">
+                        <strong><i class="bi bi-person"></i> Applicant:</strong> No Applicant up to Match<br>
+                        <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> None <br>
+                    </div>
+                    <div class="application-actions">
+                        <!-- Add other application details as needed -->
+                        {% comment %} <button class="btn btn-primary"><i class="bi bi-eye"></i> View Details</button>
+                        <button class="btn btn-danger"><i class="bi bi-x"></i> Reject</button> {% endcomment %}
+                    </div>
+                </li>
+                {% endif %}
                 {% endfor %}
             </ul>
+        </div>
         {% endfor %}
 
         {% if applications|length == 0 %}
-            <p>No applications found with a match percentage of 70% or higher.</p>
+        <p>No applications found with a match percentage of 70% or higher.</p>
         {% endif %}
     </div>
 </div>
@@ -83,13 +103,46 @@
         box-sizing: border-box;
     }
 
+    /* CSS styles for the job container */
+    .job {
+        margin-bottom: 20px;
+    }
+
     /* CSS styles for the application details */
     .application {
-        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
         padding: 10px;
         background-color: #f9f9f9;
         border: 1px solid #ddd;
         border-radius: 4px;
+    }
+
+    .application-details {
+        flex-grow: 1;
+    }
+
+    .application-actions {
+        margin-left: 10px;
+    }
+
+    /* CSS styles for the buttons */
+    .btn {
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn.btn-primary {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .btn.btn-danger {
+        background-color: #dc3545;
+        color: #fff;
     }
 </style>
 {% endblock %}

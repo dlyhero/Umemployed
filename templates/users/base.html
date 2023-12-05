@@ -112,7 +112,7 @@
                 >
               </div>
             </div>
-
+            
             {% else %}
             <div class="nav-item dropdown">
               <a
@@ -136,8 +136,10 @@
                 data-bs-toggle="dropdown"
                 >Account</a
               >
+              {% if request.user.is_authenticated%}
+              {% if request.user.is_recruiter %}
               <div class="dropdown-menu rounded-0 m-0">
-                <a href="{% url 'dashboard' %}" class="dropdown-item">Profile</a>
+                <a href="{% url 'view_applications' company_id=user.company.id %}" class="dropdown-item">Dashboard</a>
                 <a href="#" class="dropdown-item">Resume Assistant</a>
                 <a href="#" class="dropdown-item">My Jobs</a>
                 <a href="#" class="dropdown-item">My Reviews</a>
@@ -146,6 +148,29 @@
               </div>
             </div>
           </div>
+          
+          {% elif request.user.is_applicant %}
+           <div class="dropdown-menu rounded-0 m-0">
+                <a href="{% url 'dashboard' %}" class="dropdown-item">Profile</a>
+                <a href="#" class="dropdown-item">Resume Assistant</a>
+                <a href="#" class="dropdown-item">My Jobs</a>
+                <a href="#" class="dropdown-item">My Reviews</a>
+                <a href="#" class="dropdown-item">Settings</a>
+                <a href="#" class="dropdown-item">Get Help</a>
+              </div>
+              </div>
+          </div>
+              {% endif %}
+          {% else %}
+           <div class="dropdown-menu rounded-0 m-0">
+                <a href="{% url 'dashboard' %}" class="dropdown-item">Profile</a>
+                <a href="#" class="dropdown-item">Resume Assistant</a>
+                <a href="#" class="dropdown-item">My Jobs</a>
+                <a href="#" class="dropdown-item">My Reviews</a>
+                <a href="#" class="dropdown-item">Settings</a>
+                <a href="#" class="dropdown-item">Get Help</a>
+              </div>
+            {% endif %}
           {% if user.is_authenticated %}
           <a
             href="{% url 'logout' %}"

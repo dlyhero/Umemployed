@@ -49,11 +49,19 @@
               <p class="fs-5 fw-medium text-white mb-4 pb-2">
                 Just a few clicks and You are good to good.
               </p>
+            {% if user.has_resume %}
+              <a
+                href="{% url 'matching_jobs' %}"
+                class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft"
+                >Get Hired</a
+              >
+              {% else %}
               <a
                 href="{% url 'register-applicant' %}"
                 class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft"
                 >Get Hired</a
-              >
+                >
+                {% endif %}
               <a
                 href="{% url 'register-recruiter' %}"
                 class="btn btn-secondary py-md-3 px-md-5 animated slideInRight"
