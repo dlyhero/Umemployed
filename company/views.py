@@ -11,7 +11,7 @@ from resume.views import calculate_skill_match
 
 #update company
 
-@login_required
+@login_required(login_url='/')
 def update_company(request):
     if request.user.is_recruiter:
         company = get_object_or_404(Company, user=request.user)
@@ -36,6 +36,7 @@ def update_company(request):
     else:
         messages.warning(request,"Permission Denied")
 
+@login_required(login_url='/')
 def company_details(request, pk):
     company = get_object_or_404(Company, pk=pk)
     context = {'company': company}
@@ -46,6 +47,7 @@ from django.http import HttpResponse
 from job.models import Job, Application
 from resume.models import Resume
 
+@login_required(login_url='/')
 def view_applications(request, company_id):
     # Check if the current user is the owner of the company
     current_user = request.user

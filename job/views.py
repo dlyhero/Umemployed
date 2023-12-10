@@ -3,10 +3,14 @@ from django.contrib import messages
 from .models import Job, Application
 from .forms import CreateJobForm , UpdateJobForm
 from resume.views import get_matching_jobs
-
-
+from django.contrib.auth.decorators import login_required
+from onboarding.views import general_knowledge_quiz
 from resume.models import Skill,SkillCategory
+
+
+
 # create a job
+@login_required(login_url='/')
 def create_job(request):
     if request.user.is_recruiter and request.user.has_company:
         if request.method == 'POST':
@@ -43,6 +47,7 @@ def create_job(request):
         messages.warning(request, 'Permission Denied!')
         return redirect('dashboard')
 
+@login_required(login_url='/')
 def update_job(request,pk):
     job = Job.objects.get(pk=pk)
     if request.method == 'POST':
@@ -58,7 +63,9 @@ def update_job(request,pk):
         context = {'form':form}
         return render(request, 'job/update_job.html',context)
     
-from onboarding.views import general_knowledge_quiz
+
+
+@login_required(login_url='/')
 def apply_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     
@@ -84,3 +91,28 @@ def apply_job(request, job_id):
     
     # Redirect the user to the quiz page
     return redirect('general_knowledge_quiz')
+
+
+
+
+''' COmpiler integration with Jdoodler '''
+import json
+from .jdoodle_api import execute_code
+from django.http import JsonResponse, HttpResponseNotAllowed
+from django.shortcuts import render
+
+def run_code(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        script = data.get('script')
+        language = data.get('language')
+        version_index = data.get('version_index')
+
+        output = execute_code(script, language, version_index)
+
+        response_data = {'output': output}
+        return JsonResponse(response_data)
+    
+    # Handle other request methods (e.g., GET) if needed
+    return render(request, "job/compiler/run_code.html")
+    return HttpResponseNotAllowed(['POST'])

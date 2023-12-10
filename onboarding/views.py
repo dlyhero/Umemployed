@@ -3,7 +3,10 @@ from .models import GeneralKnowledgeQuestion, GeneralKnowledgeAnswer, QuizRespon
 from resume.models import Resume
 from job.models import Application
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
+
+@login_required(login_url='/')
 def general_knowledge_quiz(request):
     if request.method == 'POST':
         application = Application.objects.filter(user=request.user, has_completed_quiz=False).first()
@@ -57,6 +60,8 @@ def general_knowledge_quiz(request):
         }
         return render(request, 'onboarding/general_knowledge_quiz.html', context)
 
+
+@login_required(login_url='/')
 def quiz_results(request):
     resume = Resume.objects.get(user=request.user)
     applications = Application.objects.filter(user=request.user)

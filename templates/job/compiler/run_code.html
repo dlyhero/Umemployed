@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>UmEmployed Development Environment</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/compiler.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>UmEmployed Development Environment</h1>
+            <div class="question-container">
+                <h3>Question:</h3>
+                <p>What is your question?</p>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="form-container">
+                <label for="script">Script:</label>
+                <textarea id="script" rows="10" placeholder="Enter your code here..." required></textarea>
+
+                <label for="language">Language:</label>
+                <select id="language" required>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                    <!-- Add more language options here as needed -->
+                </select>
+
+                <button id="run-btn">Run Code</button>
+
+                <div id="output-container">
+                    <label for="output">Output:</label>
+                    <textarea id="output" rows="10" readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/compiler.js' %}"></script>
+</body>
+</html>

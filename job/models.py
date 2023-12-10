@@ -2,9 +2,11 @@ from django.db import models
 from users.models import User
 from company.models import Company
 from resume.models import SkillCategory, Skill
+import uuid
 
 
 class Job(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
@@ -19,8 +21,8 @@ class Job(models.Model):
 from resume.models import Resume
 
 from job.utils import calculate_skill_match
-
 class Application(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default=1)
     quiz_score = models.IntegerField(default=0)

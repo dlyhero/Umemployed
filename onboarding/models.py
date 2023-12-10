@@ -16,7 +16,9 @@ class GeneralKnowledgeAnswer(models.Model):
         return self.answer
 
 from job.models import Application
+import uuid
 class QuizResponse(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
     answer = models.ForeignKey(GeneralKnowledgeAnswer, on_delete=models.CASCADE)
     application = models.ForeignKey(Application, on_delete=models.CASCADE, default=None)
