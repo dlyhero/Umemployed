@@ -31,6 +31,14 @@ document.getElementById("run-btn").addEventListener("click", function () {
         var response = JSON.parse(xhr.responseText);
         document.getElementById("output").value = response.output;
         document.getElementById("output-container").style.display = "block";
+
+        // Perform the comparison logic within the "response" element
+        var responseElement = document.getElementById("response");
+        if (response.output == "1") {
+          responseElement.textContent = "The value is equal to 1.";
+        } else {
+          responseElement.textContent = "The value is not equal to 1.";
+        }
       } else {
         console.error("Error occurred:", xhr.statusText);
       }

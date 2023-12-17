@@ -11,32 +11,69 @@
             <h1>UmEmployed Development Environment</h1>
             <div class="question-container">
                 <h3>Question:</h3>
-                <p>What is your question?</p>
+                <p>
+                    Welcome! As part of your interview process, we have an entertaining coding challenge for you.
+                    Imagine you are a detective investigating a crime scene. You stumble upon a mysterious list of numbers, and you suspect it holds a secret message. Your mission is to decipher the message hidden within the list.
+                </p>
+                <!-- More challenge description here -->
             </div>
         </div>
         <div class="main-content">
             <div class="form-container">
-                <label for="script">Script:</label>
+                <label for="script">Write your code in the space provided below:</label>
                 <textarea id="script" rows="10" placeholder="Enter your code here..." required></textarea>
 
                 <label for="language">Language:</label>
                 <select id="language" required>
-                    <option value="python">Python</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="python3">Python</option>
                     <option value="java">Java</option>
                     <option value="cpp">C++</option>
-                    <!-- Add more language options here as needed -->
+                    <option value="c">C</option>
+                    <option value="php">PHP</option>
+                    <!-- More language options here -->
                 </select>
 
                 <button id="run-btn">Run Code</button>
-
                 <div id="output-container">
                     <label for="output">Output:</label>
                     <textarea id="output" rows="10" readonly></textarea>
+                    <p id="message"></p>
+
+    <button id="compare-btn">Submit</button>
+    <h1 class="message"><h1>
+                        
+                    <!-- Submit buttons initially hidden -->
+                    {% comment %} <a href="{% url 'job:success_page' %}" style="display: none;">
+                        <button type="button" id="btn-success">Submit</button>
+                    </a>
+                    <a href="{% url 'job:fail_page' %}" style="display: none;">
+                        <button type="button" id="btn-failure">Submit</button>
+                    </a> {% endcomment %}
                 </div>
             </div>
         </div>
     </div>
 
     <script src="{% static 'js/compiler.js' %}"></script>
+    <script>
+          // Add event listener to the compare button
+        document.getElementById("compare-btn").addEventListener("click", function () {
+            // Retrieve the value from the textarea
+            var outputValue = document.getElementById("output").value;
+
+            // Perform the comparison
+            if (outputValue == 1) {
+                // Display a message if the value is equal to "1"
+                window.location.href = "{% url 'job:success_page' %}";
+
+            } else {
+                console.log("this is a test");
+                // Clear the message if the value is not equal to "1"
+                    window.location.href = "{% url 'job:fail_page' %}";
+
+            }
+        });
+    </script>
 </body>
 </html>

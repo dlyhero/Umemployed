@@ -9,5 +9,7 @@ urlpatterns = [
     path('apply/<int:job_id>/', views.apply_job, name='apply_job'),
     #Compiler path
     path('run-code/', views.run_code, name='run_code'),
+    path('success/', views.success_page, name='success_page'),
+    path('fail/', views.fail_page, name='fail_page'),
 
 ]

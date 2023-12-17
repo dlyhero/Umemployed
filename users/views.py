@@ -28,7 +28,7 @@ def login_user(request):
         return render(request, 'users/login.html')
 
 # register applicant
-@login_required(login_url='/')
+# @login_required(login_url='/')
 def register_applicant(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)

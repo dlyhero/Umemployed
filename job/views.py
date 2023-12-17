@@ -101,18 +101,35 @@ from .jdoodle_api import execute_code
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import render
 
+@login_required(login_url='/')
 def run_code(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         script = data.get('script')
         language = data.get('language')
         version_index = data.get('version_index')
-
+        user = request.user
         output = execute_code(script, language, version_index)
 
-        response_data = {'output': output}
+        # Check if output is a dictionary or a string
+        if "Error occurred" in output:
+            response_data = {'output': output}
+        else:
+            output_dict = json.loads(output)
+            response_data = {'output': output_dict.get('output')}
+
+        print(response_data['output'])
         return JsonResponse(response_data)
-    
+
     # Handle other request methods (e.g., GET) if needed
     return render(request, "job/compiler/run_code.html")
+
+    # Return an error response for disallowed methods
     return HttpResponseNotAllowed(['POST'])
+
+
+def success_page(request):
+    return render(request, "job/compiler/success.html")
+
+def fail_page(request):
+    return render(request, "job/compiler/fail.html")

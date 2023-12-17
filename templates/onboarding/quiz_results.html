@@ -62,8 +62,10 @@
 
 <h1 class="text-center mt-50">You have completed this phase of the applicant</h1>
 <center>
+  <a href="{% url 'job:run_code' %}">
   <div>
-    <button type="button" class="btn btn-primary">Proceed to Next Phase</button>
+    <button  type="button" class="btn btn-primary">Proceed to Next Phase</button>
   </div>
+</a>
 </center>
 {% endblock content %}
