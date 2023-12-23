@@ -6,11 +6,14 @@ from .forms import RegisterUserForm
 
 from resume.models import Resume
 from company.models import Company
+from company.views import create_company
 
 from django.contrib.auth.decorators import login_required
-
+from job.models import Job
 def home(request):
-    return render(request, 'website/home.html')
+    jobs = Job.objects.all()[0:5]
+    context = {'jobs':jobs}
+    return render(request, 'website/home.html',context)
 # login a user
 def login_user(request):
     if request.method == 'POST':
@@ -20,7 +23,7 @@ def login_user(request):
         user = authenticate(request, username=email, password=password)
         if user is not None and user.is_active:
             login(request, user)
-            return redirect('dashboard')  # Update the target name to match the appropriate URL name
+            return redirect('/')  # Update the target name to match the appropriate URL name
         else:
             messages.warning(request, 'Email or password incorrect')
             return redirect('login')
@@ -53,18 +56,15 @@ def register_applicant(request):
 @login_required(login_url='/')
 def register_recruiter(request):
     if request.method == 'POST':
-        form = RegisterUserForm(request.POST)
-        if form.is_valid():
-            var = form.save(commit=False)
-            var.is_recruiter = True
-            var.username = var.email
-            var.save()
-            Company.objects.create(user=var)
-            messages.info(request, 'Your account has been created successfully')
-            return redirect("login")
+        is_recruiter = request.POST.get('is_recruiter')  # Get the value of the checkbox
+        if is_recruiter:
+            request.user.is_recruiter = True
+            request.user.save()
+            messages.info(request, 'Your account has been updated successfully')
+            return redirect("create_company")
         else:
-            messages.warning(request, "Something went wrong")
-            return redirect('register-recruiter')
+            messages.info(request, 'Your account has been updated successfully')
+            return redirect("login")
     else:
         form = RegisterUserForm()
         context = {'form': form}

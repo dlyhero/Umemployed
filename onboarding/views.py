@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 
-@login_required(login_url='/')
+@login_required(login_url='login')
 def general_knowledge_quiz(request):
     if request.method == 'POST':
         application = Application.objects.filter(user=request.user, has_completed_quiz=False).first()
@@ -61,7 +61,7 @@ def general_knowledge_quiz(request):
         return render(request, 'onboarding/general_knowledge_quiz.html', context)
 
 
-@login_required(login_url='/')
+@login_required(login_url='login')
 def quiz_results(request):
     resume = Resume.objects.get(user=request.user)
     applications = Application.objects.filter(user=request.user)

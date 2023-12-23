@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from resume.models import Resume,Education,Experience
 from users.models import User
+from django.contrib.auth.decorators import login_required
+from users.views import login_user
 
+@login_required(login_url='login')
 def dashboard(request):
     try:
         data = Resume.objects.get(user=request.user)

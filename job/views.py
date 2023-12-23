@@ -10,7 +10,7 @@ from resume.models import Skill,SkillCategory
 
 
 # create a job
-@login_required(login_url='/')
+@login_required(login_url='/login')
 def create_job(request):
     if request.user.is_recruiter and request.user.has_company:
         if request.method == 'POST':
@@ -47,7 +47,7 @@ def create_job(request):
         messages.warning(request, 'Permission Denied!')
         return redirect('dashboard')
 
-@login_required(login_url='/')
+@login_required(login_url='/login')
 def update_job(request,pk):
     job = Job.objects.get(pk=pk)
     if request.method == 'POST':
@@ -65,7 +65,7 @@ def update_job(request,pk):
     
 
 
-@login_required(login_url='/')
+@login_required(login_url='login')
 def apply_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     
@@ -101,7 +101,7 @@ from .jdoodle_api import execute_code
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import render
 
-@login_required(login_url='/')
+@login_required(login_url='/login')
 def run_code(request):
     if request.method == 'POST':
         data = json.loads(request.body)

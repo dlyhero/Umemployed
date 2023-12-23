@@ -5,30 +5,18 @@
   <div class="owl-carousel header-carousel position-relative">
     <div class="owl-carousel-item position-relative">
       <img class="img-fluid" src="{% static 'img/carousel-1.jpg' %}" alt="" />
-      <div
-        class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-        style="background: rgba(43, 57, 64, 0.5)"
-      >
+      <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(43, 57, 64, 0.5)">
         <div class="container">
           <div class="row justify-content-start">
             <div class="col-10 col-lg-8">
               <h1 class="display-3 text-white animated slideInDown mb-4">
-                Find The Perfect Job That You Deserved
+                Discover Your Perfect Career Opportunity
               </h1>
               <p class="fs-5 fw-medium text-white mb-4 pb-2">
-                Here is where you land your dream job/employee so why waste
-                time?
+                Unlock your potential and find the job you truly deserve.
               </p>
-              <a
-                href="{% url 'register-applicant' %}"
-                class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft"
-                >Get Hired</a
-              >
-              <a
-                href="{% url 'register-recruiter' %}"
-                class="btn btn-secondary py-md-3 px-md-5 animated slideInRight"
-                >Find A Talent</a
-              >
+              <a href="{% url 'register-applicant' %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Get Hired</a>
+              <a href="{% url 'register-recruiter' %}" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Find Top Talent</a>
             </div>
           </div>
         </div>
@@ -36,37 +24,22 @@
     </div>
     <div class="owl-carousel-item position-relative">
       <img class="img-fluid" src="{% static 'img/carousel-2.jpg' %}" alt="" />
-      <div
-        class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-        style="background: rgba(43, 57, 64, 0.5)"
-      >
+      <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(43, 57, 64, 0.5)">
         <div class="container">
           <div class="row justify-content-start">
             <div class="col-10 col-lg-8">
               <h1 class="display-3 text-white animated slideInDown mb-4">
-                Find The Best Startup Job That Fit You
+                Discover Exciting Startup Opportunities
               </h1>
               <p class="fs-5 fw-medium text-white mb-4 pb-2">
-                Just a few clicks and You are good to good.
+                Join innovative startups and make an impact from day one.
               </p>
-            {% if user.has_resume %}
-              <a
-                href="{% url 'matching_jobs' %}"
-                class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft"
-                >Get Hired</a
-              >
+              {% if user.has_resume %}
+              <a href="{% url 'matching_jobs' %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Get Hired</a>
               {% else %}
-              <a
-                href="{% url 'register-applicant' %}"
-                class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft"
-                >Get Hired</a
-                >
-                {% endif %}
-              <a
-                href="{% url 'register-recruiter' %}"
-                class="btn btn-secondary py-md-3 px-md-5 animated slideInRight"
-                >Find A Talent</a
-              >
+              <a href="{% url 'register-applicant' %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Get Hired</a>
+              {% endif %}
+              <a href="{% url 'register-recruiter' %}" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Find Top Talent</a>
             </div>
           </div>
         </div>
@@ -75,172 +48,111 @@
   </div>
 </div>
 <!-- Carousel End -->
-
 <!-- Search Start -->
-<div
-  class="container-fluid bg-primary mb-5 wow fadeIn"
-  data-wow-delay="0.1s"
-  style="padding: 35px"
->
-  <div class="container">
-    <div class="row g-2">
-      <div class="col-md-10">
-        <div class="row g-2">
-          <div class="col-md-4">
-            <input
-              type="text"
-              class="form-control border-0"
-              placeholder="Keyword"
-            />
-          </div>
-          <div class="col-md-4">
-            <select class="form-select border-0">
-              <option selected>Category</option>
-              <option value="1">Category 1</option>
-              <option value="2">Category 2</option>
-              <option value="3">Category 3</option>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <select class="form-select border-0">
-              <option selected>Location</option>
-              <option value="1">Location 1</option>
-              <option value="2">Location 2</option>
-              <option value="3">Location 3</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <button class="btn btn-dark border-0 w-100">Search</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 <!-- Search End -->
 
 <!-- Category Start -->
 <div class="container-xxl py-5">
   <div class="container">
     <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
-      Explore By Category
+      Explore Categories
     </h1>
     <div class="row g-4">
       <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
         <a class="cat-item rounded p-4" href="">
           <i class="fa fa-3x fa-mail-bulk text-primary mb-4"></i>
           <h6 class="mb-3">Marketing</h6>
-          <p class="mb-0">123 Vacancy</p>
+          <p class="mb-0">123 Open Positions</p>
         </a>
       </div>
       <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
         <a class="cat-item rounded p-4" href="">
           <i class="fa fa-3x fa-headset text-primary mb-4"></i>
           <h6 class="mb-3">Customer Service</h6>
-          <p class="mb-0">123 Vacancy</p>
+          <p class="mb-0">123 Open Positions</p>
         </a>
       </div>
       <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
         <a class="cat-item rounded p-4" href="">
           <i class="fa fa-3x fa-user-tie text-primary mb-4"></i>
-          <h6 class="mb-3">Human Resource</h6>
-          <p class="mb-0">123 Vacancy</p>
+          <h6 class="mb-3">Human Resources</h6>
+          <p class="mb-0">123 Open Positions</p>
         </a>
       </div>
       <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
         <a class="cat-item rounded p-4" href="">
           <i class="fa fa-3x fa-tasks text-primary mb-4"></i>
           <h6 class="mb-3">Project Management</h6>
-          <p class="mb-0">123 Vacancy</p>
+          <p class="mb-0">123 Open Positions</p>
         </a>
       </div>
       <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
         <a class="cat-item rounded p-4" href="">
           <i class="fa fa-3x fa-chart-line text-primary mb-4"></i>
           <h6 class="mb-3">Business Development</h6>
-          <p class="mb-0">123 Vacancy</p>
+          <p class="mb-0">123 Open Positions</p>
         </a>
       </div>
       <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
         <a class="cat-item rounded p-4" href="">
           <i class="fa fa-3x fa-hands-helping text-primary mb-4"></i>
           <h6 class="mb-3">Sales & Communication</h6>
-          <p class="mb-0">123 Vacancy</p>
+          <p class="mb-0">123 Open Positions</p>
         </a>
       </div>
       <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
         <a class="cat-item rounded p-4" href="">
           <i class="fa fa-3x fa-book-reader text-primary mb-4"></i>
           <h6 class="mb-3">Teaching & Education</h6>
-          <p class="mb-0">123 Vacancy</p>
+          <p class="mb-0">123 Open Positions</p>
         </a>
       </div>
       <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
         <a class="cat-item rounded p-4" href="">
           <i class="fa fa-3x fa-drafting-compass text-primary mb-4"></i>
           <h6 class="mb-3">Design & Creative</h6>
-          <p class="mb-0">123 Vacancy</p>
+          <p class="mb-0">123 Open Positions</p>
         </a>
       </div>
     </div>
   </div>
 </div>
 <!-- Category End -->
-
-<!-- About Start -->
-<div class="container-xxl py-5">
-  <div class="container">
-    <div class="row g-5 align-items-center">
-      <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
-        <div class="row g-0 about-bg rounded overflow-hidden">
-          <div class="col-6 text-start">
-            <img class="img-fluid w-100" src="{% static 'img/about-1.jpg' %}" />
-          </div>
-          <div class="col-6 text-start">
-            <img
-              class="img-fluid"
-              src="{% static 'img/about-2.jpg' %}"
-              style="width: 85%; margin-top: 15%"
-            />
-          </div>
-          <div class="col-6 text-end">
-            <img
-              class="img-fluid"
-              src="{% static 'img/about-3.jpg' %}"
-              style="width: 85%"
-            />
-          </div>
-          <div class="col-6 text-end">
-            <img class="img-fluid w-100" src="{% static 'img/about-4.jpg' %}" />
-          </div>
+<!--About Start-->
+<div class="container py-5">
+  <div class="row g-5 align-items-center">
+    <div class="col-lg-6">
+      <div class="row g-0 about-bg rounded overflow-hidden">
+        <div class="col-6">
+          <img class="img-fluid w-100" src="{% static 'img/about-1.jpg' %}" alt="Teamwork" />
+        </div>
+        <div class="col-6">
+          <img class="img-fluid" src="{% static 'img/about-2.jpg' %}" style="width: 85%; margin-top: 15%" alt="Innovation" />
+        </div>
+        <div class="col-6">
+          <img class="img-fluid" src="{% static 'img/about-3.jpg' %}" style="width: 85%" alt="Growth" />
+        </div>
+        <div class="col-6">
+          <img class="img-fluid w-100" src="{% static 'img/about-4.jpg' %}" alt="Success" />
         </div>
       </div>
-      <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
-        <h1 class="mb-4">We Help To Get The Best Job And Find A Talent</h1>
-        <p class="mb-4">
-          Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu
-          diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet
-          lorem sit clita duo justo magna dolore erat amet
-        </p>
-        <p>
-          <i class="fa fa-check text-primary me-3"></i>Tempor erat elitr rebum
-          at clita
-        </p>
-        <p>
-          <i class="fa fa-check text-primary me-3"></i>Aliqu diam amet diam et
-          eos
-        </p>
-        <p>
-          <i class="fa fa-check text-primary me-3"></i>Clita duo justo magna
-          dolore erat amet
-        </p>
-        <a class="btn btn-primary py-3 px-5 mt-3" href="">Read More</a>
-      </div>
+    </div>
+    <div class="col-lg-6">
+      <h1 class="mb-4">Unlock Your Potential and Find Your Dream Job</h1>
+      <p class="mb-4">
+        At our company, we are dedicated to helping you excel in your career by connecting you with the best job opportunities and discovering your unique talents. We believe in the power of collaboration, innovation, and personal growth.
+      </p>
+      <ul>
+        <li><i class="fa fa-check text-primary me-3"></i>Unlock your potential and achieve career success</li>
+        <li><i class="fa fa-check text-primary me-3"></i>Experience a supportive and collaborative work environment</li>
+        <li><i class="fa fa-check text-primary me-3"></i>Discover new opportunities for professional development</li>
+      </ul>
+      <a class="btn btn-primary py-3 px-5 mt-3" href="">Read More</a>
     </div>
   </div>
 </div>
-<!-- About End -->
-
+<!--About End-->
 <!-- Jobs Start -->
 <div class="container-xxl py-5">
   <div class="container">
@@ -279,6 +191,7 @@
           </a>
         </li>
       </ul>
+      {% for job in jobs %}
       <div class="tab-content">
         <div id="tab-1" class="tab-pane fade show p-0 active">
           <div class="job-item p-4 mb-4">
@@ -291,18 +204,17 @@
                   style="width: 80px; height: 80px"
                 />
                 <div class="text-start ps-4">
-                  <h5 class="mb-3">Software Engineer</h5>
+                  <h5 class="mb-3">{{job.title}}</h5>
                   <span class="text-truncate me-3"
                     ><i class="fa fa-map-marker-alt text-primary me-2"></i
-                    >Yaounde, Cameroon</span
-                  >
+                    >{{job.location}}</span>
+                  
                   <span class="text-truncate me-3"
                     ><i class="far fa-clock text-primary me-2"></i>Full
                     Time</span
                   >
                   <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
+                    ><i class="far fa-money-bill-alt text-primary me-2"></i>${{job.salary}}</span
                   >
                 </div>
               </div>
@@ -313,7 +225,7 @@
                   <a class="btn btn-light btn-square me-3" href=""
                     ><i class="far fa-heart text-primary"></i
                   ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
+                  <a class="btn btn-primary" href="{% url 'job:apply_job' job_id=job.id %}">Apply Now</a>
                 </div>
                 <small class="text-truncate"
                   ><i class="far fa-calendar-alt text-primary me-2"></i>Date
@@ -322,586 +234,9 @@
               </div>
             </div>
           </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-2.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Marketing Manager</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Nov, 2023</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-3.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Product Designer</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i
-                    >Douala, Cameroon</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Nov, 2023</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-4.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Creative Director</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    Delhi, India</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-5.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Wordpress Developer</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <a class="btn btn-primary py-3 px-5" href="">Browse More Jobs</a>
-        </div>
-        <div id="tab-2" class="tab-pane fade show p-0">
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-1.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Software Engineer</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-2.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Marketing Manager</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-3.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Product Designer</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-4.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Creative Director</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-5.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Wordpress Developer</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <a class="btn btn-primary py-3 px-5" href="">Browse More Jobs</a>
-        </div>
-        <div id="tab-3" class="tab-pane fade show p-0">
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-1.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Software Engineer</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-2.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Marketing Manager</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-3.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Product Designer</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-4.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Creative Director</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="job-item p-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                <img
-                  class="flex-shrink-0 img-fluid border rounded"
-                  src="{% static 'img/com-logo-5.jpg' %}"
-                  alt=""
-                  style="width: 80px; height: 80px"
-                />
-                <div class="text-start ps-4">
-                  <h5 class="mb-3">Wordpress Developer</h5>
-                  <span class="text-truncate me-3"
-                    ><i class="fa fa-map-marker-alt text-primary me-2"></i>New
-                    York, USA</span
-                  >
-                  <span class="text-truncate me-3"
-                    ><i class="far fa-clock text-primary me-2"></i>Full
-                    Time</span
-                  >
-                  <span class="text-truncate me-0"
-                    ><i class="far fa-money-bill-alt text-primary me-2"></i>$123
-                    - $456</span
-                  >
-                </div>
-              </div>
-              <div
-                class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center"
-              >
-                <div class="d-flex mb-3">
-                  <a class="btn btn-light btn-square me-3" href=""
-                    ><i class="far fa-heart text-primary"></i
-                  ></a>
-                  <a class="btn btn-primary" href="">Apply Now</a>
-                </div>
-                <small class="text-truncate"
-                  ><i class="far fa-calendar-alt text-primary me-2"></i>Date
-                  Line: 01 Jan, 2045</small
-                >
-              </div>
-            </div>
-          </div>
+          
+          {% endfor %}
+            
           <a class="btn btn-primary py-3 px-5" href="">Browse More Jobs</a>
         </div>
       </div>

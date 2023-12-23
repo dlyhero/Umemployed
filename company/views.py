@@ -3,15 +3,42 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from .models import Company
 from users.models import User
-from .forms import UpdateCompanyForm
+from .forms import UpdateCompanyForm, CreateCompanyForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from resume.views import calculate_skill_match
 
 
-#update company
 
-@login_required(login_url='/')
+
+#create company
+def create_company(request):
+    try:
+        company = request.user.company
+        messages.warning(request, 'Permission Denied! You have already created a company.')
+        return redirect('dashboard')
+    except Company.DoesNotExist:
+        if request.method == 'POST':
+            form = CreateCompanyForm(request.POST)
+            if form.is_valid():
+                company = form.save(commit=False)
+                company.user = request.user
+                company.save()
+                request.user.has_company = True
+                request.user.save()
+                messages.success(request, 'Company created successfully.')
+                return redirect('dashboard')  # Redirect to the dashboard after successful company creation
+            else:
+                messages.error(request, 'Error creating company.')
+        else:
+            form = CreateCompanyForm()
+
+        context = {'form': form}
+        return render(request, 'company/create_company.html', context)
+
+
+#update company
+@login_required(login_url='login')
 def update_company(request):
     if request.user.is_recruiter:
         company = get_object_or_404(Company, user=request.user)
@@ -36,7 +63,7 @@ def update_company(request):
     else:
         messages.warning(request,"Permission Denied")
 
-@login_required(login_url='/')
+@login_required(login_url='login')
 def company_details(request, pk):
     company = get_object_or_404(Company, pk=pk)
     context = {'company': company}
@@ -47,7 +74,7 @@ from django.http import HttpResponse
 from job.models import Job, Application
 from resume.models import Resume
 
-@login_required(login_url='/')
+@login_required(login_url='login')
 def view_applications(request, company_id):
     # Check if the current user is the owner of the company
     current_user = request.user

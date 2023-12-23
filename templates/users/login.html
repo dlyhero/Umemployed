@@ -30,6 +30,9 @@
       rel="stylesheet"
     />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
     <!-- Libraries Stylesheet -->
     <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet" />
     <link
@@ -103,19 +106,17 @@
               </form>
               <br />
               <p class="text-center">Or</p>
-              <div class="login-google">
-                <a href="{% provider_login_url 'google' %}"
-                  ><i class="fab fa-google"></i> Login with Google</a
-                >
-              </div>
-              <div class="login-google">
-                <a href="{% url 'reset_password' %}"
-                  ><i class="fas fa-question-circle"></i> Forgot Password?</a
-                >
-                <p>
-                  New User? <a href="{% url 'register-applicant' %}">SignUp</a>
-                </p>
-              </div>
+           <div class="login-google">
+  <a href="{% provider_login_url 'google' %}">
+    <i class="fab fa-google" style="color: red;"></i> Login with Google
+  </a>
+</div>
+<div class="login-google">
+  <a href="{% url 'reset_password' %}">
+    <i class="fas fa-question-circle" style="color: blue;"></i> Forgot Password?
+  </a>
+  <p>New User? <a href="{% url 'register-applicant' %}">SignUp</a></p>
+</div>
             </div>
           </div>
         </div>

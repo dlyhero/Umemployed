@@ -50,32 +50,24 @@
       {% endfor %}
     </div>
 
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="login-card align-self-center">
-            <h2 class="company-name">UmEmployed</h2>
-            <br />
-            <form method="POST">
-              {% csrf_token %} {% for field in form %}
-              <div>{{ field.label_tag }} {{ field }}</div>
-              {% endfor %}
-              <input type="submit" value="Submit" />
-            </form>
-            <br />
-            <p class="text-center">Or</p>
-            <div class="login-google">
-              <a href="#"><i class="fab fa-google"></i> SignUp with Google</a>
-            </div>
-            <div class="login-google">
-              <a href="#"
-                ><i class="fas fa-question-circle"></i> Forgot Password?</a
-              >
-            </div>
+   <div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="login-card align-self-center">
+        <h2 class="company-name">UmEmployed</h2>
+        <br />
+        <form method="POST">
+          {% csrf_token %}
+          <div>
+            <label for="is_recruiter">Are you looking to recruit?</label>
+            <input type="checkbox" id="is_recruiter" name="is_recruiter" />
           </div>
-        </div>
+          <input type="submit" value="Submit" />
+        </form>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

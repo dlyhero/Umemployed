@@ -11,7 +11,7 @@ from geopy.geocoders import OpenCage
 geocoder = OpenCage('70d694d4b6824310a0a7e3a4f5041ce3')  # Replace 'YOUR_API_KEY' with your actual OpenCage API key
 
 
-# @login_required(login_url='/')
+@login_required(login_url='login')
 def update_resume(request):
     if request.user.is_applicant:
         try:
@@ -44,7 +44,7 @@ def update_resume(request):
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
 
-# @login_required(login_url='/')
+@login_required(login_url='login')
 def applicant_onboarding_part2(request):
     if request.user.is_applicant:
         resume = get_object_or_404(Resume, user=request.user)
@@ -86,7 +86,7 @@ def applicant_onboarding_part2(request):
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
 
-# @login_required(login_url='/')
+@login_required(login_url='login')
 def applicant_onboarding_part3(request):
     if request.user.is_applicant:
         resume = get_object_or_404(Resume, user=request.user)
@@ -140,7 +140,7 @@ def get_coordinates(location):
     
     return None
 
-# @login_required(login_url='/')
+# @login_required(login_url='login')
 def get_matching_jobs(user_job_title, user_skills):
     all_jobs = Job.objects.all()
     matching_jobs = []
@@ -155,7 +155,7 @@ def get_matching_jobs(user_job_title, user_skills):
     
     return matching_jobs
 
-# @login_required(login_url='/')
+@login_required(login_url='login')
 def display_matching_jobs(request):
     user_resume = Resume.objects.get(user=request.user)
     user_job_title = user_resume.job_title
