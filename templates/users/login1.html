@@ -1,0 +1,43 @@
+{% load static %}{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login|UmEmployed</title>
+  <link rel="stylesheet" href="{% static 'css/login1.css' %}">
+   <!-- Font Awesome Cdn Link -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Hello Again!</h1>
+    <p>Welcome back you've <br> been missed!</p>
+    <form method="POST" action="">
+      {% csrf_token %}
+      <input type="text" name="username" placeholder="Enter username">
+      <input type="password" name="password" placeholder="Password">
+      <p class="recover">
+        <a href="/recover-password">Recover Password</a>
+      </p>
+      <button type="submit" value="submit">Sign in</button>
+    </form>
+    <p class="or">
+      ----- or continue with -----
+    </p>
+    <div class="icons">
+  <a href="{% provider_login_url 'google' %}">
+        <i class="fab fa-google"></i>
+      </a>
+      <a href="{% provider_login_url 'google' %}">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="{% provider_login_url 'google' %}">
+        <i class="fab fa-facebook"></i>
+      </a>
+    </div>
+    <div class="not-member">
+      Not a member? <a href="#">Register Now</a>
+    </div>
+  </div>
+</body>
+</html>

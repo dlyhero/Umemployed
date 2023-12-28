@@ -10,6 +10,7 @@ def dashboard(request):
         data = Resume.objects.get(user=request.user)
         user = request.user
         skills = data.skills.all()
+        experience = Experience.objects.filter(user = request.user)
         experiences = Experience.objects.all()  # Add this line to retrieve experiences
         educations = Education.objects.all()  # Add this line to retrieve educations
     except Resume.DoesNotExist:
@@ -20,6 +21,7 @@ def dashboard(request):
         'data': data,
         'user': user,
         'skills': skills,
+        'experience':experience,
         'experiences': experiences,  # Include experiences in the context
         'educations': educations  # Include educations in the context
     }

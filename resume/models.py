@@ -39,6 +39,7 @@ class Education(models.Model):
         return self.institution_name
 
 class Experience(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
     company_name = models.CharField(max_length=100)
     years = models.CharField(max_length=100)

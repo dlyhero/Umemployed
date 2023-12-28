@@ -1,196 +1,196 @@
-  {% extends 'users/base.html' %} {% block content %}
+{% extends 'users/base.html' %}
 
-  <style>
-    /* Additional custom styles */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      margin: 0;
-      padding: 0;
-    }
+{% block content %}
+<style>
+  /* Additional custom styles */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+  }
 
-    .profile {
-      background-color: #fff;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 800px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
+  .profile {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
 
-    .profile-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
+  .profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
 
-    .profile-header img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
+  .profile-header img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
 
-    .profile-header h1 {
-      margin: 0;
-      font-size: 28px;
-    }
+  .profile-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #333;
+  }
 
-    .profile-header h2 {
-      margin: 5px 0;
-      font-size: 18px;
-      color: #888;
-    }
+  .profile-header h2 {
+    margin: 5px 0;
+    font-size: 18px;
+    color: #888;
+  }
 
-    .contact-info {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+  .contact-info {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-    .contact-info li {
-      margin: 5px 0;
-      color: #555;
-    }
+  .contact-info li {
+    margin: 5px 0;
+    color: #555;
+  }
 
-    .skills-list {
-      list-style: none;
-      padding: 0;
-      margin: 10px 0;
-    }
+  .contact-info li i {
+    margin-right: 5px;
+  }
 
-    .skills-list li {
-      display: inline-block;
-      background-color: #f2f2f2;
-      color: #555;
-      padding: 5px 10px;
-      margin: 5px;
-      border-radius: 3px;
-    }
+  .skills-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+  }
 
-    .experience-list,
-    .education-list {
-      list-style: none;
-      padding: 0;
-      margin: 10px 0;
-    }
+  .skills-list li {
+    display: inline-block;
+    background-color: #f2f2f2;
+    color: #555;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 3px;
+  }
 
-    .experience-list li,
-    .education-list li {
-      margin-bottom: 10px;
-    }
+  .experience-list,
+  .education-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+  }
 
-    .experience-list h4,
-    .education-list h4 {
-      margin: 0;
-      font-size: 18px;
-    }
+  .experience-list li,
+  .education-list li {
+    margin-bottom: 10px;
+  }
 
-    .experience-list p,
-    .education-list p {
-      margin: 0;
-      font-size: 14px;
-      color: #888;
-    }
-  </style>
+  .experience-list h4,
+  .education-list h4 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+  }
 
-  {% if request.user.is_applicant %} {% if not request.user.has_resume %}
-  <div class="alert alert-danger" role="alert">
-    <b
-      >You are seeing this because you have not created a resume. Create one now
-      <a href="{% url 'update-resume' %}">click here</a></b
-    >
-  </div>
+  .experience-list p,
+  .education-list p {
+    margin: 0;
+    font-size: 14px;
+    color: #888;
+  }
+</style>
+
+{% if request.user.is_applicant %}
+  {% if not request.user.has_resume %}
+    <div class="alert alert-danger" role="alert">
+      <b>You are seeing this because you have not created a resume. Create one now <a href="{% url 'update-resume' %}">click here</a></b>
+    </div>
   {% else %}
-  <header>
-    <!-- Your header content goes here -->
-  </header>
-  <main>
-    <center>
-    <section class="mt-5">
-      <h1>Welcome {{ user.username }}!</h1>
-      <p>Here you can manage your company profile and job postings.</p>
-    </section>
-  </center>
-  </main>
-  <main>
-    <section class="profile">
-      <div style="text-align: right">
-        <a href="{% url 'update-resume' %}"
-          ><i class="bi bi-gear"></i> Update Profile</a
-        >
-      </div>
+    <header>
+      <!-- Your header content goes here -->
+    </header>
 
-      <div class="profile-header">
-        <!-- Job seeker's profile picture -->
-        <img src="{{ data.profile_image.url }}" alt="Profile Picture" />
-        <!-- Job seeker's name and headline -->
-        <h1>{{ data.first_name }} {{ data.surname }}</h1>
-        <h2>{{ data.job_title }}</h2>
+    <main>
+      <section class="mt-5">
+        <center>
+          <h1>Welcome, {{ user.username }}!</h1>
+          <p>Here you can manage your company profile and job postings.</p>
+        </center>
+      </section>
+    </main>
 
-        <!-- Job seeker's contact information -->
-        <ul class="contact-info">
-          <li><i class="fas fa-envelope"></i> {{ user.email }}</li>
-          <li><i class="fas fa-phone"></i> {{ data.phone }}</li>
-          <li>
-            <i class="fas fa-map-marker"></i> {{ data.state }}, {{ data.country }}
-          </li>
-        </ul>
-      </div>
+    <main>
+      <section class="profile">
+        <div style="text-align: right">
+          <a href="{% url 'update-resume' %}">
+            <i class="bi bi-gear"></i> Update Profile
+          </a>
+        </div>
 
-      <div class="profile-details">
-        <!-- Job seeker's overview -->
-        <h3>Overview</h3>
-        <p>{{ data.description }}</p>
 
-        <!-- Job seeker's skills -->
-        {% if skills.exists %}
-        <h3>Skills</h3>
-        <ul class="skills-list">
-          {% for skill in skills.all %}
-          <li>{{ skill }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-       <!-- Job seeker's experience -->
-{% if experiences %}
-<h3>Experience</h3>
-<ul class="experience-list">
-  {% for experience in experiences %}
-  <li>
-    <h4>{{ experience.title }}</h4>
-    <p>{{ experience.organization }}</p>
-    <p>{{ experience.start_date }} - {{ experience.end_date }}</p>
-  </li>
-  {% endfor %}
-</ul>
+
+        <div class="profile-header">
+          <!-- Job seeker's profile picture -->
+          <img src="{{ data.profile_image.url }}" alt="Profile Picture" />
+
+          <!-- Job seeker's name and headline -->
+          <h1>{{ data.first_name }} {{ data.surname }}</h1>
+          <h2>{{ data.job_title }}</h2>
+
+          <!-- Job seeker's contact information -->
+          <ul class="contact-info">
+            <li><i class="fas fa-envelope"></i> {{ user.email }}</li>
+            <li><i class="fas fa-phone"></i> {{ data.phone }}</li>
+            <li><i class="fas fa-map-marker"></i> {{ data.state }}, {{ data.country }}</li>
+          </ul>
+        </div>
+
+        <div class="profile-details">
+          <!-- Job seeker's overview -->
+          <h3>Overview</h3>
+          <p>{{ data.description }}</p>
+
+          <!-- Job seeker's skills -->
+          {% if skills.exists %}
+            <h3>Skills</h3>
+            <ul class="skills-list">
+              {% for skill in skills.all %}
+                <li>{{ skill }}</li>
+              {% endfor %}
+              </ul>
+          {% endif %}
+
+          <!-- Job seeker's experience -->
+          {% if experiences.exists %}
+            <h3>Experience</h3>
+            <ul class="experience-list">
+              {% for experience in experiences.all %}
+                <li>
+                  <h4>{{ experience.company_name }}</h4>
+                  <p>{{ experience.resume.job_title }}, {{ experience.years }} Years </p>
+                  <p>{{ experience.description }}</p>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          <!-- Job seeker's education -->
+          {% if educations.exists %}
+            <h3>Education</h3>
+            <ul class="education-list">
+              {% for education in educations.all %}
+                <li>
+                  <h4>{{ education.institution_name }}</h4>
+                  <p>{{ education.degree }}, {{ education.duration }}</p>
+                  <p>{{ education.graduation_year }}</p>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      </section>
+    </main>
+  {% endif %}
 {% endif %}
-
-<!-- Job seeker's education -->
-{% if educations %}
-<h3>Education</h3>
-<ul class="education-list">
-  {% comment %} {% for education in educations %} {% endcomment %}
-  <li>
-    <h4>{{ education.degree }}</h4>
-    <p>{{ education.institution }}</p>
-    <p>{{ education.start_date }} - {{ education.end_date }}</p>
-  </li>
-  {% comment %} {% endfor %} {% endcomment %}
-</ul>
-{% endif %}
-      </div>
-    </section>
-  </main>
-  {% endif %} {% if request.user.is_recruiter %} {% if not
-  request.user.has_company %}
-  <div class="alert alert-danger" role="alert">
-    <b
-      >You are seeing this because you have not created a company profile. Create
-      one now <a href="{% url 'create_company' %}">click here</a></b
-    >
-  </div>
-  {% else %}
-  
-
-  
-  {% endif %} {% endif %} {% endblock %}
+{% endblock %}

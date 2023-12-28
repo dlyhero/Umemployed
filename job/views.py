@@ -6,7 +6,7 @@ from resume.views import get_matching_jobs
 from django.contrib.auth.decorators import login_required
 from onboarding.views import general_knowledge_quiz
 from resume.models import Skill,SkillCategory
-
+from job.models import Job
 
 
 # create a job
@@ -126,7 +126,8 @@ def run_code(request):
 
     # Return an error response for disallowed methods
     return HttpResponseNotAllowed(['POST'])
-
+def job_details(request):
+    return render(request, "job/job_details.html")
 
 def success_page(request):
     return render(request, "job/compiler/success.html")

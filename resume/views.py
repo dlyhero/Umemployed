@@ -178,6 +178,7 @@ def display_matching_jobs(request):
             'location': job.location,
             'is_available': job.is_available,
             'salary': job.salary,
+            'description': job.description,
             'match_percentage': match_percentage,
             'missing_skills': list(missing_skills)  # Convert set to list for iteration in HTML
         }

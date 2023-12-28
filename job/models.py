@@ -15,7 +15,7 @@ class Job(models.Model):
     requirements = models.ManyToManyField(Skill)
     ideal_candidate = models.TextField()
     is_available = models.BooleanField(default=False)
-
+    description = models.TextField(max_length=255, default='We are looking for ...')
     def __str__(self):
         return self.title
 from resume.models import Resume
