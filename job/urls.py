@@ -8,6 +8,9 @@ urlpatterns = [
     path('update-job/<int:pk>/',views.update_job, name="update-job"),
     path('apply/<int:job_id>/', views.apply_job, name='apply_job'),
     path('details',views.job_details, name='job_details'),
+    path('confirm/<int:job_id>/', views.confirm_evaluation, name='confirm_evaluation'),
+
+
     #Compiler path
     path('run-code/', views.run_code, name='run_code'),
     path('success/', views.success_page, name='success_page'),

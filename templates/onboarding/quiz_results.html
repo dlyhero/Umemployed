@@ -1,71 +1,77 @@
-{% extends 'users/base.html' %} 
+{% extends 'users/base.html' %}
 {% block content %}
 <style>
-  .box {
-    border: 2px solid #ccc;
+  .container {
+    margin-top: 50px;
+  }
+
+  .card {
     padding: 20px;
-    margin: 20px;
-    background-color: #f9f9f9;
     border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  .box ul {
-    list-style: none;
-    padding: 0;
+
+  .results {
+    text-align: center;
+    margin-bottom: 30px;
   }
-  .box li {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 10px;
+
+  .results h1 {
+    font-size: 24px;
+    font-weight: bold;
     margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+  }
+
+  .results p {
+    font-size: 18px;
+    margin-bottom: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .thumbs-up {
+    font-size: 24px;
+    margin-top: 10px;
+  }
+
+  .next-phase-button {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  .next-phase-button a {
+    text-decoration: none;
+  }
+
+  .next-phase-button button {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
     border-radius: 5px;
-  }
-  .box span.correct {
-    color: green;
-    font-weight: bold;
-  }
-  .box span.incorrect {
-    color: red;
-    font-weight: bold;
+    cursor: pointer;
   }
 </style>
 
-<center><h1 class="">Quiz Results</h1>
-<p>Score: {{ quiz_score }} / {{ total_questions }}</p></center>
-{% comment %} <div class="box">
-  <ul>
-    {% for response in quiz_responses %}
-    <li>
-      <strong>Question {{ forloop.counter }}: </strong> {{ response.answer.question.question }}
-      <ul>
-        {% for option in response.answer.question.generalknowledgeanswer_set.all %}
-        <li>
-          {% if response.answer.id == option.id %}
-            {% if option.is_correct %}
-              <span class="correct">&#10004; Correct</span> <!-- Correct answer provided by the user -->
-            {% else %}
-              <span class="incorrect">&#10008; Incorrect</span> <!-- Incorrect answer provided by the user -->
-            {% endif %}
-          {% endif %}
-          {{ option.answer }}
-          {% if option.is_correct %}
-            <span class="correct">[Correct Answer]</span> <!-- Display correct answer from the database -->
-          {% endif %}
-        </li>
-        {% endfor %}
-      </ul>
-    </li>
-    {% empty %}
-    <li>No responses found</li>
-    {% endfor %}
-  </ul>
-</div> {% endcomment %}
+<div class="container">
+  <div class="card">
+    <div class="results">
+      <h1>Quiz Results</h1>
+      <p>Score: {{ quiz_score }} / {{ total_questions }}</p>
+    </div>
 
-<h1 class="text-center mt-50">You have completed this phase of the applicant</h1>
-<center>
-  <a href="{% url 'job:run_code' %}">
-  <div>
-    <button  type="button" class="btn btn-primary">Proceed to Next Phase</button>
+    <h1 class="text-center mt-50">You have completed this phase of the application</h1>
+
+    <div class="text-center thumbs-up">&#x1F44D;</div>
+
+    <div class="next-phase-button">
+      <a href="{% url 'job:run_code' %}">
+        <button type="button" class="btn btn-primary">Proceed to Next Phase</button>
+      </a>
+    </div>
   </div>
-</a>
-</center>
+</div>
+
 {% endblock content %}

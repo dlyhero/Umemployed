@@ -18,7 +18,7 @@
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin: 50px auto;
-            max-width: 400px;
+            max-width: 600px;
             padding: 20px;
             text-align: center;
         }
@@ -36,6 +36,12 @@
             font-size: 16px;
             line-height: 1.5;
             margin: 10px 0;
+        }
+
+        /* Countdown styles */
+        #countdown {
+            font-size: 24px;
+            margin-bottom: 20px;
         }
 
         /* Button styles */
@@ -57,12 +63,31 @@
 </head>
 <body>
     <div class="container">
-        <h1>Oops! You didn't get the solution correct, Try again in any future time .</h1>
+        <h1>Oops! You didn't get the solution correct. Try again in the future.</h1>
         <p>Your code did not produce the expected output.</p>
         <p>You might want to try some of our courses to enhance your skills.</p>
+        <p id="countdown"></p>
         <a href="{% url 'home' %}">
             <button type="button">Go Back</button>
         </a>
     </div>
+
+    <script>
+        // Countdown redirection
+        var countdownSeconds = 10; // Set the countdown duration in seconds
+        var redirectUrl = "{% url 'home' %}"; // Set the redirect URL
+
+        function countdown() {
+            countdownSeconds--;
+            if (countdownSeconds >= 0) {
+                document.getElementById("countdown").innerHTML = "Redirecting in " + countdownSeconds + " seconds...";
+                setTimeout(countdown, 1000);
+            } else {
+                window.location.href = redirectUrl;
+            }
+        }
+
+        countdown();
+    </script>
 </body>
 </html>

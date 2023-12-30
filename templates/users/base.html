@@ -61,135 +61,107 @@
       <!-- Spinner End -->
 
       <!-- Navbar Start -->
-      <nav
-        class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0"
-      >
-        <a
-          href="{% url 'home' %}"
-          class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5"
-        >
-          <h1 class="m-0 text-primary">UmEmployed</h1>
-        </a>
-        <button
-          type="button"
-          class="navbar-toggler"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarCollapse"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="{% url 'home' %}" class="nav-item nav-link active">Home</a>
-            <a href="{% url 'dashboard' %}" class="nav-item nav-link"
-              >Profile</a
-            >
-            {% if request.user.is_authenticated %} 
-            {% if request.user.is_recruiter %}
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                >Jobs</a
-              >
-              <div class="dropdown-menu rounded-0 m-0">
-                <a href="{% url 'job:create-job' %}" class="dropdown-item">Create Job</a>
-              </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow sticky-top p-0" >
+  <a href="{% url 'home' %}" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+    <h1 class="m-0 text-primary">UmEmployed</h1>
+  </a>
+  <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse" style="padding-right:50px;">
+    <ul class="navbar-nav ms-auto p-4 p-lg-0">
+    <li class="nav-item d-flex align-items-center" style="padding-right:50px;">
+    <form class=" justify-content-center">
+      <div class="input-group">
+        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+      </div>
+    </form>
+  </li>
+      
+      <li class="nav-item">
+        <a href="{% url 'home' %}" class="nav-link active">Home</a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'dashboard' %}" class="nav-link">Profile</a>
+      </li>
+      {% if request.user.is_authenticated %}
+        {% if request.user.is_recruiter %}
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
+            <div class="dropdown-menu rounded-0 m-0">
+              <a href="{% url 'job:create-job' %}" class="dropdown-item">Create Job</a>
             </div>
-
-            {% elif request.user.is_applicant %}
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                >Jobs</a
-              >
-              <div class="dropdown-menu rounded-0 m-0">
-                <a href="{% url 'update-resume' %}" class="dropdown-item"
-                  >Browse Jobs</a
-                >
-              </div>
+          </li>
+        {% elif request.user.is_applicant %}
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
+            <div class="dropdown-menu rounded-0 m-0">
+              <a href="{% url 'update-resume' %}" class="dropdown-item">Browse Jobs</a>
             </div>
-            
-            {% else %}
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                >Jobs</a
-              >
-              <div class="dropdown-menu rounded-0 m-0">
-                <a href="job-list.html" class="dropdown-item">Job List</a>
-                <a href="job-detail.html" class="dropdown-item">Job Detail</a>
-              </div>
+          </li>
+        {% else %}
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
+            <div class="dropdown-menu rounded-0 m-0">
+              <a href="job-list.html" class="dropdown-item">Job List</a>
+              <a href="job-detail.html" class="dropdown-item">Job Detail</a>
             </div>
-            {% endif %}
-            {% endif %}
-            <a href="contact.html" class="nav-item nav-link">Contact</a>
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                ><i class="bi bi-person"></i></a>
-              {% if request.user.is_authenticated%}
-              {% if request.user.is_recruiter %}
-              
-              <div class="dropdown-menu rounded-0 m-0">
+          </li>
+        {% endif %}
+      {% endif %}
+      <li class="nav-item dropdown">
+<a href="#" class="nav-link">
+  <i class="bi bi-person-circle fs-6" style="margin:auto; "></i>
+</a>        {% if request.user.is_authenticated %}
+          {% if request.user.is_recruiter %}
+            <div class="dropdown-menu rounded-0 m-0">
               {% if request.user.has_company %}
                 <a class="dropdown-item" href="{% url 'view_applications' company_id=request.user.company.id %}">Dashboard</a>
               {% else %}
-                <a href="{% url 'create_company' %}" class="btn btn-primary">Create Company</a>
-              {% endif %}                <a href="#" class="dropdown-item">Resume Assistant</a>
-                  <a href="#" class="dropdown-item">My Jobs</a>
-                <a href="#" class="dropdown-item">My Reviews</a>
-                <a href="#" class="dropdown-item">Settings</a>
-                <a href="#" class="dropdown-item">Get Help</a>
-              </div>
-            </div>
-          </div>
-          
-          {% elif request.user.is_applicant %}
-           <div class="dropdown-menu rounded-0 m-0">
-                <a href="{% url 'dashboard' %}" class="dropdown-item">Profile</a>
-                <a href="#" class="dropdown-item">Resume Assistant</a>
-                <a href="#" class="dropdown-item">My Jobs</a>
-                <a href="#" class="dropdown-item">My Reviews</a>
-                <a href="#" class="dropdown-item">Settings</a>
-                <a href="#" class="dropdown-item">Get Help</a>
-              </div>
-              </div>
-          </div>
+                <a href="{% url 'create_company' %}" class="dropdown-item">Create Company</a>
               {% endif %}
-          {% else %}
-           <div class="dropdown-menu rounded-0 m-0">
-                <a href="{% url 'dashboard' %}" class="dropdown-item">Profile</a>
-                <a href="#" class="dropdown-item">Resume Assistant</a>
-                <a href="#" class="dropdown-item">My Jobs</a>
-                <a href="#" class="dropdown-item">My Reviews</a>
-                <a href="#" class="dropdown-item">Settings</a>
-                <a href="#" class="dropdown-item">Get Help</a>
-              </div>
+              <a href="#" class="dropdown-item">Resume Assistant</a>
+              <a href="#" class="dropdown-item">My Jobs</a>
+              <a href="#" class="dropdown-item">My Reviews</a>
+              <a href="#" class="dropdown-item">Settings</a>
+              <a href="#" class="dropdown-item">Get Help</a>
             </div>
-            {% endif %}
-          {% if user.is_authenticated %}
-          <a
-            href="{% url 'logout' %}"
-            class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
-            >Logout<i class="fa fa-arrow-right ms-3"></i
-          ></a>
+          {% elif request.user.is_applicant %}
+            <div class="dropdown-menu rounded-0 m-0">
+              <a href="{% url 'dashboard' %}" class="dropdown-item">Profile</a>
+              <a href="#" class="dropdown-item">Resume Assistant</a>
+              <a href="#" class="dropdown-item">My Jobs</a>
+              <a href="#" class="dropdown-item">My Reviews</a>
+              <a href="#" class="dropdown-item">Settings</a>
+              <a href="#" class="dropdown-item">Get Help</a>
+            </div>
           {% else %}
-          <a
-            href="{% url 'login' %}"
-            class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
-            >SignIn<i class="fa fa-arrow-right ms-3"></i
-          ></a>
+            <div class="dropdown-menu rounded-0 m-0">
+              <a href="{% url 'dashboard' %}" class="dropdown-item">Profile</a>
+              <a href="#" class="dropdown-item">Resume Assistant</a>
+              <a href="#" class="dropdown-item">My Jobs</a>
+              <a href="#" class="dropdown-item">My Reviews</a>
+              <a href="#" class="dropdown-item">Settings</a>
+              <a href="#" class="dropdown-item">Get Help</a>
+            </div>
           {% endif %}
-        </div>
-      </nav>
+        {% endif %}
+      </li>
+      {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+        </li>
+      {% else %}
+        <li class="nav-item">
+          <a href="{% url 'login' %}" class="nav-link">Login</a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'signup' %}" class="nav-link">Signup</a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
       <!-- Navbar End -->
 
       <div>
@@ -200,63 +172,66 @@
 
       {% block content %} {% endblock %}
 
-      <!-- Footer Start -->
-<div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-  <div class="container py-5">
-    <div class="row g-5">
-      <div class="col-lg-3 col-md-6">
+  <footer class="bg-dark text-white py-5">
+  <div class="container container-fluid">
+    <div class="row">
+      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
         <h5 class="text-white mb-4">Useful Links</h5>
-        <a class="btn btn-link text-white-50" href="#">About Us</a>
-        <a class="btn btn-link text-white-50" href="#">Contact Us</a>
-        <a class="btn btn-link text-white-50" href="#">Our Services</a>
-        <a class="btn btn-link text-white-50" href="#">Privacy Policy</a>
-        <a class="btn btn-link text-white-50" href="#">Terms & Conditions</a>
+        <ul class="list-unstyled">
+          <li><a class="text-white-50" href="#">About Us</a></li>
+          <li><a class="text-white-50" href="#">Contact Us</a></li>
+          <li><a class="text-white-50" href="#">Our Services</a></li>
+          <li><a class="text-white-50" href="#">Privacy Policy</a></li>
+          <li><a class="text-white-50" href="#">Terms &amp; Conditions</a></li>
+        </ul>
       </div>
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
         <h5 class="text-white mb-4">Contact</h5>
-        <p class="mb-2">
-          <i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA
-        </p>
-        <p class="mb-2">
-          <i class="fa fa-phone-alt me-3"></i>+012 345 67890
-        </p>
-        <p class="mb-2">
-          <i class="fa fa-envelope me-3"></i>info@umenployed.com
-        </p>
-        <div class="d-flex pt-2">
-          <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-twitter"></i></a>
-          <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-facebook-f"></i></a>
-          <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-youtube"></i></a>
+        <ul class="list-unstyled">
+          <li><i class="fa fa-map-marker-alt me-2"></i>123 Street, New York, USA</li>
+          <li><i class="fa fa-phone-alt me-2"></i>+012 345 67890</li>
+          <li><i class="fa fa-envelope me-2"></i>info@umenployed.com</li>
+        </ul>
+        <div class="pt-2">
+          <a class="btn btn-outline-light btn-social me-2" href="#"><i class="fab fa-twitter"></i></a>
+          <a class="btn btn-outline-light btn-social me-2" href="#"><i class="fab fa-facebook-f"></i></a>
+          <a class="btn btn-outline-light btn-social me-2" href="#"><i class="fab fa-youtube"></i></a>
           <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-linkedin-in"></i></a>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
         <h5 class="text-white mb-4">Newsletter</h5>
         <p>Subscribe to our newsletter for the latest updates.</p>
-        <div class="position-relative mx-auto" style="max-width: 400px">
-          <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email" />
-          <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">Sign Up</button>
+        <div class="position-relative" style="max-width: 400px;">
+          <input class="form-control bg-transparent w-100 py-3 px-4" type="text" placeholder="Your email">
+          <button type="button" class="btn btn-primary py-2 px-4 position-absolute top-0 end-0 mt-2">Sign Up</button>
         </div>
       </div>
+      <div class="col-lg-3 col-md-6">
+        <h5 class="text-white mb-4">Footer Menu</h5>
+        <ul class="list-unstyled">
+          <li><a class="text-white-50" href="#">Home</a></li>
+          <li><a class="text-white-50" href="#">Cookies</a></li>
+          <li><a class="text-white-50" href="#">Help</a></li>
+          <li><a class="text-white-50" href="#">FAQs</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <div class="container">
-    <div class="row">
+    <div class="row mt-5">
       <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-        &copy; <a class="border-bottom" href="#">UmEmployed</a>, All Rights Reserved. Designed By <a class="border-bottom" href="https://umemployed.com">UmEmployed Team</a>
+        &copy; <a class="text-white" href="#">UmEmployed</a>, All Rights Reserved. Designed By <a class="text-white" href="https://umemployed.com">UmEmployed Team</a>
       </div>
       <div class="col-md-6 text-center text-md-end">
-        <div class="footer-menu">
-          <a href="#">Home</a>
-          <a href="#">Cookies</a>
-          <a href="#">Help</a>
-          <a href="#">FAQs</a>
-        </div>
+        <ul class="list-inline footer-menu">
+          <li class="list-inline-item"><a href="#">Home</a></li>
+          <li class="list-inline-item"><a href="#">Cookies</a></li>
+          <li class="list-inline-item"><a href="#">Help</a></li>
+          <li class="list-inline-item"><a href="#">FAQs</a></li>
+        </ul>
       </div>
     </div>
   </div>
-</div>
-<!-- Footer End -->
+</footer>
 
 <!-- Back to Top -->
 <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

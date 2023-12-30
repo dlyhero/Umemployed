@@ -1,12 +1,50 @@
-{% extends 'users/base.html' %} {% load static %} {% block content %}
+{% extends 'users/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .container {
+    background-color: #f3f4f5;
+  }
+  .timer-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .timer {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #ff0000;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 80px;
+    text-align: center;
+    margin-right: 10px;
+  }
+
+  .clock-icon {
+    font-size: 70px;
+    color: #ff0000;
+    vertical-align: middle;
+  }
+</style>
+
 <div class="container my-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card p-4">
         <h1 class="text-center mb-4">General Knowledge Quiz</h1>
-        <div id="timer" class="text-center mb-3"></div>
+        <div class="timer-container">
+          <div class="timer" id="timer"></div>
+          <span class="clock-icon">&#x23F0;</span>
+        </div>
         <form id="quizForm" method="post">
-          {% csrf_token %} {% for question in questions %}
+          {% csrf_token %}
+          {% for question in questions %}
           <div class="card mb-4">
             <div class="card-body">
               <h5 class="card-title">{{ question.question }}</h5>

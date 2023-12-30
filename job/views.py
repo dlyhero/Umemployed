@@ -64,6 +64,17 @@ def update_job(request,pk):
         return render(request, 'job/update_job.html',context)
     
 
+def confirm_evaluation(request, job_id):
+    # Get the job object based on the job_id
+    job = Job.objects.get(id=job_id)
+
+    # Create a context dictionary with the data you want to pass to the template
+    context = {
+        'job': job,
+    }
+
+    # Render the confirmation template with the provided context
+    return render(request, 'onboarding/confirm.html', context)
 
 @login_required(login_url='login')
 def apply_job(request, job_id):
