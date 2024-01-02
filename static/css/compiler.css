@@ -1,13 +1,13 @@
 body {
     font-family: 'Courier New', Courier, monospace;
-    background-color: rgb(206, 173, 237);
+    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
 }
 
 .container {
     display: grid;
-    grid-template-columns: 60% 40%;
+    grid-template-columns: 45% 55%;
     max-width: 90%;
     margin: auto;
     margin-top: 30px;

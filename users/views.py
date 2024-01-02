@@ -11,7 +11,7 @@ from company.views import create_company
 from django.contrib.auth.decorators import login_required
 from job.models import Job
 def home(request):
-    jobs = Job.objects.all()[0:5]
+    jobs = Job.objects.all()
     context = {'jobs':jobs}
     return render(request, 'website/home.html',context)
 # login a user

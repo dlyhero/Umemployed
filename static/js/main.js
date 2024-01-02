@@ -79,3 +79,48 @@
     
 })(jQuery);
 
+
+
+// see more and see less
+document.addEventListener("DOMContentLoaded", function () {
+  var allJobs = document.querySelectorAll(".job-item"); // Get all job items
+  var showMoreButton = document.querySelector("#showMoreButton"); // Get the "See More Jobs" button
+
+  var visibleJobs = 6; // Number of initially visible jobs
+  var totalJobs = allJobs.length; // Total number of jobs
+
+  // Function to toggle visibility of jobs
+  function toggleJobsVisibility() {
+    for (var i = 0; i < totalJobs; i++) {
+      if (i < visibleJobs) {
+        allJobs[i].style.display = "block";
+      } else {
+        allJobs[i].style.display = "none";
+      }
+    }
+
+    // Update the button text based on visibility
+    if (visibleJobs >= totalJobs) {
+      showMoreButton.textContent = "See Less Jobs";
+    } else {
+      showMoreButton.textContent = "See More Jobs";
+    }
+  }
+
+  // Show initial set of jobs
+  toggleJobsVisibility();
+
+  // Event listener for "See More Jobs" button
+  showMoreButton.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    // Toggle the number of visible jobs
+    if (visibleJobs >= totalJobs) {
+      visibleJobs = 6; // Reset to the initial number of visible jobs
+    } else {
+      visibleJobs += 6; // Increase the number of visible jobs by6
+    }
+
+    toggleJobsVisibility(); // Toggle visibility of jobs
+  });
+});

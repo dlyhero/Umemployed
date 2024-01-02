@@ -1,7 +1,10 @@
 /********** Template CSS **********/
+.text-primary {
+    color: #000000 !important
+}
 :root {
     --primary: #000000;
-    --secondary: #2B9BFF;
+    --secondary: #000000;
     --light: #EFFDF5;
     --dark: #2B3940;
 }
@@ -14,6 +17,14 @@
     z-index: 99;
 }
 
+.job-item a {
+    text-decoration: none;
+}
+
+.job-item {
+    height: 400px;
+    /* Adjust the height as per your requirements */
+}
 
 /*** Spinner ***/
 #spinner {

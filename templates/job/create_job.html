@@ -1,5 +1,26 @@
-{% extends "users/base.html" %} {% load crispy_forms_tags %} {% block content %}
+{% extends "users/base.html" %} 
+{% load crispy_forms_tags %} 
+{% block content %}
+<head>
+  <!-- Include Bootstrap CSS -->
+  {% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
 
+  <style>
+    .container {
+      margin-top: 20px;
+    }
+
+    .card {
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      margin-top: 10px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 <div class="row mt-5">
   <div class="card mx-auto" style="width: 40rem">
     <div class="card-body">
