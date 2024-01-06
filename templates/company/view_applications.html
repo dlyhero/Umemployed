@@ -18,7 +18,7 @@
         <!-- Content area goes here -->
         <h2>{{ company.name }}</h2>
         <p>Job Openings</p>
-
+            <a href="{% url 'job:create-job' %}"class="btn btn-primary mt-0" style="margin-left:1500px;">Add Job</a>
         {% for job, applications in job_applications.items %}
         <div class="job">
             <h3>{{ job.title }}</h3>

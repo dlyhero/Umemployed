@@ -53,7 +53,7 @@ def register_applicant(request):
         return render(request, 'users/register_applicant.html', context)
 
 # register recruiter only
-@login_required(login_url='/')
+# @login_required(login_url='/')
 def register_recruiter(request):
     if request.method == 'POST':
         is_recruiter = request.POST.get('is_recruiter')  # Get the value of the checkbox

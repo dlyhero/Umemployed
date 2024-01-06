@@ -116,7 +116,7 @@
           {% if request.user.is_recruiter %}
             <div class="dropdown-menu rounded-0 m-0">
               {% if request.user.has_company %}
-                <a class="dropdown-item" href="{% url 'view_applications' company_id=request.user.company.id %}">Dashboard</a>
+                <a style="min-width:-500px" class="dropdown-item" href="{% url 'view_applications' company_id=request.user.company.id %}">Company Dashboard</a>
               {% else %}
                 <a href="{% url 'create_company' %}" class="dropdown-item">Create Company</a>
               {% endif %}
@@ -219,12 +219,12 @@
       <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
         &copy; <a class="text-white" href="#">UmEmployed</a>, All Rights Reserved. Designed By <a class="text-white" href="https://umemployed.com">UmEmployed Team</a>
       </div>
-      <div class="col-md-6 text-center text-md-end">
-        <ul class="list-inline footer-menu">
-          <li class="list-inline-item"><a href="#">Home</a></li>
-          <li class="list-inline-item"><a href="#">Cookies</a></li>
-          <li class="list-inline-item"><a href="#">Help</a></li>
-          <li class="list-inline-item"><a href="#">FAQs</a></li>
+      <div class="col-md-6 text-center  text-md-end">
+        <ul class=" ist-inline footer-menu ">
+          <li class="list-inline-item" ><a style="color: white;" href="#">Home</a></li>
+          <li class="list-inline-item"><a style="color: white;" href="#">Cookies</a></li>
+          <li class="list-inline-item"><a style="color: white;" href="#">Help</a></li>
+          <li class="list-inline-item"><a style="color: white;" href="#">FAQs</a></li>
         </ul>
       </div>
     </div>
