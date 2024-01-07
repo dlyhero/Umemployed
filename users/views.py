@@ -3,11 +3,9 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import User
 from .forms import RegisterUserForm
-
 from resume.models import Resume
 from company.models import Company
 from company.views import create_company
-
 from django.contrib.auth.decorators import login_required
 from job.models import Job
 def home(request):

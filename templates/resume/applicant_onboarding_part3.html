@@ -3,30 +3,56 @@
 
 {% block content %}
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    {% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
+    <style>
+      .motivation-text {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+      }
+      .progress-tracker {
+        margin-bottom: 30px;
+        border-radius: 10px;
+        height: 30px;
+      }
+    </style>
 </head>
-<div class="row mt-5">
-  <div class="card mx-auto" style="width: 40rem">
-    <div class="card-body">
-      <h5 class="card-title mb-3">Step 3: Work Experience and Education</h5>
+<div class="container mt-5">
+  <div class="progress progress-tracker">
+    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><a style="color: #ffffff; font-size:16px;" href="{% url 'update-resume' %}">Step 1</div>
+    <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"><a style="color: #ffffff; font-size:16px;" href="{% url 'onboarding-2' %}">Step 2</div>
+    <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><a style="color: #ffffff; font-size:16px;" href="{% url 'onboarding-3' %}">Step 3</div>
+    <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="1000"><a style="color: #ffffff; font-size:16px;" href="{% url 'update-resume' %}">Step 4</div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="motivation-text">
+        <h2>UmEmployed</h2>
+        <p style="color: #000; font-size: 18px; font-weight: bold;"> Your unique skills can shape a brighter future with us.</p>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Step 3: Final Details</h5>
 
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy }}
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
 
-        <div class="d-flex justify-content-between">
-          <button class="btn btn-secondary" onclick="event.preventDefault(); window.location.href='{% url 'onboarding-2' %}'">
-            Back
-          </button>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-secondary" onclick="event.preventDefault(); window.location.href='{% url 'onboarding-2' %}'">
+                Back
+              </button>
 
-          <div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
+              <div>
+                <button type="submit" class="btn btn-primary">Next</button>
+              </div>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>
-
 {% endblock content %}

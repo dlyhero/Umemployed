@@ -63,7 +63,7 @@ def update_job(request,pk):
         context = {'form':form}
         return render(request, 'job/update_job.html',context)
     
-
+@login_required(login_url='login')
 def confirm_evaluation(request, job_id):
     # Get the job object based on the job_id
     job = Job.objects.get(id=job_id)

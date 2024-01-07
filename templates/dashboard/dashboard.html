@@ -1,200 +1,113 @@
 {% extends 'users/base.html' %}
-
-{% block content %}
-<head>
-    {% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
-
-</head>
-<style>
-  /* Additional custom styles */
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
-    margin: 0;
-    padding: 0;
-  }
-
-  .profile {
-    background-color: #fff;
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 800px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-
-  .profile-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .profile-header img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-
-  .profile-header h1 {
-    margin: 0;
-    font-size: 28px;
-    color: #333;
-  }
-
-  .profile-header h2 {
-    margin: 5px 0;
-    font-size: 18px;
-    color: #888;
-  }
-
-  .contact-info {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .contact-info li {
-    margin: 5px 0;
-    color: #555;
-  }
-
-  .contact-info li i {
-    margin-right: 5px;
-  }
-
-  .skills-list {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0;
-  }
-
-  .skills-list li {
-    display: inline-block;
-    background-color: #f2f2f2;
-    color: #555;
-    padding: 5px 10px;
-    margin: 5px;
-    border-radius: 3px;
-  }
-
-  .experience-list,
-  .education-list {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0;
-  }
-
-  .experience-list li,
-  .education-list li {
-    margin-bottom: 10px;
-  }
-
-  .experience-list h4,
-  .education-list h4 {
-    margin: 0;
-    font-size: 18px;
-    color: #333;
-  }
-
-  .experience-list p,
-  .education-list p {
-    margin: 0;
-    font-size: 14px;
-    color: #888;
-  }
-</style>
-
-{% if request.user.is_applicant %}
-  {% if not request.user.has_resume %}
-    <div class="alert alert-danger" role="alert">
-      <b>You are seeing this because you have not created a resume. Create one now <a href="{% url 'update-resume' %}">click here</a></b>
+ {% load static %}
+ {% block content %}
+   <link href="{% static 'css/dashboard.css' %}" rel="stylesheet" />
+   <div class="container">
+     <div class="navigation">
+      <h2>Dashboard</h2>
+      <a href="{% url 'update-resume' %}"><i class="fas fa-cog"></i> Settings</a>
+      <a href="{% url 'update-resume' %}"><i class="fas fa-user-edit"></i> Edit Profile</a>
+      <a href="#profile"><i class="fas fa-user"></i> Profile Overview</a>
+      <a href="#application"><i class="fas fa-suitcase"></i> Job Applications</a>
+      <a href="#saved"><i class="far fa-star"></i> Saved Jobs</a>
+      <a href="#messages"><i class="far fa-envelope"></i> Messages</a>
+      <!-- Add more navigation links as needed -->
     </div>
-  {% else %}
-    <header>
-      <!-- Your header content goes here -->
-    </header>
-
-    <main>
-      <section class="mt-5">
-        <center>
-          <h1>Welcome, {{ user.username }}!</h1>
-          <p>Here you can manage your company profile and job postings.</p>
-        </center>
-      </section>
-    </main>
-
-    <main>
-      <section class="profile">
-        <div style="text-align: right">
-          <a href="{% url 'update-resume' %}">
-            <i class="bi bi-gear"></i> Update Profile
-          </a>
+    <div class="content">
+      <div class="banner" id="profile">
+        <h2 >Profile Overview</h2>
+        <div class="banner-header">
+          <div class="settings-button">
+            <a href="{% url 'update-resume' %}"><i class="fas fa-cog"></i></a>
+          </div>
         </div>
-
-
-
-        <div class="profile-header">
-          <!-- Job seeker's profile picture -->
-          <img src="{{ data.profile_image.url }}" alt="Profile Picture" />
-
-          <!-- Job seeker's name and headline -->
-          <h1>{{ data.first_name }} {{ data.surname }}</h1>
-          <h2>{{ data.job_title }}</h2>
-
-          <!-- Job seeker's contact information -->
-          <ul class="contact-info">
-            <li><i class="fas fa-envelope"></i> {{ user.email }}</li>
-            <li><i class="fas fa-phone"></i> {{ data.phone }}</li>
-            <li><i class="fas fa-map-marker"></i> {{ data.state }}, {{ data.country }}</li>
-          </ul>
-        </div>
-
-        <div class="profile-details">
-          <!-- Job seeker's overview -->
-          <h3>Overview</h3>
-          <p>{{ data.description }}</p>
-
-          <!-- Job seeker's skills -->
-          {% if skills.exists %}
-            <h3>Skills</h3>
-            <ul class="skills-list">
-              {% for skill in skills.all %}
-                <li>{{ skill }}</li>
-              {% endfor %}
-              </ul>
-          {% endif %}
-
-          <!-- Job seeker's experience -->
+        <div class="profile-info">
+          <p><i class="fas fa-user"></i> Name: {{ user.username }}</p>
+          <p><i class="fas fa-envelope"></i> Email: {{ user.email }}</p>
           {% if experiences.exists %}
-            <h3>Experience</h3>
-            <ul class="experience-list">
-              {% for experience in experiences.all %}
-                <li>
-                  <h4>{{ experience.company_name }}</h4>
-                  <p>{{ experience.resume.job_title }}, {{ experience.years }} Years </p>
-                  <p>{{ experience.description }}</p>
-                </li>
-              {% endfor %}
-            </ul>
-          {% endif %}
 
-          <!-- Job seeker's education -->
-          {% if educations.exists %}
-            <h3>Education</h3>
-            <ul class="education-list">
-              {% for education in educations.all %}
-                <li>
-                  <h4>{{ education.institution_name }}</h4>
-                  <p>{{ education.degree }}, {{ education.duration }}</p>
-                  <p>{{ education.graduation_year }}</p>
-                </li>
+          <p><i class="fas fa-clock"></i> Experience: 
+            <br>
+            {% for experience in experiences.all %}
+            {{ experience.company_name }}:
+            {{ experience.resume.job_title }}, {{ experience.years }} Years </p>
+             <p>{{ experience.description }}</p>
               {% endfor %}
-            </ul>
+              {% endif %}
+
+            </p>
+            <!-- Job seeker's skills -->
+            {% if skills.exists %}
+            <p><i class="fas fa-clock"></i> Skills: 
+            {% for skill in skills.all %}
+            {{ skill }},
+            {% endfor %}
           {% endif %}
-        </div>
-      </section>
-    </main>
-  {% endif %}
-{% endif %}
-{% endblock %}
+          
+        </p>
+        <p><i class="fas fa-envelope"></i> Education: 
+          <br>
+          {% if educations.exists %}
+          {% for education in educations.all %}
+          {{ education.institution_name }}:
+          {{ education.degree }}, {{ education.duration }}
+          {{ education.graduation_year }}
+          <br>
+          {% endfor %}
+          {% endif %}
+        </p>
+        
+        <!-- Render profile overview data here -->
+      </div>
+    </div>
+      <div class="banner" id="application">
+        <h2>Job Applications</h2>
+        {% for application in applications %}
+        
+        <ul>
+          <li>
+            <p><i class="fas fa-briefcase"></i> Job Title:{{ application.job.title }}</p>
+            <p><i class="fas fa-building"></i> Company: {{ application.job.company }}</p>
+            <p><i class="fas fa-info-circle"></i> Status: {{ application.job.is_available }}</p>
+          </li>
+          
+        </ul>
+        {% endfor %}
+        <!-- Render job applications data here -->
+      </div>
+      <div class="banner" id="saved">
+        <h2>Saved Jobs</h2>
+        <ul>
+          <li>
+            <p><i class="fas fa-briefcase"></i> Job Title: Product Manager</p>
+            <p><i class="fas fa-building"></i> Company: 123 Corp.</p>
+            <p><i class="fas fa-map-marker-alt"></i> Location: New York</p>
+          </li>
+          <li>
+            <p><i class="fas fa-briefcase"></i> Job Title: Graphic Designer</p>
+            <p><i class="fas fa-building"></i> Company: 456 Inc.</p>
+            <p><i class="fas fa-map-marker-alt"></i> Location: San Francisco</p>
+          </li>
+        </ul>
+        <!-- Render saved jobs data here -->
+      </div>
+      <div class="banner" id="messages">
+        <h2>Messages</h2>
+        <ul>
+          <li>
+            <p><i class="fas fa-user"></i> Sender: Jane Smith</p>
+            <p><i class="fas fa-comment-alt"></i> Message: Hello, I would like to discuss the job opportunity further.</p>
+            <p><i class="far fa-calendar"></i> Timestamp: 2024-01-06 10:30:00</p>
+          </li>
+          <li>
+            <p><i class="fas fa-user"></i> Sender: Mark Johnson</p>
+            <p><i class="fas fa-comment-alt"></i> Message: Thank you for your application. We will review it and get back to you soon.</p>
+            <p><i class="far fa-calendar"></i> Timestamp: 2024-01-05 15:45:00</p>
+          </li>
+        </ul>
+        <!-- Render messages data here -->
+      </div>
+      <!-- Add more banners for other categories as needed -->
+    </div>
+  </div>
+{% endblock content %}

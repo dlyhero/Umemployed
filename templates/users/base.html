@@ -95,9 +95,15 @@
         {% elif request.user.is_applicant %}
           <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
+            {% if user.has_resume %}
+            <div class="dropdown-menu rounded-0 m-0">
+              <a href="{% url 'matching_jobs' %}" class="dropdown-item">Browse Jobs</a>
+            </div>
+            {% else %}
             <div class="dropdown-menu rounded-0 m-0">
               <a href="{% url 'update-resume' %}" class="dropdown-item">Browse Jobs</a>
             </div>
+            {% endif %}
           </li>
         {% else %}
           <li class="nav-item dropdown">
@@ -109,6 +115,9 @@
           </li>
         {% endif %}
       {% endif %}
+      <a href="#" class="nav-link">
+    <i class="bi bi-bell fs-6" style="margin:auto;"></i>
+  </a>
       <li class="nav-item dropdown">
 <a href="#" class="nav-link">
   <i class="bi bi-person-circle fs-6" style="margin:auto; "></i>
