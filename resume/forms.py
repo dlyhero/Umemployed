@@ -6,13 +6,33 @@ class UpdateResumeForm(forms.ModelForm):
         model = Resume
         fields = ['first_name', 'surname', 'date_of_birth', 'phone', 'state', 'country', 'job_title']
 
+from django.db.models import Q
+
 class UpdateResumeForm2(forms.ModelForm):
-    category = forms.ModelChoiceField(queryset=SkillCategory.objects.all(), empty_label=None)
-    skills = forms.ModelMultipleChoiceField(queryset=Skill.objects.all(), widget=forms.CheckboxSelectMultiple)
+    category = forms.ModelChoiceField(queryset=SkillCategory.objects.all().order_by('name'), empty_label=None)
+    skills = forms.ModelMultipleChoiceField(queryset=Skill.objects.none(), widget=forms.CheckboxSelectMultiple)
 
     class Meta:
         model = Resume
         fields = ['date_of_birth', 'phone', 'description', 'category', 'skills', 'profile_image']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = SkillCategory.objects.order_by('name').all()
+        self.fields['skills'].queryset = Skill.objects.order_by('name').all()
+
+        # Filter out duplicate skills
+        unique_skills = []
+        existing_skills = set()
+
+        for skill in self.fields['skills'].queryset.order_by('name'):
+            if skill.name not in existing_skills:
+                unique_skills.append(skill)
+                existing_skills.add(skill.name)
+
+        unique_skills_qs = Skill.objects.filter(Q(id__in=[skill.id for skill in unique_skills])).order_by('name')
+
+        self.fields['skills'].queryset = unique_skills_qs
 
 class UpdateResumeForm3(forms.ModelForm):
     experience_company_name = forms.CharField(max_length=100)

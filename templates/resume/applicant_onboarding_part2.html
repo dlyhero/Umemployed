@@ -3,7 +3,6 @@
 
 {% block content %}
 <head>
-    {% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
     <style>
       .motivation-text {
         background-color: #f8f9fa;
@@ -14,6 +13,34 @@
         margin-bottom: 30px;
         border-radius: 10px;
         height: 30px;   
+      }
+      .accordion {
+        background-color: #f8f9fa;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .accordion button {
+        background-color: #f8f9fa;
+        border: none;
+        outline: none;
+        text-align: left;
+        padding: 10px;
+        width: 100%;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        border-bottom: 1px solid #ddd;
+      }
+      .accordion button.active {
+        background-color: #e9ecef;
+      }
+      .accordion-content {
+        display: none;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      .accordion-content.active {
+        display: block;
       }
     </style>
 </head>
@@ -27,7 +54,7 @@
   <div class="row">
     <div class="col-md-4">
       <div class="motivation-text">
-        <h2>Umemployed</h2>
+        <h2>Unemployed</h2>
         <p style="color: #000; font-size: 18px; font-weight: bold;">Embrace challenges, grow stronger, and achieve remarkable career milestones.</p>
       </div>
     </div>
@@ -38,7 +65,23 @@
 
           <form method="post" action="" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form|crispy }}
+            <div>{{ form.date_of_birth|as_crispy_field }}</div>
+            <div>{{ form.phone|as_crispy_field }}</div>
+            <div>{{ form.description|as_crispy_field }}</div>
+            <div>{{ form.profile_image|as_crispy_field }}</div>
+            <div class="accordion">
+              <button type="button" class="accordion-button" id="category-button">Select Category</button>
+              <div class="accordion-content" id="category-content">
+                {{ form.category|as_crispy_field }}
+              </div>
+            </div>
+            <div class="accordion">
+              <button type="button" class="accordion-button" id="skills-button">Select Skills</button>
+              <div class="accordion-content" id="skills-content">
+                {{ form.skills|as_crispy_field }}
+              </div>
+            </div>
+            <!-- Add more accordion sections for additional fields if needed -->
 
             <div class="d-flex justify-content-between">
               <button class="btn btn-secondary" onclick="event.preventDefault(); window.location.href='{% url 'update-resume' %}'">
@@ -54,4 +97,21 @@
     </div>
   </div>
 </div>
-{% endblock content %}
+
+<script>
+  const categoryButton = document.getElementById('category-button');
+  const categoryContent = document.getElementById('category-content');
+  const skillsButton = document.getElementById('skills-button');
+  const skillsContent = document.getElementById('skills-content');
+
+  categoryButton.addEventListener('click', () => {
+    categoryButton.classList.toggle('active');
+    categoryContent.classList.toggle('active');
+  });
+
+  skillsButton.addEventListener('click', () => {
+    skillsButton.classList.toggle('active');
+    skillsContent.classList.toggle('active');
+  });
+</script>
+{% endblock %}
