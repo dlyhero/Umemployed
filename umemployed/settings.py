@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'geopy',
     'onboarding',
+    'django_filters',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'

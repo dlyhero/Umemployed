@@ -8,10 +8,23 @@ from company.models import Company
 from company.views import create_company
 from django.contrib.auth.decorators import login_required
 from job.models import Job
+from .filters import OrderFilter
+from django.db.models import Q
+
 def home(request):
-    jobs = Job.objects.all()
-    context = {'jobs':jobs}
-    return render(request, 'website/home.html',context)
+    job_list = Job.objects.all()
+    job_filter = OrderFilter(request.GET, queryset=job_list)
+    
+    search_query = request.GET.get('search_query', '')
+    if search_query:
+        job_filter = job_filter.filter(
+            Q(title__icontains=search_query) |
+            Q(company__icontains=search_query) |
+            Q(location__icontains=search_query)
+        )
+    
+    context = {'jobs': job_filter.qs, 'myFilter': job_filter}
+    return render(request, 'website/home.html', context)
 # login a user
 def login_user(request):
     if request.method == 'POST':
