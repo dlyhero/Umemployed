@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'geopy',
     'onboarding',
     'django_filters',
+    'easyaudit',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
@@ -64,11 +65,13 @@ CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
      # Add the account middleware:
     "allauth.account.middleware.AccountMiddleware",
 ]

@@ -3,7 +3,8 @@ from users.models import User
 from company.models import Company
 from resume.models import SkillCategory, Skill
 import uuid
-
+from resume.models import Resume
+from job.utils import calculate_skill_match
 
 class Job(models.Model):
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -16,11 +17,11 @@ class Job(models.Model):
     ideal_candidate = models.TextField()
     is_available = models.BooleanField(default=False)
     description = models.TextField(max_length=255, default='We are looking for ...')
+    responsibilities = models.TextField(max_length=255, default="You will be in charge of ...")
+    benefits = models.TextField(default="...")
     def __str__(self):
         return self.title
-from resume.models import Resume
 
-from job.utils import calculate_skill_match
 class Application(models.Model):
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

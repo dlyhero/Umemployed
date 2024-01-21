@@ -7,6 +7,10 @@ from django.contrib.auth.decorators import login_required
 from onboarding.views import general_knowledge_quiz
 from resume.models import Skill,SkillCategory
 from job.models import Job
+import json
+from .jdoodle_api import execute_code
+from django.http import JsonResponse, HttpResponseNotAllowed
+from django.shortcuts import render
 
 
 # create a job
@@ -107,10 +111,6 @@ def apply_job(request, job_id):
 
 
 ''' COmpiler integration with Jdoodler '''
-import json
-from .jdoodle_api import execute_code
-from django.http import JsonResponse, HttpResponseNotAllowed
-from django.shortcuts import render
 
 @login_required(login_url='/login')
 def run_code(request):
@@ -137,6 +137,7 @@ def run_code(request):
 
     # Return an error response for disallowed methods
     return HttpResponseNotAllowed(['POST'])
+
 def job_details(request):
     return render(request, "job/job_details.html")
 

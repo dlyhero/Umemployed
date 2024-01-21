@@ -2,8 +2,8 @@ import requests
 import json
 
 def execute_code(script, language, version_index):
-    client_id = "c531a51504fda77d3bd97d4dce3d17b3"  # Replace with your client ID
-    client_secret = "fc14913ecdfda745506f613f4a92c807e01395240bd19fc1390d7e2d6a756583"  # Replace with your client Secret
+    client_id = "c531a51504fda77d3bd97d4dce3d17b3"  # client ID
+    client_secret = "fc14913ecdfda745506f613f4a92c807e01395240bd19fc1390d7e2d6a756583"  # client Secret
 
     url = "https://api.jdoodle.com/v1/execute"
     headers = {"Content-Type": "application/json"}

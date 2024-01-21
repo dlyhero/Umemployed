@@ -42,7 +42,6 @@ def login_user(request):
         return render(request, 'users/login.html')
 
 # register applicant
-# @login_required(login_url='/')
 def register_applicant(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
@@ -64,7 +63,6 @@ def register_applicant(request):
         return render(request, 'users/register_applicant.html', context)
 
 # register recruiter only
-# @login_required(login_url='/')
 def register_recruiter(request):
     if request.method == 'POST':
         is_recruiter = request.POST.get('is_recruiter')  # Get the value of the checkbox
@@ -80,6 +78,7 @@ def register_recruiter(request):
         form = RegisterUserForm()
         context = {'form': form}
         return render(request, 'users/register_recruiter.html', context)
+    
 # logout a user
 @login_required(login_url='/')
 def logout_user(request):
