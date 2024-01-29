@@ -180,7 +180,7 @@
     left: 0;
     width: 100px;
     height: 15px;
-    background: var(--primary);
+    background: white;
 }
 
 .header-carousel .container::after,

@@ -1,0 +1,251 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #666;
+}
+
+.breadcrumb span {
+    margin: 0 5px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+header nav a {
+    text-decoration: none;
+    color: #777;
+    margin-right: 10px;
+}
+
+header nav a:last-child {
+    margin-right: 0;
+}
+
+header img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f1f1f1;
+}
+
+.container {
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #333;
+    padding: 10px;
+}
+
+header h1 {
+    color: #fff;
+    font-size: 24px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.banner {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    height: 300px;
+    /* Increase the container height as desired */
+}
+
+.banner .hero-content {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    flex: 1;
+}
+
+.banner .hero-content img {
+    width: auto;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.banner .hero-content .text-container {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.banner .hero-content h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.banner .hero-content p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+margin-bottom: 20px;
+
+
+main {
+    margin-top: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    height: 200px;
+    overflow-y: auto;
+
+}
+
+article {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+article h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+article p {
+    color: #777;
+}
+
+article a {
+    display: block;
+    margin-top: 10px;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+article a:hover {
+    text-decoration: underline;
+}
+
+
+.assessment-benefits {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+
+.benefit {
+    flex-basis: 32%;
+    text-align: center;
+}
+
+.benefit h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.benefit p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 0;
+}
+
+.popular-assessments {
+    background-color: #f9f9f9;
+    padding: 40px;
+}
+
+.popular-assessments h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.assessment-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.assessment-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.assessment-card h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.assessment-card p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.assessment-card a {
+    color: #007bff;
+}
+
+footer {
+    margin-top: 40px;
+    text-align: center;
+}
+
+footer a {
+    color: #333;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+svg {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}

@@ -86,6 +86,9 @@
       </li>
       {% if request.user.is_authenticated %}
         {% if request.user.is_recruiter %}
+        <li class="nav-item">
+        <a href="{% url 'assessments' %}" class="nav-link">Assessments</a>
+      </li>
           <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
             <div class="dropdown-menu rounded-0 m-0">

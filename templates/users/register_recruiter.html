@@ -49,8 +49,17 @@
       <div class="alert alert-danger" role="alert">{{message}}</div>
       {% endfor %}
     </div>
+<style>
+  .login-card {
+    background-color: white;
+  }
+  
+  .btn-submit {
+    font-size: 18px;
+  }
+</style>
 
-   <div class="container">
+<div class="container">
   <div class="row justify-content-center">
     <div class="col-md-6">
       <div class="login-card align-self-center">
@@ -62,7 +71,9 @@
             <label for="is_recruiter">Are you looking to recruit?</label>
             <input type="checkbox" id="is_recruiter" name="is_recruiter" />
           </div>
-          <input type="submit" value="Submit" />
+          <div class="text-right">
+            <button type="submit" class="">Submit</button>
+          </div>
         </form>
       </div>
     </div>

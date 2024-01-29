@@ -44,6 +44,7 @@
       {% if user.is_authenticated %}
         {% if user.is_applicant %}
           <a href="{% url 'matching_jobs' %}" class="btn btn-primary py-md-3 px-md-5 me-3">Find Jobs</a>
+          <a href="{% url 'register-recruiter' %}" class="btn btn-secondary py-md-3 px-md-5">Switch to Hire</a>
         {% elif user.is_recruiter %}
           <a href="{% url 'job:create-job' %}" class="btn btn-secondary py-md-3 px-md-5">Create Job</a>
         {% else %}
