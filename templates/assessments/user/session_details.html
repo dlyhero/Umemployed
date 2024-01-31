@@ -1,0 +1,172 @@
+<!-- modernization_assessment_page.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>App and Data Modernization Readiness Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      max-width: 85%;
+      margin: 60px auto;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar {
+      flex-basis: 25%;
+      padding: 30px;
+      background-color: #f9f9f9;
+      border-right: 1px solid #ddd;
+    }
+
+    .sidebar-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .progress-tracker {
+      margin-bottom: 20px;
+    }
+
+    .main-content {
+      flex-basis: 75%;
+      padding: 30px;
+    }
+
+    .assessment-content {
+      margin-bottom: 40px;
+    }
+
+    .question {
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .checkbox-container {
+      margin-bottom: 10px;
+    }
+
+    .checkbox-label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .interest-details {
+      margin-top: 10px;
+      margin-left: 20px;
+    }
+
+    .start-button {
+      text-align: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1 class="sidebar-title">App and Data Modernization Readiness Tool</h1>
+        <p class="sidebar-subtitle">Jan 31, 2024 - 1:42:45 PM</p>
+      </div>
+      <div class="progress-tracker">
+        <p>0 of 0 pages complete</p>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="assessment-content">
+        <h2>Assessment name</h2>
+        <p>App and Data Modernization Readiness Tool - Jan 31, 2024 - 1:42:45 PM</p>
+        <h2>Choose your interests</h2>
+        <div class="question">
+          <p>Question 1:</p>
+          <div class="checkbox-container">
+            <label class="checkbox-label" for="interest1">
+              <input type="checkbox" id="interest1" name="interests" value="interest1"> Interest 1
+            </label>
+          </div>
+          <div class="interest-details">
+            <p>Details about Interest 1</p>
+          </div>
+          <div class="checkbox-container">
+            <label class="checkbox-label" for="interest2">
+              <input type="checkbox" id="interest2" name="interests" value="interest2"> Interest 2
+            </label>
+          </div>
+          <div class="interest-details">
+            <p>Details about Interest 2</p>
+          </div>
+          <div class="checkbox-container">
+            <label class="checkbox-label" for="interest3">
+              <input type="checkbox" id="interest3" name="interests" value="interest3"> Interest 3
+            </label>
+          </div>
+          <div class="interest-details">
+            <p>Details about Interest 3</p>
+          </div>
+        </div>
+        <div class="question">
+          <p>Question 2:</p>
+          <div class="checkbox-container">
+            <label class="checkbox-label" for="interest4">
+              <input type="checkbox" id="interest4" name="interest4"> Interest 4
+            </label>
+          </div>
+          <div class="interest-details">
+            <p>Details about Interest 4</p>
+          </div>
+          <div class="checkbox-container">
+            <label class="checkbox-label" for="interest5">
+              <input type="checkbox" id="interest5" name="interests" value="interest5"> Interest 5
+            </label>
+          </div>
+          <div class="interest-details">
+            <p>Details about Interest 5</p>
+          </div>
+        </div>
+        <div class="start-button">
+          <button class="btn btn-primary">Start</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

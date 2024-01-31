@@ -1,0 +1,13 @@
+<!-- assessments/assessment_list.html -->
+<h1>Assessments</h1>
+<ul>
+  {% for assessment in assessments %}
+    <li>
+      {{ assessment.title }}
+      <!-- Display other assessment details as needed -->
+      <a href="{% url 'update_assessment' assessment_id=assessment.id %}">Edit</a>
+      <a href="{% url 'delete_assessment' assessment_id=assessment.id %}">Delete</a>
+    </li>
+  {% endfor %}
+</ul>
+<a href="{% url 'create_assessment' %}">Create New Assessment</a>

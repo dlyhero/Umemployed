@@ -23,18 +23,16 @@
         <span>/</span>
         <a href="#">Category 1</a>
         <span>/</span>
-        <span>Assessment 1</span>
+        <span>{{ assessment.title }}</span>
       </div>
 
       <div class="banner">
         <div class="hero-content">
           <img src="{% static 'img/atm.jpeg' %}" alt="Hero Image" />
           <div class="text-container">
-            <h2>Welcome to the Assessment Portal</h2>
+            <h2>Welcome to the {{ assessment.title }}</h2>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-              consectetur purus vel mauris molestie, vitae cursus nunc posuere.
-              Donec id massa urna.
+              {{ assessment.description}}
             </p>
           </div>
         </div>
@@ -107,60 +105,23 @@
     <i class="fas fa-tasks"></i>
     <h3>Your sessions</h3>
     <!-- Add your content here for user's assessment sessions -->
-    <a href="#" class="start-assessment-button">Start Assessment</a>
+    <a href="{% url 'start_session' assessment.id %}" class="start-assessment-button">Start Assessment</a>
   </div>
 </section>
 
 
-        <section class="popular-assessments">
-          <h2>Popular Assessments</h2>
-          <div class="assessment-cards">
-            <div class="assessment-card">
-              <h2>Assessment 1</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit...
-              </p>
-              <a href="#">Read more</a>
-            </div>
-            <div class="assessment-card">
-              <h2>Assessment 2</h2>
-              <p>
-                Pellentesque habitant morbi tristique senectus et netus et
-                malesuada fames...
-              </p>
-              <a href="#">Read more</a>
-            </div>
-            <div class="assessment-card">
-              <h2>Assessment 3</h2>
-              <p>
-                Vestibulum ante ipsum primis in faucibus orci luctus et
-                ultrices posuere cubilia curae...
-              </p>
-              <a href="#">Read more</a>
-            </div>
-            <div class="assessment-card">
-              <h2>Assessment 4</h2>
-              <p>
-                Curabitur nec feugiat quam, a rhoncus mi. Morbi posuere viverra
-                ante, sed feugiat mauris tincidunt vel.
-              </p>
-              <a href="#">Read more</a>
-            </div>
-            <div class="assessment-card">
-              <h2>Assessment 5</h2>
-              <p>Mauris dignissim quam et metus consequat, ac cursus nulla tincidunt.</p>
-              <a href="#">Read more</a>
-            </div>
-            <div class="assessment-card">
-              <h2>Assessment 6</h2>
-              <p>
-                Nullam auctor, massa et fringilla gravida, urna ligula bibendum
-                urna, nec interdum lorem lacus a velit.
-              </p>
-              <a href="#">Read more</a>
-            </div>
-          </div>
-        </section>
+       <section class="popular-assessments">
+  <h2>Popular Assessments</h2>
+  <div class="assessment-cards">
+    {% for assessment in assessments %}
+    <div class="assessment-card">
+      <h2>{{ assessment.title }}</h2>
+      <p>{{ assessment.description }}</p>
+        <a href="{% url 'assessment_detail' assessment.id %}">Read more</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
       </main>
       <br>
 

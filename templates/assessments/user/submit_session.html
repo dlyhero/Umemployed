@@ -1,0 +1,9 @@
+<!-- user/submit_session.html -->
+<h1>Submit Session</h1>
+<p>You are submitting the session for {{ session.assessment.title }}.</p>
+<!-- Display any additional information or instructions for submitting the session -->
+<form method="POST">
+  {% csrf_token %}
+  <!-- Include any necessary form fields -->
+  <button type="submit">Submit</button>
+</form>

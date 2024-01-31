@@ -1,0 +1,7 @@
+<!-- assessments/delete_assessment.html -->
+<h1>Delete Assessment</h1>
+<p>Are you sure you want to delete this assessment?</p>
+<form method="POST">
+  {% csrf_token %}
+  <button type="submit">Delete</button>
+</form>

@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'onboarding',
     'django_filters',
     'easyaudit',
+    'asseessments',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
