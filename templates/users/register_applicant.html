@@ -1,4 +1,4 @@
-{% load static %}
+{% load static %} {% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -54,32 +54,109 @@
       {% endfor %}
     </div>
 
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="login-card align-self-center">
-            <h2 class="company-name">UmEmployed</h2>
-            <br />
-            <form method="POST">
-              {% csrf_token %} {% for field in form %}
-              <div>{{ field.label_tag }} {{ field }}</div>
-              {% endfor %}
-              <input type="submit" value="Submit" />
-            </form>
-            <br />
-            <p class="text-center">Or</p>
-            <div class="login-google">
-              <a href="#"><i class="fab fa-google"></i> SignUp with Google</a>
+<style>
+.main-container {
+  margin-top: 20px;
+  width: 85%;
+  border: 1px solid #ccc;
+  position:relati
+}
+
+.image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #ccc;
+  padding: 0;
+}
+
+.image-container img {
+  padding-top: 10px;
+  gap: 0;
+  width: 85%;
+  height: 85%;
+  object-fit: cover;
+}
+
+.form-container {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-card {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.company-name {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.btn-primary {
+  width: 100%;
+  color:#fff
+}
+
+.or-text {
+  margin-bottom: 10px;
+}
+
+.login-google {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.login-google a {
+  display: block;
+  color: #333;
+  text-decoration: none;
+}
+
+.login-google a i {
+  margin-right: 5px;
+}
+
+</style>
+
+<div class="container-fluid main-container">
+  <div class="row">
+    <div class="col-md-6 image-container">
+      <img src="{% static 'img/about-1.jpg' %}" alt="Image" class="img-fluid">
+    </div>
+    <div class="col-md-6 form-container">
+      <div class="login-card">
+        <h2 class="company-name">UmEmployed</h2>
+        <form method="POST">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="form-group">
+              {{ field.label_tag }}
+              {{ field }}
             </div>
-            <div class="login-google">
-              <a href="#"
-                ><i class="fas fa-question-circle"></i> Forgot Password?</a
-              >
-            </div>
-          </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <div class="text-center mt-3">
+          <p class="or-text">Or</p>
+        </div>
+        <div class="login-google">
+          <a href="#"><i class="fab fa-google"></i> Sign Up with Google</a>
+        </div>
+        <div class="login-google">
+          <a href="#"><i class="fas fa-question-circle"></i> Forgot Password?</a>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

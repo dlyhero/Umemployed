@@ -49,12 +49,12 @@
           <a href="{% url 'job:create-job' %}" class="btn btn-secondary py-md-3 px-md-5">Create Job</a>
         {% else %}
           <!-- User is logged in but not assigned a role -->
-          <a href="{% url 'register-applicant' %}" class="btn btn-primary py-md-3 px-md-5 me-3">I'm an Applicant</a>
+          <a href="{% url 'register-applicant' %}" class="btn btn-primary py-md-3 px-md-5 me-3">I'm a Job Seeker</a>
           <a href="{% url 'register-recruiter' %}" class="btn btn-secondary py-md-3 px-md-5">I'm a Recruiter</a>
         {% endif %}
       {% else %}
         <!-- User is not logged in -->
-        <a href="{% url 'register-applicant' %}" class="btn btn-primary py-md-3 px-md-5 me-3">I'm an Applicant</a>
+        <a href="{% url 'register-applicant' %}" class="btn btn-primary py-md-3 px-md-5 me-3">I'm a Job Seeker</a>
         <a href="{% url 'register-recruiter' %}" class="btn btn-secondary py-md-3 px-md-5">I'm a Recruiter</a>
       {% endif %}
       
