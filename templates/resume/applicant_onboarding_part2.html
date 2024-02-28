@@ -62,23 +62,20 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title mb-3">Step 2: Additional Details</h5>
-
+          
           <form method="post" action="" enctype="multipart/form-data">
             {% csrf_token %}
-            <div>{{ form.date_of_birth|as_crispy_field }}</div>
-            <div>{{ form.phone|as_crispy_field }}</div>
-            <div>{{ form.description|as_crispy_field }}</div>
-            <div>{{ form.profile_image|as_crispy_field }}</div>
+          
             <div class="accordion">
               <button type="button" class="accordion-button" id="category-button">Select Category</button>
               <div class="accordion-content" id="category-content">
-                {{ form.category|as_crispy_field }}
+                {{ category_form|crispy }}
               </div>
             </div>
             <div class="container accordion">
               <button type="button" class="accordion-button" id="skills-button">Select Skills</button>
               <div class="accordion-content" id="skills-content">
-                {{ form.skills|as_crispy_field }}
+                {{ skill_form|crispy }}
               </div>
             </div>
             <!-- Add more accordion sections for additional fields if needed -->

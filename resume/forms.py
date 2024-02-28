@@ -4,9 +4,28 @@ from .models import Resume, SkillCategory, Skill, Experience, Education
 class UpdateResumeForm(forms.ModelForm):
     class Meta:
         model = Resume
-        fields = ['first_name', 'surname', 'date_of_birth', 'phone', 'state', 'country', 'job_title']
+        fields = ['first_name', 'surname', 'date_of_birth', 'phone', 'state', 'country', 'job_title','date_of_birth', 'phone', 'description','profile_image']
+
 
 from django.db.models import Q
+
+
+
+class CategoryForm(forms.Form):
+    category = forms.ModelChoiceField(queryset=SkillCategory.objects.all(), empty_label=None)
+
+class SkillForm(forms.ModelForm):
+    class Meta:
+        model = Resume
+        fields = ['skills']
+        widgets = {
+            'skills': forms.CheckboxSelectMultiple,
+        }
+
+    def __init__(self, *args, **kwargs):
+        category = kwargs.pop('category')
+        super().__init__(*args, **kwargs)
+        self.fields['skills'].queryset = Skill.objects.filter(categories=category)
 
 class UpdateResumeForm2(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=SkillCategory.objects.all().order_by('name'), empty_label=None)
@@ -14,7 +33,7 @@ class UpdateResumeForm2(forms.ModelForm):
 
     class Meta:
         model = Resume
-        fields = ['date_of_birth', 'phone', 'description', 'category', 'skills', 'profile_image']
+        fields = ['category', 'skills']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

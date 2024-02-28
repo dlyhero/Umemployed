@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from .models import Job, Application
-from .forms import CreateJobForm , UpdateJobForm
+from .forms import CreateJobForm , UpdateJobForm,SkillForm
 from resume.views import get_matching_jobs
 from django.contrib.auth.decorators import login_required
 from onboarding.views import general_knowledge_quiz
@@ -14,6 +14,11 @@ from django.shortcuts import render
 
 
 # create a job
+# views.py
+
+from django.contrib import messages
+from django.shortcuts import redirect, render
+
 @login_required(login_url='/login')
 def create_job(request):
     if request.user.is_recruiter and request.user.has_company:
@@ -25,20 +30,11 @@ def create_job(request):
                 job.company = request.user.company
                 job.save()
 
-                # Process the selected skill category and skills
-                category_id = form.cleaned_data['category'].id
-                skills_ids = form.cleaned_data['requirements'].values_list('id', flat=True)
+                # Store the selected category in the session
+                request.session['selected_category'] = form.cleaned_data['category'].id
 
-                category = SkillCategory.objects.get(id=category_id)
-                skills = Skill.objects.filter(id__in=skills_ids)
-
-                # Update the job with the selected category and skills
-                job.category = category
-                job.requirements.set(skills)
-                job.save()
-
-                messages.info(request, "New job has been created")
-                return redirect('dashboard')
+                messages.info(request, "Update Recorded")
+                return redirect('select_skills')
             else:
                 messages.warning(request, 'Something went wrong')
                 return redirect('create_job')
@@ -46,10 +42,35 @@ def create_job(request):
             form = CreateJobForm()
             context = {'form': form}
             return render(request, 'job/create_job.html', context)
-
     else:
         messages.warning(request, 'Permission Denied!')
         return redirect('dashboard')
+
+def select_skills(request):
+    if request.user.is_recruiter and request.user.has_company:
+        selected_category_id = request.session.get('selected_category')
+        if selected_category_id:
+            selected_category = SkillCategory.objects.get(id=selected_category_id)
+            if request.method == 'POST':
+                form = SkillForm(request.POST, category=selected_category)
+                if form.is_valid():
+                    job = Job.objects.get(user=request.user)
+                    job.category = selected_category
+                    job.save()  # Save the job object first to ensure it has a valid ID
+                    form.save()  # Save the form data to associate skills with the job
+                    messages.info(request, "New job has been created")
+                    return redirect('dashboard')
+            else:
+                form = SkillForm(category=selected_category)
+            
+            return render(request, 'job/select_skills.html', {'form': form})
+        else:
+            # Handle the case where a category is not selected
+            return redirect('select_category')
+    else:
+        messages.warning(request, "Permission Denied")
+        return redirect('dashboard')
+
 
 @login_required(login_url='/login')
 def update_job(request,pk):

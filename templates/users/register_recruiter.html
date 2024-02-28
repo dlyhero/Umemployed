@@ -52,11 +52,18 @@
 <style>
 
   .login-card {
-    background-color: white;
+    background-color: #f3f3f3;
+    font-size:20px;
+    justify-content: center;
+    align-items: center;
+    display:relative;
   }
   
-  .btn-submit {
-    font-size: 18px;
+  .btn {
+    font-size: 20px;
+    color:white;
+    margin-top:200px;
+
   }
 </style>
 
@@ -71,14 +78,17 @@
           <div>
             <label for="is_recruiter">Are you looking to recruit?</label>
             <input type="checkbox" id="is_recruiter" name="is_recruiter" />
-          
-            <button  type="submit" class="btn btn-primary text-white" style="color:white;">     Recruiter</button>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+            <button type="submit" class="btn btn-primary text-white" style="color:white;">Proceed</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
+
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

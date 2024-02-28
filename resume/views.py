@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Resume, SkillCategory, Skill
-from .forms import UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3
+from .forms import UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3,CategoryForm,SkillForm
 from users.models import User
 from job.models import Job
 from onboarding.views import general_knowledge_quiz
@@ -32,7 +32,7 @@ def update_resume(request):
                 user.save()
 
                 messages.info(request, 'Your resume info has been updated.')
-                return redirect('onboarding-2')
+                return redirect('select_category')
             else:
                 messages.warning(request, 'Something went wrong')
         else:
@@ -44,47 +44,51 @@ def update_resume(request):
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
 
-@login_required(login_url='login')
-def applicant_onboarding_part2(request):
+
+from django.shortcuts import render, redirect
+from .forms import CategoryForm, SkillForm
+
+def select_category(request):
     if request.user.is_applicant:
-        resume = get_object_or_404(Resume, user=request.user)
-
         if request.method == 'POST':
-            form = UpdateResumeForm2(request.POST, request.FILES, instance=resume)
+            form = CategoryForm(request.POST)
             if form.is_valid():
-                # Save the resume info
-                form.save()
-
-                # Process the selected skill category and skills
-                category_id = request.POST.get('category')
-                skills_ids = request.POST.getlist('skills')
-
-                category = SkillCategory.objects.get(id=category_id)
-                skills = Skill.objects.filter(id__in=skills_ids)
-
-                # Update the resume with the selected category and skills
-                resume.category = category
-                resume.skills.set(skills)
-                resume.save()
-
-                messages.info(request, 'Your resume information has been updated.')
-                return redirect('onboarding-3')
-            else:
-                messages.warning(request, 'Something went wrong')
+                request.session['selected_category'] = form.cleaned_data['category'].id
+                return redirect('select_skills')
         else:
-            form = UpdateResumeForm2(instance=resume)
-
-        # Retrieve the available skill categories for the form
-        skill_categories = SkillCategory.objects.all()
-
-        context = {
-            'form': form,
-            'skill_categories': skill_categories,
-        }
-        return render(request, 'resume/applicant_onboarding_part2.html', context)
+            form = CategoryForm()
+        
+        return render(request, 'resume/select_category.html', {'form': form})
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
+
+def select_skills(request):
+    if request.user.is_applicant:
+        selected_category_id = request.session.get('selected_category')
+        if selected_category_id:
+            selected_category = SkillCategory.objects.get(id=selected_category_id)
+            if request.method == 'POST':
+                form = SkillForm(request.POST, category=selected_category)
+                if form.is_valid():
+                    resume = Resume.objects.get(user=request.user)
+                    resume.category = selected_category
+                    resume.skills.set(form.cleaned_data['skills'])
+                    resume.save()
+                    return redirect('onboarding-3')
+            else:
+                form = SkillForm(category=selected_category)
+            
+            return render(request, 'resume/select_skills.html', {'form': form})
+        else:
+            # Handle the case where a category is not selected
+            return redirect('select_category')
+    else:
+        messages.warning(request, "Permission Denied")
+        return redirect('dashboard')
+
+
+
 
 @login_required(login_url='login')
 def applicant_onboarding_part3(request):
