@@ -1,188 +1,80 @@
 {% load static %} {% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Umemployed|Login</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="" name="keywords" />
-    <meta content="" name="description" />
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon" />
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Icon Font Stylesheet -->
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
-
-    <!-- Libraries Stylesheet -->
-    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet" />
-    <link
-      href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}"
-      rel="stylesheet"
-    />
-      <style>
-        .body{
-          background-color: #fff;
-        }
-      </style>
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
-
-    <!-- Template Stylesheet -->
-    <link href="{% static 'css/form.css' %}" rel="stylesheet" />
-  </head>
-
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <title>Login | UmEmployed</title>
+    <style>
+      a {
+        text-decoration: none;
+      }
+    </style>
+</head>
+<body>
     <div>
-      {% for message in messages %}
-      <div class="alert alert-danger" role="alert">{{message}}</div>
-      {% endfor %}
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endfor %}
     </div>
-
-<style>
-.main-container {
-  margin-top: 20px;
-  width: 85%;
-  border: 1px solid #ccc;
-  position:relati
-}
-
-.image-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-right: 1px solid #ccc;
-  padding: 0;
-}
-
-.image-container img {
-  padding-top: 10px;
-  gap: 0;
-  width: 85%;
-  height: 85%;
-  object-fit: cover;
-}
-
-.form-container {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-}
-
-.login-card {
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.company-name {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.btn-primary {
-  width: 100%;
-  color:#fff
-}
-
-.or-text {
-  margin-bottom: 10px;
-}
-
-.login-google {
-  text-align: center;
-  margin-top: 10px;
-}
-
-.login-google a {
-  display: block;
-  color: #333;
-  text-decoration: none;
-}
-
-.login-google a i {
-  margin-right: 5px;
-}
-
-</style>
-
-<div class="container-fluid main-container">
-  <div class="row">
-    <div class="col-md-6 image-container">
-      <img src="{% static 'img/about-1.jpg' %}" alt="Image" class="img-fluid">
-    </div>
-    <div class="col-md-6 form-container">
-      <div class="login-card">
-        <h2 class="company-name">UmEmployed</h2>
-         <form method="POST">
-                {% csrf_token %}
-                <div>
-                  <input
-                    type="text"
-                    name="email"
-                    placeholder="Email"
-                    class="form-control"
-                    required
-                  />
+    <!-- Main Container -->
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <!-- Login Container -->
+        <div class="row border rounded-5 p-3 bg-white shadow box-area">
+            <!-- Left Box -->
+            <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style="background: #103cbe;">
+                <div class="featured-image mb-3">
+                    <img src="{% static 'img/login/1.png' %}" class="img-fluid" style="width: 250px;">
                 </div>
-                <div>
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    class="form-control"
-                    required
-                  />
+                <p class="text-white fs-2" style="font-family: 'Courier New', Courier, monospace; font-weight: 600;">Welcome Back</p>
+                <small class="text-white text-wrap text-center" style="width: 17rem;font-family: 'Courier New', Courier, monospace;">Join experienced professionals on our platform.</small>
+            </div> 
+            
+            <!-- Right Box -->
+            <div class="col-md-6 right-box">
+                <div class="row align-items-center">
+                    <div class="header-text mb-4">
+                        <h2>Hello Again</h2>
+                        <p>We're delighted to see you again.</p>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <input type="text" name="email" class="form-control form-control-lg bg-light fs-6" placeholder="Email address">
+                        </div>
+                        <div class="input-group mb-1">
+                            <input type="password" name="password" class="form-control form-control-lg bg-light fs-6" placeholder="Password">
+                        </div>
+                        <div class="input-group mb-5 d-flex justify-content-between">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="formCheck">
+                                <label for="formCheck" class="form-check-label text-secondary"><small>Remember Me</small></label>
+                            </div>
+                            <div class="forgot">
+                                <small><a href="{% url 'reset_password' %}">Forgot Password?</a></small>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <button class="btn btn-lg btn-primary w-100 fs-6">Login</button>
+                        </div>
+                        <a href="{% provider_login_url 'google' %}">
+                          <div class="input-group mb-3">
+                              <button class="btn btn-lg btn-light w-100 fs-6"><img src="{% static 'img/login/google.png' %}" style="width:20px" class="me-2"><small>Sign In with Google</small></button>
+                          </div>
+                        </a>
+
+                        <div class="row">
+                            <small>Don't have an account? <a href="{% url 'register-applicant' %}">Sign Up</a></small>
+                        </div>
+                        
+                    </form>
+                    
                 </div>
-                <input style="background-color: #000;" type="submit" value="Login" />
-              </form>
-        <div class="text-center mt-3">
-          <p class="or-text">Or</p>
+            </div> 
         </div>
-        
-        <div class="login-google">
-          <a href="{% provider_login_url 'google' %}">
-        <i class="fab fa-google" style="color: red;"></i> Login with Google
-        </a>
-        <a href="{% url 'reset_password' %}">
-          <i class="fas fa-question-circle" style="color: blue;"></i> Forgot Password?
-        </a>
-  <p>New User? <a href="{% url 'register-applicant' %}">SignUp</a></p>
-</div>
-      </div>
     </div>
-  </div>
-</div>
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-
-    <!-- Javascript -->
-    <script src="{% static 'js/main.js' %}"></script>
-  </body>
+</body>
 </html>
