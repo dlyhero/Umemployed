@@ -44,21 +44,26 @@
     <div class="col-md-8">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title mb-3">Step 2: Chose Category</h5>
+          <h5 class="card-title mb-3">Step 2: Choose Category</h5>
 
-          <form method="post">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <div  class="navigation d-flex justify-content-between mt-3">
-                            <a href="{% url 'update-resume' %}" class="btn btn-secondary">Back</a>
-                            <button type="submit" class="btn btn-primary">Next</button>
-                        </div>
-                    </form>
+    <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="hidden" name="selected_category_id" value="{{ selected_category.id }}">
+    <div>
+        <input type="text" name="custom_category" placeholder="Type Category if not found">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+
+          <div class="navigation d-flex justify-content-between mt-3">
+            <a href="{% url 'update-resume' %}" class="btn btn-secondary">Back</a>
+            <a href="{% url 'select_skills' %}" class="btn btn-primary">Next</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock content %}
-
-

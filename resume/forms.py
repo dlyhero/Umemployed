@@ -11,8 +11,12 @@ from django.db.models import Q
 
 
 
+from django import forms
+from .models import SkillCategory
+
 class CategoryForm(forms.Form):
     category = forms.ModelChoiceField(queryset=SkillCategory.objects.all(), empty_label=None)
+
 
 class SkillForm(forms.ModelForm):
     class Meta:

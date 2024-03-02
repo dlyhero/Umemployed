@@ -1,63 +1,116 @@
-{% extends 'users/base.html' %} 
-{% load static %} 
-{% block content %}
-{% comment %} <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-</head> {% endcomment %}
-  <div class="container-fluid bg-primary mb-5 wow fadeIn" data-wow-delay="0.1s" style="padding: 10px;">
-    <div class="container">
-        <form class="row g-2 align-items-center" method="GET" action="{% url 'home' %}#search-results">
-            <div class="col-md-3">
-                <div class="input-group">
-                    <input type="text" class="form-control rounded" name="title" placeholder="Title">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="input-group">
-                    <input type="text" class="form-control rounded" name="company" placeholder="Company">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="input-group">
-                    <input type="text" class="form-control rounded" name="location" placeholder="Location">
-                </div>
-            </div>
-            <div class="col-md-1">
-                <button type="submit" class="btn btn-dark btn-lg w-100">Search</button>
-            </div>
-        </form>
-    </div>
-</div>
-        <!-- Search End -->
-
+{% extends 'users/base.html' %} {% load static %} {% block content %}
+<style>
+  .btn {
+    border-radius: 10px;
+  }
+</style>
+{% comment %}
+<head>
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+</head>
+{% endcomment %}
+<div
+  class="container-fluid bg-primary mb-5 wow fadeIn"
+  data-wow-delay="0.1s"
+  style="padding: 10px"
+>
   <div class="container">
+    <form
+      class="row g-2 align-items-center"
+      method="GET"
+      action="{% url 'home' %}#search-results"
+    >
+      <div class="col-md-3">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control rounded"
+            name="title"
+            placeholder="Title"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control rounded"
+            name="company"
+            placeholder="Company"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control rounded"
+            name="location"
+            placeholder="Location"
+          />
+        </div>
+      </div>
+      <div class="col-md-1">
+        <button type="submit" class="btn btn-dark btn-lg w-100">Search</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Search End -->
+
+<div class="container">
   <div class="row justify-content-center">
     <div class="col-10 col-lg-8 text-center">
-      <h1 class=" mb-4">
-        Discover Your Perfect Career Opportunity
-      </h1>
+      <h1 class="mb-4">Discover Your Perfect Career Opportunity</h1>
       <p class="fs-5 fw-medium text-white mb-4 pb-2">
         Unlock your potential and find the job you truly deserve.
       </p>
-      
-      {% if user.is_authenticated %}
-        {% if user.is_applicant %}
-          <a href="{% url 'matching_jobs' %}" class="btn btn-primary py-md-3 px-md-5 me-3">Find Jobs</a>
-          <a href="{% url 'register-recruiter' %}" class="btn btn-secondary py-md-3 px-md-5">Switch to Hire</a>
-        {% elif user.is_recruiter %}
-          <a href="{% url 'job:create-job' %}" class="btn btn-secondary py-md-3 px-md-5">Create Job</a>
-        {% else %}
-          <!-- User is logged in but not assigned a role -->
-          <a href="{% url 'register-applicant' %}" class="btn btn-primary py-md-3 px-md-5 me-3">I'm a Job Seeker</a>
-          <a href="{% url 'register-recruiter' %}" class="btn btn-secondary py-md-3 px-md-5">I'm a Recruiter</a>
-        {% endif %}
+
+      {% if user.is_authenticated %} {% if user.is_applicant %}
+      <a
+        href="{% url 'matching_jobs' %}"
+        class="btn btn-primary py-md-3 px-md-5 me-3"
+        >Find Jobs</a
+      >
+      <a
+        href="{% url 'register-recruiter' %}"
+        class="btn btn-secondary py-md-3 px-md-5"
+        >Switch to Hire</a
+      >
+      {% elif user.is_recruiter %}
+      <a
+        href="{% url 'job:create-job' %}"
+        class="btn btn-secondary py-md-3 px-md-5"
+        >Create Job</a
+      >
       {% else %}
-        <!-- User is not logged in -->
-        <a href="{% url 'register-applicant' %}" class="btn btn-primary py-md-3 px-md-5 me-3">I'm a Job Seeker</a>
-        <a href="{% url 'register-recruiter' %}" class="btn btn-secondary py-md-3 px-md-5">I'm a Recruiter</a>
+      <!-- User is logged in but not assigned a role -->
+      <a
+        href="{% url 'register-applicant' %}"
+        class="btn btn-primary py-md-3 px-md-5 me-3"
+        >I'm a Job Seeker</a
+      >
+      <a
+        href="{% url 'register-recruiter' %}"
+        class="btn btn-secondary py-md-3 px-md-5"
+        >I'm a Recruiter</a
+      >
+      {% endif %} {% else %}
+      <!-- User is not logged in -->
+      <a
+        href="{% url 'register-applicant' %}"
+        class="btn btn-primary py-md-3 px-md-5 me-3"
+        >I'm a Job Seeker</a
+      >
+      <a
+        href="{% url 'register-recruiter' %}"
+        class="btn btn-secondary py-md-3 px-md-5"
+        >I'm a Recruiter</a
+      >
       {% endif %}
-      
     </div>
   </div>
 </div>
@@ -138,35 +191,65 @@
     <div class="col-lg-6">
       <div class="row g-0 about-bg rounded overflow-hidden">
         <div class="col-6">
-          <img class="img-fluid w-100" src="{% static 'img/about-1.jpg' %}" alt="Teamwork" />
+          <img
+            class="img-fluid w-100"
+            src="{% static 'img/about-1.jpg' %}"
+            alt="Teamwork"
+          />
         </div>
         <div class="col-6">
-          <img class="img-fluid" src="{% static 'img/about-2.jpg' %}" style="width: 85%; margin-top: 15%" alt="Innovation" />
+          <img
+            class="img-fluid"
+            src="{% static 'img/about-2.jpg' %}"
+            style="width: 85%; margin-top: 15%"
+            alt="Innovation"
+          />
         </div>
         <div class="col-6">
-          <img class="img-fluid" src="{% static 'img/about-3.jpg' %}" style="width: 85%" alt="Growth" />
+          <img
+            class="img-fluid"
+            src="{% static 'img/about-3.jpg' %}"
+            style="width: 85%"
+            alt="Growth"
+          />
         </div>
         <div class="col-6">
-          <img class="img-fluid w-100" src="{% static 'img/about-4.jpg' %}" alt="Success" />
+          <img
+            class="img-fluid w-100"
+            src="{% static 'img/about-4.jpg' %}"
+            alt="Success"
+          />
         </div>
       </div>
     </div>
     <div class="col-lg-6">
       <h1 class="mb-4">Unlock Your Potential and Find Your Dream Job</h1>
       <p class="mb-4">
-        At our company, we are dedicated to helping you excel in your career by connecting you with the best job opportunities and discovering your unique talents. We believe in the power of collaboration, innovation, and personal growth.
+        At our company, we are dedicated to helping you excel in your career by
+        connecting you with the best job opportunities and discovering your
+        unique talents. We believe in the power of collaboration, innovation,
+        and personal growth.
       </p>
       <ul>
-        <li><i class="fa fa-check text-primary me-3"></i>Unlock your potential and achieve career success</li>
-        <li><i class="fa fa-check text-primary me-3"></i>Experience a supportive and collaborative work environment</li>
-        <li><i class="fa fa-check text-primary me-3"></i>Discover new opportunities for professional development</li>
+        <li>
+          <i class="fa fa-check text-primary me-3"></i>Unlock your potential and
+          achieve career success
+        </li>
+        <li>
+          <i class="fa fa-check text-primary me-3"></i>Experience a supportive
+          and collaborative work environment
+        </li>
+        <li>
+          <i class="fa fa-check text-primary me-3"></i>Discover new
+          opportunities for professional development
+        </li>
       </ul>
       <a class="btn btn-primary py-3 px-5 mt-3" href="">Read More</a>
     </div>
   </div>
 </div>
 <!--About End-->
- <style>
+<style>
   .job-item a {
     text-decoration: none;
   }
@@ -189,51 +272,71 @@
       Top Jobs
     </h1>
     <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
-      <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
+      <ul
+        class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5"
+      >
         <!-- Nav items here -->
       </ul>
 
       <div class="row">
         {% for job in jobs %}
-          <div class="col-md-4 mb-4" style="font-size: 14px;">
-            <a style="color: black;" href="{% url 'job:job_details' %}">
-              <div class="card job-item">
-                <div class="card-body">
-                  <!-- Logo, company name, and job details -->
-                  <div class="text-start mb-3">
-                    <img src="{{ job.company.logo.url }}" alt="Company Logo" width="100" height="100" />
-                  </div>
-                  <h2 class="mb-3">{{ job.title }}</h2>
-                  <h4 class="mb-1">{{ job.company.name }}</h4>
-                  <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>remote</span>
-                  <span class="text-truncate me-0"><i class="text-primary me-2"></i>$10000-${{ job.salary }}</span>
-                  <p>{{ job.description|truncatewords:20 }}</p>
+        <div class="col-md-4 mb-4" style="font-size: 14px">
+          <a style="color: black" href="{% url 'job:job_details' %}">
+            <div class="card job-item">
+              <div class="card-body">
+                <!-- Logo, company name, and job details -->
+                <div class="text-start mb-3">
+                  <img
+                    src="{{ job.company.logo.url }}"
+                    alt="Company Logo"
+                    width="100"
+                    height="100"
+                  />
                 </div>
-                <!-- Match percentage, missing skills, action buttons, and date -->
-                <div class="mt-3">
-                  <a class="" href="{% url 'job:confirm_evaluation' job_id=job.id %}" target="_blank">Apply Now</a>
-                </div>
+                <h2 class="mb-3">{{ job.title }}</h2>
+                <h4 class="mb-1">{{ job.company.name }}</h4>
+                <span class="text-truncate me-3"
+                  ><i class="fa fa-map-marker-alt text-primary me-2"></i
+                  >remote</span
+                >
+                <span class="text-truncate me-0"
+                  ><i class="text-primary me-2"></i>$10000-${{ job.salary
+                  }}</span
+                >
+                <p>{{ job.description|truncatewords:20 }}</p>
               </div>
-            </a>
-          </div>
+              <!-- Match percentage, missing skills, action buttons, and date -->
+              <div class="mt-3">
+                <a
+                  class=""
+                  href="{% url 'job:confirm_evaluation' job_id=job.id %}"
+                  target="_blank"
+                  >Apply Now</a
+                >
+              </div>
+            </div>
+          </a>
+        </div>
         {% endfor %}
       </div>
 
       {% if jobs|length > 6 %}
-        <div class="row mt-4">
-          <div class="col text-center">
-            <a id="showMoreButton" class="btn btn-primary py-3 px-5" href="#">See More Jobs</a>
-          </div>
+      <div class="row mt-4">
+        <div class="col text-center">
+          <a id="showMoreButton" class="btn btn-primary py-3 px-5" href="#"
+            >See More Jobs</a
+          >
         </div>
+      </div>
       {% endif %}
     </div>
   </div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var allJobs = document.querySelectorAll('.job-item'); // Get all job items
-    var showMoreButton = document.querySelector('#showMoreButton'); // Get the "See More Jobs" button
+  document.addEventListener("DOMContentLoaded", function () {
+    var allJobs = document.querySelectorAll(".job-item"); // Get all job items
+    var showMoreButton = document.querySelector("#showMoreButton"); // Get the "See More Jobs" button
 
     var visibleJobs = 6; // Number of initially visible jobs
     var totalJobs = allJobs.length; // Total number of jobs
@@ -242,17 +345,17 @@
     function toggleJobsVisibility() {
       for (var i = 0; i < totalJobs; i++) {
         if (i < visibleJobs) {
-          allJobs[i].style.display = 'block';
+          allJobs[i].style.display = "block";
         } else {
-          allJobs[i].style.display = 'none';
+          allJobs[i].style.display = "none";
         }
       }
-      
+
       // Update the button text based on visibility
       if (visibleJobs >= totalJobs) {
-        showMoreButton.textContent = 'See Less Jobs';
+        showMoreButton.textContent = "See Less Jobs";
       } else {
-        showMoreButton.textContent = 'See More Jobs';
+        showMoreButton.textContent = "See More Jobs";
       }
     }
 
@@ -260,16 +363,16 @@
     toggleJobsVisibility();
 
     // Event listener for "See More Jobs" button
-    showMoreButton.addEventListener('click', function(e) {
+    showMoreButton.addEventListener("click", function (e) {
       e.preventDefault();
-      
+
       // Toggle the number of visible jobs
       if (visibleJobs >= totalJobs) {
         visibleJobs = 6; // Reset to the initial number of visible jobs
       } else {
         visibleJobs += 6; // Increase the number of visible jobs by 6
       }
-      
+
       toggleJobsVisibility(); // Toggle visibility of jobs
     });
   });
