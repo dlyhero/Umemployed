@@ -53,36 +53,13 @@ from django.contrib import messages
 from .forms import CategoryForm
 from django.urls import reverse
 import requests
-
 def select_category(request):
     if request.user.is_applicant:
         if request.method == 'POST':
             form = CategoryForm(request.POST)
             if form.is_valid():
-                selected_category = form.cleaned_data['category']
-                custom_category = form.cleaned_data['custom_category']
-
-                if custom_category:  # If user typed custom category
-                    # Make HTTP request to FastAPI endpoint with custom category
-                    fastapi_url = 'http://localhost:8000/skills'  # Update with your FastAPI URL
-                    params = {'title': custom_category}
-                    try:
-                        response = requests.get(fastapi_url, params=params)
-                        # Handle response as needed
-                        # For example: status_code = response.status_code
-                    except requests.RequestException as e:
-                        # Handle request exception
-                        messages.error(request, f"Error: {e}")
-                    
-                    # Redirect to next step
-                    return redirect('select_skills')
-
-                elif selected_category:  # If user chose from dropdown but didn't type a custom category
-                    # Save selected_category as needed, e.g., in session
-                    request.session['selected_category'] = selected_category.id
-                    # Redirect to next step
-                    return redirect('select_skills')
-
+                request.session['selected_category'] = form.cleaned_data['category'].id
+                return redirect('select_skills')
         else:
             form = CategoryForm()
         
@@ -91,7 +68,6 @@ def select_category(request):
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
 
-        
 def select_skills(request):
     if request.user.is_applicant:
         selected_category_id = request.session.get('selected_category')
@@ -115,6 +91,67 @@ def select_skills(request):
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
+# def select_category(request):
+#     if request.user.is_applicant:
+#         if request.method == 'POST':
+#             form = CategoryForm(request.POST)
+#             if form.is_valid():
+#                 selected_category = form.cleaned_data['category']
+#                 custom_category = form.cleaned_data['custom_category']
+
+#                 if custom_category:  # If user typed custom category
+#                     # Make HTTP request to FastAPI endpoint with custom category
+#                     fastapi_url = 'http://localhost:8000/skills'  # Update with your FastAPI URL
+#                     params = {'title': custom_category}
+#                     try:
+#                         response = requests.get(fastapi_url, params=params)
+#                         # Handle response as needed
+#                         # For example: status_code = response.status_code
+#                     except requests.RequestException as e:
+#                         # Handle request exception
+#                         messages.error(request, f"Error: {e}")
+                    
+#                     # Redirect to next step
+#                     return redirect('select_skills')
+
+#                 elif selected_category:  # If user chose from dropdown but didn't type a custom category
+#                     # Save selected_category as needed, e.g., in session
+#                     request.session['selected_category'] = selected_category.id
+#                     # Redirect to next step
+#                     return redirect('select_skills')
+
+#         else:
+#             form = CategoryForm()
+        
+#         return render(request, 'resume/select_category.html', {'form': form})
+#     else:
+#         messages.warning(request, "Permission Denied")
+#         return redirect('dashboard')
+
+        
+# def select_skills(request):
+#     if request.user.is_applicant:
+#         selected_category_id = request.session.get('selected_category')
+#         if selected_category_id:
+#             selected_category = SkillCategory.objects.get(id=selected_category_id)
+#             if request.method == 'POST':
+#                 form = SkillForm(request.POST, category=selected_category)
+#                 if form.is_valid():
+#                     resume = Resume.objects.get(user=request.user)
+#                     resume.category = selected_category
+#                     resume.skills.set(form.cleaned_data['skills'])
+#                     resume.save()
+#                     return redirect('onboarding-3')
+#             else:
+#                 form = SkillForm(category=selected_category)
+            
+#             return render(request, 'resume/select_skills.html', {'form': form})
+#         else:
+#             # Handle the case where a category is not selected
+#             return redirect('select_category')
+#     else:
+#         messages.warning(request, "Permission Denied")
+#         return redirect('dashboard')
 
 
 
