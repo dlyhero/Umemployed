@@ -35,7 +35,14 @@ class Job(models.Model):
     def __str__(self):
         return self.title
 
-
+class MCQ(models.Model):
+    question = models.CharField(max_length=255)
+    option_a = models.CharField(max_length=100)
+    option_b = models.CharField(max_length=100)
+    option_c = models.CharField(max_length=100)
+    option_d = models.CharField(max_length=100)
+    correct_answer = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
+    job_title = models.CharField(max_length=100)
 class Application(models.Model):
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
