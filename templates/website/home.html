@@ -293,15 +293,14 @@
                     height="100"
                   />
                 </div>
-                <h2 class="mb-3">{{ job.title }}</h2>
+                <h2 class="mb-3">{{ job.title }}-- {{ job.requirements }}</h2>
                 <h4 class="mb-1">{{ job.company.name }}</h4>
                 <span class="text-truncate me-3"
                   ><i class="fa fa-map-marker-alt text-primary me-2"></i
                   >remote</span
                 >
                 <span class="text-truncate me-0"
-                  ><i class="text-primary me-2"></i>$10000-${{ job.salary
-                  }}</span
+                  ><i class="text-primary me-2"></i>$10000-${{ job.salary }}</span
                 >
                 <p>{{ job.description|truncatewords:20 }}</p>
               </div>

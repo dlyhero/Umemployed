@@ -16,4 +16,7 @@ urlpatterns = [
     path('success/', views.success_page, name='success_page'),
     path('fail/', views.fail_page, name='fail_page'),
 
+    #skills
+    path('skills/',views.select_skills,name="select_skills")
+
 ]

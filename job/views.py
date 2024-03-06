@@ -32,9 +32,10 @@ def create_job(request):
 
                 # Store the selected category in the session
                 request.session['selected_category'] = form.cleaned_data['category'].id
+                request.session['selected_job_id'] = job.id
 
                 messages.info(request, "Update Recorded")
-                return redirect('select_skills')
+                return redirect('job:select_skills')
             else:
                 messages.warning(request, 'Something went wrong')
                 return redirect('create_job')
@@ -48,29 +49,34 @@ def create_job(request):
 
 def select_skills(request):
     if request.user.is_recruiter and request.user.has_company:
+        print("iisssssssssshhhhhhhhhhhhhh")
         selected_category_id = request.session.get('selected_category')
-        if selected_category_id:
+        selected_job_id = request.session.get('selected_job_id')
+        if selected_category_id and selected_job_id:
+            print("HIIIIIIIIII")
             selected_category = SkillCategory.objects.get(id=selected_category_id)
+            job_instance = Job.objects.get(id=selected_job_id)
+
             if request.method == 'POST':
-                form = SkillForm(request.POST, category=selected_category)
+                print("YOOOOOOOOOOOOOOOOOOOOOOOOO")
+                form = SkillForm(request.POST, category=selected_category, instance=job_instance)
                 if form.is_valid():
-                    job = Job.objects.get(user=request.user)
-                    job.category = selected_category
-                    job.save()  # Save the job object first to ensure it has a valid ID
-                    form.save()  # Save the form data to associate skills with the job
-                    messages.info(request, "New job has been created")
+                    form.save()
+                    messages.info(request, "Skills added successfully")
+                    print("HEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLOOOOOOOOOOOOOO")
                     return redirect('dashboard')
             else:
+                print("OOOOOOOOOOOOOOOOOOOO")
                 form = SkillForm(category=selected_category)
-            
-            return render(request, 'job/select_skills.html', {'form': form})
+
+            return render(request, 'job/skill.html', {'form': form})
         else:
-            # Handle the case where a category is not selected
+            print("Noooooooooooooooooooooo")
             return redirect('select_category')
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
-
+    
 
 @login_required(login_url='/login')
 def update_job(request,pk):

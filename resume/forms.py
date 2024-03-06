@@ -67,25 +67,29 @@ class UpdateResumeForm3(forms.ModelForm):
     cv = forms.FileField(widget=forms.FileInput(attrs={'accept': '.pdf'}))
 
     class Meta:
-        model = Resume
+        model = Resume  # Specify the model class associated with the form
         fields = ['cv']
 
     def save(self, commit=True):
         resume = super().save(commit=False)
 
+        # Retrieve cleaned form data
         experience_company_name = self.cleaned_data['experience_company_name']
         experience_years = self.cleaned_data['experience_years']
         education_institution_name = self.cleaned_data['education_institution_name']
         education_degree = self.cleaned_data['education_degree']
         education_graduation_year = self.cleaned_data['education_graduation_year']
 
+        # Create and assign Experience and Education objects to the Resume
         experience = Experience.objects.create(
             resume=resume,
+            user=resume.user,  # Assign the user to the Experience object
             company_name=experience_company_name,
             years=experience_years
         )
         education = Education.objects.create(
             resume=resume,
+            user=resume.user,  # Assign the user to the Education object
             institution_name=education_institution_name,
             degree=education_degree,
             graduation_year=education_graduation_year

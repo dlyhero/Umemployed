@@ -29,8 +29,10 @@ class Skill(models.Model):
         return self.name
 
     
+
 class Education(models.Model):
     resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     institution_name = models.CharField(max_length=100)
     degree = models.CharField(max_length=100)
     graduation_year = models.IntegerField()

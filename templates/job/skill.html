@@ -75,12 +75,12 @@
                         <div class="accordion">
                             <button type="button" class="accordion-button" id="skills-button">Select Skills</button>
                             <div class="accordion-content" id="skills-content">
-                                {{ form.skills|as_crispy_field }}
+                                {{ form|crispy }}
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-between mt-3">
-                            <a href="{% url '#' %}" class="btn btn-secondary">Back</a>
+                            <a href="{% url 'job:create-job' %}" class="btn btn-secondary">Back</a>
                             <button type="submit" class="btn btn-primary">Next</button>
                         </div>
                     </form>

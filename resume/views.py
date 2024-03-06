@@ -227,37 +227,42 @@ def get_matching_jobs(user_job_title, user_skills):
 
 @login_required(login_url='login')
 def display_matching_jobs(request):
-    user_resume = Resume.objects.get(user=request.user)
-    user_job_title = user_resume.job_title
-    user_skills = set(user_resume.skills.all())  # Assuming skills are stored in a ManyToManyField
+    user= request.user
+    if user.has_resume:
+        user_resume = Resume.objects.get(user=request.user)
+        user_job_title = user_resume.job_title
+        user_skills = set(user_resume.skills.all())  # Assuming skills are stored in a ManyToManyField
 
-    matching_jobs_data = get_matching_jobs(user_job_title, user_skills)
+        matching_jobs_data = get_matching_jobs(user_job_title, user_skills)
 
-    matching_jobs = []
-    for job_data in matching_jobs_data:
-        job = job_data['job']
-        job_skills = set(job.requirements.all())
-        match_percentage, missing_skills = calculate_skill_match(user_skills, job_skills)
-        job_dict = {
-            'company': {
-                'logo': {'url': job.company.logo.url},
-                'name': job.company.name
-            },
-            'id':job.id,
-            'title': job.title,
-            'location': job.location,
-            'is_available': job.is_available,
-            'salary': job.salary,
-            'description': job.description,
-            'match_percentage': match_percentage,
-            'missing_skills': list(missing_skills)  # Convert set to list for iteration in HTML
-        }
-        matching_jobs.append(job_dict)
-    for job in matching_jobs:
-        print(job)
+        matching_jobs = []
+        for job_data in matching_jobs_data:
+            job = job_data['job']
+            job_skills = set(job.requirements.all())
+            match_percentage, missing_skills = calculate_skill_match(user_skills, job_skills)
+            job_dict = {
+                'company': {
+                    'logo': {'url': job.company.logo.url},
+                    'name': job.company.name
+                },
+                'id':job.id,
+                'title': job.title,
+                'location': job.location,
+                'is_available': job.is_available,
+                'salary': job.salary,
+                'description': job.description,
+                'match_percentage': match_percentage,
+                'missing_skills': list(missing_skills)  # Convert set to list for iteration in HTML
+            }
+            matching_jobs.append(job_dict)
+        for job in matching_jobs:
+            print(job)
 
-    context = {'matching_jobs': matching_jobs}
-    return render(request, 'job/matching_jobs.html', context)
+        context = {'matching_jobs': matching_jobs}
+        return render(request, 'job/matching_jobs.html', context)
+    else:
+        messages.info(request,"please create a resume to continue")
+        return redirect("update-resume")
 
 
 
