@@ -43,6 +43,16 @@ class MCQ(models.Model):
     option_d = models.CharField(max_length=100)
     correct_answer = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
     job_title = models.CharField(max_length=100)
+
+
+class ApplicantAnswer(models.Model):
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey('MCQ', on_delete=models.CASCADE)  # Assuming MCQ is another model in your app
+    answer = models.CharField(max_length=255)
+    job = models.ForeignKey('Job', on_delete=models.CASCADE)  # Assuming Job is another model in your app
+
+    def __str__(self):
+        return f"Answer by {self.applicant.username} for {self.question.question}"
 class Application(models.Model):
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

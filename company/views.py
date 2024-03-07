@@ -109,3 +109,35 @@ def view_applications(request, company_id):
         'job_applications': job_applications,
     }
     return render(request, 'company/view_applications.html', context)
+
+
+
+@login_required(login_url='login')
+def view_application_details(request, application_id,company_id):
+    application = get_object_or_404(Application, id=application_id)
+    current_user = request.user
+    company = Company.objects.get(id=company_id)
+    if company.user != current_user:
+        return HttpResponse("You are not authorized to view this page.")
+
+    jobs = Job.objects.filter(company=company)
+    job_applications = {}
+    for job in jobs:
+        applications = Application.objects.filter(job=job)
+        job_applications[job] = applications
+
+
+    context = {
+        'application': application,
+        'company': company,
+
+    }
+    return render(request, 'company/application_details.html', context)
+
+def company_analytics(request, company_id):
+    company = Company.objects.get(id=company_id)
+    current_user = request.user
+    if company.user != current_user:
+        return HttpResponse("You are not authorized to view this page.")
+
+    return render(request, 'company/analytics.html')

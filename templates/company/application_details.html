@@ -1,0 +1,145 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="sidebar">
+        <!-- Sidebar content goes here -->
+        <h2>{{company.name}} Dashboard</h2>
+        <ul>
+            <li><i class="bi bi-house-door"></i> <a href="#">Home</a></li>
+            <li><i class="bi bi-briefcase"></i> <a href="#">Jobs</a></li>
+            <li><i class="bi bi-person-check"></i> <a href="#">Applicants</a></li>
+            <li><i class="bi bi-file-person"></i> <a href="#">Employees</a></li>
+            <li><i class="bi bi-graph-up"></i> <a href="#">Analytics</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+    {% if company.logo %}
+        <div style="flex: 0 0 auto; text-align: center;">
+            <img src="{{ company.logo.url }}" alt="{{ company.name }} Logo" style="max-width: 100px; max-height: 100px;">
+        </div>
+        {% endif %}
+        <h2>Job Openings</h2>
+        <!-- Back Arrow -->
+    <a href="javascript:history.back()" class="back-arrow"><i class="bi bi-arrow-left" style="font-size: 24px; padding:30px; color:blue"></i></a>
+
+
+    <div class="job">
+        <ul class="application-list">
+            <h3>{{ application.job.title }}</h3>
+            <li class="application">
+                <div class="application-details">
+                    <strong><i class="bi bi-person"></i> Applicant:</strong> {{ application.user.username }}<br>
+                    <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> {{ application.overall_match_percentage }}%<br>
+                    <strong><i class="bi bi-check2"></i> Quiz Score:</strong> {{ application.quiz_score }}/10<br>
+                    <strong><i class="bi bi-clipboard-check"></i> Completed Quiz:</strong> {% if application.has_completed_quiz %}Yes{% else %}No{% endif %}<br>
+                     <!-- Display Applicant's Skills -->
+                    <strong><i class="bi bi-file-earmark-text"></i> Skills:</strong><br>
+                    <ul>
+                        {% for skill in application.user.resume.skills.all %}
+                            <li>{{ skill.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    <!-- End of Display Applicant's Skills -->
+                    
+                </div>
+                
+            </li>
+        </ul>
+        <div class="application-actions" style="position: absolute; bottom: 40; right: 18px; margin-bottom: 20px;">
+               <button class="btn btn-primary"><i class="bi bi-eye"></i> Message Applicant</button>
+               <button class="btn btn-danger"><i class="bi bi-x"></i> Reject </button>
+           </div>
+    </div>
+</div>
+</div>
+
+
+<style>
+    /* CSS styles for the dashboard container */
+    .dashboard-container {
+        display: flex;
+    }
+
+    /* CSS styles for the sidebar */
+    .sidebar {
+        width: 250px;
+        background-color: #f0f0f0;
+        padding: 20px;
+        box-sizing: border-box;
+        height:800px;
+    }
+
+    .sidebar h2 {
+        margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 10px;
+    }
+
+    .sidebar i {
+        margin-right: 10px;
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    /* CSS styles for the content area */
+    .content {
+        flex-grow: 1;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    /* CSS styles for the job container */
+    .job {
+        margin-bottom: 20px;
+    }
+
+    /* CSS styles for the application details */
+    .application {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .application-details {
+        flex-grow: 1;
+    }
+
+    .application-actions {
+        margin-left: 10px;
+    }
+
+    /* CSS styles for the buttons */
+    .btn {
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn.btn-primary {
+        background-color: #000000;
+        color: #fff;
+    }
+
+    .btn.btn-danger {
+        background-color: #dc3545;
+        color: #fff;
+    }
+</style>
+{% endblock %}

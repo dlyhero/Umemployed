@@ -1,74 +1,101 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Welcome to Evaluation</title>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    <title>Hire | UmEmployed</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size:18px;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        p {
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #000000;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-        .clock-icon {
-        font-size: 24px;
-        margin-right: 10px;
-        color: #000000;
-        vertical-align: middle;
-        }
+      a {
+        text-decoration: none;
+      }
+      .container {
+        height: 400px;
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Welcome to the Evaluation Environment</h1>
-        <h2>Role : {{ job.title }} @ {{ job.company.name }}</h2>
-        <p>Thank you for participating in the evaluation. We appreciate your time and effort. Please take a moment to read the instructions below:</p>
-        <p><span class="clock-icon">&#x23F0;</span>Click "Start" when you are ready to begin the evaluation. The evaluation will take approximately 2 minutes.</p>
-        <p>Ensure that you are in a quiet environment with no distractions.</p>
-        <p>Read each question carefully and provide your response within the given time limit.</p>
-        <p>Do not refresh or navigate away from the page during the evaluation.</p>
-        <a class="button" href="{% url 'job:apply_job' job_id=job.id %}">Start</a>
+  </head>
+  <body>
+    <div>
+      {% for message in messages %}
+      <div class="alert alert-danger" role="alert">{{ message }}</div>
+      {% endfor %}
     </div>
-</body>
+    <!-- Main Container -->
+    <div
+      class="container d-flex justify-content-center align-items-center min-vh-100"
+    >
+      <!-- Login Container -->
+      <div class="row border rounded-5 p-3 bg-white shadow box-area">
+        <!-- Left Box -->
+        <div
+          class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box"
+          style="background: #103cbe"
+        >
+          <div class="featured-image mb-3">
+            <img
+              src="{% static 'img/login/1.png' %}"
+              class="img-fluid"
+              style="width: 250px"
+            />
+          </div>
+          <p
+            class="text-white fs-2"
+            style="
+              font-family: 'Courier New', Courier, monospace;
+              font-weight: 600;
+            "
+          >
+            Welcome to the Evaluation Environment
+          </p>
+          <small
+            class="text-white text-wrap text-center"
+            style="width: 17rem; font-family: 'Courier New', Courier, monospace"
+            >Role : {{ job.title }} @ {{ job.company.name }}</small
+          >
+        </div>
+
+        <!-- Right Box -->
+        <div class="col-md-6 right-box">
+          <div class="row align-items-center">
+            <div class="header-text mb-4">
+              <p>
+                Thank you for participating in the evaluation. We appreciate
+                your time and effort. Please take a moment to read the
+                instructions below:
+              </p>
+              <p>
+                <span class="clock-icon">&#x23F0;</span>Click "Start" when you
+                are ready to begin the evaluation. The evaluation will take
+                approximately 2 minutes.
+              </p>
+              <p>
+                Ensure that you are in a quiet environment with no distractions.
+              </p>
+              <p>
+                Read each question carefully and provide your response within
+                the given time limit.
+              </p>
+              <p>
+                Do not refresh or navigate away from the page during the
+                evaluation.
+              </p>
+            </div>
+            <a
+              class="btn btn-lg btn-primary w-100 fs-6"
+              href="{% url 'job:apply_job' job_id=job.id %}"
+              >Start</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

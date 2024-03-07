@@ -4,25 +4,42 @@
 <div class="dashboard-container">
     <div class="sidebar">
         <!-- Sidebar content goes here -->
-        <h2>Company Dashboard</h2>
+        <h2>{{company.name}} Dashboard</h2>
         <ul>
             <li><i class="bi bi-house-door"></i> <a href="#">Home</a></li>
             <li><i class="bi bi-briefcase"></i> <a href="#">Jobs</a></li>
             <li><i class="bi bi-person-check"></i> <a href="#">Applicants</a></li>
             <li><i class="bi bi-file-person"></i> <a href="#">Employees</a></li>
-            <li><i class="bi bi-graph-up"></i> <a href="#">Analytics</a></li>
+            <li><i class="bi bi-graph-up"></i> <a href="{% url 'company_analytics' company_id=company.id%}">Analytics</a></li>
         </ul>
     </div>
 
     <div class="content">
         <!-- Content area goes here -->
-        <h2>{{ company.name }}</h2>
-        <p>Job Openings</p>
+        {% if company.logo %}
+        <div style="flex: 0 0 auto; text-align: center;">
+            <img src="{{ company.logo.url }}" alt="{{ company.name }} Logo" style="max-width: 100px; max-height: 100px;">
+        </div>
+        {% endif %}
+        <h2>Job Openings</h2>
             <a href="{% url 'job:create-job' %}"class="btn btn-primary mt-0" style="margin-left:1500px;">Add Job</a>
         {% for job, applications in job_applications.items %}
         <div class="job">
-            <h3>{{ job.title }}-------------{{job.requirements }}</h3>
             <ul>
+                <h3>{{ job.title }}</h3>
+                {% if applications|length == 0 %}
+                <li class="application">
+                    <div class="application-details">
+                        <strong><i class="bi bi-person"></i> Applicant:</strong> No Applicant up to Match<br>
+                        <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> None <br>
+                    </div>
+                    <div class="application-actions">
+                        <!-- Add other application details as needed -->
+                        <!-- <button class="btn btn-primary"><i class="bi bi-eye"></i> View Details</button> -->
+                        <!-- <button class="btn btn-danger"><i class="bi bi-x"></i> Reject</button> -->
+                    </div>
+                </li>
+                {% else %}
                 {% for application in applications %}
                 {% if application.overall_match_percentage >= 70 %}
                 <li class="application">
@@ -32,24 +49,14 @@
                     </div>
                     <div class="application-actions">
                         <!-- Add other application details as needed -->
-                        <button class="btn btn-primary"><i class="bi bi-eye"></i> View Details</button>
+                        <a href="{% url 'view_application_details' company_id=company.id application_id=application.id %}" class="btn btn-primary"><i class="bi bi-eye"></i> View Details</a>
+
                         <button class="btn btn-danger"><i class="bi bi-x"></i> Reject</button>
-                    </div>
-                </li>
-                {% else %}
-                <li class="application">
-                    <div class="application-details">
-                        <strong><i class="bi bi-person"></i> Applicant:</strong> No Applicant up to Match<br>
-                        <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> None <br>
-                    </div>
-                    <div class="application-actions">
-                        <!-- Add other application details as needed -->
-                        {% comment %} <button class="btn btn-primary"><i class="bi bi-eye"></i> View Details</button>
-                        <button class="btn btn-danger"><i class="bi bi-x"></i> Reject</button> {% endcomment %}
                     </div>
                 </li>
                 {% endif %}
                 {% endfor %}
+                {% endif %}
             </ul>
         </div>
         {% endfor %}
@@ -59,6 +66,7 @@
         {% endif %}
     </div>
 </div>
+
 
 <style>
     /* CSS styles for the dashboard container */

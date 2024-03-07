@@ -17,6 +17,11 @@ urlpatterns = [
     path('fail/', views.fail_page, name='fail_page'),
 
     #skills
-    path('skills/',views.select_skills,name="select_skills")
+    path('skills/',views.select_skills,name="select_skills"),
+
+    #quiz
+    path('job/<int:job_id>/answer/', views.answer_job_questions, name='answer_job_questions'),
+    path('answer/success', views.job_application_success, name='job_application_success'),
+
 
 ]

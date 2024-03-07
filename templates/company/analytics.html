@@ -1,0 +1,185 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="sidebar">
+        <!-- Sidebar content goes here -->
+        <h2>{{company.name}} Dashboard</h2>
+        <ul>
+            <li><i class="bi bi-house-door"></i> <a href="#">Home</a></li>
+            <li><i class="bi bi-briefcase"></i> <a href="#">Jobs</a></li>
+            <li><i class="bi bi-person-check"></i> <a href="#">Applicants</a></li>
+            <li><i class="bi bi-file-person"></i> <a href="#">Employees</a></li>
+            <li><i class="bi bi-graph-up"></i> <a href="#">Analytics</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <!-- Content area goes here -->
+        {% if company.logo %}
+        <div style="flex: 0 0 auto; text-align: center;">
+            <img src="{{ company.logo.url }}" alt="{{ company.name }} Logo" style="max-width: 100px; max-height: 100px;">
+        </div>
+        {% endif %}
+        <h2>Analysis Cards</h2>
+        <div class="analysis-cards">
+            <div class="card">
+                <h3>Analysis Card 1</h3>
+                <p>Some analysis content here...</p>
+            </div>
+            <div class="card">
+                <h3>Analysis Card 2</h3>
+                <p>Some analysis content here...</p>
+            </div>
+        </div>
+        <h2>Analytics</h2>
+        <div class="analytics-container">
+            <canvas id="graph1" width="300" height="150"></canvas>
+            <canvas id="graph2" width="300" height="150"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Sample data for demonstration
+    var graphData1 = {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'Sales',
+            data: [65, 59, 80, 81, 56, 55, 40],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    var graphData2 = {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+
+    // Initialize charts
+    var ctx1 = document.getElementById('graph1').getContext('2d');
+    var chart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: graphData1,
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    var ctx2 = document.getElementById('graph2').getContext('2d');
+    var chart2 = new Chart(ctx2, {
+        type: 'bar',
+        data: graphData2,
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+
+<style>
+    /* CSS styles for the dashboard container */
+    .dashboard-container {
+        display: flex;
+    }
+
+    /* CSS styles for the sidebar */
+    .sidebar {
+        width: 250px;
+        background-color: #f0f0f0;
+        padding: 20px;
+        box-sizing: border-box;
+        height: 800px;
+    }
+
+    .sidebar h2 {
+        margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 10px;
+    }
+
+    .sidebar i {
+        margin-right: 10px;
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    /* CSS styles for the content area */
+    .content {
+        flex-grow: 1;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    /* CSS styles for the analysis cards */
+    .analysis-cards {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        width: 48%;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* CSS styles for the analytics container */
+    .analytics-container {
+        display: flex;
+        justify-content: space-between;
+        width:70%;
+    }
+
+    /* CSS styles for the graphs */
+    canvas {
+        max-width: 48%;
+    }
+</style>
+{% endblock %}

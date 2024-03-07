@@ -19,6 +19,11 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.shortcuts import redirect, render
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Job, MCQ
+from .forms import CreateJobForm
+
 @login_required(login_url='/login')
 def create_job(request):
     if request.user.is_recruiter and request.user.has_company:
@@ -29,6 +34,12 @@ def create_job(request):
                 job.user = request.user
                 job.company = request.user.company
                 job.save()
+
+                # Retrieve questions from the MCQ model based on the job title
+                questions = MCQ.objects.filter(job_title=job.title)
+
+                # Store the questions in the session
+                request.session['job_questions'] = list(questions.values_list('question', flat=True))
 
                 # Store the selected category in the session
                 request.session['selected_category'] = form.cleaned_data['category'].id
@@ -47,31 +58,26 @@ def create_job(request):
         messages.warning(request, 'Permission Denied!')
         return redirect('dashboard')
 
+
 def select_skills(request):
     if request.user.is_recruiter and request.user.has_company:
-        print("iisssssssssshhhhhhhhhhhhhh")
         selected_category_id = request.session.get('selected_category')
         selected_job_id = request.session.get('selected_job_id')
         if selected_category_id and selected_job_id:
-            print("HIIIIIIIIII")
             selected_category = SkillCategory.objects.get(id=selected_category_id)
             job_instance = Job.objects.get(id=selected_job_id)
 
             if request.method == 'POST':
-                print("YOOOOOOOOOOOOOOOOOOOOOOOOO")
                 form = SkillForm(request.POST, category=selected_category, instance=job_instance)
                 if form.is_valid():
                     form.save()
                     messages.info(request, "Skills added successfully")
-                    print("HEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLOOOOOOOOOOOOOO")
                     return redirect('dashboard')
             else:
-                print("OOOOOOOOOOOOOOOOOOOO")
                 form = SkillForm(category=selected_category)
 
             return render(request, 'job/skill.html', {'form': form})
         else:
-            print("Noooooooooooooooooooooo")
             return redirect('select_category')
     else:
         messages.warning(request, "Permission Denied")
@@ -133,6 +139,47 @@ def apply_job(request, job_id):
     
     # Redirect the user to the quiz page
     return redirect('general_knowledge_quiz')
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Job, MCQ, ApplicantAnswer
+from .forms import ApplicantAnswerForm
+
+@login_required(login_url='/login')
+def answer_job_questions(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    
+    if request.method == 'POST':
+        answers = request.POST
+        if answers:
+            for mcq in MCQ.objects.filter(job_title=job.title):
+                answer = answers.get(f'question{mcq.id}')
+                if answer:
+                    ApplicantAnswer.objects.create(
+                        applicant=request.user,
+                        question=mcq,
+                        answer=answer,
+                        job=job
+                    )
+        
+            messages.success(request, "Your answers have been recorded.")
+            return redirect('job:job_application_success')
+        else:
+            messages.error(request, "Please answer all questions.")
+            return redirect('job:answer_job_questions', job_id=job_id)
+    else:
+        mcqs = MCQ.objects.filter(job_title=job.title)
+        context = {
+            'job': job,
+            'mcqs': mcqs,
+        }
+        return render(request, 'job/job_quiz.html', context)
+    
+
+def job_application_success(request):
+    return render(request, 'job/application_success.html')
+
 
 
 
