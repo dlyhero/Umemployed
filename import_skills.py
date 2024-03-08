@@ -10,7 +10,7 @@ from resume.models import Skill, SkillCategory
 
 def import_skills_data():
     # Connect to the FastAPI SQLite database
-    fastapi_db_conn = sqlite3.connect('/home/nyuydinebill/Desktop/Umemployed/UmEmployed API/Skills_ChatGPT/app/skills_db.db')
+    fastapi_db_conn = sqlite3.connect('/home/nyuydinebill/Desktop/Umemployed/SkillExtracter/app/skills_db.db')
 
     # Query the skills data from the FastAPI database
     cursor = fastapi_db_conn.cursor()

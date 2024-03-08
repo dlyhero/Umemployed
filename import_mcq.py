@@ -13,7 +13,7 @@ from job.models import MCQ
 
 def import_data_to_django():
     # Connect to SQLite database
-    conn = sqlite3.connect("/home/nyuydinebill/Desktop/Umemployed/UmEmployed API/Skills_ChatGPT/app/skills_db.db")  # Replace with actual path
+    conn = sqlite3.connect("/home/nyuydinebill/Desktop/Umemployed/SkillExtracter/app/skills_db.db")  # Replace with actual path
     cursor = conn.cursor()
 
     # Retrieve data from SQLite database

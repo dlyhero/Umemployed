@@ -47,12 +47,20 @@ class MCQ(models.Model):
 
 class ApplicantAnswer(models.Model):
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey('MCQ', on_delete=models.CASCADE)  # Assuming MCQ is another model in your app
+    question = models.ForeignKey('MCQ', on_delete=models.CASCADE)
     answer = models.CharField(max_length=255)
-    job = models.ForeignKey('Job', on_delete=models.CASCADE)  # Assuming Job is another model in your app
+    job = models.ForeignKey('Job', on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)  # Add score field
 
     def __str__(self):
         return f"Answer by {self.applicant.username} for {self.question.question}"
+
+    def calculate_score(self):
+        if self.answer == self.question.correct_answer:
+            self.score = 1
+        else:
+            self.score = 0
+        self.save()
 class Application(models.Model):
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -70,6 +78,11 @@ class Application(models.Model):
             score = quiz_responses.filter(answer__is_correct=True).count()
             self.quiz_score = score
 
+            # Calculate quiz score from ApplicantAnswer
+            applicant_answers = ApplicantAnswer.objects.filter(applicant=self.user, job=self.job)
+            quiz_score_from_answers = applicant_answers.filter(score=1).count()
+            self.quiz_score += quiz_score_from_answers
+
         applicant_resume = Resume.objects.get(user=self.user)
         applicant_skills = set(applicant_resume.skills.all())
         job_skills = set(self.job.requirements.all())
@@ -77,7 +90,7 @@ class Application(models.Model):
 
         self.matching_percentage = match_percentage
 
-        overall_match_percentage = (0.7 * match_percentage) + (3 * self.quiz_score)
+        overall_match_percentage = (0.7 * match_percentage) + (30 * self.quiz_score)
         self.overall_match_percentage = overall_match_percentage
 
         super().save(*args, **kwargs)

@@ -137,14 +137,18 @@ def apply_job(request, job_id):
     request.session['job_applied'] = True
     request.session['application_id'] = application.id
     
-    # Redirect the user to the quiz page
-    return redirect('general_knowledge_quiz')
+    # Redirect the user to the answer job questions page
+    return redirect('job:answer_job_questions', job_id=job_id)
+
+
 
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Job, MCQ, ApplicantAnswer
 from .forms import ApplicantAnswerForm
+
+from django.db.models import F
 
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
@@ -153,17 +157,20 @@ def answer_job_questions(request, job_id):
     if request.method == 'POST':
         answers = request.POST
         if answers:
+            total_score = 0  # Initialize total score
             for mcq in MCQ.objects.filter(job_title=job.title):
                 answer = answers.get(f'question{mcq.id}')
                 if answer:
-                    ApplicantAnswer.objects.create(
+                    applicant_answer = ApplicantAnswer.objects.create(
                         applicant=request.user,
                         question=mcq,
                         answer=answer,
                         job=job
                     )
-        
-            messages.success(request, "Your answers have been recorded.")
+                    applicant_answer.calculate_score()  # Calculate score for each answer
+                    total_score += applicant_answer.score  # Update total score
+
+            messages.success(request, f"Your answers have been recorded. Total score: {total_score}")
             return redirect('job:job_application_success')
         else:
             messages.error(request, "Please answer all questions.")

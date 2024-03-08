@@ -52,7 +52,7 @@ def register_applicant(request):
             var.username = var.email
             var.save()
             Resume.objects.create(user=var)
-            messages.info(request, 'Your account has been created successfully')
+            messages.success(request, 'Your account has been created successfully')
             return redirect("login")  # Update the target name to match the appropriate URL name
         else:
             messages.warning(request, "Something went wrong")
