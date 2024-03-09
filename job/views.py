@@ -127,15 +127,9 @@ def apply_job(request, job_id):
         # Redirect the user to a specific page (e.g., job details page)
         return redirect('/')
     
-    # Create a new instance of the Application model
-    application = Application(user=request.user, job=job)
-    
-    # Save the application
-    application.save()
-    
     # Set session data to indicate that the user has just applied for the job
     request.session['job_applied'] = True
-    request.session['application_id'] = application.id
+    request.session['job_id'] = job_id
     
     # Redirect the user to the answer job questions page
     return redirect('job:answer_job_questions', job_id=job_id)
@@ -153,12 +147,12 @@ from django.db.models import F
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
     job = get_object_or_404(Job, id=job_id)
-    
+
     if request.method == 'POST':
         answers = request.POST
         if answers:
             total_score = 0  # Initialize total score
-            for mcq in MCQ.objects.filter(job_title=job.title):
+            for mcq in MCQ.objects.filter(job_title=job.category):
                 answer = answers.get(f'question{mcq.id}')
                 if answer:
                     applicant_answer = ApplicantAnswer.objects.create(
@@ -169,7 +163,12 @@ def answer_job_questions(request, job_id):
                     )
                     applicant_answer.calculate_score()  # Calculate score for each answer
                     total_score += applicant_answer.score  # Update total score
-
+            
+            # Create a new instance of the Application model
+            application = Application(user=request.user, job=job)
+            application.has_completed_quiz = True  # Set has_completed_quiz to True
+            application.save()  # Save the application
+            
             messages.success(request, f"Your answers have been recorded. Total score: {total_score}")
             return redirect('job:job_application_success')
         else:
@@ -182,8 +181,6 @@ def answer_job_questions(request, job_id):
             'mcqs': mcqs,
         }
         return render(request, 'job/job_quiz.html', context)
-    
-
 def job_application_success(request):
     return render(request, 'job/application_success.html')
 

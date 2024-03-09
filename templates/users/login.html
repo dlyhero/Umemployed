@@ -60,10 +60,7 @@
                         <div class="input-group mb-3">
                             <button class="btn btn-lg btn-primary w-100 fs-6">Login</button>
                         </div>
-                        <a href="{% provider_login_url 'google' %}">
-                          <div class="input-group mb-3">
-                              <button class="btn btn-lg btn-light w-100 fs-6"><img src="{% static 'img/login/google.png' %}" style="width:20px" class="me-2"><small>Sign In with Google</small></button>
-                          </div>
+                        <a href="{% provider_login_url 'google' %}" class="btn btn-lg btn-light w-100 fs-6"><img src="{% static 'img/login/google.png' %}" style="width:20px" class="me-2"><small>Sign In with Google</small>
                         </a>
 
                         <div class="row">
@@ -76,5 +73,6 @@
             </div> 
         </div>
     </div>
+    
 </body>
 </html>

@@ -44,7 +44,8 @@ class MCQ(models.Model):
     correct_answer = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
     job_title = models.CharField(max_length=100)
 
-
+    def __str__(self):
+        return self.job_title
 class ApplicantAnswer(models.Model):
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey('MCQ', on_delete=models.CASCADE)
