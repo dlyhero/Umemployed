@@ -11,18 +11,14 @@ import json
 from .jdoodle_api import execute_code
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import render
-
-
-# create a job
-# views.py
-
 from django.contrib import messages
 from django.shortcuts import redirect, render
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Job, MCQ
 from .forms import CreateJobForm
+from job.generate_skills import generate_mcqs_for_skill
+
 
 @login_required(login_url='/login')
 def create_job(request):
@@ -34,12 +30,6 @@ def create_job(request):
                 job.user = request.user
                 job.company = request.user.company
                 job.save()
-
-                # Retrieve questions from the MCQ model based on the job title
-                questions = MCQ.objects.filter(job_title=job.title)
-
-                # Store the questions in the session
-                request.session['job_questions'] = list(questions.values_list('question', flat=True))
 
                 # Store the selected category in the session
                 request.session['selected_category'] = form.cleaned_data['category'].id
@@ -58,6 +48,7 @@ def create_job(request):
         messages.warning(request, 'Permission Denied!')
         return redirect('dashboard')
 
+import requests
 
 def select_skills(request):
     if request.user.is_recruiter and request.user.has_company:
@@ -71,8 +62,19 @@ def select_skills(request):
                 form = SkillForm(request.POST, category=selected_category, instance=job_instance)
                 if form.is_valid():
                     form.save()
-                    messages.info(request, "Skills added successfully")
-                    return redirect('dashboard')
+                    # Retrieve the entry level from the form
+                    entry_level = form.cleaned_data['level']
+                    
+                    # Retrieve selected skills from the form
+                    selected_skills = form.cleaned_data['requirements']
+                    selected_skill_names = [skill.name for skill in selected_skills]
+
+                    # Construct the redirect URL with selected skills
+                    redirect_url = f'/job/generate-questions/?job_title={job_instance.title}&entry_level={entry_level}&selected_skills={",".join(selected_skill_names)}'
+                    print("Redirect URL:", redirect_url)
+
+                    # Redirect to the generate_questions_view with selected skills
+                    return redirect(redirect_url)
             else:
                 form = SkillForm(category=selected_category)
 
@@ -82,6 +84,8 @@ def select_skills(request):
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
+
+
     
 
 @login_required(login_url='/login')
@@ -139,11 +143,12 @@ def apply_job(request, job_id):
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Job, MCQ, ApplicantAnswer
+from .models import Job, MCQ, ApplicantAnswer,SkillQuestion
 from .forms import ApplicantAnswerForm
 
 from django.db.models import F
 
+from django.db.models import Q
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
     job = get_object_or_404(Job, id=job_id)
@@ -152,7 +157,7 @@ def answer_job_questions(request, job_id):
         answers = request.POST
         if answers:
             total_score = 0  # Initialize total score
-            for mcq in MCQ.objects.filter(job_title=job.category):
+            for mcq in SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level):
                 answer = answers.get(f'question{mcq.id}')
                 if answer:
                     applicant_answer = ApplicantAnswer.objects.create(
@@ -175,12 +180,20 @@ def answer_job_questions(request, job_id):
             messages.error(request, "Please answer all questions.")
             return redirect('job:answer_job_questions', job_id=job_id)
     else:
-        mcqs = MCQ.objects.filter(job_title=job.title)
+        print("Job Skills:", job.requirements.all())
+        print("Job Entry Level:", job.level)
+
+        # Fetch questions related to the skills required by the job and the entry level specified
+        mcqs = SkillQuestion.objects.filter(
+            Q(skill__in=job.requirements.all()) & Q(entry_level=job.level)
+        )
+        print("Filtered questions count:", mcqs.count())  # Print the count of filtered questions
         context = {
             'job': job,
             'mcqs': mcqs,
         }
         return render(request, 'job/job_quiz.html', context)
+
 def job_application_success(request):
     return render(request, 'job/application_success.html')
 

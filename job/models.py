@@ -42,13 +42,27 @@ class MCQ(models.Model):
     option_c = models.CharField(max_length=100)
     option_d = models.CharField(max_length=100)
     correct_answer = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
-    job_title = models.CharField(max_length=100)
+    job_title = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, related_name='mcq_questions')
 
     def __str__(self):
-        return self.job_title
+        return self.question
+    
+class SkillQuestion(models.Model):
+    question = models.CharField(max_length=255)
+    option_a = models.CharField(max_length=100)
+    option_b = models.CharField(max_length=100)
+    option_c = models.CharField(max_length=100)
+    option_d = models.CharField(max_length=100)
+    correct_answer = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    entry_level = models.CharField(max_length=100, blank=True, null=True)  # Assuming entry level is a string field
+
+    def __str__(self):
+        return self.question
+
 class ApplicantAnswer(models.Model):
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey('MCQ', on_delete=models.CASCADE)
+    question = models.ForeignKey('SkillQuestion', on_delete=models.CASCADE)  # Update this line
     answer = models.CharField(max_length=255)
     job = models.ForeignKey('Job', on_delete=models.CASCADE)
     score = models.IntegerField(default=0)  # Add score field

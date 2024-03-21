@@ -10,21 +10,20 @@ class CreateJobForm(forms.ModelForm):
 
     class Meta:
         model = Job
-        fields = ['title','level','category', 'location', 'salary', 'ideal_candidate']
+        fields = ['title','category', 'location', 'salary', 'ideal_candidate']
 
 class SkillForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ['requirements']
+        fields = ['requirements', 'level']
         widgets = {
-            'skills': forms.CheckboxSelectMultiple,
+            'requirements': forms.CheckboxSelectMultiple(),
         }
 
     def __init__(self, *args, **kwargs):
         category = kwargs.pop('category')
         super().__init__(*args, **kwargs)
         self.fields['requirements'].queryset = Skill.objects.filter(categories=category)
-
 
 class UpdateJobForm(forms.ModelForm):
     class Meta:

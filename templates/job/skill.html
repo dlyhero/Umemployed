@@ -1,103 +1,114 @@
 {% extends "users/base.html" %}
 {% load crispy_forms_tags %}
-
 {% block content %}
 <head>
-    <style>
-        .motivation-text {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 5px;
-        }
-        .progress-tracker {
-            margin-bottom: 30px;
-            border-radius: 10px;
-            height: 30px;
-        }
-        .accordion {
-            background-color: #f8f9fa;
-            border: none;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            padding-bottom:220px;
-        }
-        .accordion button {
-            background-color: #f8f9fa;
-            border: none;
-            outline: none;
-            text-align: left;
-            padding: 10px;
-            width: 100%;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            border-bottom: 1px solid #ddd;
-        }
-        .accordion button.active {
-            background-color: #e9ecef;
-        }
-        .accordion-content {
-            display: none;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .accordion-content.active {
-            display: block;
-        }
-    </style>
+  <style>
+    .motivation-text {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    .progress-tracker {
+      margin-bottom: 30px;
+      border-radius: 10px;
+      height: 30px;
+    }
+    .accordion {
+      background-color: #f8f9fa;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      padding-bottom: 220px;
+    }
+    .accordion button {
+      background-color: #f8f9fa;
+      border: none;
+      outline: none;
+      text-align: left;
+      padding: 10px;
+      width: 100%;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      border-bottom: 1px solid #ddd;
+    }
+    .accordion button.active {
+      background-color: #e9ecef;
+    }
+    .accordion-content {
+      display: none;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .accordion-content.active {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <!-- Include message tags in your template -->
-{% if messages %}
-<div class="messages">
+  <!-- Include message tags in your template -->
+  {% if messages %}
+  <div class="messages">
     {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}" role="alert">
-        {{ message }}
-    </div>
+    <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
     {% endfor %}
-</div>
-{% endif %}
-<div class="container mt-5">    
+  </div>
+  {% endif %}
+  <div class="container mt-5">
     <div class="row">
-        <div class="col-md-4">
-            <div class="motivation-text">
-                <h2>UmEmployed</h2>
-                <p style="color: #000; font-size: 18px; font-weight: bold;">Step into a world of opportunities. Your future starts here.</p>
-            </div>
+      <div class="col-md-4">
+        <div class="motivation-text">
+          <h2>UmEmployed</h2>
+          <p style="color: #000; font-size: 18px; font-weight: bold">
+            Step into a world of opportunities. Your future starts here.
+          </p>
         </div>
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Step 3: Choose Skills</h5>
+      </div>
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title mb-3">Step 3: Choose Skills</h5>
 
-                    <form method="post">
-                        {% csrf_token %}
+            <form method="post">
+              {% csrf_token %}
 
-                        <div class="accordion">
-                            <button type="button" class="accordion-button" id="skills-button">Select Skills</button>
-                            <div class="accordion-content" id="skills-content">
-                                {{ form|crispy }}
-                            </div>
-                        </div>
+              <div class="form-group">
+                {{ form.level|as_crispy_field }}
+              </div>
 
-                        <div class="d-flex justify-content-between mt-3">
-                            <a href="{% url 'job:create-job' %}" class="btn btn-secondary">Back</a>
-                            <button type="submit" class="btn btn-primary">Next</button>
-                        </div>
-                    </form>
+              <div class="accordion">
+                <button
+                  type="button"
+                  class="accordion-button"
+                  id="skills-button"
+                >
+                  Select Skills
+                </button>
+                <div class="accordion-content" id="skills-content">
+                  {{ form.requirements|as_crispy_field }}
                 </div>
-            </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-3">
+                <a href="{% url 'job:create-job' %}" class="btn btn-secondary"
+                  >Back</a
+                >
+                <button type="submit" class="btn btn-primary">Next</button>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
-    const skillsButton = document.getElementById('skills-button');
-    const skillsContent = document.getElementById('skills-content');
+  <script>
+    const skillsButton = document.getElementById("skills-button");
+    const skillsContent = document.getElementById("skills-content");
 
-    skillsButton.addEventListener('click', () => {
-        skillsButton.classList.toggle('active');
-        skillsContent.classList.toggle('active');
+    skillsButton.addEventListener("click", () => {
+      skillsButton.classList.toggle("active");
+      skillsContent.classList.toggle("active");
     });
-</script>
+  </script>
 </body>
 {% endblock content %}

@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from .gpt_calls import generate_mcqs, get_skills_from_chatgpt, execute_input
+from . import generate_skills
+
 app_name = 'job'
 
 
@@ -24,4 +27,9 @@ urlpatterns = [
     path('answer/success', views.job_application_success, name='job_application_success'),
 
 
+    path('generate_skills/', get_skills_from_chatgpt, name='generate_skills'),
+    path('generate_mcqs/', generate_mcqs, name='generate_mcqs'),
+    path('execute_input/', execute_input, name='execute_input'),
+    #For generating MCQs per skill when creatung a job, this takes the job_title , the entry level and the skills
+    path('generate-questions/', generate_skills.generate_questions_view, name='generate_questions'),
 ]
