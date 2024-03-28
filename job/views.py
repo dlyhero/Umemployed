@@ -124,6 +124,11 @@ def apply_job(request, job_id):
     # Check if the user has already applied for this job
     existing_application = Application.objects.filter(user=request.user, job=job).first()
     
+    # Check if the user has completed the quiz
+    application = Application.objects.filter(user=request.user, job=job).first()
+    if application and not application.has_completed_quiz:
+        existing_application = False
+    
     if existing_application:
         # Display a message to the user
         messages.warning(request, "You have already applied for this job.")
@@ -149,54 +154,121 @@ from .forms import ApplicantAnswerForm
 from django.db.models import F
 
 from django.db.models import Q
+import random
+from django.http import HttpResponseBadRequest
+
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
     job = get_object_or_404(Job, id=job_id)
+    user = request.user
+
+    # Check if the user has already completed all rounds
+    application, created = Application.objects.get_or_create(user=user, job=job)
+    if application.has_completed_quiz:
+        messages.warning(request, "You have already completed the quiz for this job.")
+        return redirect('job:job_application_success')  # Redirect to success page or any other destination
+
+    # Determine the current round based on completion status
+    if not application.round1_completed:
+        round_number = 1
+    elif not application.round2_completed:
+        round_number = 2
+    elif not application.round3_completed:
+        round_number = 3
+    else:
+        # All rounds completed, update quiz_score and redirect to success page
+        application.quiz_score = application.round1_score + application.round2_score + application.round3_score
+        application.has_completed_quiz = True
+        application.save()
+        messages.success(request, "Congratulations! You have completed all rounds.")
+        return redirect('job:job_application_success')
+
+    # Calculate the number of questions per round
+    total_questions = SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level).count()
+    questions_per_round = total_questions // 3
+
+    # Calculate the starting and ending indices for the current round
+    start_index = (round_number - 1) * questions_per_round
+    end_index = min(round_number * questions_per_round, total_questions)
 
     if request.method == 'POST':
         answers = request.POST
         if answers:
             total_score = 0  # Initialize total score
-            for mcq in SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level):
+            for mcq in SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level)[start_index:end_index]:
                 answer = answers.get(f'question{mcq.id}')
                 if answer:
                     applicant_answer = ApplicantAnswer.objects.create(
-                        applicant=request.user,
+                        applicant=user,
                         question=mcq,
                         answer=answer,
                         job=job
                     )
                     applicant_answer.calculate_score()  # Calculate score for each answer
                     total_score += applicant_answer.score  # Update total score
+
+            # Update round completion status and total score
+            if round_number == 1:
+                application.round1_completed = True
+                application.round1_score = total_score
+            elif round_number == 2:
+                application.round2_completed = True
+                application.round2_score = total_score
+            elif round_number == 3:
+                application.round3_completed = True
+                application.round3_score = total_score
+            application.save()
+
+            # Calculate quiz score based on completed rounds
+            application.quiz_score = application.round1_score + application.round2_score + application.round3_score
+            application.save()
+
+            messages.success(request, f"Your answers for round {round_number} have been recorded. Total score: {total_score}")
             
-            # Create a new instance of the Application model
-            application = Application(user=request.user, job=job)
-            application.has_completed_quiz = True  # Set has_completed_quiz to True
-            application.save()  # Save the application
-            
-            messages.success(request, f"Your answers have been recorded. Total score: {total_score}")
-            return redirect('job:job_application_success')
+            # Redirect to a page indicating the start of the next round
+            if round_number <= 2:
+                # Render the round start template for the next round
+                return render(request, 'job/rounds/round_start.html', {'round_number': round_number + 1})
+            else:
+                # For round 3, redirect to the next step directly
+                return redirect('job:answer_job_questions', job_id=job_id)
         else:
             messages.error(request, "Please answer all questions.")
             return redirect('job:answer_job_questions', job_id=job_id)
     else:
-        print("Job Skills:", job.requirements.all())
-        print("Job Entry Level:", job.level)
+        # Fetch questions for the current round
+        mcqs = SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level)[start_index:end_index]
 
-        # Fetch questions related to the skills required by the job and the entry level specified
-        mcqs = SkillQuestion.objects.filter(
-            Q(skill__in=job.requirements.all()) & Q(entry_level=job.level)
-        )
-        print("Filtered questions count:", mcqs.count())  # Print the count of filtered questions
+        # Total Selected Questions
+        print("Total Selected Questions:", mcqs.count())  # Print the count of selected questions
         context = {
             'job': job,
             'mcqs': mcqs,
+            'round_number': round_number,
         }
-        return render(request, 'job/job_quiz.html', context)
+        
+        if round_number == 1:
+            template_name = 'job/rounds/round1.html'
+        elif round_number == 2:
+            template_name = 'job/rounds/round2.html'
+        elif round_number == 3:
+            template_name = 'job/rounds/round3.html'
+        else:
+            # Handle invalid round number
+            return HttpResponseBadRequest("Invalid round number")
 
+        return render(request, template_name, context)
+
+
+@login_required(login_url='/login')
 def job_application_success(request):
-    return render(request, 'job/application_success.html')
+    # Retrieve skill scores from session
+    skill_scores = request.session.get('skill_scores', {})
 
+    context = {
+        'skill_scores': skill_scores,
+    }
+    return render(request, 'job/application_success.html', context)
 
 
 

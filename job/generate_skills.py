@@ -1,3 +1,4 @@
+from django.shortcuts import render,redirect,get_object_or_404
 import json
 import logging
 from openai import OpenAI
@@ -26,7 +27,7 @@ def generate_questions_view(request):
         print("Selected skills:", selected_skill_names)
 
         try:
-            questions_per_skill = 5  # Number of questions to generate for each skill
+            questions_per_skill = 3  # Number of questions to generate for each skill
             all_questions = []  # List to store all generated questions
 
             for skill_name in selected_skill_names:
@@ -50,7 +51,8 @@ def generate_questions_view(request):
                     serialized_questions.append(serialized_question)
 
                 print("Serialized questions:", serialized_questions)
-                return JsonResponse({"message": "Questions generated successfully", "questions": serialized_questions})
+                # return JsonResponse({"message": "Questions generated successfully", "questions": serialized_questions})
+                return redirect('/')
             else:
                 return JsonResponse({"error": "Failed to generate questions"}, status=500)
 

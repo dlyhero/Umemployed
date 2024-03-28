@@ -84,6 +84,12 @@ class Application(models.Model):
     matching_percentage = models.FloatField(default=0.0)
     overall_match_percentage = models.FloatField(default=0.0)  # New field
     has_completed_quiz = models.BooleanField(default=False)  # New field
+    round1_completed = models.BooleanField(default=False)
+    round2_completed = models.BooleanField(default=False)
+    round3_completed = models.BooleanField(default=False)
+    round1_score = models.IntegerField(default=0)
+    round2_score = models.IntegerField(default=0)
+    round3_score = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
         if self.pk is None:

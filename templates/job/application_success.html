@@ -68,6 +68,18 @@
             Your application has been submitted successfully. You will receive an alert on the status of your application.
           </div>
         </div>
+        <!-- Add skill scores here -->
+        {% if skill_scores %}
+          <h2 class="mb-3">Skill Scores</h2>
+          <ul class="list-group">
+            {% for skill, score in skill_scores.items %}
+              <li class="list-group-item">{{ skill }}: {{ score }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No quiz results available.</p>
+        {% endif %}
+        <!-- End of skill scores -->
         <a href="{% url 'home' %}" class="btn btn-primary">Return to Portal</a>
       </div>
     </div>
