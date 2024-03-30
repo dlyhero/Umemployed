@@ -6,6 +6,14 @@ from users.models import User
 from job.models import Job
 from onboarding.views import general_knowledge_quiz
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .forms import CategoryForm, SkillForm
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import CategoryForm
+from django.urls import reverse
+import requests
 from geopy.distance import geodesic
 from geopy.geocoders import OpenCage
 geocoder = OpenCage('70d694d4b6824310a0a7e3a4f5041ce3')  # Replace 'YOUR_API_KEY' with your actual OpenCage API key
@@ -45,14 +53,7 @@ def update_resume(request):
         return redirect('dashboard')
 
 
-from django.shortcuts import render, redirect
-from .forms import CategoryForm, SkillForm
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import CategoryForm
-from django.urls import reverse
-import requests
 def select_category(request):
     if request.user.is_applicant:
         if request.method == 'POST':
@@ -263,19 +264,6 @@ def display_matching_jobs(request):
     else:
         messages.info(request,"please create a resume to continue")
         return redirect("update-resume")
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def resume_details(request, pk):

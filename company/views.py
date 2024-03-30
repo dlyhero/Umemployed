@@ -8,7 +8,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from resume.views import calculate_skill_match
 
-
+from django.shortcuts import render
+from django.http import HttpResponse
+from job.models import Job, Application
+from resume.models import Resume
 
 
 #create company
@@ -69,10 +72,6 @@ def company_details(request, pk):
     context = {'company': company}
     return render(request, 'company/company_details.html', context)
 
-from django.shortcuts import render
-from django.http import HttpResponse
-from job.models import Job, Application
-from resume.models import Resume
 
 @login_required(login_url='login')
 def view_applications(request, company_id):

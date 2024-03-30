@@ -95,6 +95,7 @@ def generate_questions_for_skills(job_title, entry_level, skill_name, questions_
         print(f"An error occurred while generating questions for skill {skill_name}: {e}")
     
     return questions
+
 def generate_mcqs_for_skill(skill_name):
     conversation = [
         {

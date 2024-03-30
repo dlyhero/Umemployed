@@ -4,8 +4,6 @@ from .forms import AssessmentForm, QuestionForm, OptionForm
 from django.utils import timezone
 from django.urls import reverse 
 
-
-# Create your views here.
 def assessments(request):
     user = request.user  # Assuming you have authentication in place
     sessions = Session.objects.filter(user=user).order_by('-id')[:3]
@@ -61,7 +59,6 @@ def delete_assessment(request, assessment_id):
         return redirect('assessment_list')
     return render(request, 'assessments/delete_assessment.html', {'assessment': assessment})
 
-# Views for Question and Option can be implemented similarly
 
 # View to list all assessments
 def assessment_list(request):
@@ -77,6 +74,7 @@ def available_assessments(request):
 def session_details(request, session_id):
     session = get_object_or_404(Session, id=session_id)
     return render(request, 'assessments/user/session_details.html', {'session': session})
+
 # View to start a new session for an assessment
 def start_session(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
@@ -95,10 +93,6 @@ def start_session(request, assessment_id):
 def submit_session(request, session_id):
     session = get_object_or_404(Session, id=session_id)
     if request.method == 'POST':
-        # Process the submitted session and store the results
-        # You can access the selected options from the request.POST data
-        # and create Result objects accordingly
-        # ...
         session.end_time = timezone.now()
         session.save()
         return redirect('session_results', session_id=session_id)

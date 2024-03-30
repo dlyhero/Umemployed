@@ -8,6 +8,8 @@ from openai import OpenAI
 import os
 import dotenv
 dotenv.load_dotenv()
+from .models import MCQ, SkillCategory
+
 
 
 api_key = os.environ.get('OPENAI_API_KEY')
@@ -104,7 +106,6 @@ def get_skills_from_chatgpt(job_title):
         return None
 
 
-from .models import MCQ, SkillCategory
 
 def execute_input(request):
     if request.method == 'GET':
