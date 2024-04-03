@@ -24,6 +24,8 @@ class SkillCategory(models.Model):
 class Skill(models.Model):
     name = models.CharField(max_length=100)
     categories = models.ManyToManyField(SkillCategory)  # Change ForeignKey to ManyToManyField
+    is_extracted = models.BooleanField(default=False)  # Indicates whether the skill was extracted from a job description
+
 
     def __str__(self):
         return self.name

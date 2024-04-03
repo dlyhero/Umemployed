@@ -10,7 +10,7 @@ class CreateJobForm(forms.ModelForm):
 
     class Meta:
         model = Job
-        fields = ['title','category', 'location', 'salary', 'ideal_candidate']
+        fields = ['title','category', 'location', 'salary', 'description']
 
 class SkillForm(forms.ModelForm):
     class Meta:

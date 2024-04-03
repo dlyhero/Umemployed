@@ -31,9 +31,10 @@ def create_job(request):
                 job.company = request.user.company
                 job.save()
 
-                # Store the selected category in the session
+                # Store the selected category and job description in the session
                 request.session['selected_category'] = form.cleaned_data['category'].id
                 request.session['selected_job_id'] = job.id
+                request.session['job_description'] = form.cleaned_data['description']  # Add this line
 
                 messages.info(request, "Update Recorded")
                 return redirect('job:select_skills')
@@ -50,6 +51,8 @@ def create_job(request):
 
 import requests
 
+from .job_description_algorithm import extract_technical_skills
+
 def select_skills(request):
     if request.user.is_recruiter and request.user.has_company:
         selected_category_id = request.session.get('selected_category')
@@ -58,7 +61,14 @@ def select_skills(request):
             selected_category = SkillCategory.objects.get(id=selected_category_id)
             job_instance = Job.objects.get(id=selected_job_id)
 
+            # Fetch extracted skills for the corresponding job title
+            extracted_skills = extract_technical_skills(job_instance.title, job_instance.description)
+            
+            # Print extracted_skills for debugging
+            print("Extracted Skills:", extracted_skills)
+            
             if request.method == 'POST':
+                print(request.POST)
                 form = SkillForm(request.POST, category=selected_category, instance=job_instance)
                 if form.is_valid():
                     form.save()
@@ -68,6 +78,7 @@ def select_skills(request):
                     # Retrieve selected skills from the form
                     selected_skills = form.cleaned_data['requirements']
                     selected_skill_names = [skill.name for skill in selected_skills]
+                    print('Selected Skills:', selected_skill_names)
 
                     # Construct the redirect URL with selected skills
                     redirect_url = f'/job/generate-questions/?job_title={job_instance.title}&entry_level={entry_level}&selected_skills={",".join(selected_skill_names)}'
@@ -75,16 +86,19 @@ def select_skills(request):
 
                     # Redirect to the generate_questions_view with selected skills
                     return redirect(redirect_url)
+                else:
+                    # If the form is not valid, print form errors for debugging
+                    print("Form errors:", form.errors)
             else:
                 form = SkillForm(category=selected_category)
 
-            return render(request, 'job/skill.html', {'form': form})
+                
+            return render(request, 'job/skill.html', {'form': form, 'extracted_skills': extracted_skills})
         else:
             return redirect('select_category')
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
-
 
     
 
