@@ -40,12 +40,11 @@ def save_skills_to_database(job_title, skills):
 
 def extract_technical_skills(job_title, job_description):
     conversation = [
-    {
-        "role": "user", 
-        "content": f"Given the following job description (JD): {job_description}, identify and list all the technical skills that can be practically tested during a technical interview. Focus on extracting skills related to hands-on technical knowledge, coding abilities, use of specific software tools, problem-solving skills, and any other competencies that can be demonstrated through practical tests, coding challenges, or problem-solving exercises. Exclude skills that cannot be directly tested in an interview setting, such as soft skills or theoretical knowledge not applicable to practical tasks. Format your output in JSON, organizing the skills under a key named 'Technical Skills'. Each skill should be listed as an element in an array of strings. Ensure that each skill does not comprise more than two words."
-    }
-]
-
+        {
+            "role": "user", 
+            "content": f"Given the following job description (JD): {job_description}, identify and list all the technical skills that can be practically tested during a technical interview. Focus on extracting skills related to hands-on technical knowledge, coding abilities, use of specific software tools, problem-solving skills, and any other competencies that can be demonstrated through practical tests, coding challenges, or problem-solving exercises. Exclude skills that cannot be directly tested in an interview setting, such as soft skills or theoretical knowledge not applicable to practical tasks. Format your output in JSON, organizing the skills under a key named 'Technical Skills'. Each skill should be listed as an element in an array of strings. Ensure that each skill does not comprise more than two words."
+        }
+    ]
 
     try:
         # Call GPT-4 to generate technical skills based on job description
@@ -54,30 +53,24 @@ def extract_technical_skills(job_title, job_description):
             messages=conversation
         )
 
-            # Parse the response
+        # Parse the response
         response_content = response.choices[0].message.content
         response_dict = json.loads(response_content)
-
         
         # Extract the technical skills
         technical_skills = response_dict.get("Technical Skills", [])
 
-         # Save the skills to the database
+        # Save the skills to the database
         save_skills_to_database(job_title, technical_skills)
         print('Skills saved to database:', technical_skills)
 
-        # Return job title and extracted technical skills as JSON object
-        print('Job description: ', job_description)
-        print({'job_title': job_title, 'skills': technical_skills})
-
-        return {
-            "job_title": job_title,
-            "skills": technical_skills
-        }
+        return technical_skills
 
     except (json.JSONDecodeError, Exception) as e:
         logger.error("An error occurred while extracting technical skills: %s", e)
-        return None
+        return []
+
+
 
 def extract_technical_skills_endpoint(request):
     # Get the job description from the query parameters

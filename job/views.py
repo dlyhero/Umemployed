@@ -22,37 +22,58 @@ from job.generate_skills import generate_mcqs_for_skill
 
 @login_required(login_url='/login')
 def create_job(request):
-    if request.user.is_recruiter and request.user.has_company:
-        if request.method == 'POST':
-            form = CreateJobForm(request.POST)
-            if form.is_valid():
-                job = form.save(commit=False)
-                job.user = request.user
-                job.company = request.user.company
-                job.save()
+    if request.method == 'POST':
+        form = CreateJobForm(request.POST)
+        if form.is_valid():
+            job = form.save(commit=False)
+            job.user = request.user
+            job.company = request.user.company
+            job.save()
 
-                # Store the selected category and job description in the session
-                request.session['selected_category'] = form.cleaned_data['category'].id
-                request.session['selected_job_id'] = job.id
-                request.session['job_description'] = form.cleaned_data['description']  # Add this line
+            # Store the selected category in the session
+            request.session['selected_category'] = form.cleaned_data['category'].id
+            request.session['selected_job_id'] = job.id
 
-                messages.info(request, "Update Recorded")
-                return redirect('job:select_skills')
-            else:
-                messages.warning(request, 'Something went wrong')
-                return redirect('create_job')
-        else:
-            form = CreateJobForm()
-            context = {'form': form}
-            return render(request, 'job/create_job.html', context)
+            # Redirect to enter job description
+            return redirect('job:enter_job_description')
     else:
-        messages.warning(request, 'Permission Denied!')
-        return redirect('dashboard')
+        form = CreateJobForm()
+    return render(request, 'job/create_job.html', {'form': form})
+
+from .forms import JobDescriptionForm
+from django.http import HttpResponseRedirect
+
+def enter_job_description(request):
+    if request.method == 'POST':
+        form = JobDescriptionForm(request.POST)
+        if form.is_valid():
+            job_id = request.session.get('selected_job_id')
+            job = Job.objects.get(id=job_id)
+            job.description = form.cleaned_data['description']
+            job.save()
+
+            # Call the function to extract technical skills
+            extracted_skills = extract_technical_skills(job.title, job.description)
+            print('Extracted skills:', extracted_skills)
+
+            # Add extracted skills to the job
+            for skill in extracted_skills:
+                skill_obj, created = Skill.objects.get_or_create(name=skill)
+                job.extracted_skills.add(skill_obj)
+
+            # Redirect to select_skills view
+            return redirect('job:select_skills')
+    else:
+        form = JobDescriptionForm()
+    return render(request, 'job/enter_job_description.html', {'form': form})
 
 import requests
 
 from .job_description_algorithm import extract_technical_skills
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def select_skills(request):
     if request.user.is_recruiter and request.user.has_company:
         selected_category_id = request.session.get('selected_category')
@@ -61,44 +82,34 @@ def select_skills(request):
             selected_category = SkillCategory.objects.get(id=selected_category_id)
             job_instance = Job.objects.get(id=selected_job_id)
 
-            # Fetch extracted skills for the corresponding job title
-            extracted_skills = extract_technical_skills(job_instance.title, job_instance.description)
-            
-            # Print extracted_skills for debugging
-            print("Extracted Skills:", extracted_skills)
-            
+            # Retrieve extracted skills for the job instance
+            extracted_skills = job_instance.extracted_skills.all()
+
             if request.method == 'POST':
-                print(request.POST)
-                form = SkillForm(request.POST, category=selected_category, instance=job_instance)
+                form = SkillForm(request.POST, category=selected_category)
                 if form.is_valid():
-                    form.save()
-                    # Retrieve the entry level from the form
+                    job_id = request.session.get('selected_job_id')
+                    job = Job.objects.get(id=job_id)
+                    job.requirements.set(form.cleaned_data['requirements'])        
+                    job.save()
+
                     entry_level = form.cleaned_data['level']
-                    
-                    # Retrieve selected skills from the form
                     selected_skills = form.cleaned_data['requirements']
                     selected_skill_names = [skill.name for skill in selected_skills]
-                    print('Selected Skills:', selected_skill_names)
 
-                    # Construct the redirect URL with selected skills
                     redirect_url = f'/job/generate-questions/?job_title={job_instance.title}&entry_level={entry_level}&selected_skills={",".join(selected_skill_names)}'
-                    print("Redirect URL:", redirect_url)
-
-                    # Redirect to the generate_questions_view with selected skills
                     return redirect(redirect_url)
-                else:
-                    # If the form is not valid, print form errors for debugging
-                    print("Form errors:", form.errors)
             else:
-                form = SkillForm(category=selected_category)
+                form = SkillForm(category=selected_category, extracted_skills=extracted_skills)
 
-                
             return render(request, 'job/skill.html', {'form': form, 'extracted_skills': extracted_skills})
         else:
             return redirect('select_category')
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
+
+
 
     
 
@@ -220,6 +231,22 @@ def answer_job_questions(request, job_id):
                     )
                     applicant_answer.calculate_score()  # Calculate score for each answer
                     total_score += applicant_answer.score  # Update total score
+            
+            # Include extracted skills in calculating the score
+            for skill in job.extracted_skills.all():
+                # Fetch questions related to each extracted skill
+                skill_questions = SkillQuestion.objects.filter(skill=skill, entry_level=job.level)
+                for mcq in skill_questions:
+                    answer = answers.get(f'question{mcq.id}')
+                    if answer:
+                        applicant_answer = ApplicantAnswer.objects.create(
+                            applicant=user,
+                            question=mcq,
+                            answer=answer,
+                            job=job
+                        )
+                        applicant_answer.calculate_score()  # Calculate score for each answer
+                        total_score += applicant_answer.score  # Update total score
 
             # Update round completion status and total score
             if round_number == 1:
@@ -253,11 +280,18 @@ def answer_job_questions(request, job_id):
         # Fetch questions for the current round
         mcqs = SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level)[start_index:end_index]
 
+        # Include extracted skills questions for the current round
+        extracted_skills_questions = []
+        for skill in job.extracted_skills.all():
+            extracted_skill_questions = SkillQuestion.objects.filter(skill=skill, entry_level=job.level)
+            extracted_skills_questions.extend(extracted_skill_questions)
+
         # Total Selected Questions
-        print("Total Selected Questions:", mcqs.count())  # Print the count of selected questions
+        print("Total Selected Questions:", mcqs.count() + len(extracted_skills_questions))  # Print the count of selected questions
         context = {
             'job': job,
             'mcqs': mcqs,
+            'extracted_skills_questions': extracted_skills_questions,
             'round_number': round_number,
         }
         
