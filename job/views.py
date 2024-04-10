@@ -88,10 +88,10 @@ def select_skills(request):
             if request.method == 'POST':
                 form = SkillForm(request.POST, category=selected_category)
                 if form.is_valid():
-                    # Set the company_id and user_id before saving the form
-                    form.instance.company_id = request.user.company.id
-                    form.instance.user_id = request.user.id
-                    form.save()
+                    job_id = request.session.get('selected_job_id')
+                    job = Job.objects.get(id=job_id)
+                    job.requirements.set(form.cleaned_data['requirements'])        
+                    job.save()
 
                     entry_level = form.cleaned_data['level']
                     selected_skills = form.cleaned_data['requirements']
