@@ -1,5 +1,5 @@
 from django import forms
-from .models import Resume, SkillCategory, Skill, Experience, Education
+from .models import Resume,ResumeDoc, SkillCategory, Skill, Experience, Education
 
 class UpdateResumeForm(forms.ModelForm):
     class Meta:
@@ -99,3 +99,8 @@ class UpdateResumeForm3(forms.ModelForm):
             resume.save()
 
         return resume
+    
+class ResumeForm(forms.ModelForm):
+    class Meta:
+        model = ResumeDoc
+        fields = ['file']
