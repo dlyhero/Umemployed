@@ -1,54 +1,29 @@
-from pypdf import PdfReader 
-from django.http import HttpResponse
-from django.shortcuts import render,redirect,get_object_or_404
+import os
 import json
 import logging
-from openai import OpenAI
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from job.models import Skill, SkillQuestion
-import os
-from resume.models import SkillCategory,Skill
 import dotenv
+from pypdf import PdfReader
+from openai import OpenAI
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse
+from .forms import ResumeForm
+from .models import *
+from resume.models import SkillCategory, Skill
+from job.models import Skill, SkillQuestion, Job
+from job.job_description_algorithm import save_skills_to_database 
+from . import views
 
 dotenv.load_dotenv()
 api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 logger = logging.getLogger(__name__)
 
-import json
-import logging
-
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
-
-
-api_key = os.environ.get('OPENAI_API_KEY')
-client = OpenAI(api_key=api_key)
-from .forms import ResumeForm
-
-from django.urls import reverse
-from django.shortcuts import redirect
-
-def save_skills_to_database(job_title, skills):
-    try:
-        # Retrieve or create the SkillCategory object based on the job_title
-        category, created = SkillCategory.objects.get_or_create(name=job_title)
-
-        # Create Skill objects and associate them with the SkillCategory
-        for skill_name in skills:
-            skill, created = Skill.objects.get_or_create(name=skill_name)
-            skill.categories.add(category)  # Associate the skill with the category
-            skill.is_extracted = True  # Set the flag indicating that this skill was extracted from a job description
-            skill.save()
-
-    except Exception as e:
-        logger.error("An error occurred while saving skills to the database for %s: %s", job_title, e)
-
-
-
-
 def upload_resume(request):
+    """
+    Handles the upload of resumes.
+    """
     if request.method == 'POST':
         form = ResumeForm(request.POST, request.FILES)
         if form.is_valid():
@@ -65,14 +40,10 @@ def upload_resume(request):
     return render(request, 'resume/upload_resume.html', {'form': form})
 
 
-
-from .models import *
-
-from django.http import HttpResponse
-from job.models import Job
-
-
 def extract_text(request, file_path):
+    """
+    Extracts text from a PDF resume file and saves it to the database.
+    """
     # Creating a pdf reader object 
     reader = PdfReader(file_path) 
 
@@ -82,7 +53,7 @@ def extract_text(request, file_path):
 
     # Get the job title from Resume.job_title based on extracted text
     try:
-        resume = Resume.objects.get(user = request.user)
+        resume = Resume.objects.get(user=request.user)
         job_title = resume.job_title
         print("Job title found:", job_title)
     except Resume.DoesNotExist:
@@ -107,15 +78,16 @@ def extract_text(request, file_path):
 
     # Redirect to the extract_technical_skills view
     technical_skills = extract_technical_skills(request, extracted_text, job_title)
-    return HttpResponse("Text extraction successful")
-
-
+    return redirect(views.select_category)
 
 
 def extract_technical_skills(request, extracted_text, job_title):
+    """
+    Extracts technical skills from extracted text using GPT-4 and saves them to the database.
+    """
     conversation = [
         {
-            "role": "user", 
+            "role": "user",
             "content": f"Given the following resume details: {extracted_text}, identify and list all the technical skills that can be practically tested during a technical interview. Focus on extracting skills related to hands-on technical knowledge, coding abilities, use of specific software tools, problem-solving skills, and any other competencies that can be demonstrated through practical tests, coding challenges, or problem-solving exercises. Exclude skills that cannot be directly tested in an interview setting, such as soft skills or theoretical knowledge not applicable to practical tasks. Format your output in JSON, organizing the skills under a key named 'Technical Skills'. Each skill should be listed as an element in an array of strings. Ensure that each skill does not comprise more than two words."
         }
     ]
@@ -130,7 +102,6 @@ def extract_technical_skills(request, extracted_text, job_title):
         # Parse the response
         response_content = response.choices[0].message.content
         response_dict = json.loads(response_content)
-        
 
         # Extract the technical skills
         technical_skills = response_dict.get("Technical Skills", [])

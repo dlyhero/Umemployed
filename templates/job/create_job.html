@@ -26,6 +26,12 @@
     <div class="card-body">
       <h5 class="card-title mb-3">Create Job</h5>
 
+      <section>
+        enter job title if not found on list 
+        <input type="text" name="job_title" id="job_title" placeholder="Job Title" />
+        <a href="{% url 'job:execute_input' %}"><button type="button" class="btn btn-primary">Add Job Title</button></a>
+        
+      </section>
       <form
         method="post"
         enctype="multipart/form-data"
