@@ -1,5 +1,5 @@
 from django import forms
-from .models import Resume, SkillCategory, Skill, Experience, Education
+from .models import Resume,ResumeDoc, SkillCategory, Skill, Experience, Education
 
 class UpdateResumeForm(forms.ModelForm):
     class Meta:
@@ -16,6 +16,7 @@ from .models import SkillCategory
 
 class CategoryForm(forms.Form):
     category = forms.ModelChoiceField(queryset=SkillCategory.objects.all(), empty_label=None)
+    
 
 
 class SkillForm(forms.ModelForm):
@@ -28,8 +29,24 @@ class SkillForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         category = kwargs.pop('category')
+        user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-        self.fields['skills'].queryset = Skill.objects.filter(categories=category)
+        
+        # Get skills from the selected category
+        category_skills = Skill.objects.filter(categories=category)
+        
+        # Get extracted skills from the user's resume
+        extracted_skills = user.resumedoc.extracted_skills.all()
+        
+        # Combine category skills and extracted skills
+        all_skills = category_skills | extracted_skills
+        
+        # Set queryset for skills field
+        self.fields['skills'].queryset = all_skills
+        
+        # Set initial values for the skills field
+        self.fields['skills'].initial = extracted_skills
+
 
 class UpdateResumeForm2(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=SkillCategory.objects.all().order_by('name'), empty_label=None)
@@ -99,3 +116,8 @@ class UpdateResumeForm3(forms.ModelForm):
             resume.save()
 
         return resume
+    
+class ResumeForm(forms.ModelForm):
+    class Meta:
+        model = ResumeDoc
+        fields = ['file']

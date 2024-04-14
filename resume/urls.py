@@ -1,5 +1,6 @@
 from django.urls import path 
 from . import views 
+from .extract_pdf import *
 
 urlpatterns = [
     path('update-resume/', views.update_resume, name='update-resume'),
@@ -10,4 +11,7 @@ urlpatterns = [
     path('select-category/', views.select_category, name='select_category'),
     path('select-skills/', views.select_skills, name='select_skills'),
     # path('job/apply/<int:job_id>/', apply_job, name='apply_job'),
+    path('upload/', upload_resume, name='upload'),
+    path('extract-text/<path:file_path>/', extract_text, name='extract_text'),
+    path('extract-technical-skills/<path:file_path>/', extract_technical_skills, name='extract_technical_skills'),
 ]

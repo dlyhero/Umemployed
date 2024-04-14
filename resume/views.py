@@ -1,26 +1,26 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .models import Resume, SkillCategory, Skill
-from .forms import UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3,CategoryForm,SkillForm
-from users.models import User
-from job.models import Job
-from onboarding.views import general_knowledge_quiz
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from .forms import CategoryForm, SkillForm
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import CategoryForm
-from django.urls import reverse
 import requests
 from geopy.distance import geodesic
 from geopy.geocoders import OpenCage
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .forms import CategoryForm, SkillForm, UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3
+from .models import Resume, SkillCategory, Skill
+from users.models import User
+from job.models import Job
+from onboarding.views import general_knowledge_quiz
+from .extract_pdf import upload_resume
+
 geocoder = OpenCage('70d694d4b6824310a0a7e3a4f5041ce3')  # Replace 'YOUR_API_KEY' with your actual OpenCage API key
 
 
 @login_required(login_url='login')
 def update_resume(request):
+    """
+    Allows applicants to update their resumes.
+    """
     if request.user.is_applicant:
         try:
             resume = Resume.objects.get(user=request.user)
@@ -40,7 +40,7 @@ def update_resume(request):
                 user.save()
 
                 messages.info(request, 'Your resume info has been updated.')
-                return redirect('select_category')
+                return redirect(upload_resume)
             else:
                 messages.warning(request, 'Something went wrong')
         else:
@@ -53,8 +53,10 @@ def update_resume(request):
         return redirect('dashboard')
 
 
-
 def select_category(request):
+    """
+    Allows applicants to select a category for their skills.
+    """
     if request.user.is_applicant:
         if request.method == 'POST':
             form = CategoryForm(request.POST)
@@ -69,96 +71,48 @@ def select_category(request):
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
 
+
+@login_required
 def select_skills(request):
-    if request.user.is_applicant:
+    """
+    Allows applicants to select skills based on the chosen category.
+    """
+    if request.method == 'POST':
         selected_category_id = request.session.get('selected_category')
         if selected_category_id:
             selected_category = SkillCategory.objects.get(id=selected_category_id)
-            if request.method == 'POST':
-                form = SkillForm(request.POST, category=selected_category)
-                if form.is_valid():
-                    resume = Resume.objects.get(user=request.user)
-                    resume.category = selected_category
-                    resume.skills.set(form.cleaned_data['skills'])
-                    resume.save()
-                    return redirect('onboarding-3')
-            else:
-                form = SkillForm(category=selected_category)
-            
-            return render(request, 'resume/select_skills.html', {'form': form})
+            form = SkillForm(request.POST, category=selected_category, user=request.user)  # Pass user parameter
+            if form.is_valid():
+                resume = Resume.objects.get(user=request.user)
+                resume.category = selected_category
+                resume.skills.set(form.cleaned_data['skills'])
+                resume.save()
+                return redirect('onboarding-3')
         else:
             # Handle the case where a category is not selected
             return redirect('select_category')
     else:
-        messages.warning(request, "Permission Denied")
-        return redirect('dashboard')
-# def select_category(request):
-#     if request.user.is_applicant:
-#         if request.method == 'POST':
-#             form = CategoryForm(request.POST)
-#             if form.is_valid():
-#                 selected_category = form.cleaned_data['category']
-#                 custom_category = form.cleaned_data['custom_category']
-
-#                 if custom_category:  # If user typed custom category
-#                     # Make HTTP request to FastAPI endpoint with custom category
-#                     fastapi_url = 'http://localhost:8000/skills'  # Update with your FastAPI URL
-#                     params = {'title': custom_category}
-#                     try:
-#                         response = requests.get(fastapi_url, params=params)
-#                         # Handle response as needed
-#                         # For example: status_code = response.status_code
-#                     except requests.RequestException as e:
-#                         # Handle request exception
-#                         messages.error(request, f"Error: {e}")
-                    
-#                     # Redirect to next step
-#                     return redirect('select_skills')
-
-#                 elif selected_category:  # If user chose from dropdown but didn't type a custom category
-#                     # Save selected_category as needed, e.g., in session
-#                     request.session['selected_category'] = selected_category.id
-#                     # Redirect to next step
-#                     return redirect('select_skills')
-
-#         else:
-#             form = CategoryForm()
-        
-#         return render(request, 'resume/select_category.html', {'form': form})
-#     else:
-#         messages.warning(request, "Permission Denied")
-#         return redirect('dashboard')
-
-        
-# def select_skills(request):
-#     if request.user.is_applicant:
-#         selected_category_id = request.session.get('selected_category')
-#         if selected_category_id:
-#             selected_category = SkillCategory.objects.get(id=selected_category_id)
-#             if request.method == 'POST':
-#                 form = SkillForm(request.POST, category=selected_category)
-#                 if form.is_valid():
-#                     resume = Resume.objects.get(user=request.user)
-#                     resume.category = selected_category
-#                     resume.skills.set(form.cleaned_data['skills'])
-#                     resume.save()
-#                     return redirect('onboarding-3')
-#             else:
-#                 form = SkillForm(category=selected_category)
-            
-#             return render(request, 'resume/select_skills.html', {'form': form})
-#         else:
-#             # Handle the case where a category is not selected
-#             return redirect('select_category')
-#     else:
-#         messages.warning(request, "Permission Denied")
-#         return redirect('dashboard')
-
+        # Handle the case when the request method is not POST
+        if request.user.is_applicant:
+            selected_category_id = request.session.get('selected_category')
+            if selected_category_id:
+                selected_category = SkillCategory.objects.get(id=selected_category_id)
+                form = SkillForm(category=selected_category, user=request.user)  # Pass user parameter
+                return render(request, 'resume/select_skills.html', {'form': form})
+            else:
+                # Handle the case where a category is not selected
+                return redirect('select_category')
+        else:
+            messages.warning(request, "Permission Denied")
+            return redirect('dashboard')
 
 
 
 @login_required(login_url='login')
 def applicant_onboarding_part3(request):
+    """
+    Handles the third part of the onboarding process for applicants.
+    """
     if request.user.is_applicant:
         resume = get_object_or_404(Resume, user=request.user)
 
@@ -184,13 +138,19 @@ def applicant_onboarding_part3(request):
         return redirect('dashboard')
 
 
-
 def calculate_skill_match(applicant_skills, job_skills):
+    """
+    Calculates the match percentage between applicant skills and job requirements.
+    """
     common_skills = applicant_skills.intersection(job_skills)
     match_percentage = (len(common_skills) / len(job_skills)) * 100
     return match_percentage, job_skills - common_skills  # Missing skills
 
+
 def calculate_proximity_percentage(user_location, job_location):
+    """
+    Calculates the proximity percentage between user and job locations.
+    """
     user_coordinates = get_coordinates(user_location)
     job_coordinates = get_coordinates(job_location)
     if user_coordinates and job_coordinates:
@@ -199,7 +159,11 @@ def calculate_proximity_percentage(user_location, job_location):
             return 10  # Assign an additional 10% match for jobs within 50 km
     return 0
 
+
 def get_coordinates(location):
+    """
+    Retrieves the coordinates for a given location using geocoding.
+    """
     try:
         result = geocoder.geocode(location)
         if result:
@@ -211,8 +175,11 @@ def get_coordinates(location):
     
     return None
 
-# @login_required(login_url='login')
+
 def get_matching_jobs(user_job_title, user_skills):
+    """
+    Retrieves matching jobs based on user job title and skills.
+    """
     all_jobs = Job.objects.all()
     matching_jobs = []
 
@@ -226,8 +193,12 @@ def get_matching_jobs(user_job_title, user_skills):
     
     return matching_jobs
 
+
 @login_required(login_url='login')
 def display_matching_jobs(request):
+    """
+    Displays matching jobs for the current user.
+    """
     user= request.user
     if user.has_resume:
         user_resume = Resume.objects.get(user=request.user)
@@ -267,6 +238,9 @@ def display_matching_jobs(request):
 
 
 def resume_details(request, pk):
+    """
+    Displays details of a specific resume.
+    """
     resume = get_object_or_404(Resume, pk=pk)
     context = {'resume': resume}
     return render(request, 'resume/resume_details.html', context)

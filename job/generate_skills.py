@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 import json
 import logging
 from openai import OpenAI
@@ -7,31 +7,37 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Skill, SkillQuestion
 import os
 import dotenv
+
 dotenv.load_dotenv()
-
-
 api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def generate_questions_view(request):
+    """
+    Generates and stores multiple-choice questions for selected skills based on job title and entry level.
+
+    Args:
+        request: HTTP request object.
+
+    Returns:
+        If successful, redirects to a specified URL; otherwise, returns a JSON response with an error message.
+
+    Raises:
+        HTTPError: If the request method is not allowed.
+    """
     if request.method == 'GET':
         job_title = request.GET.get('job_title')
         entry_level = request.GET.get('entry_level')
         selected_skills = request.GET.get('selected_skills')
         selected_skill_names = selected_skills.split(',') if selected_skills else []
 
-        print("Selected job title:", job_title)
-        print("Selected entry level:", entry_level)
-        print("Selected skills:", selected_skill_names)
-
         try:
-            questions_per_skill = 3  # Number of questions to generate for each skill
-            all_questions = []  # List to store all generated questions
+            questions_per_skill = 3
+            all_questions = []
 
             for skill_name in selected_skill_names:
-                # Generate questions for each selected skill
                 questions = generate_questions_for_skills(job_title, entry_level, skill_name, questions_per_skill)
                 all_questions.extend(questions)
 
@@ -50,33 +56,40 @@ def generate_questions_view(request):
                     }
                     serialized_questions.append(serialized_question)
 
-                print("Serialized questions:", serialized_questions)
-                # return JsonResponse({"message": "Questions generated successfully", "questions": serialized_questions})
                 return redirect('/')
             else:
                 return JsonResponse({"error": "Failed to generate questions"}, status=500)
 
         except Exception as e:
             logging.error(f"An error occurred: {e}")
-            print("An error occurred:", e)
             return JsonResponse({"error": "An error occurred"}, status=500)
 
     else:
         return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def generate_questions_for_skills(job_title, entry_level, skill_name, questions_per_skill):
-    print("Generating questions for job title:", job_title)
-    print("Generating questions for skill:", skill_name)
-    
+    """
+    Generates multiple-choice questions for a specified skill.
+
+    Args:
+        job_title (str): The job title.
+        entry_level (str): The entry level of the job.
+        skill_name (str): The name of the skill.
+        questions_per_skill (int): The number of questions to generate for the skill.
+
+    Returns:
+        A list of SkillQuestion objects containing the generated questions.
+
+    Raises:
+        None
+    """
     questions = []
     
     try:
-        # Generate questions for the specified skill
         for _ in range(questions_per_skill):
             question_data = generate_mcqs_for_skill(skill_name)
             
             if question_data:
-                # Create a SkillQuestion object and associate it with the Skill
                 skill_question = SkillQuestion.objects.create(
                     question=question_data['question'],
                     option_a=question_data['options'].get('A', ''),
@@ -97,6 +110,18 @@ def generate_questions_for_skills(job_title, entry_level, skill_name, questions_
     return questions
 
 def generate_mcqs_for_skill(skill_name):
+    """
+    Generates a multiple-choice question and answers related to a specified skill.
+
+    Args:
+        skill_name (str): The name of the skill.
+
+    Returns:
+        A dictionary containing the generated question, answer options, and correct answer.
+
+    Raises:
+        None
+    """
     conversation = [
         {
             "role": "user", 

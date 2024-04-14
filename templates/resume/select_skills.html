@@ -67,9 +67,10 @@
                 <div class="card-body">
                     <h5 class="card-title mb-3">Step 3: Choose Skills</h5>
 
+                    ...
                     <form method="post">
                         {% csrf_token %}
-
+                        
                         <div class="accordion">
                             <button type="button" class="accordion-button" id="skills-button">Select Skills</button>
                             <div class="accordion-content" id="skills-content">
@@ -82,6 +83,8 @@
                             <button type="submit" class="btn btn-primary">Next</button>
                         </div>
                     </form>
+                    ...
+
                 </div>
             </div>
         </div>
