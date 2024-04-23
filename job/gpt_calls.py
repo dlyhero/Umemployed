@@ -16,6 +16,13 @@ api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 
 def save_skills_to_database(job_title, skills):
+    """
+    Save skills to the database.
+
+    Args:
+        job_title (str): The title of the job.
+        skills (list): List of skills associated with the job.
+    """
     try:
         # Retrieve or create the SkillCategory object based on the job_title
         category, created = SkillCategory.objects.get_or_create(name=job_title)
@@ -30,6 +37,13 @@ def save_skills_to_database(job_title, skills):
 
 
 def save_mcqs_to_database(skill_category_name, mcqs_data):
+    """
+    Save MCQs to the database.
+
+    Args:
+        skill_category_name (str): The name of the skill category.
+        mcqs_data (dict): Data containing MCQs information.
+    """
     try:
         # Retrieve or create the SkillCategory object based on the skill_category_name
         skill_category, created = SkillCategory.objects.get_or_create(name=skill_category_name)
@@ -50,6 +64,15 @@ def save_mcqs_to_database(skill_category_name, mcqs_data):
 
 
 def generate_mcqs(job_title):
+    """
+    Generate multiple-choice questions related to a job title.
+
+    Args:
+        job_title (str): The title of the job.
+
+    Returns:
+        list: List of generated MCQs.
+    """
     conversation = [
         {
             "role": "user", 
@@ -83,6 +106,15 @@ def generate_mcqs(job_title):
 
 
 def get_skills_from_chatgpt(job_title):
+    """
+    Generate skills related to a job title.
+
+    Args:
+        job_title (str): The title of the job.
+
+    Returns:
+        dict: Dictionary containing the job title and associated skills.
+    """
     conversation = [
         {
             "role": "user",
@@ -108,6 +140,15 @@ def get_skills_from_chatgpt(job_title):
 
 
 def execute_input(request):
+    """
+    Execute input and generate skills and MCQs.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        JsonResponse: JSON response containing generated skills and MCQs.
+    """
     if request.method == 'GET':
         input_str = request.GET.get('input_str')
 

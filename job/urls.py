@@ -15,6 +15,9 @@ urlpatterns = [
     path('details',views.job_details, name='job_details'),
     path('confirm/<int:job_id>/', views.confirm_evaluation, name='confirm_evaluation'),
     path('enter-job-description/',enter_job_description, name='enter_job_description'),
+    path('job/<int:job_id>/save/', views.save_job, name='save_job'),
+    path('saved-jobs/', views.view_saved_jobs, name='view_saved_jobs'),
+    path('saved-job/<int:saved_job_id>/delete/', views.delete_saved_job, name='delete_saved_job'),
 
 
     #Compiler path
@@ -36,4 +39,5 @@ urlpatterns = [
     #For generating MCQs per skill when creatung a job, this takes the job_title , the entry level and the skills
     path('generate-questions/', generate_skills.generate_questions_view, name='generate_questions'),
     path('extract-technical-skills/', job_description_algorithm.extract_technical_skills_endpoint, name='extract_technical_skills'),
+
 ]
