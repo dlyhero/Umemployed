@@ -6,7 +6,7 @@ from resume.views import get_matching_jobs
 from django.contrib.auth.decorators import login_required
 from onboarding.views import general_knowledge_quiz
 from resume.models import Skill,SkillCategory
-from job.models import Job
+from job.models import Job,SavedJob
 import json
 from .jdoodle_api import execute_code
 from django.http import JsonResponse, HttpResponseNotAllowed
@@ -318,6 +318,45 @@ def job_application_success(request):
     }
     return render(request, 'job/application_success.html', context)
 
+
+
+def save_job(request, job_id):
+    """
+    Save a job for later viewing.
+    """
+    job = get_object_or_404(Job, pk=job_id)
+
+    if request.method == 'POST':
+        if 'submit' in request.POST:
+            print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+            saved_job, created = SavedJob.objects.get_or_create(user=request.user, job=job)
+            if created:
+                saved_job.save()
+                
+                messages.success(request, "Job saved successfully.")
+            else:
+                
+                messages.info(request, "You have already saved this job.")
+
+    # Redirect the user back to the job details page
+    return redirect('job:view_saved_jobs')
+
+def view_saved_jobs(request):
+    """
+    View the list of saved jobs.
+    """
+    saved_jobs = SavedJob.objects.filter(user=request.user)
+    return render(request, 'job/saved_jobs.html', {'saved_jobs': saved_jobs})
+
+def delete_saved_job(request, saved_job_id):
+    """
+    Delete a saved job.
+    """
+    saved_job = get_object_or_404(SavedJob, pk=saved_job_id, user=request.user)
+    if request.method == 'POST':
+        saved_job.delete()
+        return redirect('view_saved_jobs')
+    return render(request, 'job/delete_saved_job.html', {'saved_job': saved_job})
 
 
 

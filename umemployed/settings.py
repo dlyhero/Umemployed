@@ -22,16 +22,8 @@ DEBUG = os.environ.get('DEBUG') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
-SITE_ID = 1
+SITE_ID = 2
 
-AUTHENTICATION_BACKENDS = [
-    
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by email
-    'allauth.account.auth_backends.AuthenticationBackend',
-    ]
 
 # Application definition
 
@@ -49,7 +41,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'resume',
+    'resume', 
     'company',
     'dashboard',
     'job',
@@ -94,7 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -116,25 +108,34 @@ DATABASES = {
 
 
 # Provider specific settings
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         # For each OAuth based provider, either add a ``SocialApp``
+#         # (``socialaccount`` app) containing the required client
+#         # credentials, or list them here:
+#         'APP': {
+#             'client_id': '38566500036-r4qeg9h4joadlb0ev7lkgocb1nh4knvd.apps.googleusercontent.com',
+#             # 'callbackURL': '/accounts/google/google/login/callback',
+#             'secret': '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',
+#             'key': ''
+#         }
+#     }
+# }
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '38566500036-r4qeg9h4joadlb0ev7lkgocb1nh4knvd.apps.googleusercontent.com',
-            # 'callbackURL': '/accounts/google/google/login/callback',
-            'secret': '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',
-            'key': ''
-        }
+    "google":{
+        "SCOPE":[
+            "profile",
+            "email"
+        ],
+        "AUTH_PARAMS":{"access_type":"online"}
     }
 }
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT='/'
 
 ACCOUNT_EMAIL_REQUIRED = True #new
 ACCOUNT_LOGOUT_REDIRECT_URL='/'
-LOGIN_REDIRECT_URL = '/'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-LOGOUT_REDIRECT='/'
 
 
 
@@ -201,3 +202,12 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # Update the path to an absolute path
 #media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTHENTICATION_BACKENDS = (
+    
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend'
+)

@@ -1,34 +1,55 @@
 from django import forms
-from .models import Job
-
-from django import forms
-from .models import Job,ApplicantAnswer
+from .models import Job, ApplicantAnswer, MCQ
 from resume.models import Skill, SkillCategory
 
 class CreateJobForm(forms.ModelForm):
+    """
+    Form for creating a new job.
+
+    Attributes:
+        category (ModelChoiceField): Dropdown field for selecting a skill category.
+    """
     category = forms.ModelChoiceField(queryset=SkillCategory.objects.all(), empty_label=None)
 
     class Meta:
         model = Job
-        fields = ['title','category', 'location', 'salary']
+        fields = ['title', 'category', 'location', 'salary']
 
 class JobDescriptionForm(forms.Form):
+    """
+    Form for entering job description.
+
+    Attributes:
+        description (CharField): Textarea field for job description.
+    """
     description = forms.CharField(widget=forms.Textarea)
 
-
 class SkillForm(forms.ModelForm):
+    """
+    Form for entering required skills for a job.
+
+    Attributes:
+        requirements (CheckboxSelectMultiple): Checkbox field for selecting required skills.
+        extracted_skills (CheckboxSelectMultiple): Checkbox field for selecting extracted skills.
+    """
     class Meta:
         model = Job
-        fields = ['requirements', 'extracted_skills', 'level']  # Include 'extracted_skills' along with 'requirements'
+        fields = ['requirements', 'extracted_skills', 'level']
         widgets = {
             'requirements': forms.CheckboxSelectMultiple(),
-            'extracted_skills': forms.CheckboxSelectMultiple(),  # Add widget for 'extracted_skills' if needed
+            'extracted_skills': forms.CheckboxSelectMultiple(),
         }
 
-
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the form.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         category = kwargs.pop('category')
-        extracted_skills = kwargs.pop('extracted_skills', None)  # Get extracted_skills from kwargs
+        extracted_skills = kwargs.pop('extracted_skills', None)
         super().__init__(*args, **kwargs)
         
         # Set queryset for 'requirements' field based on the category
@@ -38,18 +59,38 @@ class SkillForm(forms.ModelForm):
         if extracted_skills is not None:
             self.fields['requirements'].initial = extracted_skills
 
-
 class UpdateJobForm(forms.ModelForm):
+    """
+    Form for updating job details.
+
+    Excludes 'user' and 'company' fields.
+
+    Attributes:
+        model (Job): The Job model.
+        exclude (tuple): Fields to exclude from the form.
+    """
     class Meta:
         model = Job
-        exclude = ('user','company')
-
-from .models import MCQ
+        exclude = ('user', 'company')
 
 class ApplicantAnswerForm(forms.ModelForm):
+    """
+    Form for entering applicant's answers to MCQs.
+
+    Attributes:
+        model (ApplicantAnswer): The ApplicantAnswer model.
+        fields (list): All fields of the ApplicantAnswer model.
+    """
     class Meta:
-        model = ApplicantAnswer  # Use the ApplicantAnswer model
-        fields = '__all__'  # Specify fields for the applicant's answers
+        model = ApplicantAnswer
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the form.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwargs)

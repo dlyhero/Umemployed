@@ -30,7 +30,7 @@ def create_company(request):
                 request.user.has_company = True
                 request.user.save()
                 messages.success(request, 'Company created successfully.')
-                return redirect('dashboard')  # Redirect to the dashboard after successful company creation
+                return redirect('view_applications', company_id=company.id)  # Redirect to the dashboard after successful company creation
             else:
                 messages.error(request, 'Error creating company.')
         else:

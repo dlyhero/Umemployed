@@ -14,6 +14,8 @@ from resume.models import SkillCategory, Skill
 from job.models import Skill, SkillQuestion, Job
 from job.job_description_algorithm import save_skills_to_database 
 from . import views
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 dotenv.load_dotenv()
 api_key = os.environ.get('OPENAI_API_KEY')
@@ -27,6 +29,16 @@ def upload_resume(request):
     if request.method == 'POST':
         form = ResumeForm(request.POST, request.FILES)
         if form.is_valid():
+            # Check if there's an existing resume for the user
+            existing_resume = ResumeDoc.objects.filter(user=request.user).first()
+            if existing_resume:
+                # If an existing resume is found, update it with the new file
+                existing_resume.file = request.FILES['file']
+                existing_resume.save()
+                # Redirect back to the upload page
+                messages.info(request, "Your resume has been updated successfully")
+            
+            # If no existing resume, proceed with creating a new one
             resume = form.save(commit=False)
             resume.user = request.user
             resume.save()
@@ -34,7 +46,12 @@ def upload_resume(request):
             file_path = resume.file.url.lstrip('/')
             redirect_url = reverse('extract_text', kwargs={'file_path': file_path})
             # Redirect to the extract_text view
-            return redirect(redirect_url)
+            return HttpResponseRedirect(redirect_url)
+        else:
+            # If form is not valid, handle the error or redirect as required
+            messages.error(request, "Invalid form submission. Please try again.")
+            # Redirect back to the upload page
+            return HttpResponseRedirect(reverse('upload_resume'))
     else:
         form = ResumeForm()
     return render(request, 'resume/upload_resume.html', {'form': form})

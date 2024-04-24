@@ -24,6 +24,13 @@ api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 
 def save_skills_to_database(job_title, skills):
+    """
+    Save skills extracted from job descriptions to the database.
+
+    Args:
+        job_title (str): The title of the job.
+        skills (list): List of skills extracted from the job description.
+    """
     try:
         # Retrieve or create the SkillCategory object based on the job_title
         category, created = SkillCategory.objects.get_or_create(name=job_title)
@@ -39,6 +46,16 @@ def save_skills_to_database(job_title, skills):
         logger.error("An error occurred while saving skills to the database for %s: %s", job_title, e)
 
 def extract_technical_skills(job_title, job_description):
+    """
+    Extract technical skills from a job description using GPT-4.
+
+    Args:
+        job_title (str): The title of the job.
+        job_description (str): The description of the job.
+
+    Returns:
+        list: List of technical skills extracted from the job description.
+    """
     conversation = [
         {
             "role": "user", 
@@ -73,6 +90,15 @@ def extract_technical_skills(job_title, job_description):
 
 
 def extract_technical_skills_endpoint(request):
+    """
+    Extract technical skills from a job description using a POST request.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        JsonResponse: JSON response containing the extracted technical skills.
+    """
     # Get the job description from the query parameters
     job_description = request.GET.get('job_description', '')
     job_title = request.GET.get('job_title', '')

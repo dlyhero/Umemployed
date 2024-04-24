@@ -5,9 +5,28 @@ from job.models import Application
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-
 @login_required(login_url='login')
 def general_knowledge_quiz(request):
+    """
+    View function for conducting a general knowledge quiz.
+
+    If the request method is POST:
+        - Retrieves the user's answers from the request.
+        - Saves the user's responses to the QuizResponse model.
+        - Updates the quiz score in the Application model.
+        - Marks the quiz as completed for the current application.
+        - Redirects to the quiz results page.
+
+    If the request method is GET:
+        - Retrieves random questions from the database.
+        - Renders the quiz page with the retrieved questions.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HTTP response, either redirecting to the quiz results page or rendering the quiz page.
+    """
     if request.method == 'POST':
         application = Application.objects.filter(user=request.user, has_completed_quiz=False).first()
 
@@ -39,10 +58,6 @@ def general_knowledge_quiz(request):
         application.has_completed_quiz = True
         application.save()
 
-        # if application.quiz_score < 2:
-        #     messages.info(request, "sorry you did not make it in this quiz, Please try next time")
-        #     return redirect('/')
-
         # After processing the answers, you can redirect to a results page or perform other actions
         return redirect('quiz_results')  # Replace 'quiz_results' with the actual URL name for the results page
     else:
@@ -60,9 +75,20 @@ def general_knowledge_quiz(request):
         }
         return render(request, 'onboarding/general_knowledge_quiz.html', context)
 
-
 @login_required(login_url='login')
 def quiz_results(request):
+    """
+    View function for displaying quiz results.
+
+    Retrieves the quiz responses for the resume, calculates scores for each application,
+    and renders the quiz results page with appropriate context.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HTTP response rendering the quiz results page.
+    """
     resume = Resume.objects.get(user=request.user)
     applications = Application.objects.filter(user=request.user)
 

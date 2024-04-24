@@ -116,3 +116,11 @@ class Application(models.Model):
         self.overall_match_percentage = overall_match_percentage
 
         super().save(*args, **kwargs)
+
+class SavedJob(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'job')

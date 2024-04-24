@@ -8,10 +8,10 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('users.urls')),
+    path('accounts/user/', include('users.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('',views.home, name = 'home'),
-    path('accounts/google/', include('allauth.urls')),
+    path('accounts/', include('allauth.urls')),
 
     #urls for the password reset with email
     path('reset_password/',auth_views.PasswordResetView.as_view(template_name='password_reset/passwordReset.html'),name='reset_password'),

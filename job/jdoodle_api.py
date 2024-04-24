@@ -2,6 +2,17 @@ import requests
 import json
 
 def execute_code(script, language, version_index):
+    """
+    Execute code using JDoodle API.
+
+    Args:
+        script (str): The code to execute.
+        language (str): The programming language of the code.
+        version_index (int): The index of the language version.
+
+    Returns:
+        str: Output of the code execution.
+    """
     client_id = "c531a51504fda77d3bd97d4dce3d17b3"  # client ID
     client_secret = "fc14913ecdfda745506f613f4a92c807e01395240bd19fc1390d7e2d6a756583"  # client Secret
 
