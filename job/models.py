@@ -16,7 +16,7 @@ class Job(models.Model):
         (MID, 'Mid'),
         (EXPERT, 'Expert'),
     ]
-
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
@@ -37,6 +37,7 @@ class Job(models.Model):
         return self.title
 
 class MCQ(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     question = models.CharField(max_length=255)
     option_a = models.CharField(max_length=100)
     option_b = models.CharField(max_length=100)
@@ -49,6 +50,7 @@ class MCQ(models.Model):
         return self.question
     
 class SkillQuestion(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     question = models.CharField(max_length=255)
     option_a = models.CharField(max_length=100)
     option_b = models.CharField(max_length=100)
@@ -62,6 +64,7 @@ class SkillQuestion(models.Model):
         return self.question
 
 class ApplicantAnswer(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey('SkillQuestion', on_delete=models.CASCADE)  # Update this line
     answer = models.CharField(max_length=255)
@@ -78,7 +81,7 @@ class ApplicantAnswer(models.Model):
             self.score = 0
         self.save()
 class Application(models.Model):
-    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default=1)
     quiz_score = models.IntegerField(default=0)
