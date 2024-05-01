@@ -27,6 +27,7 @@ urlpatterns = [
     path('jobs/',include('website.urls')),
     path('onboarding/', include('onboarding.urls')),
     path('assessments/', include('asseessments.urls')),
+    path('posts/',include('social_features.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
