@@ -16,7 +16,6 @@ class Job(models.Model):
         (MID, 'Mid'),
         (EXPERT, 'Expert'),
     ]
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)

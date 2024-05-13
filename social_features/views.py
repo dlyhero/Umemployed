@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Post, Message
+from .models import Post, Message, Like, Comment, Follow
 from .forms import PostForm, MessageForm
-from users.models import User 
+from users.models import User
 
 @login_required
 def create_post(request):
@@ -117,3 +117,43 @@ def inbox(request):
     """
     messages = Message.objects.filter(recipient=request.user).order_by('-created_at')
     return render(request, 'posts/inbox.html', {'messages': messages})
+
+@login_required
+def like_post(request, post_id):
+    """
+    View for liking a post.
+
+    Allows authenticated users to like a post.
+    """
+    post = get_object_or_404(Post, id=post_id)
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
+    if not created:
+        like.delete()
+    return redirect('view_post', post_id=post_id)
+
+@login_required
+def comment_post(request, post_id):
+    """
+    View for commenting on a post.
+
+    Allows authenticated users to comment on a post.
+    """
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            comment = Comment.objects.create(user=request.user, post=post, content=content)
+    return redirect('view_post', post_id=post_id)
+
+@login_required
+def follow_user(request, user_id):
+    """
+    View for following a user.
+
+    Allows authenticated users to follow another user.
+    """
+    user_to_follow = get_object_or_404(User, id=user_id)
+    follow, created = Follow.objects.get_or_create(follower=request.user, followed=user_to_follow)
+    if not created:
+        follow.delete()
+    return redirect('view_post', post_id=post_id)

@@ -46,7 +46,6 @@ def register_applicant(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
         if form.is_valid():
-            form.save()
             var = form.save(commit=False)
             var.is_applicant = True
             var.username = var.email
@@ -55,12 +54,15 @@ def register_applicant(request):
             messages.success(request, 'Your account has been created successfully')
             return redirect("login")  # Update the target name to match the appropriate URL name
         else:
-            messages.warning(request, "Something went wrong")
+            # Form is not valid, display specific error messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
             return redirect('register-applicant')
     else:
         form = RegisterUserForm()
-        context = {'form': form}
-        return render(request, 'users/register_applicant.html', context)
+    context = {'form': form}
+    return render(request, 'users/register_applicant.html', context)
 
 # register recruiter only
 def register_recruiter(request):
