@@ -36,6 +36,7 @@ class Education(models.Model):
     resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     institution_name = models.CharField(max_length=100)
+    field_of_study = models.CharField(max_length=255, null=True, blank=True)
     degree = models.CharField(max_length=100)
     graduation_year = models.IntegerField()
 
@@ -43,13 +44,16 @@ class Education(models.Model):
         return self.institution_name
 
 class Experience(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, related_name='experiences')
     resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
     company_name = models.CharField(max_length=100)
-    years = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return self.company_name
+        return f"{self.role} at {self.company_name}"
+
 
 class Resume(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -72,7 +76,7 @@ class Resume(models.Model):
         surname = self.surname if self.surname else ""
         return first_name + " " + surname
 class ResumeDoc(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to='resumes/')
     extracted_text = models.TextField(blank=True)
@@ -80,3 +84,23 @@ class ResumeDoc(models.Model):
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='resume_extracted_skills')
     def __str__(self):
         return f"Resume for {self.user.username}"
+
+class ContactInfo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=254)
+    phone = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"Contact Information for {self.user.username}"
+    
+class WorkExperience(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, related_name='work_experiences')
+    resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
+    company_name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.role} at {self.company_name}"
