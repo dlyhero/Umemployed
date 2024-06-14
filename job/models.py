@@ -85,39 +85,34 @@ class Application(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default=1)
     quiz_score = models.IntegerField(default=0)
     matching_percentage = models.FloatField(default=0.0)
-    overall_match_percentage = models.FloatField(default=0.0)  # New field
-    has_completed_quiz = models.BooleanField(default=False)  # New field
-    round1_completed = models.BooleanField(default=False)
-    round2_completed = models.BooleanField(default=False)
-    round3_completed = models.BooleanField(default=False)
-    round1_score = models.IntegerField(default=0)
-    round2_score = models.IntegerField(default=0)
-    round3_score = models.IntegerField(default=0)
+    overall_match_percentage = models.FloatField(default=0.0)
+    has_completed_quiz = models.BooleanField(default=False)
+    # Assume you may have many rounds based on the number of skills
+    round_scores = models.JSONField(default=dict)  # Store scores for each skill/round as a dictionary
 
     def save(self, *args, **kwargs):
         if self.pk is None:
+            super().save(*args, **kwargs)
             from onboarding.models import QuizResponse
-            # New application, calculate the quiz score based on the associated job
-            quiz_responses = QuizResponse.objects.filter(application=self)
-            score = quiz_responses.filter(answer__is_correct=True).count()
-            self.quiz_score = score
 
-            # Calculate quiz score from ApplicantAnswer
+            # Initial calculation for quiz_score
+            quiz_responses = QuizResponse.objects.filter(application=self)
+            self.quiz_score = quiz_responses.filter(answer__is_correct=True).count()
+
             applicant_answers = ApplicantAnswer.objects.filter(applicant=self.user, job=self.job)
             quiz_score_from_answers = applicant_answers.filter(score=1).count()
             self.quiz_score += quiz_score_from_answers
 
-        applicant_resume = Resume.objects.get(user=self.user)
-        applicant_skills = set(applicant_resume.skills.all())
-        job_skills = set(self.job.requirements.all())
-        match_percentage, missing_skills = calculate_skill_match(applicant_skills, job_skills)
+            applicant_resume = Resume.objects.get(user=self.user)
+            applicant_skills = set(applicant_resume.skills.all())
+            job_skills = set(self.job.requirements.all())
+            match_percentage, _ = calculate_skill_match(applicant_skills, job_skills)
 
-        self.matching_percentage = match_percentage
-
-        overall_match_percentage = (0.7 * match_percentage) + (30 * self.quiz_score)
-        self.overall_match_percentage = overall_match_percentage
-
+            self.matching_percentage = match_percentage
+            self.overall_match_percentage = (0.7 * match_percentage) + (30 * self.quiz_score)
+        
         super().save(*args, **kwargs)
+
 
 class SavedJob(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

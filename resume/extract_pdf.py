@@ -14,6 +14,7 @@ from resume.models import SkillCategory, Skill
 from job.models import Skill, SkillQuestion, Job
 from job.job_description_algorithm import save_skills_to_database 
 from . import views
+from datetime import datetime,date
 
 dotenv.load_dotenv()
 api_key = os.environ.get('OPENAI_API_KEY')
@@ -67,6 +68,7 @@ def extract_text(request, file_path):
     
     # Extract details from the resume text using ChatGPT
     extracted_details = extract_resume_details(request, extracted_text)
+    
 
     # Print the extracted details for debugging
     print("Extracted Details:", extracted_details)
@@ -94,11 +96,16 @@ def extract_text(request, file_path):
         # For example, you can save the extracted details to appropriate database models based on your models
 
         # Redirect to the appropriate view
-        return redirect(views.select_category)
+        extract_technical_skills(request, extracted_text, job_title)
+        return redirect(views.update_resume)
+
 
     except ResumeDoc.DoesNotExist:
         print("ResumeDoc not found for file path:", file_path)
+        extract_technical_skills(request, extracted_text, job_title)
         return HttpResponse("Error: ResumeDoc not found")
+    return redirect(views.update_resume)
+
 
 
 def extract_technical_skills(request, extracted_text, job_title):
@@ -170,16 +177,11 @@ def extract_resume_details(request, extracted_text):
 
         response_content = response.choices[0].message.content
         extracted_details = json.loads(response_content)
-
         return extracted_details
 
     except (json.JSONDecodeError, Exception) as e:
         logger.error("An error occurred while extracting resume details: %s", e)
         return {}
-
-
-from datetime import date
-from datetime import datetime
 
 
 def get_case_insensitive(d, key, default=None):
@@ -188,20 +190,23 @@ def get_case_insensitive(d, key, default=None):
 
 from datetime import datetime, date
 # Function to parse dates with special values like "Present"
+# Function to parse dates with special values like "Present"
 def parse_date(date_str):
-    if date_str.lower() == "present":
+    if date_str is None:
+        return None
+    elif date_str.lower() == "present":
         return None  # or you can return today's date: return date.today()
     try:
         return datetime.strptime(date_str, '%Y-%m-%d').date()
     except ValueError:
         return None  # Handle invalid date format gracefully
-from datetime import datetime, date
+
 
 def parse_and_save_details(extracted_details, user):
     # Extract basic information
-    name = get_case_insensitive(extracted_details, 'Name', 'Unknown')
-    email = get_case_insensitive(extracted_details, 'Email', 'Unknown')
-    phone = get_case_insensitive(extracted_details, 'Phone', 'Unknown')
+    name = get_case_insensitive(extracted_details, 'Name', 'Your Name')
+    email = get_case_insensitive(extracted_details, 'Email', 'example@email.com')
+    phone = get_case_insensitive(extracted_details, 'Phone', '+123456677')
 
     print("Extracted Name:", name)
     print("Extracted Email:", email)

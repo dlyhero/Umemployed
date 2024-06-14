@@ -6,8 +6,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .forms import CategoryForm, SkillForm, UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3
-from .models import Resume, SkillCategory, Skill
+from .forms import ContactInfoForm , CategoryForm, SkillForm, UpdateResumeForm, UpdateResumeForm2, UpdateResumeForm3
+from .models import Resume, SkillCategory, Skill, ResumeDoc, ContactInfo
 from users.models import User
 from job.models import Job
 from onboarding.views import general_knowledge_quiz
@@ -19,32 +19,27 @@ geocoder = OpenCage('70d694d4b6824310a0a7e3a4f5041ce3')  # Replace 'YOUR_API_KEY
 @login_required(login_url='login')
 def update_resume(request):
     """
-    Allows applicants to update their resumes.
+    Allows users to update their contact information.
     """
     if request.user.is_applicant:
         try:
-            resume = Resume.objects.get(user=request.user)
-        except Resume.DoesNotExist:
-            resume = None
+            contact_info = ContactInfo.objects.get(user=request.user)
+        except ContactInfo.DoesNotExist:
+            contact_info = None
 
         if request.method == 'POST':
-            form = UpdateResumeForm(request.POST, request.FILES, instance=resume)
+            form = ContactInfoForm(request.POST, instance=contact_info)
             if form.is_valid():
                 var = form.save(commit=False)
                 var.user = request.user
                 var.save()
 
-                # Update user.has_resume field
-                user = request.user
-                user.has_resume = True
-                user.save()
-
-                messages.info(request, 'Your resume info has been updated.')
-                return redirect(upload_resume)
+                messages.info(request, 'Your contact info has been updated.')
+                return redirect('dashboard')  # Use the appropriate redirect
             else:
                 messages.warning(request, 'Something went wrong')
         else:
-            form = UpdateResumeForm(instance=resume)
+            form = ContactInfoForm(instance=contact_info)
 
         context = {'form': form}
         return render(request, 'resume/update_resume.html', context)

@@ -31,6 +31,9 @@ urlpatterns = [
     #quiz
     path('job/<int:job_id>/answer/', views.answer_job_questions, name='answer_job_questions'),
     path('answer/success', views.job_application_success, name='job_application_success'),
+    path('get_questions_for_skill/<int:skill_id>/', views.get_questions_for_skill, name='get_questions_for_skill'),
+    path('save_responses/', views.save_responses, name='save_responses'),
+
 
 
     path('generate_skills/', get_skills_from_chatgpt, name='generate_skills'),

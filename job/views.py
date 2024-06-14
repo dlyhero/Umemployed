@@ -186,41 +186,36 @@ from django.http import HttpResponseBadRequest
 def answer_job_questions(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     user = request.user
+    skills = job.requirements.all()
 
-    # Check if the user has already completed all rounds
+    # Get or create an application
     application, created = Application.objects.get_or_create(user=user, job=job)
+
     if application.has_completed_quiz:
         messages.warning(request, "You have already completed the quiz for this job.")
-        return redirect('job:job_application_success')  # Redirect to success page or any other destination
+        return redirect('job:job_application_success')
 
-    # Determine the current round based on completion status
-    if not application.round1_completed:
-        round_number = 1
-    elif not application.round2_completed:
-        round_number = 2
-    elif not application.round3_completed:
-        round_number = 3
-    else:
-        # All rounds completed, update quiz_score and redirect to success page
-        application.quiz_score = application.round1_score + application.round2_score + application.round3_score
+    # Determine current skill based on application round_scores
+    completed_skills = application.round_scores.keys()
+    remaining_skills = [skill for skill in skills if str(skill.id) not in completed_skills]
+
+    if not remaining_skills:
+        # All skills completed
         application.has_completed_quiz = True
         application.save()
         messages.success(request, "Congratulations! You have completed all rounds.")
         return redirect('job:job_application_success')
 
-    # Calculate the number of questions per round
-    total_questions = SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level).count()
-    questions_per_round = total_questions // 3
-
-    # Calculate the starting and ending indices for the current round
-    start_index = (round_number - 1) * questions_per_round
-    end_index = min(round_number * questions_per_round, total_questions)
-
+    # Select the next skill to test on
+    current_skill = remaining_skills[0]
+    
     if request.method == 'POST':
         answers = request.POST
         if answers:
-            total_score = 0  # Initialize total score
-            for mcq in SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level)[start_index:end_index]:
+            total_score = 0
+            mcqs = SkillQuestion.objects.filter(skill=current_skill, entry_level=job.level)
+            
+            for mcq in mcqs:
                 answer = answers.get(f'question{mcq.id}')
                 if answer:
                     applicant_answer = ApplicantAnswer.objects.create(
@@ -229,85 +224,100 @@ def answer_job_questions(request, job_id):
                         answer=answer,
                         job=job
                     )
-                    applicant_answer.calculate_score()  # Calculate score for each answer
-                    total_score += applicant_answer.score  # Update total score
-            
-            # Include extracted skills in calculating the score
-            for skill in job.extracted_skills.all():
-                # Fetch questions related to each extracted skill
-                skill_questions = SkillQuestion.objects.filter(skill=skill, entry_level=job.level)
-                for mcq in skill_questions:
-                    answer = answers.get(f'question{mcq.id}')
-                    if answer:
-                        applicant_answer = ApplicantAnswer.objects.create(
-                            applicant=user,
-                            question=mcq,
-                            answer=answer,
-                            job=job
-                        )
-                        applicant_answer.calculate_score()  # Calculate score for each answer
-                        total_score += applicant_answer.score  # Update total score
+                    applicant_answer.calculate_score()
+                    total_score += applicant_answer.score
 
-            # Update round completion status and total score
-            if round_number == 1:
-                application.round1_completed = True
-                application.round1_score = total_score
-            elif round_number == 2:
-                application.round2_completed = True
-                application.round2_score = total_score
-            elif round_number == 3:
-                application.round3_completed = True
-                application.round3_score = total_score
+            # Store the score for the current skill
+            application.round_scores[str(current_skill.id)] = total_score
             application.save()
 
-            # Calculate quiz score based on completed rounds
-            application.quiz_score = application.round1_score + application.round2_score + application.round3_score
-            application.save()
-
-            messages.success(request, f"Your answers for round {round_number} have been recorded. Total score: {total_score}")
-            
-            # Redirect to a page indicating the start of the next round
-            if round_number <= 2:
-                # Render the round start template for the next round
-                return render(request, 'job/rounds/round_start.html', {'round_number': round_number + 1})
-            else:
-                # For round 3, redirect to the next step directly
-                return redirect('job:answer_job_questions', job_id=job_id)
+            messages.success(request, f"Your answers for the skill '{current_skill.name}' have been recorded. Total score: {total_score}")
+            return redirect('job:answer_job_questions', job_id=job_id)
         else:
             messages.error(request, "Please answer all questions.")
             return redirect('job:answer_job_questions', job_id=job_id)
     else:
-        # Fetch questions for the current round
-        mcqs = SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level)[start_index:end_index]
+        mcqs = SkillQuestion.objects.filter(skill=current_skill, entry_level=job.level)
 
-        # Include extracted skills questions for the current round
-        extracted_skills_questions = []
-        for skill in job.extracted_skills.all():
-            extracted_skill_questions = SkillQuestion.objects.filter(skill=skill, entry_level=job.level)
-            extracted_skills_questions.extend(extracted_skill_questions)
-
-        # Total Selected Questions
-        print("Total Selected Questions:", mcqs.count() + len(extracted_skills_questions))  # Print the count of selected questions
         context = {
             'job': job,
             'mcqs': mcqs,
-            'extracted_skills_questions': extracted_skills_questions,
-            'round_number': round_number,
+            'current_skill': current_skill,
+            'skills': skills,
+            'job_id': job.id,
         }
-        
-        if round_number == 1:
-            template_name = 'job/rounds/round1.html'
-        elif round_number == 2:
-            template_name = 'job/rounds/round2.html'
-        elif round_number == 3:
-            template_name = 'job/rounds/round3.html'
-        else:
-            # Handle invalid round number
-            return HttpResponseBadRequest("Invalid round number")
 
-        return render(request, template_name, context)
+        return render(request, 'job/rounds/round1.html', context)
 
 
+def get_questions_for_skill(request, skill_id):
+    skill = get_object_or_404(Skill, id=skill_id)
+
+    # Fetch questions for the specified skill
+    questions = SkillQuestion.objects.filter(skill=skill)
+
+    # Serialize questions data
+    serialized_questions = [{'id': q.id, 'question': q.question, 'options': [q.option_a, q.option_b, q.option_c, q.option_d]} for q in questions]
+
+    return JsonResponse({'questions': serialized_questions})
+
+
+from .models import ApplicantAnswer
+
+import json
+import logging
+
+from django.http import JsonResponse
+
+logger = logging.getLogger(__name__)
+
+from django.http import JsonResponse
+import json
+
+def save_responses(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            responses = data.get('responses', [])
+            
+            for response in responses:
+                question_id = response.get('question_id')
+                answer = response.get('answer')
+                
+                # Fetch SkillQuestion by question_id
+                question = SkillQuestion.objects.get(id=question_id)
+                
+                # Get the associated Skill and then the Job related to that skill
+                skill = question.skill
+                related_jobs = skill.required_jobs.all()  # Assuming required_jobs is the related_name for Job
+                
+                if related_jobs.exists():
+                    job = related_jobs.first()
+                else:
+                    return JsonResponse({'success': False, 'error': 'No related job found for this skill'})
+
+                # Save ApplicantAnswer instance
+                applicant_answer = ApplicantAnswer(
+                    applicant=request.user,  # Assuming you have user association
+                    question=question,
+                    answer=answer,
+                    job=job,
+                )
+                applicant_answer.calculate_score()  # Calculate score based on the correct answer
+                
+                # Save the instance to the database
+                applicant_answer.save()
+            
+            return JsonResponse({'success': True})
+        except SkillQuestion.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'SkillQuestion does not exist'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    
+    
 @login_required(login_url='/login')
 def job_application_success(request):
     # Retrieve skill scores from session

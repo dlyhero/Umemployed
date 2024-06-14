@@ -1,6 +1,11 @@
 from django import forms
-from .models import Resume,ResumeDoc, SkillCategory, Skill, Experience, Education
+from .models import Resume,ResumeDoc, SkillCategory, Skill, Experience, Education, ContactInfo
 
+class ContactInfoForm(forms.ModelForm):
+    class Meta:
+        model = ContactInfo
+        fields = ['name', 'email', 'phone', 'country', 'job_title']
+        
 class UpdateResumeForm(forms.ModelForm):
     class Meta:
         model = Resume

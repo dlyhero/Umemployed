@@ -22,6 +22,7 @@ class SkillCategory(models.Model):
         return self.name
 
 class Skill(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skills', default='c6962387-ea32-4a53-8c5d-ec9a596d864b')
     name = models.CharField(max_length=100)
     categories = models.ManyToManyField(SkillCategory)  # Change ForeignKey to ManyToManyField
     is_extracted = models.BooleanField(default=False)  # Indicates whether the skill was extracted from a job description
@@ -85,11 +86,14 @@ class ResumeDoc(models.Model):
     def __str__(self):
         return f"Resume for {self.user.username}"
 
+from django_countries.fields import CountryField
 class ContactInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=254)
     phone = models.CharField(max_length=20)
+    country = CountryField(default='CM')  # Default to 'CM' for Cameroon
+    job_title = models.CharField(max_length=100, default='Marketer')
 
     def __str__(self):
         return f"Contact Information for {self.user.username}"

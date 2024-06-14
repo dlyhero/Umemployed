@@ -1,16 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Resume</title>
-</head>
-<body>
-    <h1>Upload Resume</h1>
-    <form method="post" enctype="multipart/form-data">
+{% extends 'resume/base.html' %}
+{% load static %}
+{% block content %}
+
+<main class="w-[93%] mx-auto flex-grow">
+  <section class="hero px-4 mx-auto">
+    <div class="font-bold tracking-wider mb-10">
+      <span class="text-blue-400 text-2xl md:text-3xl font-bold">Welcome</span>
+      <span class="user-name text-xl">Dan Josh!</span>
+    </div>
+  </section>
+  <section class="h-fit drop-section gap-x-20 gap-y-5 mb-10">
+    <div class="md:border-2 md:shadow-xl md:bg-slate-50 border-[#1e90ff] rounded-xl h-fit md:h-[300px] flex flex-col items-center justify-center">
+      <div class="text-center md:p-[30px]">
+        <p class="mb-6 md:mb-4">
+          Hi <span id="user-name" class="font-bold">Dan Josh!</span>, Please finish sign-up process
+        </p>
+        <a class="underline px-[20px] py-[10px] md:p-0 text-[#1e90ff] md:bg-transparent font-bold" href="">Skip upload to Job Post</a>
+      </div>
+    </div>
+    <div class="h-fit md:h-[300px]">
+      <form method="post" enctype="multipart/form-data" class="w-full h-full">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
-    </form>
-</body>
-</html>
+        <label id="drop-area" for="input-file" class="w-full text-white h-full border flex flex-col justify-center items-center px-[20px] py-[10px] md:p-[30px] text-center bg-blue-500 rounded-xl">
+          <div id="file-view" class="w-full h-full rounded-xl md:border-2 md:border-dashed md:bg-blue-400 md:p-[20px]">
+            <img class="hidden md:block w-24 mt-6 mx-auto" src="{% static 'build/img/upload.svg' %}" alt="" />
+            <p>
+              Choose files to upload <br />
+              <span class="hidden md:block">or drag and drop here</span>
+            </p>
+            {{ form.file }}
+          </div>
+        </label>
+        <button type="submit" class="btn btn-primary mt-4">Upload</button>
+      </form>
+    </div>
+  </section>
+  <section>
+    <div class="text-center mb-5 px-[3.5px]">
+      By continuing, you agree to receive job opportunities from UmEmployed.
+    </div>
+  </section>
+</main>
+
+{% endblock %}
