@@ -262,16 +262,9 @@ def get_questions_for_skill(request, skill_id):
     return JsonResponse({'questions': serialized_questions})
 
 
-from .models import ApplicantAnswer
-
-import json
-import logging
-
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-
-logger = logging.getLogger(__name__)
-
-from django.http import JsonResponse
+from .models import Job, SkillQuestion, ApplicantAnswer, Application
 import json
 
 def save_responses(request):
@@ -285,38 +278,43 @@ def save_responses(request):
                 answer = response.get('answer')
                 
                 # Fetch SkillQuestion by question_id
-                question = SkillQuestion.objects.get(id=question_id)
+                question = get_object_or_404(SkillQuestion, id=question_id)
                 
-                # Get the associated Skill and then the Job related to that skill
-                skill = question.skill
-                related_jobs = skill.required_jobs.all()  # Assuming required_jobs is the related_name for Job
+                # Compare user's answer with correct_answer from SkillQuestion
+                correct_answer = question.correct_answer
+                is_correct = (answer == correct_answer)
                 
-                if related_jobs.exists():
-                    job = related_jobs.first()
-                else:
-                    return JsonResponse({'success': False, 'error': 'No related job found for this skill'})
-
+                # Calculate score based on correctness
+                score = 1 if is_correct else 0
+                
                 # Save ApplicantAnswer instance
                 applicant_answer = ApplicantAnswer(
-                    applicant=request.user,  # Assuming you have user association
+                    applicant=request.user,
                     question=question,
                     answer=answer,
-                    job=job,
+                    job=question.skill.required_jobs.first(),  # Assuming required_jobs is related_name for Job
+                    score=score  # Assign calculated score
                 )
-                applicant_answer.calculate_score()  # Calculate score based on the correct answer
-                
-                # Save the instance to the database
                 applicant_answer.save()
+                
+                print(f"Processed response - question_id: {question_id}, answer: {answer}, correct_answer: {correct_answer}, is_correct: {is_correct}, score: {score}")
+                
+                # Update quiz_score in Application model if answer is correct
+                if is_correct:
+                    application, created = Application.objects.get_or_create(user=request.user, job=question.skill.required_jobs.first())
+                    application.quiz_score += 1
+                    application.save()
             
+            print("Responses saved successfully.")
             return JsonResponse({'success': True})
         except SkillQuestion.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'SkillQuestion does not exist'}, status=400)
         except Exception as e:
+            print(f"Error saving responses: {e}")
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-    
     
 @login_required(login_url='/login')
 def job_application_success(request):
