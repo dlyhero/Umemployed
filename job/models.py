@@ -89,10 +89,11 @@ class Application(models.Model):
     has_completed_quiz = models.BooleanField(default=False)
     # Assume you may have many rounds based on the number of skills
     round_scores = models.JSONField(default=dict)  # Store scores for each skill/round as a dictionary
+    total_scores = models.JSONField(default=dict)  # Store total score for each skill/round as a dictionary
+
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-            super().save(*args, **kwargs)
             from onboarding.models import QuizResponse
 
             # Initial calculation for quiz_score
@@ -110,10 +111,31 @@ class Application(models.Model):
 
             self.matching_percentage = match_percentage
             self.overall_match_percentage = (0.7 * match_percentage) + (30 * self.quiz_score)
+
+        # Calculate and update total_scores for each skill/round
+        self.update_total_scores()
+
+        super().save(*args, **kwargs)  # Save the instance without recursion
+
+    def update_total_scores(self):
+        for skill_id in self.round_scores:
+            answers = ApplicantAnswer.objects.filter(applicant=self.user, job=self.job, question__skill_id=skill_id)
+            total_score = sum(answer.score for answer in answers)
+            self.total_scores[skill_id] = total_score
+
+class CompletedSkills(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    job_id = models.IntegerField()  # Example: Assuming job_id is an integer
+    skill_id = models.IntegerField()  # Example: Assuming skill_id is an integer
+    is_completed = models.BooleanField(default=False)  # New field to track completion status
+
+    class Meta:
+        unique_together = ['user', 'job_id', 'skill_id']
+
+    def __str__(self):
+        return f"CompletedSkills(user={self.user}, job_id={self.job_id}, skill_id={self.skill_id}, is_completed={self.is_completed})"
         
-        super().save(*args, **kwargs)
-
-
+        
 class SavedJob(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)

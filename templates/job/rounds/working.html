@@ -159,8 +159,8 @@
             <h1 class="text-xl font-semibold">Test Your Skill</h1>
             <div id="timer" class="text-xl">Timer: 2:00</div>
         </div>
-        <div class="sm:flex w-f">
-            <div class="w-f sm:mr-8">
+        <div class="sm:flex w-full">
+            <div class="w-full sm:mr-8">
                 <h2 class="font-semibold mb-2">Skills</h2>
                 <ul class="flex flex-nowrap overflow-scroll sm:flex-col gap-2 overflow-x-auto overflow-y-auto">
                     {% for skill in skills %}
@@ -170,7 +170,7 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="w-f sm:w-3/4">
+            <div class="w-full sm:w-3/4">
                 <div id="question-section" class="p-5 border rounded bg-gray-50">
                     <h2 id="question-header" class="font-bold font-3xl mb-4 text-center">Question:</h2>
                     <form id="question-form" class="space-y-4" method="POST" action="{% url 'job:answer_job_questions' job.id %}">

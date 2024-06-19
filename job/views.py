@@ -208,13 +208,13 @@ def answer_job_questions(request, job_id):
 
     # Select the next skill to test on
     current_skill = remaining_skills[0]
-    
+
     if request.method == 'POST':
         answers = request.POST
         if answers:
             total_score = 0
             mcqs = SkillQuestion.objects.filter(skill=current_skill, entry_level=job.level)
-            
+
             for mcq in mcqs:
                 answer = answers.get(f'question{mcq.id}')
                 if answer:
@@ -232,10 +232,11 @@ def answer_job_questions(request, job_id):
             application.save()
 
             messages.success(request, f"Your answers for the skill '{current_skill.name}' have been recorded. Total score: {total_score}")
-            return redirect('job:answer_job_questions', job_id=job_id)
+            return JsonResponse({'success': True, 'next_skill': True, 'message': f"Your answers for the skill '{current_skill.name}' have been recorded. Total score: {total_score}"})
         else:
             messages.error(request, "Please answer all questions.")
-            return redirect('job:answer_job_questions', job_id=job_id)
+            return JsonResponse({'success': False, 'error': "Please answer all questions."})
+
     else:
         mcqs = SkillQuestion.objects.filter(skill=current_skill, entry_level=job.level)
 
@@ -248,73 +249,130 @@ def answer_job_questions(request, job_id):
         }
 
         return render(request, 'job/rounds/round1.html', context)
+    
 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from .models import Skill, SkillQuestion, CompletedSkills
 
 def get_questions_for_skill(request, skill_id):
     skill = get_object_or_404(Skill, id=skill_id)
+    user = request.user  # Assuming user is authenticated
+
+    # Fetch the job_id from the user's current application
+    try:
+        # Assuming there's a way to determine the current job application
+        current_application = Application.objects.get(user=user, has_completed_quiz=False)
+        job_id = current_application.job.id
+    except Application.DoesNotExist:
+        return JsonResponse({'error': 'No active job application found'}, status=400)
 
     # Fetch questions for the specified skill
     questions = SkillQuestion.objects.filter(skill=skill)
 
+    # Filter out questions that the user has already completed for this job
+    if user.is_authenticated:
+        print(f"User: {user.id}, Job ID: {job_id}, Skill ID: {skill_id}")
+
+        completed_skills = CompletedSkills.objects.filter(user=user, job_id=job_id, skill_id=skill_id).exists()
+        print("Completed Skills:", completed_skills)  # Debug: Print completed_skills value
+
+        if completed_skills:
+            return JsonResponse({'questions': []})  # Return empty list if skill is already completed
+
     # Serialize questions data
-    serialized_questions = [{'id': q.id, 'question': q.question, 'options': [q.option_a, q.option_b, q.option_c, q.option_d]} for q in questions]
+    serialized_questions = [
+        {'id': q.id, 'question': q.question, 'options': [q.option_a, q.option_b, q.option_c, q.option_d]}
+        for q in questions
+    ]
 
     return JsonResponse({'questions': serialized_questions})
 
+from .models import ApplicantAnswer
 
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from .models import Job, SkillQuestion, ApplicantAnswer, Application
 import json
+import logging
+
+from django.http import JsonResponse
+
+logger = logging.getLogger(__name__)
+
+from django.http import JsonResponse
+import json
+
+logger = logging.getLogger(__name__)
 
 def save_responses(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             responses = data.get('responses', [])
+            skill_id = data.get('skill_id')
+
+            if not skill_id:
+                raise ValueError("Skill ID not provided in the request data.")
+            
+            # Fetch the job_id from the user's current application
+            try:
+                current_application = Application.objects.get(user=request.user, has_completed_quiz=False)
+                job_id = current_application.job.id
+            except Application.DoesNotExist:
+                return JsonResponse({'error': 'No active job application found'}, status=400)
+            
+            total_score = 0
             
             for response in responses:
                 question_id = response.get('question_id')
                 answer = response.get('answer')
                 
+                # Log received data
+                logger.debug(f"Processing question {question_id} with answer {answer}")
+                
+                if not question_id or not answer:
+                    logger.error("Question ID or answer missing in the response data.")
+                    continue  # Skip to the next response
+                
                 # Fetch SkillQuestion by question_id
-                question = get_object_or_404(SkillQuestion, id=question_id)
-                
-                # Compare user's answer with correct_answer from SkillQuestion
-                correct_answer = question.correct_answer
-                is_correct = (answer == correct_answer)
-                
-                # Calculate score based on correctness
-                score = 1 if is_correct else 0
+                try:
+                    question = SkillQuestion.objects.get(id=question_id)
+                except SkillQuestion.DoesNotExist:
+                    logger.error(f"SkillQuestion with ID {question_id} does not exist.")
+                    continue  # Skip to the next response
                 
                 # Save ApplicantAnswer instance
                 applicant_answer = ApplicantAnswer(
                     applicant=request.user,
                     question=question,
                     answer=answer,
-                    job=question.skill.required_jobs.first(),  # Assuming required_jobs is related_name for Job
-                    score=score  # Assign calculated score
+                    job_id=job_id,
                 )
+                applicant_answer.calculate_score()
+                total_score += applicant_answer.score
+                
+                # Save the instance to the database
                 applicant_answer.save()
-                
-                print(f"Processed response - question_id: {question_id}, answer: {answer}, correct_answer: {correct_answer}, is_correct: {is_correct}, score: {score}")
-                
-                # Update quiz_score in Application model if answer is correct
-                if is_correct:
-                    application, created = Application.objects.get_or_create(user=request.user, job=question.skill.required_jobs.first())
-                    application.quiz_score += 1
-                    application.save()
-            
-            print("Responses saved successfully.")
-            return JsonResponse({'success': True})
-        except SkillQuestion.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'SkillQuestion does not exist'}, status=400)
-        except Exception as e:
-            print(f"Error saving responses: {e}")
-            return JsonResponse({'success': False, 'error': str(e)}, status=500)
-    else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
 
+            # Save or update CompletedSkills
+            CompletedSkills.objects.update_or_create(
+                user=request.user,
+                job_id=job_id,
+                skill_id=skill_id,
+                defaults={'is_completed': True}
+            )
+            
+            return JsonResponse({'success': True, 'total_score': total_score})
+
+        except ValueError as e:
+            logger.error(f"ValueError: {str(e)}")
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+        except json.JSONDecodeError as e:
+            logger.error(f"JSONDecodeError: {str(e)}")
+            return JsonResponse({'success': False, 'error': 'Invalid JSON in request body'}, status=400)
+        except Exception as e:
+            logger.error(f"Unexpected error: {str(e)}")
+            return JsonResponse({'success': False, 'error': 'An unexpected error occurred'}, status=500)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)    
     
 @login_required(login_url='/login')
 def job_application_success(request):
