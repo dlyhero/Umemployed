@@ -18,7 +18,33 @@ from django.contrib import messages
 from .models import Job, MCQ
 from .forms import CreateJobForm
 from job.generate_skills import generate_mcqs_for_skill
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from .models import Skill, SkillQuestion, CompletedSkills
+from .forms import JobDescriptionForm
+from django.http import HttpResponseRedirect
+import requests
+from .job_description_algorithm import extract_technical_skills
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Job, MCQ, ApplicantAnswer,SkillQuestion
+from .forms import ApplicantAnswerForm
+from django.db.models import F
+from django.db.models import Q
+import random
+from django.http import HttpResponseBadRequest
+from .models import ApplicantAnswer
 
+import json
+import logging
+
+from django.http import JsonResponse
+
+logger = logging.getLogger(__name__)
+
+from django.http import JsonResponse
+import json
 
 @login_required(login_url='/login')
 def create_job(request):
@@ -40,8 +66,7 @@ def create_job(request):
         form = CreateJobForm()
     return render(request, 'job/create_job.html', {'form': form})
 
-from .forms import JobDescriptionForm
-from django.http import HttpResponseRedirect
+
 
 def enter_job_description(request):
     if request.method == 'POST':
@@ -67,11 +92,6 @@ def enter_job_description(request):
         form = JobDescriptionForm()
     return render(request, 'job/enter_job_description.html', {'form': form})
 
-import requests
-
-from .job_description_algorithm import extract_technical_skills
-
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def select_skills(request):
@@ -171,17 +191,6 @@ def apply_job(request, job_id):
 
 
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Job, MCQ, ApplicantAnswer,SkillQuestion
-from .forms import ApplicantAnswerForm
-
-from django.db.models import F
-
-from django.db.models import Q
-import random
-from django.http import HttpResponseBadRequest
-
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
     job = get_object_or_404(Job, id=job_id)
@@ -249,11 +258,7 @@ def answer_job_questions(request, job_id):
         }
 
         return render(request, 'job/rounds/round1.html', context)
-    
 
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-from .models import Skill, SkillQuestion, CompletedSkills
 
 def get_questions_for_skill(request, skill_id):
     skill = get_object_or_404(Skill, id=skill_id)
@@ -288,17 +293,7 @@ def get_questions_for_skill(request, skill_id):
 
     return JsonResponse({'questions': serialized_questions})
 
-from .models import ApplicantAnswer
 
-import json
-import logging
-
-from django.http import JsonResponse
-
-logger = logging.getLogger(__name__)
-
-from django.http import JsonResponse
-import json
 
 logger = logging.getLogger(__name__)
 
