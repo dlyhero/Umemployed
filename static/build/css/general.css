@@ -1,0 +1,21 @@
+.custom-checkbox {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    margin-right: 10px;
+    position: relative;
+}
+
+.custom-checkbox::after {
+    content: '+';
+    font-size: 25px;
+    font-weight: bold;
+}
+
+input[type="checkbox"]:checked+.custom-checkbox::after {
+    content: '\2714';
+    color: white;
+    font-size: 16px;
+}

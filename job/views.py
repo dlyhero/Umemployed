@@ -64,7 +64,7 @@ def create_job(request):
             return redirect('job:enter_job_description')
     else:
         form = CreateJobForm()
-    return render(request, 'job/create_job.html', {'form': form})
+    return render(request, 'dashboard/recruiterDashboard/addJob.html', {'form': form})
 
 
 
@@ -378,6 +378,9 @@ def job_application_success(request):
         'skill_scores': skill_scores,
     }
     return render(request, 'job/application_success.html', context)
+
+def evaluation_results(request):
+    return render(request, "job/evaluation_results.html")
 
 
 

@@ -4,45 +4,228 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feed | UmEmployed</title>
     <link
       rel="shortcut icon"
-      href="{% static 'login/img/logo/logo-color.png' %}"
+      src="./build/logo/logo-color.png"
       type="image/x-icon"
     />
-    <title>Sign In</title>
-    <link rel="stylesheet" href="{% static 'login/index.css' %}" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static './build/css/home.css' %}" />
   </head>
-  <body class="min-h-screen flex flex-col text-sm">
-    <header class="header mt-3 mb-8 md:mb-16 md:px-10 px-5 flex justify-between items-center">
-      <div class="logo-wrapper flex items-center">
-        <img
-          class="w-7 md:w-10"
-          id="ue-logo"
-          src="{% static 'login/img/logo/logo-color.png' %}"
-          alt="ue logo"
-        />
-        
+  <body class="text-sm md:bg-gray-50 md:mt-[70px] mt-[50px] ">
+    <header class="bg-white w-full h-[54px] z-[0] border-b fixed left-0 right-0 top-0  md:px-10 ">
+      <div
+        class="sections flex flex lg:justify-between px-2 h-full items-center"
+      >
+        <section class="left-section flex flex-1 items-center">
+          <nav class="flex flex-1 items-center justify-around">
+            <div class="logo-wrap">
+              <img
+                class="logo-img  icon w-7 md:w-9"
+                src="{% static 'build/logo/logo-color.png' %}"
+                alt=""
+              />
+            </div>
+            <ul class="nav-items flex flex-1 justify-evenly">
+              <li class="nav-item">
+                <a href="#" class="flex flex-col justify-center items-center">
+                 <img class="w-4" src="{% static 'build/img/home-svgrepo-com.svg' %}" alt="home icon">
+                  <div class="hidden md:block hover:text-blue-300 transition-colors">Home</div>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="flex flex-col justify-center items-center">
+                  <img
+                    class="icon w-5"
+                    src="{% static 'build/img/job-svgrepo-com.svg' %}"
+                    alt="job icon"
+                  />
+                  <div class="hidden md:block hover:text-blue-300 transition-colors">Jobs</div>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="flex flex-col justify-center items-center">
+                  <img
+                    class="icon w-5"
+                    src="{% static 'build/img/contacts-svgrepo-com.svg' %}"
+                    alt="contacts icon"
+                  />
+                  <div class="hidden md:block hover:text-blue-300 transition-colors">Contacts</div>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  href="#"
+                  class="flex flex-col justify-center items-center relative w-full"
+                >
+                  <img
+                    class="icon w-5"
+                    src="{% static 'build/img/notification-svgrepo-com.svg' %}"
+                    alt="notification icon"
+                  />
+                  <div class="hidden md:block hover:text-blue-300 transition-colors">Notifications</div>
+                  <div
+                    class="tooltip absolute bg-red-500 text-xs text-white py-[0.5px] px-[4px] top-[-3px] right-[-6px] md:right-6 rounded-full"
+                  >
+                    3
+                  </div>
+                </a>
+              </li>
+            </ul>
+            <div
+              class="search-wrap relative lg:flex-1 lg:ml-10 md:mr-10 lg:mr-20 items-center h-[35px]"
+            >
+              <div class="search-container bg-transparent hidden md:block h-full">
+                <input
+                  id="search-bar"
+                  class="border-transparent min-w-[250px]  rounded-md w-full bg-slate-100 h-full pl-12"
+                  type="text"
+                  placeholder="Search"
+                />
+                <button class="absolute top-1.5 left-2">
+                  <img
+                    class="icon search-btn w-6 "
+                    src="{% static 'build/img/search-svgrepo-com.svg' %}"
+                    alt="search icon"
+                  />
+                </button>
+              </div>
+              <div class="md:hidden flex flex-col justify-center">
+                <button
+                  id="search-btn1"
+                  class="w-10 md:w-5 mt-2 ml-2 md:mt-0 lg:hidden"
+                >
+                  <img
+                    class="icon search-btn w-6"
+                    id="search-btn-img"
+                    src="{% static 'build/img/search-svgrepo-com.svg' %}"
+                    alt="search button"
+                  />
+                </button>
+                <div class="hidden md:block lg:hidden">Search</div>
+              </div>
+            </div>
+          </nav>
+        </section>
+        <section
+          class="right-section hidden lg:flex justify-between items-center gap-2"
+        >
+          <ul class="flex gap-3 text-nowrap">
+            <li><a class="hover:bg-blue-50 p-2 transition-colors rounded" href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a class="hover:bg-blue-50 p-2 transition-colors rounded" href="#">To-do</a></li>
+            <li><a class="hover:bg-blue-50 p-2 transition-colors rounded" href="#">Alerts</a></li>
+          </ul>
+          <button
+            class="profile-wrap hover:bg-blue-50 ga transition-colorsp-1 rounded flex p-2 items-center sm:hidden lg:flex ml-7"
+          >
+            <p class="  ">Profile</p>
+            <img class="w-5" src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}" alt="dropdown icon">
+          </button>
+        </section>
       </div>
-      <a class="bg-[#1e90ff] px-2 py-1 rounded-full text-white" href="./signup.html">Sign Up</a>
     </header>
-   <center><h1>This is the homepage</h1><center>
 
-    <footer
-      class="px-5 sm:px-7 py-5 md:px-20 mt-20 sm:flex justify-between items-center"
-    >
-      <div class="flex gap-1 items-center flex-shrink-0 md:mb-4">
-        <div><div>&copy; Copyright</div></div>
-        <div class="flex justify-center items-center">
+    <main class="md:px-10 ">
+      <section
+        class="aside-left bg-white h-fit flex flex-col items-center P-1 md:border md:rounded-lg"
+      >
+        <div id="user-wrap" class="user-profile-container w-full mx-auto h-fit">
           <img
-            src="{% static 'login/img/logo/logo-black.png' %}"
-            class="w-3 h-3 sm:h-5 sm:w-5"
-            alt=""
+            id="profile-pic"
+            class="w-20 mt-4 rounded-full mx-auto"
+            src="{% static 'build/img/pp.jpg' %}"
+            alt="profile-picture"
           />
-          <div>UmEmployed</div>
+          <p class="user-name my-4 text-center">Daisy Dash</p>
+          <div class="border-b my-4 w-full"></div>
+          <div class="link-to-stats">
+            <a
+              href="#"
+              class="block px-2 hover:bg-slate-100  transition-colorsviewers flex justify-between my-1 text-gray-500"
+            >
+              <p>Profile viewers</p>
+              <p class="viewers-number blue">8</p>
+            </a>
+            <a
+              href="#"
+              class="block px-2 hover:bg-slate-100  transition-colorsjob-count my-1 text-gray-500"
+              >Jobs applied count #</a
+            >
+            <a href="#" class="block px-2 hover:bg-slate-100  transition-colorstext-gray-500 mb-2"
+              >View all analytics</a
+            >
+          </div>
         </div>
-      </div>
-      <div>Designed by<span class="eu-text"> UmEmployed</span></div>
-    </footer>
+      </section>
+      <section class="main-content bg-white p-6 md:p-1 h-fit md:border md:rounded-lg">
+        <div class="make-post-wrapper p-2">
+          <div class="profile-pic-wrap flex items-center gap-3">
+            <a href="#">
+              <img
+                id="profile-pic"
+                src="{% static 'build/img/pp.jpg' %}"
+                alt="profile-picture"
+                class="rounded-full w-10"
+              />
+            </a>
+            <input
+              id="post-field"
+              class="border flex-1 p-2 border rounded-lg"
+              type="text"
+              placeholder="Write post"
+            />
+          </div>
+          <div id="imgContainer" class="my-5 relative">
+            <button
+              id="img-deleteBtn"
+              class="absolute hidden p-1 rounded-full bg-white right-2 top-1"
+            >
+              <img src="{% static 'img/icons/delete_16px.png' %}" alt="" />
+            </button>
+          </div>
+          <input
+            class="border border-green-500"
+            type="file"
+            id="fileInput"
+            accept="image/*"
+            style="display: none"
+          />
+          <div class="btn-wrap flex justify-between">
+            <button
+              class="ml-16"
+              onclick="document.getElementById('fileInput').click()"
+            >
+              <img class="w-7" src="{% static 'build/img/image-svgrepo-com.svg' %}" alt="" />
+            </button>
+            <button id="post-btn" class="rounded-full font-bold">Post</button>
+          </div>
+        </div>
+        <hr class="my-2" />
+        <div class="users-posts mt-10 p-2">
+          <div class="post-container">
+            <div class="post-body">
+              <div class="user-info">
+                <div class="user">
+                  <img class="w-10" src="{% static 'build/img/pp.jpg' %}" alt="profile-pic">
+                  <h2 class="user-nam font-bold">Dan Josh</h2>
+                </div>
+                <div>
+                  <i class="fas fa-ellipsis-h"></i>
+                  <span>X</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="aside-right bg-white md:border md:rounded-lg flex flex-col items-center p-2 h-96"
+      >
+        <div class="border border-[#1e90ff] px-4">Job market latest news</div>
+      </section>
+    </main>
+
+    <script src="{% static 'index.js' %}"></script>
   </body>
 </html>

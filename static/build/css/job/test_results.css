@@ -1,0 +1,48 @@
+.truncate {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.hidden-text {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.extended {
+    max-height: 1000px;
+}
+
+.read-more {
+    cursor: pointer;
+    color: #1e90ff;
+}
+
+.read-more:hover {
+    cursor: pointer;
+    color: #0c65bd;
+    text-decoration: underline;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+main {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h4 {
+    font-size: 1.25rem;
+    color: #1e90ff;
+}
+
+.read-more {
+    color: #1e90ff;
+}

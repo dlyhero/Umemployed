@@ -70,8 +70,11 @@ def update_company(request):
 def company_details(request, pk):
     company = get_object_or_404(Company, pk=pk)
     context = {'company': company}
-    return render(request, 'company/company_details.html', context)
+    return render(request, 'company/index.html', context)
 
+@login_required(login_url='login')
+def view_my_jobs(request,company_id):
+    return render(request, "company/myJobs.html")
 
 @login_required(login_url='login')
 def view_applications(request, company_id):
@@ -107,7 +110,7 @@ def view_applications(request, company_id):
         'company': company,
         'job_applications': job_applications,
     }
-    return render(request, 'company/view_applications.html', context)
+    return render(request, 'company/candidates.html', context)
 
 
 
