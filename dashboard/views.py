@@ -10,6 +10,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from resume.models import ContactInfo, WorkExperience, Skill , SkillCategory
 from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
+from resume.views import upload_resume
 
 def get_suggested_skills(request):
     user = request.user
@@ -69,6 +70,9 @@ def update_user_skills(request):
 
 @login_required(login_url='login')
 def dashboard(request):
+    resume = Resume.objects.filter(user = request.user)
+    if not resume.exists():
+        return redirect('/resume/upload')
     try:
         contact_info = ContactInfo.objects.get(user=request.user)
         user = request.user

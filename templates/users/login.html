@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="shortcut icon"
-      href="./img/png/logo-color.png"
+      href="img/png/logo-color.png"
       type="image/x-icon"
     />
     <title>Sign In | UmEmployed</title>
@@ -26,12 +26,12 @@
         <img
           class="w-7 md:w-10"
           id="ue-logo"
-          src="{% static '/img/png/logo-color.png' %}"
+          src="{% static 'img/png/logo-color.png' %}"
           alt="ue logo"
         />
         <div class="text-logo text-[18px] md:text-[24px]">UmEmployed</div>
       </div>
-      <a href="./signup.html" class="signup-btn-link  rounded-full py-1 px-2">SignUp</a>
+      <a href="{% url 'register-applicant' %}" class="signup-btn-link  rounded-full py-1 px-2">SignUp</a>
     </header>
     <main class="mx-auto overflow-hidden flex-grow">
       <section
@@ -88,7 +88,7 @@
                     <div class="icon-wrapper bg-white rounded-full">
                       <img
                         class="icon"
-                        src="{% static './img/icons/7123025_logo_google_g_icon.png' %}"
+                        src="{% static 'img/icons/7123025_logo_google_g_icon.png' %}"
                         alt="Google logo"
                       />
                     </div>
@@ -120,7 +120,7 @@
                     <div class="icon-wrapper bg-white rounded-full">
                       <img
                         class="icon"
-                        src="{% static './img/icons/Apple_logo_black.svg.png' %}"
+                        src="{% static 'img/icons/Apple_logo_black.svg.png' %}"
                         alt="Apple logo"
                       />
                     </div>
@@ -149,7 +149,7 @@
         </div>
         <img
           class="desc-img  mt-10 w-full h-full lg:w-1/2 md:h-1/2 mx-auto"
-          src="{% static './img/pics/image.png' %}"
+          src="{% static 'img/pics/career.jpg' %}"
         />
       </section>
       <section
@@ -283,7 +283,7 @@
         <div class="lg:w-2/5 text-2xl md:text-3xl lg:text-4xl mb-4 font-bold">
           Join on UmEmployed to get connected with friends
         </div>
-        <a href="./signup.html" id="call-btn" class="border rounded-full"
+        <a href="{% url 'register-applicant' %}" id="call-btn" class="border rounded-full"
           >Join Now</a
         >
       </section>
@@ -296,16 +296,16 @@
               <h4 class="title-comment text-2xl md:text-3xl mb-4">
                 Empowering Careers, Empowering Lives
               </h4>
-              <di class="comment text-clip overflow-hidde text-xl md:text-2xl">
+              <div class="comment text-clip overflow-hidde text-xl md:text-2xl">
                 We believe that the right job has the power to transform lives.
                 Join us in empowering careers and making a positive impact on
                 individuals and communities.
-              </di>
+              </div>
             </div>
           </div>
           <img
             class="hidden md:block md:w-1/5 align-middle rounded-full ml-10"
-            src="{% static '/img/pics/Generate a vibr 7bbc855e-4e9b-41c9-830f-a8d24d6aeb4a.png' %}"
+            src="{% static 'img/pics/buildind careers.jpg' %}"
             alt=""
           />
         </div>
@@ -319,7 +319,7 @@
         <div><div>&copy; Copyright</div></div>
         <div class="flex justify-center items-center">
           <img
-            src="{% static './img/png/logo-color.png' %}"
+            src="{% static 'img/png/logo-color.png' %}"
             class="w-3 h-3 sm:h-5 sm:w-5"
             alt=""
           />

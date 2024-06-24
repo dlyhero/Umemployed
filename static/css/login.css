@@ -27,8 +27,7 @@ body {
 .signup-link,
 .blue,
 .signin-link,
-.eu-text,
-.forgot-link {
+.eu-text {
     color: var(--secondaryColor);
     font: bold;
     transition: 0.3s;
@@ -44,7 +43,6 @@ body {
 .text-logo {
     color: var(--secondaryColor);
     font-weight: 600;
-
 }
 
 .courasol {
@@ -54,9 +52,8 @@ body {
 .slide {
     background-size: contain;
     background-repeat: no-repeat;
-    background-position-x: -40px;
-    background-position-y: 60%;
-    background-image: url(/img/pics/hello.png);
+    background-position: center;
+    background-image: url(static/img/pics/barriers.jpg);
     animation: moveUp 1s ease infinite alternate;
 }
 
@@ -70,14 +67,9 @@ main {
 }
 
 
+
 .desktop div {
     line-height: 70px;
-}
-
-.signup-btn-link {
-    background-color: var(--secondaryColor);
-    color: var(--primaryColor);
-    font-weight: bold;
 }
 
 
@@ -104,7 +96,8 @@ input:focus,
     outline: 1px solid var(--secondaryColor);
 }
 
-#password::placeholder {
+#password::placeholder,
+#confirm-password::placeholder {
     font-size: 2rem;
 }
 
@@ -201,10 +194,8 @@ li.article:hover {
 }
 
 .call-to-action {
-    color: white;
     height: 80vh;
-    background-image: url(./img/pics/Generate\ a\ vibr\ 28473977-1da4-40c6-8b44-8003aeae49fb.png);
+    background-image: url(static/img/pics/buildind\ careers.jpg);
     background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-size: contain;
 }

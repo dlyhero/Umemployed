@@ -15,6 +15,7 @@ from job.models import Skill, SkillQuestion, Job
 from job.job_description_algorithm import save_skills_to_database 
 from . import views
 from datetime import datetime,date
+from django.contrib import messages
 
 dotenv.load_dotenv()
 api_key = os.environ.get('OPENAI_API_KEY')
@@ -60,6 +61,7 @@ def extract_text(request, file_path):
     Extracts text from a PDF resume file and saves it to the database.
     """
     # Creating a pdf reader object 
+    job_title = None
     reader = PdfReader(file_path) 
 
     # Creating a page object 
@@ -81,7 +83,7 @@ def extract_text(request, file_path):
         print("Job title found:", job_title)
     except Resume.DoesNotExist:
         print("Resume not found for extracted text:", extracted_text)
-        return HttpResponse("Error: Resume not found")
+        messages.warning(request, "This failed please try again!")
 
     # Save the extracted text to the database
     try:

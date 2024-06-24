@@ -16,28 +16,49 @@ from .extract_pdf import upload_resume
 geocoder = OpenCage('70d694d4b6824310a0a7e3a4f5041ce3')  # Replace 'YOUR_API_KEY' with your actual OpenCage API key
 
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import ContactInfoForm
+from .models import ContactInfo
+
 @login_required(login_url='login')
 def update_resume(request):
     """
-    Allows users to update their contact information.
+    Allows users to update their contact information and resume.
     """
-    if request.user.is_applicant:
+    if hasattr(request.user, 'is_applicant') and request.user.is_applicant:
         try:
             contact_info = ContactInfo.objects.get(user=request.user)
         except ContactInfo.DoesNotExist:
-            contact_info = None
+            contact_info = ContactInfo(user=request.user)  # Create a new instance if it doesn't exist
+
+        try:
+            resume = Resume.objects.get(user=request.user)
+            print("Existing Resume object found:", resume)  # Debugging statement
+        except Resume.DoesNotExist:
+            resume = Resume(user=request.user)  # Create a new instance if it doesn't exist
+            print("Creating a new Resume object")  # Debugging statement
 
         if request.method == 'POST':
             form = ContactInfoForm(request.POST, instance=contact_info)
             if form.is_valid():
-                var = form.save(commit=False)
-                var.user = request.user
-                var.save()
+                form.save()
+                messages.info(request, 'Your contact info and resume have been updated.')
+                print("Contact info and resume saved successfully")  # Debugging statement
 
-                messages.info(request, 'Your contact info has been updated.')
-                return redirect('dashboard')  # Use the appropriate redirect
+                # Update the resume object with form data
+                resume.first_name = form.cleaned_data['name']
+                resume.surname = form.cleaned_data['name']
+                resume.phone = form.cleaned_data['phone']
+                resume.country = form.cleaned_data['country']
+                resume.job_title = form.cleaned_data['job_title']
+                resume.save()
+
+                return redirect('dashboard')
             else:
-                messages.warning(request, 'Something went wrong')
+                messages.warning(request, 'Form is invalid. Errors: %s' % form.errors)
+                print("Form is invalid:", form.errors)  # Debugging statement
         else:
             form = ContactInfoForm(instance=contact_info)
 
@@ -46,6 +67,7 @@ def update_resume(request):
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
+
 
 
 def select_category(request):
