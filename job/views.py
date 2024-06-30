@@ -191,13 +191,26 @@ def apply_job(request, job_id):
 
 
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.contrib import messages
+from .models import Job, Application, SkillQuestion, ApplicantAnswer
+
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Application, SkillQuestion, ApplicantAnswer, CompletedSkills, Job, Skill
+from .forms import ApplicantAnswerForm  # Make sure this form is updated as necessary
+
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     user = request.user
-    skills = job.requirements.all()
+    skills = job.requirements.all()  # Assuming this gets required skills for the job
 
-    # Get or create an application
+    # Get or create an application specific to the user and job
     application, created = Application.objects.get_or_create(user=user, job=job)
 
     if application.has_completed_quiz:
@@ -231,13 +244,22 @@ def answer_job_questions(request, job_id):
                         applicant=user,
                         question=mcq,
                         answer=answer,
-                        job=job
+                        job=job  # Ensure the answer is tied to the specific job
                     )
                     applicant_answer.calculate_score()
                     total_score += applicant_answer.score
 
-            # Store the score for the current skill
+            # Store the score for the current skill specific to the job
             application.round_scores[str(current_skill.id)] = total_score
+
+            # Add the current skill to the list of completed skills for this application
+            CompletedSkills.objects.update_or_create(
+                user=user,
+                job=job,
+                skill=current_skill,
+                defaults={'is_completed': True}
+            )
+
             application.save()
 
             messages.success(request, f"Your answers for the skill '{current_skill.name}' have been recorded. Total score: {total_score}")
@@ -260,42 +282,50 @@ def answer_job_questions(request, job_id):
         return render(request, 'job/rounds/round1.html', context)
 
 
+
+
 def get_questions_for_skill(request, skill_id):
-    skill = get_object_or_404(Skill, id=skill_id)
     user = request.user  # Assuming user is authenticated
 
-    # Fetch the job_id from the user's current application
+    # Fetch skill based on skill_id
+    skill = get_object_or_404(Skill, id=skill_id)
+
+    # Fetch job_id from query parameters
+    job_id = request.GET.get('job_id')
+    if not job_id:
+        return JsonResponse({'error': 'job_id parameter is missing'}, status=400)
+
+    # Fetch job based on job_id
+    job = get_object_or_404(Job, id=job_id)
+
+    # Check if there's an application for the specified job and user
     try:
-        # Assuming there's a way to determine the current job application
-        current_application = Application.objects.get(user=user, has_completed_quiz=False)
-        job_id = current_application.job.id
+        current_application = Application.objects.get(user=user, job=job, has_completed_quiz=False)
     except Application.DoesNotExist:
-        return JsonResponse({'error': 'No active job application found'}, status=400)
+        return JsonResponse({'error': 'No active job application found for this job'}, status=400)
 
     # Fetch questions for the specified skill
     questions = SkillQuestion.objects.filter(skill=skill)
 
-    # Filter out questions that the user has already completed for this job
-    if user.is_authenticated:
-        print(f"User: {user.id}, Job ID: {job_id}, Skill ID: {skill_id}")
+    # Check if the user has completed this skill for this job
+    completed_skills = CompletedSkills.objects.filter(user=user, job=job, skill=skill).exists()
 
-        completed_skills = CompletedSkills.objects.filter(user=user, job_id=job_id, skill_id=skill_id).exists()
-        print("Completed Skills:", completed_skills)  # Debug: Print completed_skills value
-
-        if completed_skills:
-            return JsonResponse({'questions': []})  # Return empty list if skill is already completed
+    if completed_skills:
+        return JsonResponse({'questions': []})  # Return empty list if skill is already completed
 
     # Serialize questions data
     serialized_questions = [
-        {'id': q.id, 'question': q.question, 'options': [q.option_a, q.option_b, q.option_c, q.option_d]}
+        {
+            'id': q.id,
+            'question': q.question,
+            'options': [q.option_a, q.option_b, q.option_c, q.option_d]
+        }
         for q in questions
     ]
 
     return JsonResponse({'questions': serialized_questions})
-
-
-
 logger = logging.getLogger(__name__)
+
 
 def save_responses(request):
     if request.method == 'POST':
@@ -303,17 +333,23 @@ def save_responses(request):
             data = json.loads(request.body)
             responses = data.get('responses', [])
             skill_id = data.get('skill_id')
+            job_id = data.get('job_id')  # Fetch the job_id from request data
 
             if not skill_id:
                 raise ValueError("Skill ID not provided in the request data.")
             
-            # Fetch the job_id from the user's current application
-            try:
-                current_application = Application.objects.get(user=request.user, has_completed_quiz=False)
-                job_id = current_application.job.id
-            except Application.DoesNotExist:
-                return JsonResponse({'error': 'No active job application found'}, status=400)
+            if not job_id:
+                raise ValueError("Job ID not provided in the request data.")
             
+            # Fetch job based on job_id
+            job = get_object_or_404(Job, id=job_id)
+
+            # Fetch the application for the specified job and user
+            try:
+                current_application = Application.objects.get(user=request.user, job=job, has_completed_quiz=False)
+            except Application.DoesNotExist:
+                return JsonResponse({'error': 'No active job application found for this job'}, status=400)
+
             total_score = 0
             
             for response in responses:
@@ -367,7 +403,7 @@ def save_responses(request):
             logger.error(f"Unexpected error: {str(e)}")
             return JsonResponse({'success': False, 'error': 'An unexpected error occurred'}, status=500)
     else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)    
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
     
 @login_required(login_url='/login')
 def job_application_success(request):

@@ -41,25 +41,42 @@ def login_user(request):
     else:
         return render(request, 'users/login.html')
 
-# register applicant
+# views.py
+from django.contrib.auth import get_backends
+
 def register_applicant(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
         if form.is_valid():
+            # Save the user
             user = form.save(commit=False)
             user.is_applicant = True
             user.username = user.email
             user.save()
+            
+            # Create Resume instance
             Resume.objects.create(user=user)
-            messages.success(request, 'Your account has been created successfully')
-            return redirect("login")
+            
+            # Log the user in with the specified backend
+            backends = get_backends()
+            for backend in backends:
+                if hasattr(backend, 'get_user'):
+                    backend_name = f'{backend.__module__}.{backend.__class__.__name__}'
+                    break
+            login(request, user, backend=backend_name)
+            
+            messages.success(request, 'Your account has been created successfully and you are now logged in.')
+            
+            # Redirect to switch account
+            return redirect('switch_account')
         else:
+            # Display form errors
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-            return render(request, 'users/register_applicant.html', {'form': form})
     else:
         form = RegisterUserForm()
+    
     return render(request, 'users/register_applicant.html', {'form': form})
 
 # register recruiter only
@@ -84,3 +101,6 @@ def logout_user(request):
     logout(request)
     messages.info(request, 'Your session has ended')
     return redirect('home')  # Update the target name to match the appropriate URL name
+
+def switch_account(request):
+    return render(request,'users/accountType.html')

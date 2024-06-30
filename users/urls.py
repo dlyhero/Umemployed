@@ -1,12 +1,14 @@
 from django.urls import path 
 from . import views
+from resume.views import upload_resume
 
 urlpatterns = [
     path('register-applicant', views.register_applicant,name='register-applicant'),
     path('register-recruiter', views.register_recruiter,name='register-recruiter'),
     path('login', views.login_user,name='login'),
     path('logout/', views.logout_user,name='logout'),
-    
+    path('role/',views.switch_account,name='switch_account'),
+    path('upload/',upload_resume,name="upload_resume"),
 
     
 

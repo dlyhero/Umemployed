@@ -71,7 +71,7 @@
         }
     </style>
 </head>
-<body>
+<body data-job="{{ job.id }}" >
     <header
       class="flex justify-between items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 mb-10 bg-white"
     >
@@ -228,6 +228,7 @@
         const completedSkillModal = document.getElementById("completedSkillModal");
         const nextSkillBtn = document.getElementById("next-skill");
         const closeModalBtn = document.getElementById("close-modal");
+        const jobId = document.body.getAttribute("data-job");
         let currentSkillIndex = 0;
 
         skillButtons.forEach((button, index) => {
@@ -239,7 +240,7 @@
         });
 
         function fetchQuestionsForSkill(skill) {
-            const url = `/job/get_questions_for_skill/${skill}/`;
+            const url = `/job/get_questions_for_skill/${skill}/?job_id=${jobId}`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {

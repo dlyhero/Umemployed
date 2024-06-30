@@ -1,22 +1,382 @@
-{% extends "users/base.html" %}
-{% load crispy_forms_tags %}
-
-{% block content %}
-
-<div class="row">
-    <div class="card mx-auto" style="width: 40rem;">
-        <div class="card-body">
-            <h5 class="card-title mb-3">Create A Company</h5>
-
-            <form method="post">
-                {% csrf_token %} 
-                {{ form|crispy}}
-
-                <button type="submit" class="btn btn-primary">Submit</button>
-
-            </form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Company Page Creation</title>
+    <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
+  </head>
+  <body
+    class="text-sm md:mt-20 relative flex flex-col min-h-screen"
+  >
+    <header
+      class="flex justify-between items-center md:border-b md:fixed z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-10 bg-white"
+    >
+      <div class="flex items-center gap-x-5">
+        <div class="logo-wrap flex items-center">
+          <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+          <span
+            class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+            >UmEmployed</span
+          >
         </div>
-    </div>
-</div>
+        <a
+          class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
+          href="./home.html"
+          >Home</a
+        >
+        <a
+          class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
+          href="./resume.html"
+          >Resume</a
+        >
+      </div>
+      <nav class="flex md:gap-x-4 items-center">
+        <ul class="flex gap-x-2 md:gap-x-6 items-center">
+          <li>
+            <a
+              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="#"
+              ><img
+                class="w-5"
+                src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
+                alt="message icon"
+              />
+              <span class="hidden md:block">Messages</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="#"
+              ><img
+                class="w-5"
+                src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
+                alt="notification icon"
+              />
+              <span class="hidden md:block">Notifications</span>
+            </a>
+          </li>
+        </ul>
 
-{% endblock content %}
+        <div class="hidden md:block border-l h-[40px]"></div>
+
+        <div class="relative">
+          <div class="hover:bg-blue-50 transition-colors p-2 rounded">
+            <button id="option-btn" class="flex items-center gap-2">
+              <img
+                class="w-[19px]"
+                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+                alt="user icon"
+              />
+              <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
+                >enukinsman@gmail.com</span
+              >
+              <img
+                class="w-[19px] mt-1 md:mt-0 hidden md:block"
+                src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+                alt="drop down arrow"
+              />
+            </button>
+            <div
+              id="backdrop-menu"
+              class="hidden fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
+            >
+              <div
+                id="option-menu"
+                class="absolute bg-white top-[60px] z-[100] min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
+              >
+                <div class="user-mail py-3 px-6 font-bold text-gray-700">
+                  enugodwillenwe@gmail.com
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                      alt="setting-icon"
+                    />
+                    Account Settings
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="./switchaccounttype.html" class="flex items-center gap-1">
+                    <img
+                    class="w-5"
+                    src="{% static 'build/img/user.svg' %}"
+                    alt="user-icon"
+                  />
+                    Switch Account Type
+                  </a>
+                </div>
+                <hr class="my-2" />
+                <div class="flex py-4 px-8 text-gray-700 justify-center">
+                  <button class="signout-btn text-[#1e90ff] font-bold">
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div
+        id="sidebar"
+        class="font-bold fixed bg-[#8080803e] z-auto md:bg-none hidden top-0 bottom-0 left-0 right-0 p-10"
+      >
+        <div
+          class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+        >
+          <div class="btn-wrap text-end">
+            <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
+              &times;
+            </button>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Message</a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#"
+              >Notifications</a
+            >
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#"
+              >Employer settings</a
+            >
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Contact us</a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#"
+              >Account Settings</a
+            >
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Sign Out</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto">
+      <form class="max-w-3xl mx-auto p-6" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h1 class="text-2xl font-bold mb-4 text-gray-800">Create Company</h1>
+
+        <!-- Company Information -->
+        <section>
+          <h2 class="text-xl font-semibold mb-2">Company Information</h2>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="name">Company Name</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              placeholder="Company Name"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="industry">Industry</label>
+            <select
+              name="industry"
+              id="industry"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+            >
+              <option value="Technology">Technology</option>
+              <option value="Healthcare">Healthcare</option>
+              <option value="Finance">Finance</option>
+              <option value="Education">Education</option>
+              <!-- Add more industries as needed -->
+            </select>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="website">Website</label>
+            <input
+              type="url"
+              name="website"
+              id="website"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              placeholder="https://example.com"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="company_size">Company Size</label>
+            <input
+              type="text"
+              name="company_size"
+              id="company_size"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              placeholder="Number of Employees"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="logo">Company Logo</label>
+            <input
+              type="file"
+              name="logo"
+              id="logo"
+              class="mt-1 block w-full text-sm text-gray-700"
+              accept="image/*"
+            />
+          </div>
+        </section>
+
+        <!-- Social Links -->
+        <section>
+          <h2 class="text-xl font-semibold mb-2">Social Links</h2>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="linkedin">LinkedIn</label>
+            <input
+              type="url"
+              name="linkedin"
+              id="linkedin"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              placeholder="https://linkedin.com/company/yourcompany"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="facebook">Facebook</label>
+            <input
+              type="url"
+              name="facebook"
+              id="facebook"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              placeholder="https://facebook.com/yourcompany"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="twitter">Twitter</label>
+            <input
+              type="url"
+              name="twitter"
+              id="twitter"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              placeholder="https://twitter.com/yourcompany"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="instagram">Instagram</label>
+            <input
+              type="url"
+              name="instagram"
+              id="instagram"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              placeholder="https://instagram.com/yourcompany"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="youtube">YouTube</label>
+            <input
+              type="url"
+              name="youtube"
+              id="youtube"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              placeholder="https://youtube.com/yourcompany"
+            />
+          </div>
+        </section>
+
+        <!-- Location -->
+        <section>
+          <h2 class="text-xl font-semibold mb-2">Location</h2>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="location">Location</label>
+            <input
+              type="text"
+              name="location"
+              id="location"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              placeholder="Company Location"
+            />
+          </div>
+        </section>
+
+        <!-- About Us -->
+        <section>
+          <h2 class="text-xl font-semibold mb-2">About Us</h2>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="about_us">About Us</label>
+            <textarea
+              name="about_us"
+              id="about_us"
+              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+              rows="5"
+              placeholder="Tell us about your company"
+            ></textarea>
+          </div>
+        </section>
+
+        <div class="text-right">
+          <button
+            type="submit"
+            class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded"
+          >
+            Create Company
+          </button>
+        </div>
+      </form>
+    </main>
+    <footer
+      class="mt-20 md:mt-40 flex-shrink-0 py-4 md:py-8 bg-[#121212] text-white flex justify-center"
+    >
+      <p class="text-center">
+        &copy; <span class="year"></span> UmEmployed. All rights reserved.
+      </p>
+    </footer>
+    <script>
+      document.querySelector(".year").textContent = new Date().getFullYear();
+      const optionBtn = document.getElementById("option-btn");
+      const optionMenu = document.getElementById("option-menu");
+      const backdropMenu = document.getElementById("backdrop-menu");
+      const removeBtn = document.getElementById("remove-btn");
+      const sidebar = document.getElementById("sidebar");
+      const backdrop = document.createElement("div");
+
+      backdrop.className = "fixed inset-0 bg-black opacity-50 z-20";
+      optionBtn.addEventListener("click", () => {
+        optionMenu.classList.toggle("hidden");
+        if (!optionMenu.classList.contains("hidden")) {
+          document.body.appendChild(backdrop);
+        } else {
+          backdrop.remove();
+        }
+      });
+
+      backdrop.addEventListener("click", () => {
+        optionMenu.classList.add("hidden");
+        backdrop.remove();
+      });
+
+      removeBtn.addEventListener("click", () => {
+        sidebar.classList.add("hidden");
+      });
+
+      const profileBtn = document.getElementById("profile-btn");
+      profileBtn.addEventListener("click", () => {
+        sidebar.classList.remove("hidden");
+      });
+    </script>
+  </body>
+</html>

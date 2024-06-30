@@ -65,9 +65,9 @@ class SkillQuestion(models.Model):
 class ApplicantAnswer(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey('SkillQuestion', on_delete=models.CASCADE)  # Update this line
+    question = models.ForeignKey(SkillQuestion, on_delete=models.CASCADE)
     answer = models.CharField(max_length=255)
-    job = models.ForeignKey('Job', on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)  # Add score field
 
     def __str__(self):
@@ -87,54 +87,55 @@ class Application(models.Model):
     matching_percentage = models.FloatField(default=0.0)
     overall_match_percentage = models.FloatField(default=0.0)
     has_completed_quiz = models.BooleanField(default=False)
-    # Assume you may have many rounds based on the number of skills
     round_scores = models.JSONField(default=dict)  # Store scores for each skill/round as a dictionary
     total_scores = models.JSONField(default=dict)  # Store total score for each skill/round as a dictionary
 
-
     def save(self, *args, **kwargs):
-        if self.pk is None:
-            from onboarding.models import QuizResponse
+        # Always update scores
+        self.update_quiz_score()
+        self.update_matching_percentage()
+        self.update_total_scores()
 
-            # Initial calculation for quiz_score
-            quiz_responses = QuizResponse.objects.filter(application=self)
-            self.quiz_score = quiz_responses.filter(answer__is_correct=True).count()
+        super().save(*args, **kwargs)  # Save the instance without recursion
 
-            applicant_answers = ApplicantAnswer.objects.filter(applicant=self.user, job=self.job)
-            quiz_score_from_answers = applicant_answers.filter(score=1).count()
-            self.quiz_score += quiz_score_from_answers
+    def update_quiz_score(self):
+        # Calculate quiz_score from ApplicantAnswer
+        self.quiz_score = ApplicantAnswer.objects.filter(applicant=self.user, job=self.job, score=1).count()
 
+    def update_matching_percentage(self):
+        # Calculate matching_percentage
+        try:
+            from onboarding.models import Resume  # Import your Resume model here
             applicant_resume = Resume.objects.get(user=self.user)
             applicant_skills = set(applicant_resume.skills.all())
             job_skills = set(self.job.requirements.all())
             match_percentage, _ = calculate_skill_match(applicant_skills, job_skills)
 
             self.matching_percentage = match_percentage
-            self.overall_match_percentage = (0.7 * match_percentage) + (30 * self.quiz_score)
-
-        # Calculate and update total_scores for each skill/round
-        self.update_total_scores()
-
-        super().save(*args, **kwargs)  # Save the instance without recursion
+            self.overall_match_percentage = (0.7 * match_percentage) + (0.3 * self.quiz_score)
+        except Resume.DoesNotExist:
+            self.matching_percentage = 0.0
+            self.overall_match_percentage = 0.0
 
     def update_total_scores(self):
+        # Update total_scores for each skill/round
+        self.total_scores = {}  # Reset total_scores before updating
         for skill_id in self.round_scores:
             answers = ApplicantAnswer.objects.filter(applicant=self.user, job=self.job, question__skill_id=skill_id)
             total_score = sum(answer.score for answer in answers)
             self.total_scores[skill_id] = total_score
-
+            
+            
+from django.utils import timezone
 class CompletedSkills(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    job_id = models.IntegerField()  # Example: Assuming job_id is an integer
-    skill_id = models.IntegerField()  # Example: Assuming skill_id is an integer
-    is_completed = models.BooleanField(default=False)  # New field to track completion status
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, null=True)
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE, null=True)
+    is_completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(default=timezone.now())
 
     class Meta:
-        unique_together = ['user', 'job_id', 'skill_id']
-
-    def __str__(self):
-        return f"CompletedSkills(user={self.user}, job_id={self.job_id}, skill_id={self.skill_id}, is_completed={self.is_completed})"
-        
+        unique_together = ['user', 'job', 'skill']
         
 class SavedJob(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
