@@ -1,6 +1,6 @@
-from django.urls import path 
+from django.urls import path,include
 from . import views
-from resume.views import upload_resume
+import resume.urls 
 
 urlpatterns = [
     path('register-applicant', views.register_applicant,name='register-applicant'),
@@ -8,7 +8,7 @@ urlpatterns = [
     path('login', views.login_user,name='login'),
     path('logout/', views.logout_user,name='logout'),
     path('role/',views.switch_account,name='switch_account'),
-    path('upload/',upload_resume,name="upload_resume"),
+    path('upload/',include(resume.urls)),
 
     
 

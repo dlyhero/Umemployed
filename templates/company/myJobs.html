@@ -24,7 +24,7 @@
         </div>
         <a class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded" href="./home.html">Home</a>
       </div>
-      <nav class="flex md:gap-x-4 items-center">
+     <nav class="flex md:gap-x-4 items-center">
         <ul class="flex gap-x-2 md:gap-x-6 items-center">
           <li>
             <a
@@ -32,7 +32,7 @@
               href="#"
               ><img
                 class="w-5"
-                src="{% static './build/img/message-square-lines-svgrepo-com.svg' %}"
+                src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
                 alt="message icon"
               />
               <span class="hidden md:block">Messages</span>
@@ -44,7 +44,7 @@
               href="#"
               ><img
                 class="w-5"
-                src="{% static './build/img/notification-bell-svgrepo-com.svg' %}"
+                src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
                 alt="notification icon"
               />
               <span class="hidden md:block">Notifications</span>
@@ -55,147 +55,144 @@
         <div class="hidden md:block border-l h-[40px]"></div>
 
         <div class="relative">
-          <div
-            class="hover:bg-blue-50 transition-colors p-2 rounded"
-          >
-            <button id="option-btn" class="flex items-center  gap-2">
+          <div class="hover:bg-blue-50 transition-colors p-2 rounded">
+            <button id="option-btn" class="flex items-center gap-2">
               <img
-              class="w-[19px]"
-              src="{% static './build/img/profile-svgrepo-com.svg' %}"
-              alt="user icon"
-            />
-              <span class="w-28 text-ellipsis overflow-hidden  hidden md:block "
+                class="w-[19px]"
+                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+                alt="user icon"
+              />
+              <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
                 >enukinsman@gmail.com</span
               >
               <img
-                class="w-[19px] mt-1 md:mt-0 hidden md:block "
-                src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
+                class="w-[19px] mt-1 md:mt-0 hidden md:block"
+                src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
                 alt="drop down arrow"
               />
             </button>
             <div
-            id="backdrop-menu"
-            class="hidden  fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
-          >
-            <div
-              id="option-menu"
-              class="absolute bg-white top-[60px] z-[100]  min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
+              id="backdrop-menu"
+              class="hidden fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
             >
               <div
-                class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all"
+                id="option-menu"
+                class="absolute bg-white top-[60px] z-[100] min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
               >
-                <a href="./profile.html" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static './build/img/user.svg' %}"
-                    alt="user-icon"
-                  />
-                  User
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-              >
-                <a href="#" class="flex items-center gap-1">
-                  <img
-                    class="w-6"
-                    src="{% static './build/img/subscriptions-svgrepo-com.svg' %}"
-                    alt="Subscriptions-icon"
-                  />
-                  Subscriptions
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-              >
-                <a href="#" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static './build/img/billing-svgrepo-com.svg' %}"
-                    alt="Billing-icon"
-                  />
-                  Billing and invoices
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
-              >
-                <a href="#" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static './build/img/setting-1-svgrepo-com.svg' %}"
-                    alt="setting-icon"
-                  />
-                  Employer setting
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-              >
-                <a href="#" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static './build/img/contact-details-filled-svgrepo-com.svg' %}"
-                    alt="msg-icon"
-                  />
-                  Contact us
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
-              >
-                <a href="./company.html" class="flex items-center gap-1">
-                  <img
-                    class="w-6"
-                    src="{% static './build/img/company-svgrepo-com.svg' %}"
-                    alt="company-icon"
-                  />
-                  Company page
-                </a>
-              </div>
+                <div
+                  class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/user.svg' %}"
+                      alt="user-icon"
+                    />
+                    User
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-6"
+                      src="{% static 'build/img/subscriptions-svgrepo-com.svg' %}"
+                      alt="Subscriptions-icon"
+                    />
+                    Subscriptions
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/billing-svgrepo-com.svg' %}"
+                      alt="Billing-icon"
+                    />
+                    Billing and invoices
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                      alt="setting-icon"
+                    />
+                    Employer setting
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/contact-details-filled-svgrepo-com.svg' %}"
+                      alt="msg-icon"
+                    />
+                    Contact us
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="./company.html" class="flex items-center gap-1">
+                    <img
+                      class="w-6"
+                      src="{% static 'build/img/company-svgrepo-com.svg' %}"
+                      alt="company-icon"
+                    />
+                    Company page
+                  </a>
+                </div>
 
-              <hr class="my-2" />
-              <div class="user-mail py-3 px-6 font-bold text-gray-700">
-                enugodwillenwe@gmail.com
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
-              >
-                <a href="#" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static './build/img/setting-1-svgrepo-com.svg' %}"
-                    alt="setting-icon"
-                  />
-                  Account Settings
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
-              >
-                <a href="./switchaccounttype.html" class="flex items-center gap-1">
-                  <img
-                  class="w-5"
-                  src="{% static './build/img/user.svg' %}"
-                  alt="user-icon"
-                />
-                  Switch Account Type
-                </a>
-              </div>
-              <hr class="my-2" />
-              <div class="flex py-4 px-8 text-gray-700 justify-center">
-                <button class="signout-btn text-[#1e90ff] font-bold">
-                  Sign out
-                </button>
+                <hr class="my-2" />
+                <div class="user-mail py-3 px-6 font-bold text-gray-700">
+                  enugodwillenwe@gmail.com
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                      alt="setting-icon"
+                    />
+                    Account Settings
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="./switchaccounttype.html" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/user.svg' %}"
+                      alt="user-icon"
+                    />
+                    Switch account Type
+                  </a>
+                </div>
+                <hr class="my-2" />
+                <div class="flex py-4 px-8 text-gray-700 justify-center">
+                  <button class="signout-btn text-[#1e90ff] font-bold">
+                    Sign out
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        
-        </div>
-         <button id="aside-menu-btn" class="md:hidden">
-            <img class="w-6" src="{% static './build/img/menu-svgrepo-com.svg' %}" alt="" />
-          </button>
+        <button id="aside-menu-btn" class="md:hidden">
+          <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
+        </button>
       </nav>
       <div
         id="sidebar"

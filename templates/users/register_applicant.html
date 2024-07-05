@@ -5,17 +5,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="./img/png/logo-color.png" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'img/png/logo-color.png' %}" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
     <title>Sign Up &VerticalLine; UmEmployed</title>
   </head>
   <body class="min-h-screen flex flex-col">
-     <div>
-        {% for message in messages %}
-        <div class="alert alert-danger" role="alert">{{ message }}</div>
-        {% endfor %}
-    </div>
+     
     <header class="header container px-3 mx-auto mt-3">
       <div class="logo-wrapper flex md:justify-center items-center">
         <img
@@ -28,6 +24,11 @@
       </div>
     </header>
     <main class="container mx-auto mt-4 sm:mt-8 flex-grow">
+      <div>
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endfor %}
+    </div>
       <div class="box">
         <div class="headings mb-2">
           <h1 class="title mt-2 text-center md:tracking-widest w-4/5 mx-auto">

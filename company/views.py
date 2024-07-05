@@ -66,11 +66,11 @@ def update_company(request):
     else:
         messages.warning(request,"Permission Denied")
 
-@login_required(login_url='login')
-def company_details(request, pk):
-    company = get_object_or_404(Company, pk=pk)
-    context = {'company': company}
-    return render(request, 'company/index.html', context)
+# @login_required(login_url='login')
+# def company_details(request, pk):
+#     company = get_object_or_404(Company, pk=pk)
+#     context = {'company': company}
+#     return render(request, 'company/index.html', context)
 
 @login_required(login_url='login')
 def view_my_jobs(request,company_id):
@@ -143,3 +143,11 @@ def company_analytics(request, company_id):
         return HttpResponse("You are not authorized to view this page.")
 
     return render(request, 'company/analytics.html')
+
+def company_details(request, company_id):
+    company = Company.objects.get(id=company_id)
+    context = {
+        "company": company,
+    }
+    return render(request, 'company/companyInfo.html', context)
+    

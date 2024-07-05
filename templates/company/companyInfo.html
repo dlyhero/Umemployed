@@ -1,0 +1,501 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Company Page | UmEmployed</title>
+    <link rel="icon" href="./build/logo/logo-color.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
+  </head>
+  <body
+    class="text-sm md:ml-[240px] md:mt-20 relative flex flex-col min-h-screen"
+  >
+    <header
+      class="flex justify-between items-center md:border-b md:fixed z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-10 bg-white"
+    >
+      <div class="flex items-center gap-x-5">
+        <div class="logo-wrap flex items-center">
+          <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+            >UmEmployed</span
+          >
+        </div>
+        <a
+          class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
+          href="{% url 'home' %}"
+          >Home</a
+        >
+      </div>
+      <nav class="flex md:gap-x-4 items-center">
+        <ul class="flex gap-x-2 md:gap-x-6 items-center">
+          <li>
+            <a
+              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="#"
+              ><img
+                class="w-5"
+                src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
+                alt="message icon"
+              />
+              <span class="hidden md:block">Messages</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="#"
+              ><img
+                class="w-5"
+                src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
+                alt="notification icon"
+              />
+              <span class="hidden md:block">Notifications</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="hidden md:block border-l h-[40px]"></div>
+
+        <div class="relative">
+          <div class="hover:bg-blue-50 transition-colors p-2 rounded">
+            <button id="option-btn" class="flex items-center gap-2">
+              <img
+                class="w-[19px]"
+                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+                alt="user icon"
+              />
+              <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
+                >enukinsman@gmail.com</span
+              >
+              <img
+                class="w-[19px] mt-1 md:mt-0 hidden md:block"
+                src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+                alt="drop down arrow"
+              />
+            </button>
+            <div
+              id="backdrop-menu"
+              class="hidden fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
+            >
+              <div
+                id="option-menu"
+                class="absolute bg-white top-[60px] z-[100] min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
+              >
+                <div
+                  class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/user.svg' %}"
+                      alt="user-icon"
+                    />
+                    User
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-6"
+                      src="{% static 'build/img/subscriptions-svgrepo-com.svg' %}"
+                      alt="Subscriptions-icon"
+                    />
+                    Subscriptions
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/billing-svgrepo-com.svg' %}"
+                      alt="Billing-icon"
+                    />
+                    Billing and invoices
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                      alt="setting-icon"
+                    />
+                    Employer setting
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/contact-details-filled-svgrepo-com.svg' %}"
+                      alt="msg-icon"
+                    />
+                    Contact us
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="./company.html" class="flex items-center gap-1">
+                    <img
+                      class="w-6"
+                      src="{% static 'build/img/company-svgrepo-com.svg' %}"
+                      alt="company-icon"
+                    />
+                    Company page
+                  </a>
+                </div>
+
+                <hr class="my-2" />
+                <div class="user-mail py-3 px-6 font-bold text-gray-700">
+                  enugodwillenwe@gmail.com
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                      alt="setting-icon"
+                    />
+                    Account Settings
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="./switchaccounttype.html" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/user.svg' %}"
+                      alt="user-icon"
+                    />
+                    Switch account Type
+                  </a>
+                </div>
+                <hr class="my-2" />
+                <div class="flex py-4 px-8 text-gray-700 justify-center">
+                  <button class="signout-btn text-[#1e90ff] font-bold">
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button id="aside-menu-btn" class="md:hidden">
+          <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
+        </button>
+      </nav>
+      <div
+        id="sidebar"
+        class="font-bold fixed bg-[#8080803e] z-auto md:bg-none hidden top-0 bottom-0 left-0 right-0 p-10"
+      >
+        <div
+          class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+        >
+          <div class="btn-wrap text-end">
+            <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
+              &times;
+            </button>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Message</a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#"
+              >Notifications</a
+            >
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#"
+              >Employer settings</a
+            >
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Contact us</a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#"
+              >Account Settings</a
+            >
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Sign Out</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <aside
+      id="aside-menu"
+      class="hidden md:block transition-all fixed top-0 z-10 md:z-0 left-0 md:left-5 bottom-0 md:bottom-10 h-screen right-0 md:right-auto max-w-[350px] md:w-fit md:top-[62px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
+    >
+      <section class="mt-5">
+        <div class="cancel-wrap text-end mb-4 md:hidden">
+          <button id="cancel-aside-btn">
+            <img
+              class="w-6"
+              src="{% static 'build/img/cancel-svgrepo-com (1).svg' %}"
+              alt="cancel icon"
+            />
+          </button>
+        </div>
+        <div
+          class="p-1 md:p-2 text-white md:text-black border-b border-t md:bg-white hover:bg-gray-300 rounded mb-4 cursor-pointer"
+        >
+          <a
+            href="#"
+            class="aside-item flex items-center justify-between w-full"
+          >
+            <div class="img-wrap flex items-center p-1 md:p-0">
+              <img
+                class="w-6"
+                src="{% static 'build/img/plus-svgrepo-com.svg' %}"
+                alt="plus icon"
+              />
+              <span>Create new</span>
+            </div>
+            <img
+              class="w-6 ml-14"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer active"
+            href="./index.html"
+          >
+            <img
+              class="w-6"
+              src="{% static 'build/img/job-svgrepo-com.svg' %}"
+              alt="briefcase icon"
+            />
+            <span>Jobs</span>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center gap-1 w-full md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <img
+              class="w-6"
+              src="{% static 'build/img/users-svgrepo-com.svg' %}"
+              alt="users icon"
+            />
+            <span>Candidates</span>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <div class="img-wrap flex items-center gap-1">
+              <img
+                class="w-6"
+                src="{% static 'build/img/date-svgrepo-com.svg' %}"
+                alt="date icon"
+              />
+              <span>Interviews</span>
+            </div>
+            <img
+              class="w-6 ml-14"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <div class="img-wrap flex items-center gap-1">
+              <img
+                class="w-6"
+                src="{% static 'build/img/analytics-svgrepo-com.svg' %}"
+                alt="analytics icon"
+              />
+              <span>Analytics</span>
+            </div>
+            <img
+              class="w-6 ml-16"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
+        </div>
+      </section>
+    </aside>
+    <!-- Company Page Container -->
+    <main class="flex-grow md:px-3 w-full lg:w-[100%] mx-auto">
+      <div class="mx-auto bg-white p-5">
+        <!-- Company Header -->
+        <section class="mb-10">
+          <div
+            class="flex flex-col md:flex-row items-center justify-between mb-10"
+          >
+            <div class="flex flex-col sm:flex-row items-center mb-4 md:mb-0">
+              <img
+                src="{% static 'build/img/company-svgrepo-com.svg' %}"
+                alt="Company Logo"
+                class="w-24 h-24 md:mr-2 llg:mr-4"
+              />
+              <div class="text-center sm:text-left">
+                <h1 class="text-3xl font-bold">Company Name</h1>
+                <p class="text-gray-600">Industry: Technology</p>
+                <p class="text-gray-600">Headquarters: Location</p>
+              </div>
+            </div>
+            <a
+              href="company-website.com"
+              class="bg-[#1e90ff] font-bold text-white py-2 px-4 rounded-md hover:bg-blue-600 text-nowrap"
+              >Visit Website</a
+            >
+          </div>
+          <div class="md:flex space-x-10 items-center">
+            <div
+              class="flex flex-wrap space-x-4 items-center justify-center sm:justify-start ml-1"
+            >
+              <a href="linkedin-url" class="text-[#1e90ff] font-bold hover:underline"
+                >LinkedIn</a
+              >
+              <a href="facebook-url" class="text-[#1e90ff] font-bold hover:underline"
+                >Facebook</a
+              >
+              <a href="twitter-url" class="text-[#1e90ff] font-bold hover:underline"
+                >Twitter</a
+              >
+              <a href="instagram-url" class="text-[#1e90ff] font-bold hover:underline"
+                >Instagram</a
+              >
+            </div>
+            <a href="./editcompany.html" class="text-center flex  w-[300px]  mx-auto">
+              <img class="w-6" src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="" />
+            </a>
+          </div>
+        </section>
+
+        <!-- Company Description -->
+        <section class="mb-6">
+          <h2 class="text-2xl font-semibold">About Us</h2>
+          <hr class="w-[90px] p-0 mb-4 border border-[#1e90ff]" />
+          <p class="text-gray-700">
+            Founded in 2010, Innovatech Solutions has quickly become a leader in
+            the technology industry. We specialize in creating cutting-edge
+            software and hardware solutions that help businesses operate more
+            efficiently and effectively. Our mission is to drive innovation
+            through technology, providing our clients with the tools they need
+            to succeed in a rapidly changing digital landscape.
+          </p>
+          <p class="text-gray-700 mt-4">
+            With a team of over 500 dedicated professionals, we pride ourselves
+            on our commitment to quality and customer satisfaction. Our
+            headquarters are located in Silicon Valley, with additional offices
+            across the globe. At Innovatech Solutions, we believe in fostering a
+            collaborative and inclusive work environment where creativity and
+            ideas can thrive. Join us as we continue to push the boundaries of
+            what's possible in technology.
+          </p>
+        </section>
+
+        <!-- Mission, Vision, Values -->
+        <section class="mb-6">
+          <h2 class="text-2xl font-semibold">Mission Statement</h2>
+          <hr class="w-[193px] p-0 mb-4 border border-[#1e90ff]" />
+          <p class="text-gray-700">
+            Our mission is to empower businesses and individuals by providing
+            innovative technology solutions that enhance productivity and drive
+            growth. We are committed to delivering exceptional quality and
+            value, fostering a culture of continuous improvement, and making a
+            positive impact on the communities we serve.
+          </p>
+        </section>
+
+        <section class="mb-6">
+          <h2 class="text-2xl font-semibold">Vision Statement</h2>
+          <hr class="w-[175px] p-0 mb-4 border border-[#1e90ff]" />
+          <p class="text-gray-700">
+            Our vision is to be the world’s most trusted and innovative
+            technology partner, transforming the way businesses and individuals
+            connect and achieve their goals. We aspire to create a sustainable
+            future through cutting-edge solutions that drive progress and enrich
+            lives globally.
+          </p>
+        </section>
+
+        <!-- Media -->
+        <section class="mb-6">
+          <h2 class="text-2xl text-gray-800 font-semibold">Company Media</h2>
+          <hr class="w-[164px] p-0 mb-6 border border-[#1e90ff]" />
+          <div
+            class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4"
+          >
+            <img
+              src="{% static 'build/pics/career.jpg' %}"
+              alt="Cover Photo"
+              class="w-full md:w-1/2 h-64 object-cover rounded-md"
+            />
+            <iframe
+              auto
+              class="w-full md:w-1/2 h-64 rounded-md"
+              src="{% static 'build/videos/Git and GitHub - 0 Experience to Professional in 1 Tutorial (Part 1).mp4' %}"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </section>
+
+        <!-- Job Opennings-->
+        <section class="mb-6">
+          <h2 class="text-2xl text-gray-800 font-semibold">
+            Job Opennings
+          </h2>
+          <hr class="w-[155px] p-0 mb-4 border border-[#1e90ff]" />
+          <div class="bg-gray-100 p-4 rounded-md">
+            <h3 class="text-xl font-semibold mb-2">Position Title</h3>
+            <p class="text-gray-700">Location: Job Location</p>
+            <p class="text-gray-700">Description: Job Description</p>
+            <p class="text-gray-700">Requirements: Job Requirements</p>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="text-center pb-2 text-gray-500 my-5">
+      &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
+      <span class="underline"
+        ><a href="#">Cookies</a>, <a href="#">Privacy</a>, and
+        <a href="#">Terms</a></span
+      >
+    </footer>
+
+    <script type="module" src="{% static 'scripts/dashboard.js' %}"></script>
+  </body>
+</html>
