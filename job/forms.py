@@ -3,18 +3,11 @@ from .models import Job, ApplicantAnswer, MCQ
 from resume.models import Skill, SkillCategory
 
 class CreateJobForm(forms.ModelForm):
-    """
-    Form for creating a new job.
-
-    Attributes:
-        category (ModelChoiceField): Dropdown field for selecting a skill category.
-    """
-    category = forms.ModelChoiceField(queryset=SkillCategory.objects.all(), empty_label=None)
-
     class Meta:
         model = Job
-        fields = ['title', 'category', 'location', 'salary']
+        fields = ['title', 'hire_number', 'job_type', 'location', 'salary', 'category']
 
+    category = forms.ModelChoiceField(queryset=SkillCategory.objects.all())
 class JobDescriptionForm(forms.Form):
     """
     Form for entering job description.

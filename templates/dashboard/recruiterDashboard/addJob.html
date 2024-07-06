@@ -1,38 +1,32 @@
 {% load static %}
 <!DOCTYPE html>
-
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add Job</title>
+    <title>Company Page | UmEmployed</title>
     <link rel="icon" href="./build/logo/logo-color.png" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{% static './build/css/employer.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
   </head>
   <body
-    class="text-sm md:ml-[265px] md:bg-gray-50 lg:ml-[259px] md:mt-20 relative flex flex-col min-h-screen"
+    class="text-sm md:ml-[240px] md:mt-20 relative flex flex-col min-h-screen"
   >
     <header
       class="flex justify-between items-center md:border-b md:fixed z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-10 bg-white"
     >
       <div class="flex items-center gap-x-5">
         <div class="logo-wrap flex items-center">
-          <img class="w-8 md:w-9" src="{% static './build/logo/logo-color.png' %}" alt="" />
-          <span
-            class="text-[#1e90ff] hidden md:block md:text-xl font-bold tracking-widest"
+          <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
             >UmEmployed</span
           >
         </div>
         <a
           class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
-          href="./home.html"
+          href="{% url 'home' %}"
           >Home</a
-        >
-        <a
-          class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
-          href="./resume.html"
-          >Resume</a
         >
       </div>
       <nav class="flex md:gap-x-4 items-center">
@@ -43,7 +37,7 @@
               href="#"
               ><img
                 class="w-5"
-                src="{% static './build/img/message-square-lines-svgrepo-com.svg' %}"
+                src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
                 alt="message icon"
               />
               <span class="hidden md:block">Messages</span>
@@ -55,7 +49,7 @@
               href="#"
               ><img
                 class="w-5"
-                src="{% static './build/img/notification-bell-svgrepo-com.svg' %}"
+                src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
                 alt="notification icon"
               />
               <span class="hidden md:block">Notifications</span>
@@ -70,15 +64,15 @@
             <button id="option-btn" class="flex items-center gap-2">
               <img
                 class="w-[19px]"
-                src="{% static './build/img/profile-svgrepo-com.svg' %}"
+                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
                 alt="user icon"
               />
               <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
-                >enukinsman@gmail.com</span
+                >{{ user.username }}</span
               >
               <img
                 class="w-[19px] mt-1 md:mt-0 hidden md:block"
-                src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
+                src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
                 alt="drop down arrow"
               />
             </button>
@@ -96,7 +90,7 @@
                   <a href="#" class="flex items-center gap-1">
                     <img
                       class="w-5"
-                      src="{% static './build/img/user.svg' %}"
+                      src="{% static 'build/img/user.svg' %}"
                       alt="user-icon"
                     />
                     User
@@ -108,7 +102,7 @@
                   <a href="#" class="flex items-center gap-1">
                     <img
                       class="w-6"
-                      src="{% static './build/img/subscriptions-svgrepo-com.svg' %}"
+                      src="{% static 'build/img/subscriptions-svgrepo-com.svg' %}"
                       alt="Subscriptions-icon"
                     />
                     Subscriptions
@@ -120,7 +114,7 @@
                   <a href="#" class="flex items-center gap-1">
                     <img
                       class="w-5"
-                      src="{% static './build/img/billing-svgrepo-com.svg' %}"
+                      src="{% static 'build/img/billing-svgrepo-com.svg' %}"
                       alt="Billing-icon"
                     />
                     Billing and invoices
@@ -132,7 +126,7 @@
                   <a href="#" class="flex items-center gap-1">
                     <img
                       class="w-5"
-                      src="{% static './build/img/setting-1-svgrepo-com.svg' %}"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
                       alt="setting-icon"
                     />
                     Employer setting
@@ -144,7 +138,7 @@
                   <a href="#" class="flex items-center gap-1">
                     <img
                       class="w-5"
-                      src="{% static './build/img/contact-details-filled-svgrepo-com.svg' %}"
+                      src="{% static 'build/img/contact-details-filled-svgrepo-com.svg' %}"
                       alt="msg-icon"
                     />
                     Contact us
@@ -153,10 +147,10 @@
                 <div
                   class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
                 >
-                  <a href="#" class="flex items-center gap-1">
+                  <a href="./company.html" class="flex items-center gap-1">
                     <img
                       class="w-6"
-                      src="{% static './build/img/company-svgrepo-com.svg' %}"
+                      src="{% static 'build/img/company-svgrepo-com.svg' %}"
                       alt="company-icon"
                     />
                     Company page
@@ -165,7 +159,7 @@
 
                 <hr class="my-2" />
                 <div class="user-mail py-3 px-6 font-bold text-gray-700">
-                  enugodwillenwe@gmail.com
+                  {{ user.email }}
                 </div>
                 <div
                   class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
@@ -173,24 +167,36 @@
                   <a href="#" class="flex items-center gap-1">
                     <img
                       class="w-5"
-                      src="{% static './build/img/setting-1-svgrepo-com.svg' %}"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
                       alt="setting-icon"
                     />
                     Account Settings
                   </a>
                 </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="./switchaccounttype.html" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/user.svg' %}"
+                      alt="user-icon"
+                    />
+                    Switch account Type
+                  </a>
+                </div>
                 <hr class="my-2" />
                 <div class="flex py-4 px-8 text-gray-700 justify-center">
-                  <button class="signout-btn text-[#1e90ff] font-bold">
+                  <a href="{% url 'logout' %}" class="signout-btn text-[#1e90ff] font-bold">
                     Sign out
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <button id="aside-menu-btn" class="md:hidden">
-          <img class="w-6" src="{% static './build/img/menu-svgrepo-com.svg' %}" alt="" />
+          <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
         </button>
       </nav>
       <div
@@ -246,46 +252,48 @@
     </header>
     <aside
       id="aside-menu"
-      class="hidden md:block transition-all fixed top-0 z-10 md:z-0 left-0 md:left-5 bottom-0 md:bottom-10 md:h-[85vh] right-0 md:right-auto max-w-[350px] md:w-fit md:top-[62px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
+      class="hidden md:block transition-all fixed top-0 z-10 md:z-0 left-0 md:left-5 bottom-0 md:bottom-10 h-screen right-0 md:right-auto max-w-[350px] md:w-fit md:top-[62px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
     >
       <section class="mt-5">
-        <div class="cancel-wrap text-end mb-4 md:hidden container">
+        <div class="cancel-wrap text-end mb-4 md:hidden">
           <button id="cancel-aside-btn">
             <img
               class="w-6"
-              src="{% static './build/img/cancel-svgrepo-com (1).svg' %}"
+              src="{% static 'build/img/cancel-svgrepo-com (1).svg' %}"
               alt="cancel icon"
             />
           </button>
         </div>
-        <div>
+        <div
+          class="p-1 md:p-2 text-white md:text-black border-b border-t md:bg-white hover:bg-gray-300 rounded mb-4 cursor-pointer"
+        >
           <a
             href="#"
-            class="flex p-1 md:p-2 text-white md:text-black border-b border-t md:bg-white hover:bg-gray-300 rounded mb-4 cursor-pointer"
+            class="aside-item flex items-center justify-between w-full"
           >
             <div class="img-wrap flex items-center p-1 md:p-0">
               <img
                 class="w-6"
-                src="{% static './build/img/plus-svgrepo-com.svg' %}"
+                src="{% static 'build/img/plus-svgrepo-com.svg' %}"
                 alt="plus icon"
               />
               <span>Create new</span>
             </div>
             <img
               class="w-6 ml-14"
-              src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
               alt="dropdown icon"
             />
           </a>
         </div>
         <div>
           <a
-            class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer"
-            href="./index.html"
+            class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer active"
+            href="#"
           >
             <img
               class="w-6"
-              src="{% static './build/img/job-svgrepo-com.svg' %}"
+              src="{% static 'build/img/job-svgrepo-com.svg' %}"
               alt="briefcase icon"
             />
             <span>Jobs</span>
@@ -298,7 +306,7 @@
           >
             <img
               class="w-6"
-              src="{% static './build/img/users-svgrepo-com.svg' %}"
+              src="{% static 'build/img/users-svgrepo-com.svg' %}"
               alt="users icon"
             />
             <span>Candidates</span>
@@ -312,14 +320,14 @@
             <div class="img-wrap flex items-center gap-1">
               <img
                 class="w-6"
-                src="{% static './build/img/date-svgrepo-com.svg' %}"
+                src="{% static 'build/img/date-svgrepo-com.svg' %}"
                 alt="date icon"
               />
               <span>Interviews</span>
             </div>
             <img
               class="w-6 ml-14"
-              src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
               alt="dropdown icon"
             />
           </a>
@@ -332,133 +340,84 @@
             <div class="img-wrap flex items-center gap-1">
               <img
                 class="w-6"
-                src="{% static './build/img/analytics-svgrepo-com.svg' %}"
+                src="{% static 'build/img/analytics-svgrepo-com.svg' %}"
                 alt="analytics icon"
               />
               <span>Analytics</span>
             </div>
             <img
               class="w-6 ml-16"
-              src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
               alt="dropdown icon"
             />
           </a>
         </div>
       </section>
     </aside>
-    <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto container">
-      <form id="addJob" class="w-full md:w-[65%] mx-auto" action="">
+   <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto container">
+    <form id="addJob" class="w-full md:w-[65%] mx-auto" method="post">
+        {% csrf_token %}
         <h1 class="text-3xl font-bold text-gray-800 my-5">Add a job</h1>
         <div class="input-wrap mb-8">
-          <label for="job-title" class="text-[17px] font-[500] text-gray-800"
-            >Job title</label
-          ><br />
-          <input
-            class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-            type="text"
-            placeholder="ex(Asiistant Manager)"
-            name="job-title"
-            id="job-title"
-            required
-          />
+            <label for="job-title" class="text-[17px] font-[500] text-gray-800">Job title</label><br />
+            <input class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                type="text" placeholder="ex(Asiistant Manager)" name="title" id="job-title" required />
         </div>
         <div class="input-wrap mb-8">
-          <label for="hire-number" class="text-[17px] font-[500] text-gray-800"
-            >Number of persons to hire for this job</label
-          ><br />
-          <select
-            class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-            type="text"
-            name="hire-number"
-            id="hire-number"
-            required
-          >
-            <option value="" selected>Choose an option</option>
-            <option value="one" selected>1</option>
-            <option value="two" selected>2</option>
-            <option value="three" selected>3</option>
-            <option value="four" selected>4</option>
-            <option value="five" selected>5</option>
-            <option value="six" selected>6</option>
-            <option value="seven" selected>7</option>
-            <option value="eight" selected>8</option>
-            <option value="nine" selected>9</option>
-            <option value="10" selected>10</option>
-            <option value="more" selected>more</option>
-          </select>
+            <label for="hire-number" class="text-[17px] font-[500] text-gray-800">Number of persons to hire for this job</label><br />
+            <select class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                name="hire_number" id="hire-number" required>
+                <option value="" selected>Choose an option</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="more">More</option>
+            </select>
         </div>
         <div class="input-wrap mb-8">
-          <label for="salary" class="text-[17px] font-[500] text-gray-800"
-            >Salary</label
-          ><br />
-          <input
-            class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-            type="text"
-            placeholder="ex($50,000 - $70,000)"
-            name="salary"
-            id="salary"
-            required
-          />
+            <label for="salary" class="text-[17px] font-[500] text-gray-800">Salary</label><br />
+            <input class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                type="text" placeholder="ex($50,000 - $70,000)" name="salary" id="salary" required />
         </div>
         <div class="input-wrap mb-8">
-          <label for="job-location" class="text-[17px] font-[500] text-gray-800"
-            >Job Location</label
-          ><br />
-          <input
-            class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-            type="text"
-            placeholder="ex(New York, USA)"
-            name="job-location"
-            id="job-location"
-            required
-          />
+            <label for="job-location" class="text-[17px] font-[500] text-gray-800">Job Location</label><br />
+            <input class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                type="text" placeholder="ex(New York, USA)" name="location" id="job-location" required />
         </div>
         <div class="input-wrap mb-8">
-          <label for="job-type" class="text-[17px] font-[500] text-gray-800"
-            >Job location type</label
-          ><br />
-          <select
-            class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-            name="job-type"
-            id="job-type"
-            required
-          >
-            <option value="" selected>Choose an option</option>
-            <option value="remote">Remote</option>
-            <option value="onsite">Onsite</option>
-            <option value="hybrid">Hybrid</option>
-            <option value="internship">Internship</option>
-          </select>
+            <label for="job-type" class="text-[17px] font-[500] text-gray-800">Job location type</label><br />
+            <select class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                name="job_type" id="job-type" required>
+                <option value="" selected>Choose an option</option>
+                <option value="remote">Remote</option>
+                <option value="onsite">Onsite</option>
+                <option value="hybrid">Hybrid</option>
+                <option value="internship">Internship</option>
+            </select>
         </div>
         <div class="input-wrap mb-8">
-          <label
-            for="job-description"
-            class="text-[17px] font-[500] text-gray-800"
-            >Job Description</label
-          ><br />
-          <textarea
-            class="border resize-none border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-            rows="5"
-            placeholder="Provide a detailed description of the job role and responsibilities"
-            name="job-description"
-            id="job-description"
-            required
-          ></textarea>
+           <label for="id_category">Category:</label>
+<select name="category" id="id_category">
+    {% for category in form.category.field.queryset %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+    {% endfor %}
+</select>
         </div>
-        <hr class="my-14 border-gray-500" />
-        <div class="btn-wrap text-end">
-          <a
-            id="next-btn"
-            type="submit"
-            class="px-5 py-2 text-white font-bold bg-[#1e90ff] rounded-lg"
-            href="./jobdetails.html"
-          >
-            <span class="inline">Next</span>
-            <span class="text-[20px]">&RightArrow;</span>
-          </a>
-        </div>
-      </form>
-    </main>
+        <!-- Other fields and submit button -->
+ <div class="btn-wrap text-end">
+            <button type="submit" class="px-5 py-2 text-white font-bold bg-[#1e90ff] rounded-lg">
+                Next <span class="text-[20px]">&RightArrow;</span>
+            </button>
+        </div>    </form>
+</main>
+
     <footer class="text-center pb-2 text-gray-500 my-5">
       &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
       <span class="underline"

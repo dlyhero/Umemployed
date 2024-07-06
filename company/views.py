@@ -14,7 +14,15 @@ from job.models import Job, Application
 from resume.models import Resume
 
 
+@login_required(login_url='login')
+def company_details(request, company_id):
+    company = Company.objects.get(id=company_id)
+    context = {
+        "company": company,
+    }
+    return render(request, 'company/companyInfo.html', context)
 #create company
+@login_required(login_url='login')
 def create_company(request):
     try:
         company = request.user.company
@@ -30,7 +38,8 @@ def create_company(request):
                 request.user.has_company = True
                 request.user.save()
                 messages.success(request, 'Company created successfully.')
-                return redirect('view_applications', company_id=company.id)  # Redirect to the dashboard after successful company creation
+                # Redirect to company_details with the newly created company's ID
+                return redirect('company_details', company_id=company.id)  
             else:
                 messages.error(request, 'Error creating company.')
         else:
@@ -73,8 +82,14 @@ def update_company(request):
 #     return render(request, 'company/index.html', context)
 
 @login_required(login_url='login')
-def view_my_jobs(request,company_id):
-    return render(request, "company/myJobs.html")
+def view_my_jobs(request, company_id):
+    company = get_object_or_404(Company, id=company_id)
+    jobs = Job.objects.filter(company=company)
+    context = {
+        'company': company,
+        "jobs":jobs,
+    }
+    return render(request, 'company/myJobs.html', context)
 
 @login_required(login_url='login')
 def view_applications(request, company_id):
@@ -144,10 +159,5 @@ def company_analytics(request, company_id):
 
     return render(request, 'company/analytics.html')
 
-def company_details(request, company_id):
-    company = Company.objects.get(id=company_id)
-    context = {
-        "company": company,
-    }
-    return render(request, 'company/companyInfo.html', context)
+
     

@@ -19,6 +19,13 @@ class Job(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
+    hire_number = models.IntegerField()
+    job_type = models.CharField(max_length=50, choices=[
+        ('remote', 'Remote'),
+        ('onsite', 'Onsite'),
+        ('hybrid', 'Hybrid'),
+        ('internship', 'Internship'),
+    ])
     location = models.CharField(max_length=100)
     salary = models.PositiveBigIntegerField(default=35000)
     requirements = models.ManyToManyField(Skill, related_name='required_jobs')
@@ -30,6 +37,7 @@ class Job(models.Model):
     benefits = models.TextField(default="...")
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default=BEGINNER)
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
     def __str__(self):

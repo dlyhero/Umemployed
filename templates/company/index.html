@@ -4,13 +4,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UmEmployed for Employers</title>
+    <title>Company Page | UmEmployed</title>
     <link rel="icon" href="./build/logo/logo-color.png" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{% static 'build/css/employer.css' %}">
+    <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
   </head>
   <body
-    class="text-sm md:ml-[265px] bg-gray-50 lg:ml-[259px] md:bg-gray-50 md:mt-20 relative flex flex-col h-screen"
+    class="text-sm md:ml-[240px] md:mt-20 relative flex flex-col min-h-screen"
   >
     <header
       class="flex justify-between items-center md:border-b md:fixed z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-10 bg-white"
@@ -18,12 +19,15 @@
       <div class="flex items-center gap-x-5">
         <div class="logo-wrap flex items-center">
           <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
-          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold tracking-widest"
+          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
             >UmEmployed</span
           >
         </div>
-        <a class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded" href="./home.html">Home</a>
-        <a class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded" href="./resume.html">Resume</a>
+        <a
+          class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
+          href="{% url 'home' %}"
+          >Home</a
+        >
       </div>
       <nav class="flex md:gap-x-4 items-center">
         <ul class="flex gap-x-2 md:gap-x-6 items-center">
@@ -64,7 +68,7 @@
                 alt="user icon"
               />
               <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
-                >enukinsman@gmail.com</span
+                >{{ user.username }}</span
               >
               <img
                 class="w-[19px] mt-1 md:mt-0 hidden md:block"
@@ -155,7 +159,7 @@
 
                 <hr class="my-2" />
                 <div class="user-mail py-3 px-6 font-bold text-gray-700">
-                  enugodwillenwe@gmail.com
+                  {{ user.email }}
                 </div>
                 <div
                   class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
@@ -183,9 +187,9 @@
                 </div>
                 <hr class="my-2" />
                 <div class="flex py-4 px-8 text-gray-700 justify-center">
-                  <button class="signout-btn text-[#1e90ff] font-bold">
+                  <a href="{% url 'logout' %}" class="signout-btn text-[#1e90ff] font-bold">
                     Sign out
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
@@ -241,16 +245,14 @@
           <div
             class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
           >
-            <a class="flex justify-between items-center" href="#"
-              >Sign Out</a
-            >
+            <a class="flex justify-between items-center" href="#">Sign Out</a>
           </div>
         </div>
       </div>
     </header>
     <aside
       id="aside-menu"
-      class="hidden md:block transition-all fixed top-0 z-10 md:z-0 left-0 md:left-5 bottom-0 md:bottom-10 md:h-[85vh] right-0 md:right-auto max-w-[350px] md:w-fit md:top-[62px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
+      class="hidden md:block transition-all fixed top-0 z-10 md:z-0 left-0 md:left-5 bottom-0 md:bottom-10 h-screen right-0 md:right-auto max-w-[350px] md:w-fit md:top-[62px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
     >
       <section class="mt-5">
         <div class="cancel-wrap text-end mb-4 md:hidden">
@@ -267,7 +269,7 @@
         >
           <a
             href="#"
-            class="flex items-center justify-between w-full"
+            class="aside-item flex items-center justify-between w-full"
           >
             <div class="img-wrap flex items-center p-1 md:p-0">
               <img
@@ -287,7 +289,7 @@
         <div>
           <a
             class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer active"
-            href="{% url '' %}"
+            href="{% url 'view_my_jobs' company.id %}"
           >
             <img
               class="w-6"
@@ -300,7 +302,7 @@
         <div>
           <a
             class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center gap-1 w-full md:bg-slate-700 transition-colors"
-            href="#"
+            href="{% url 'view_applications' company.id %}"
           >
             <img
               class="w-6"
@@ -313,7 +315,7 @@
         <div>
           <a
             class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
-            href="#"
+            href="{% url 'view_applications' company.id %}"
           >
             <div class="img-wrap flex items-center gap-1">
               <img

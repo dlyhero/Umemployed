@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
 from .views import enter_job_description
 from .gpt_calls import generate_mcqs, get_skills_from_chatgpt, execute_input

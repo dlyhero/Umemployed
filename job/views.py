@@ -56,17 +56,24 @@ def create_job(request):
             job.company = request.user.company
             job.save()
 
-            # Store the selected category in the session
-            request.session['selected_category'] = form.cleaned_data['category'].id
+            # Optionally store job ID in session or context for further steps
             request.session['selected_job_id'] = job.id
 
-            # Redirect to enter job description
-            return redirect('job:enter_job_description')
+            # Redirect to success page or next step
+            return redirect('job:enter_job_description')  # Adjust this as needed
+        else:
+            # Handle form errors if needed
+            print(form.errors)
     else:
         form = CreateJobForm()
+
     return render(request, 'dashboard/recruiterDashboard/addJob.html', {'form': form})
 
 
+
+from django.shortcuts import render, redirect
+from .forms import JobDescriptionForm
+from .models import Job
 
 def enter_job_description(request):
     if request.method == 'POST':
@@ -90,7 +97,9 @@ def enter_job_description(request):
             return redirect('job:select_skills')
     else:
         form = JobDescriptionForm()
-    return render(request, 'job/enter_job_description.html', {'form': form})
+    
+    return render(request, 'dashboard/recruiterDashboard/jobDescription.html', {'form': form})
+
 
 
 @login_required
