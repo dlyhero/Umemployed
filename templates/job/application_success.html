@@ -67,7 +67,7 @@
               {% endfor %}
             </ul>
           {% else %}
-            <a href="{% url 'job:evaluation_results' %}"  style="color: blue; text-decoration: none;">See results</a>
+            <a href="{% url 'job:evaluation_results' job_id=job.id%}"  style="color: blue; text-decoration: none;">See results</a>
           {% endif %}
           <!-- End of skill scores -->
         </div>

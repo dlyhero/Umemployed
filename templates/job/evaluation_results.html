@@ -39,13 +39,13 @@
        <div id="Download">
         <h1 class="text-2xl font-bold mb-4 text-center">Results</h1>
         <section class="mb-6">
-            <h2 class="text-xl font-semibold">Job Title: Front-End Developer</h2>
-            <p class="text-gray-700">Location: Madrid, Spain</p>
+            <h2 class="text-xl font-semibold">Job Title: {{job.title}}</h2>
+            <p class="text-gray-700">Location: {{job.location}}</p>
         </section>
         <section class="mb-6">
             <h3 class="text-lg font-semibold">Candidate Information</h3>
-            <p class="text-gray-700">Name: Fotso Eddy</p>
-            <p class="text-gray-700">Email: FotsoEddySteve@gmail.com</p>
+            <p class="text-gray-700">Name: {{user.first_name}} {{user.last_name}}</p>
+            <p class="text-gray-700">Email: {{user.email}}</p>
         </section>
         <section class="mb-6">
             <h3 class="text-lg font-semibold">Test Summary</h3>
@@ -94,7 +94,7 @@
         </section>
         <section class="mt-6 flex space-x-4">
             <button class="bg-[#1e90ff] text-white px-4 py-2 rounded hover:bg-blue-700 no-print" onclick="downloadPDF()">Download PDF</button>
-            <button class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 no-print" onclick="retakeTest()">Back to Home</button>
+            <button class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 no-print" onclick="location.href='{% url 'home' %}'">Back to Home</button>
         </section>
     </main>
 

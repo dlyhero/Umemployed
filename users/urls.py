@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', views.logout_user,name='logout'),
     path('role/',views.switch_account,name='switch_account'),
     path('upload/',include(resume.urls)),
+    path('switch-type',views.change_account_type,name="change_account_type"),
 
     
 

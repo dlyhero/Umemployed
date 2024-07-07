@@ -39,7 +39,7 @@ def create_company(request):
                 request.user.save()
                 messages.success(request, 'Company created successfully.')
                 # Redirect to company_details with the newly created company's ID
-                return redirect('company_details', company_id=company.id)  
+                return redirect('view_applications', company_id=company.id)  
             else:
                 messages.error(request, 'Error creating company.')
         else:

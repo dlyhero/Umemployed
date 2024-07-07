@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://accounts.google.com/gsi/client" async></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body class="min-h-screen flex flex-col">
     <header class="header mt-3 mb-8 md:mb-16 md:px-20 px-5 flex justify-between items-center">
@@ -59,7 +60,8 @@
                     <div class="font-bold">Sign in with Google</div>
                   </a>
                 </div>
-                <div id="g_id_onload" data-client_id="845709768103-93nbovr5fkujpup7t7qpbk0akulmifgp.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-login_uri="http://localhost:8000" data-auto_select="true" data-itp_support="true"></div>
+                <div id="g_id_onload" 
+                data-client_id="38566500036-s92j092h19cnf0seht935oatlm9bb67a.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-login_uri="http://127.0.0.1:8000/accounts/google/login/callback/" data-auto_select="true" data-itp_support="true"></div>
 
                 <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
                 <div class="google-signin wrapper border p-2.5 rounded-lg mb-5 lg:w-4/5">

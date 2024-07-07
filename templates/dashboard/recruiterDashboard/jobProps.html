@@ -1,0 +1,567 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job details | UmEmplpoyed</title>
+    <link rel="icon" href="./build/logo/logo-color.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static './build/css/general.css' %}">
+    <link rel="stylesheet" href="{% static './build/css/employer.css' %}" />
+</head>
+<body class="text-sm md:ml-[265px] lg:ml-[259px]  md:mt-20 relative flex flex-col min-h-screen">
+  <header
+  class="flex justify-between items-center md:border-b md:fixed z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-10 bg-white"
+>
+  <div class="flex items-center gap-x-5">
+    <div class="logo-wrap flex items-center">
+      <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+      <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+        >UmEmployed</span
+      >
+    </div>
+    <a class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded" href="./home.html">Home</a>
+  </div>
+  <nav class="flex md:gap-x-4 items-center">
+    <ul class="flex gap-x-2 md:gap-x-6 items-center">
+      <li>
+        <a
+          class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+          href="#"
+          ><img
+            class="w-5"
+            src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
+            alt="message icon"
+          />
+          <span class="hidden md:block">Messages</span>
+        </a>
+      </li>
+      <li>
+        <a
+          class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+          href="#"
+          ><img
+            class="w-5"
+            src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
+            alt="notification icon"
+          />
+          <span class="hidden md:block">Notifications</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="hidden md:block border-l h-[40px]"></div>
+
+    <div class="relative">
+      <div
+        class="hover:bg-blue-50 transition-colors p-2 rounded"
+      >
+        <button id="option-btn" class="flex items-center  gap-2">
+          <img
+          class="w-[19px]"
+          src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+          alt="user icon"
+        />
+          <span class="w-28 text-ellipsis overflow-hidden  hidden md:block "
+            >enukinsman@gmail.com</span
+          >
+          <img
+            class="w-[19px] mt-1 md:mt-0 hidden md:block "
+            src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+            alt="drop down arrow"
+          />
+        </button>
+        <div
+        id="backdrop-menu"
+        class="hidden  fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
+      >
+        <div
+          id="option-menu"
+          class="absolute bg-white top-[60px] z-[100]  min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
+        >
+          <div
+            class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all"
+          >
+            <a href="#" class="flex items-center gap-1">
+              <img
+                class="w-5"
+                src="{% static 'build/img/user.svg' %}"
+                alt="user-icon"
+              />
+              User
+            </a>
+          </div>
+          <div
+            class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+          >
+            <a href="#" class="flex items-center gap-1">
+              <img
+                class="w-6"
+                src="{% static 'build/img/subscriptions-svgrepo-com.svg' %}"
+                alt="Subscriptions-icon"
+              />
+              Subscriptions
+            </a>
+          </div>
+          <div
+            class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+          >
+            <a href="#" class="flex items-center gap-1">
+              <img
+                class="w-5"
+                src="{% static 'build/img/billing-svgrepo-com.svg' %}"
+                alt="Billing-icon"
+              />
+              Billing and invoices
+            </a>
+          </div>
+          <div
+            class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+          >
+            <a href="#" class="flex items-center gap-1">
+              <img
+                class="w-5"
+                src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                alt="setting-icon"
+              />
+              Employer setting
+            </a>
+          </div>
+          <div
+            class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+          >
+            <a href="#" class="flex items-center gap-1">
+              <img
+                class="w-5"
+                src="{% static 'build/img/contact-details-filled-svgrepo-com.svg' %}"
+                alt="msg-icon"
+              />
+              Contact us
+            </a>
+          </div>
+          <div
+            class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+          >
+            <a href="./company.html" class="flex items-center gap-1">
+              <img
+                class="w-6"
+                src="{% static 'build/img/company-svgrepo-com.svg' %}"
+                alt="company-icon"
+              />
+              Company page
+            </a>
+          </div>
+
+          <hr class="my-2" />
+          <div class="user-mail py-3 px-6 font-bold text-gray-700">
+            enugodwillenwe@gmail.com
+          </div>
+          <div
+            class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+          >
+            <a href="#" class="flex items-center gap-1">
+              <img
+                class="w-5"
+                src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                alt="setting-icon"
+              />
+              Account Settings
+            </a>
+          </div>
+          <div
+            class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+          >
+            <a href="switchaccounttype.html" class="flex items-center gap-1">
+              <img
+              class="w-5"
+              src="{% static 'build/img/user.svg' %}"
+              alt="user-icon"
+            />
+              Switch Account Type
+            </a>
+          </div>
+          <hr class="my-2" />
+          <div class="flex py-4 px-8 text-gray-700 justify-center">
+            <button class="signout-btn text-[#1e90ff] font-bold">
+              Sign out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    </div>
+     <button id="aside-menu-btn" class="md:hidden">
+        <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
+      </button>
+  </nav>
+  <div
+    id="sidebar"
+    class="font-bold fixed bg-[#8080803e] z-auto md:bg-none hidden top-0 bottom-0 left-0 right-0 p-10"
+  >
+    <div
+      class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+    >
+      <div class="btn-wrap text-end">
+        <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
+          &times;
+        </button>
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#">Message</a>
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#"
+          >Notifications</a
+        >
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#"
+          >Employer settings</a
+        >
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#">Contact us</a>
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#"
+          >Account Settings</a
+        >
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#"
+          >Sign Out</a
+        >
+      </div>
+    </div>
+  </div>
+</header>
+  <aside
+    id="aside-menu"
+    class="hidden md:block transition-all fixed top-0 z-10 md:z-0 left-0 md:left-5 bottom-0 md:bottom-10 h-screen right-0 md:right-auto max-w-[350px] md:w-fit md:top-[62px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
+  >
+    <section class="mt-5">
+      <div class="cancel-wrap text-end mb-4 md:hidden">
+        <button id="cancel-aside-btn">
+          <img
+            class="w-6"
+            src="{% static 'build/img/cancel-svgrepo-com (1).svg' %}"
+            alt="cancel icon"
+          />
+        </button>
+      </div>
+      <div
+        class="p-1 md:p-2 text-white md:text-black border-b border-t md:bg-white hover:bg-gray-300 rounded mb-4 cursor-pointer"
+      >
+        <a
+          href="#"
+          class="aside-item flex items-center justify-between w-full"
+        >
+          <div class="img-wrap flex items-center p-1 md:p-0">
+            <img
+              class="w-6"
+              src="{% static 'build/img/plus-svgrepo-com.svg' %}"
+              alt="plus icon"
+            />
+            <span>Create new</span>
+          </div>
+          <img
+            class="w-6 ml-14"
+            src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+            alt="dropdown icon"
+          />
+        </a>
+      </div>
+      <div>
+        <a
+          class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer active"
+          href="./index.html"
+        >
+          <img
+            class="w-6"
+            src="{% static 'build/img/job-svgrepo-com.svg' %}"
+            alt="briefcase icon"
+          />
+          <span>Jobs</span>
+        </a>
+      </div>
+      <div>
+        <a
+          class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center gap-1 w-full md:bg-slate-700 transition-colors"
+          href="#"
+        >
+          <img
+            class="w-6"
+            src="{% static 'build/img/users-svgrepo-com.svg' %}"
+            alt="users icon"
+          />
+          <span>Candidates</span>
+        </a>
+      </div>
+      <div>
+        <a
+          class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+          href="#"
+        >
+          <div class="img-wrap flex items-center gap-1">
+            <img
+              class="w-6"
+              src="{% static 'build/img/date-svgrepo-com.svg' %}"
+              alt="date icon"
+            />
+            <span>Interviews</span>
+          </div>
+          <img
+            class="w-6 ml-14"
+            src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+            alt="dropdown icon"
+          />
+        </a>
+      </div>
+      <div>
+        <a
+          class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+          href="#"
+        >
+          <div class="img-wrap flex items-center gap-1">
+            <img
+              class="w-6"
+              src="{% static 'build/img/analytics-svgrepo-com.svg' %}"
+              alt="analytics icon"
+            />
+            <span>Analytics</span>
+          </div>
+          <img
+            class="w-6 ml-16"
+            src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+            alt="dropdown icon"
+          />
+        </a>
+      </div>
+    </section>
+  </aside>
+  <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto">
+    <form id="jobTypeForm" class="w-full md:w-[70%] mx-auto" method="post" action="{% url 'job:job_type_view' %}">
+        {% csrf_token %}
+        <div class="jobtype-wrap">
+            <h2 class="p-1 text-[17px] font-bold text-gray-600">Job Types</h2>
+            <div class="jopTypeWrap mx-auto flex flex-wrap gap-2">
+                <!-- Job Types Checkboxes -->
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="jobType" value="fullTime" class="hidden job-type-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Full Time
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="jobType" value="partTime" class="hidden job-type-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Part Time
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="jobType" value="internship" class="hidden job-type-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Internship
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="jobType" value="contract" class="hidden job-type-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Contract
+                </label>
+            </div>
+        </div>
+
+        <hr class="my-5 border-gray-500">
+
+        <div class="experience-wrap h-fit">
+            <h2 class="p-2 text-[17px] font-bold text-gray-600">Experience Level</h2>
+            <div class="flex flex-wrap gap-2 h-fit">
+                <!-- Experience Level Checkboxes -->
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="experienceLevel" value="noExperience" class="hidden experience-level-checkbox">
+                    <span class="custom-checkbox"></span>
+                    No Experience Needed
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="experienceLevel" value="under1Year" class="hidden experience-level-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Under 1 Year
+                </label>
+                <!-- More Experience Level Checkboxes -->
+                <!-- ... (Other experience levels as previously defined) -->
+            </div>
+        </div>
+
+        <hr class="my-5 border-gray-500">
+
+        <div class="weekly-range-wrap">
+            <h2 class="p-2 text-[17px] font-bold text-gray-600">Weekly Range</h2>
+            <div class="flex flex-wrap gap-2 h-fit">
+                <!-- Weekly Range Checkboxes -->
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="mondayToFriday" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Monday to Friday
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="weekendsNeeded" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Weekends needed
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="everyWeekend" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Every weekend
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="rotatingWeekend" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Rotating weekend
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="noneWeekend" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    None weekend
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="weekendsOnly" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Weekends only
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="other" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Other
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="none" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    None
+                </label>
+            </div>
+        </div>
+
+        <hr class="my-5 border-gray-500">
+
+        <div class="shift-wrap">
+            <h2 class="p-2 text-[17px] font-bold text-gray-600">Shift</h2>
+            <div class="flex flex-wrap gap-2 h-fit">
+                <!-- Shift Checkboxes -->
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="morningShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Morning shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="dayShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Day shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="eveningShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Evening shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="nightShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Night shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="eightHourShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    8 hours shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="tenHourShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    10 hours shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="twelveHourShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    12 hours shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="otherShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Other
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="noneShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    None
+                </label>
+            </div>
+        </div>
+        <input type="hidden" name="job_types" id="jobTypesField">
+        <input type="hidden" name="experience_levels" id="experienceLevelsField">
+        <input type="hidden" name="weekly_ranges" id="weeklyRangesField">
+        <input type="hidden" name="shifts" id="shiftsField">
+
+        <hr class="my-14 border-gray-500">
+        <div class="btn-wrap flex justify-between items-center">
+            <button type="submit" class="px-5 py-2 text-white font-bold bg-[#1e90ff] rounded-lg">
+                <span class="text-[20px]">&LeftArrow;</span>
+                <span class="inline">Submit</span>
+            </button>
+        </div>
+    </form>
+
+    <footer class="text-center pb-2 text-gray-500 my-5">
+        &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
+        <span class="underline"
+          ><a href="#">Cookies</a>, <a href="#">Privacy</a>, and
+          <a href="#">Terms</a></span
+        >
+      </footer>
+</main>
+<script>
+    // JavaScript to handle checkbox selections
+    document.getElementById('jobTypeForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var jobTypes = [];
+        document.querySelectorAll('.job-type-checkbox:checked').forEach(function(checkbox) {
+            jobTypes.push(checkbox.value);
+        });
+        document.getElementById('jobTypesField').value = jobTypes.join(',');
+
+        var experienceLevels = [];
+        document.querySelectorAll('.experience-level-checkbox:checked').forEach(function(checkbox) {
+            experienceLevels.push(checkbox.value);
+        });
+        document.getElementById('experienceLevelsField').value = experienceLevels.join(',');
+
+        var weeklyRanges = [];
+        document.querySelectorAll('.weekly-range-checkbox:checked').forEach(function(checkbox) {
+            weeklyRanges.push(checkbox.value);
+        });
+        document.getElementById('weeklyRangesField').value = weeklyRanges.join(',');
+
+        var shifts = [];
+        document.querySelectorAll('.shift-checkbox:checked').forEach(function(checkbox) {
+            shifts.push(checkbox.value);
+        });
+        document.getElementById('shiftsField').value = shifts.join(',');
+
+        this.submit();
+    });
+</script>
+
+  >
+  <script type="module" src="{% static 'build/scripts/jobdetails.js' %}"></script>
+  <script type="module" src="{% static 'build/scripts/dashboard.js' %}"></script>
+</body>
+</html>

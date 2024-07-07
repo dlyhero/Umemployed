@@ -16,6 +16,18 @@ class JobDescriptionForm(forms.Form):
         description (CharField): Textarea field for job description.
     """
     description = forms.CharField(widget=forms.Textarea)
+    
+
+class JobTypeForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['job_type', 'experience_levels', 'weekly_ranges', 'shifts']
+        widgets = {
+            'job_type': forms.HiddenInput(),
+            'experience_levels': forms.HiddenInput(),
+            'weekly_ranges': forms.HiddenInput(),
+            'shifts': forms.HiddenInput(),
+        }
 
 class SkillForm(forms.ModelForm):
     """

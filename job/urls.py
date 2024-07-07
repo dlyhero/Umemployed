@@ -10,15 +10,16 @@ app_name = 'job'
 
 urlpatterns = [
     path('create-job',views.create_job, name="create-job"),
+    path('job_type_view/',views.job_type_view, name="job_type_view"),
     path('update-job/<int:pk>/',views.update_job, name="update-job"),
     path('apply/<int:job_id>/', views.apply_job, name='apply_job'),
-    path('details',views.job_details, name='job_details'),
+    path('details<int:job_id>/',views.job_details, name='job_details'),
     path('confirm/<int:job_id>/', views.confirm_evaluation, name='confirm_evaluation'),
     path('enter-job-description/',enter_job_description, name='enter_job_description'),
     path('job/<int:job_id>/save/', views.save_job, name='save_job'),
     path('saved-jobs/', views.view_saved_jobs, name='view_saved_jobs'),
     path('saved-job/<int:saved_job_id>/delete/', views.delete_saved_job, name='delete_saved_job'),
-    path('results',views.evaluation_results,name="evaluation_results"),
+    path('results/<int:job_id>/',views.evaluation_results,name="evaluation_results"),
 
 
     #Compiler path
@@ -31,7 +32,7 @@ urlpatterns = [
 
     #quiz
     path('job/<int:job_id>/answer/', views.answer_job_questions, name='answer_job_questions'),
-    path('answer/success', views.job_application_success, name='job_application_success'),
+    path('answer/<int:job_id>/success', views.job_application_success, name='job_application_success'),
     path('get_questions_for_skill/<int:skill_id>/', views.get_questions_for_skill, name='get_questions_for_skill'),
     path('save_responses/', views.save_responses, name='save_responses'),
 

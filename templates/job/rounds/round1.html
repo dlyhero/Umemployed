@@ -195,27 +195,27 @@
                 </div>
                 <div id="timer" class="mt-4 text-right text-lg font-bold"></div>
                 <button id="next-btn" class="mt-4 py-2 px-4 bg-green-500 text-white rounded hidden">Next</button>
-                <button id="submit-btn" class="mt-4 py-2 px-4 bg-red-500 text-white rounded hidden">Submit</button>
+                <button id="submit-btn" class="mt-4 py-2 px-4 bg-red-500 text-white rounded hidden"><a href="{% url 'job:job_application_success' job_id=job.id %}">Submit</a></button>
             </div>
         </div>
     </div>
     <!-- Modal Structure -->
     <div id="completedSkillModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-        <div class="modal-overlay fixed inset-0 bg-gray-900 opacity-50"></div>
-        <div class="modal-container bg-white rounded-lg shadow-lg max-w-sm mx-auto p-6 z-50 relative">
-            <div class="modal-header flex justify-between items-center border-b pb-2 mb-4">
-                <h2 class="text-lg font-semibold text-gray-700">Skill Completed</h2>
-                <button id="close-modal" class="text-gray-600 hover:text-gray-900 transition duration-150">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p class="text-gray-600">You have completed the current skill. Ready to move on to the next one?</p>
-            </div>
-            <div class="modal-footer flex justify-end mt-4">
-                <button id="next-skill" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-150">Next Skill</button>
-            </div>
+    <div class="modal-overlay fixed inset-0 bg-gray-900 opacity-50"></div>
+    <div class="modal-container bg-white rounded-lg shadow-lg max-w-sm mx-auto p-6 z-50 relative">
+        <div class="modal-header flex justify-between items-center border-b pb-2 mb-4">
+            <h2 class="text-lg font-semibold text-gray-700">Skill Completed</h2>
+            <button id="close-modal" class="text-gray-600 hover:text-gray-900 transition duration-150">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="text-gray-600">You have completed the current skill. Ready to move on to the next one?</p>
+        </div>
+        <div class="modal-footer flex justify-end mt-4">
+            <button id="continue-later" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition duration-150"><a href="{% url 'home' %}">Continue Later</a></button>
+            <button id="next-skill" class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-150">Next Skill</button>
         </div>
     </div>
-
+</div>
     <script src="{% static 'assets_testing/JS/testing.js' %}"></script>
 
 <script>

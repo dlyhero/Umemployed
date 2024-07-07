@@ -35,6 +35,22 @@ from django.db.models import Q
 import random
 from django.http import HttpResponseBadRequest
 from .models import ApplicantAnswer
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.contrib import messages
+from .models import Job, Application, SkillQuestion, ApplicantAnswer
+
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Application, SkillQuestion, ApplicantAnswer, CompletedSkills, Job, Skill
+from .forms import ApplicantAnswerForm  # Make sure this form is updated as necessary
+from django.shortcuts import render, redirect
+from .forms import JobDescriptionForm
+from .models import Job
+
 
 import json
 import logging
@@ -60,7 +76,7 @@ def create_job(request):
             request.session['selected_job_id'] = job.id
 
             # Redirect to success page or next step
-            return redirect('job:enter_job_description')  # Adjust this as needed
+            return redirect('job:job_type_view')  # Adjust this as needed
         else:
             # Handle form errors if needed
             print(form.errors)
@@ -69,11 +85,26 @@ def create_job(request):
 
     return render(request, 'dashboard/recruiterDashboard/addJob.html', {'form': form})
 
+from .forms import JobTypeForm
+
+@login_required(login_url='/login')
+def job_type_view(request):
+    if request.method == 'POST':
+        form = JobTypeForm(request.POST)
+        if form.is_valid():
+            job_id = request.session.get('selected_job_id')
+            job = Job.objects.get(id=job_id)
+            job.job_type = request.POST.get('job_types', '')
+            job.experience_levels = request.POST.get('experience_levels', '')
+            job.weekly_ranges = request.POST.get('weekly_ranges', '')
+            job.shifts = request.POST.get('shifts', '')
+            job.save()
+            return redirect('job:enter_job_description') 
+    else:
+        form = JobTypeForm()
+    return render(request, 'dashboard/recruiterDashboard/jobProps.html', {'form': form})
 
 
-from django.shortcuts import render, redirect
-from .forms import JobDescriptionForm
-from .models import Job
 
 def enter_job_description(request):
     if request.method == 'POST':
@@ -131,7 +162,7 @@ def select_skills(request):
             else:
                 form = SkillForm(category=selected_category, extracted_skills=extracted_skills)
 
-            return render(request, 'job/skill.html', {'form': form, 'extracted_skills': extracted_skills})
+            return render(request, 'dashboard/recruiterDashboard/selectSkills.html', {'form': form, 'extracted_skills': extracted_skills})
         else:
             return redirect('select_category')
     else:
@@ -198,21 +229,6 @@ def apply_job(request, job_id):
     return redirect('job:answer_job_questions', job_id=job_id)
 
 
-
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.contrib import messages
-from .models import Job, Application, SkillQuestion, ApplicantAnswer
-
-from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .models import Application, SkillQuestion, ApplicantAnswer, CompletedSkills, Job, Skill
-from .forms import ApplicantAnswerForm  # Make sure this form is updated as necessary
-
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
     job = get_object_or_404(Job, id=job_id)
@@ -224,7 +240,7 @@ def answer_job_questions(request, job_id):
 
     if application.has_completed_quiz:
         messages.warning(request, "You have already completed the quiz for this job.")
-        return redirect('job:job_application_success')
+        return redirect('job:job_application_success',job.id)
 
     # Determine current skill based on application round_scores
     completed_skills = application.round_scores.keys()
@@ -415,17 +431,23 @@ def save_responses(request):
         return JsonResponse({'error': 'Method not allowed'}, status=405)
     
 @login_required(login_url='/login')
-def job_application_success(request):
+def job_application_success(request,job_id):
     # Retrieve skill scores from session
+    job = Job.objects.get(id=job_id)
     skill_scores = request.session.get('skill_scores', {})
 
     context = {
         'skill_scores': skill_scores,
+        'job':job, 
     }
     return render(request, 'job/application_success.html', context)
 
-def evaluation_results(request):
-    return render(request, "job/evaluation_results.html")
+def evaluation_results(request,job_id):
+    job = Job.objects.get(id=job_id)
+    context = {
+        'job':job,
+    }
+    return render(request, "job/evaluation_results.html",context)
 
 
 
@@ -497,8 +519,13 @@ def run_code(request):
     # Return an error response for disallowed methods
     return HttpResponseNotAllowed(['POST'])
 
-def job_details(request):
-    return render(request, "job/job_details.html")
+def job_details(request,job_id):
+    job = Job.objects.get(id=job_id)
+    context = {
+        'job':job,
+    }
+    
+    return render(request, "job/job_details.html",context)
 
 def success_page(request):
     return render(request, "job/compiler/success.html")

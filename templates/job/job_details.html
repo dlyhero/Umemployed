@@ -1,129 +1,187 @@
-{% extends 'users/base.html' %}
 {% load static %}
-{% block content %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job|{{ job.title }}</title>
+    <link rel="shortcut icon" href="build/logo/logo-color.png" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/9b5a1B5Myz1QJ9y/6XbFx2D4GJ4M7K5TYJ7vD6" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static '/jobs/asset/job_detail.css' %}" />
+  </head>
 
-<head>
-  <!-- Include Bootstrap CSS -->
-  {% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
-
-  <style>
-    .container {
-      margin-top: 20px;
-    }
-
-    .card {
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .btn-primary {
-      margin-top: 10px;
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-
-<body>
-  <div class="container">
-    <div>
-      <h1 class="text-center">Job Details</h1>
-    </div>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card">
-          <h2>Senior Software Engineer</h2>
-          <p style="display: inline-block; border-radius: 25px; background-color: black; color: white; padding: 5px 10px;">95% Match</p>
-          <br><br>
-          <h4>OpenAI</h4>
-          <p>San Francisco, CA</p>
-
-          <h3>Job Description</h3>
-          <p>We are looking for a Senior Software Engineer with experience in machine learning and AI technologies to join our team. You will work on cutting-edge projects and collaborate with our international team of experts.</p>
-
-          <h3>Requirements</h3>
-          <ul>
-            <li>5+ years of experience in software development</li>
-            <li>Experience with machine learning and AI technologies</li>
-            <li>Strong problem-solving skills</li>
-          </ul>
-
-          <h3>Responsibilities</h3>
-          <ul>
-            <li>Develop and maintain AI models</li>
-            <li>Collaborate with the team to design software solutions</li>
-            <li>Ensure software quality and performance</li>
-          </ul>
-
-          <h3>Benefits</h3>
-          <ul>
-            <li>Competitive salary</li>
-            <li>Health insurance</li>
-            <li>Remote work possibility</li>
-          </ul>
-
-          {% comment %} <a class="btn btn-primary" href="{% url 'job:apply_job' job_id=job.id %}" target="_blank">Apply Now</a> {% endcomment %}
-          <a class="btn btn-primary" href="" target="_blank">Apply Now</a>
+  <body class="bg-gray-100 min-h-screen flex flex-col">
+    <header class="bg-white shadow p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center">
+          <img src="{% static 'build/img/job-svgrepo-com.svg' %}" alt="JobTrack" class="w-8 h-8 mr-2" />
+          <span class="font-bold text-xl" style="color: #1e90ff">UmEmployed</span>
         </div>
+        <nav class="hidden lg:block space-x-4">
+          <a href="#" class="text-gray-600 hover:text-gray-800">Find Work</a>
+          <a href="#" class="text-gray-600 hover:text-gray-800">Portfolio</a>
+          <a href="#" class="text-gray-600 hover:text-gray-800">Applications</a>
+          <a href="#" class="text-gray-600 hover:text-gray-800">Community</a>
+        </nav>
       </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <h2>Company Overview</h2>
-          <p>OpenAI is a leading research organization focused on ensuring artificial general intelligence (AGI) benefits all of humanity. We aim to build safe and beneficial AGI directly, but also consider our mission fulfilled if we can aid others in achieving the same outcome.</p>
-
-          <!-- Add your chart here -->
-          <div id="company-chart-container">
-            <canvas id="company-chart"></canvas>
+    </header>
+    <main class="flex-grow container mx-auto mt-6 flex flex-wrap lg:flex-nowrap gap-6">
+      <div class="bg-white p-8 rounded-lg shadow-lg w-full lg:w-3/4">
+        <div class="flex mb-6 p-3">
+          <div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" class="rounded-full object-cover w-12 h-12" alt="Facebook Logo" />
           </div>
-
-          <script>
-            // Chart.js code
-            var ctx = document.getElementById('company-chart').getContext('2d');
-            var myChart = new Chart(ctx, {
-              type: 'bar',
-              data: {
-                labels: ['Sales', 'Revenue', 'Profit'],
-                datasets: [{
-                  label: 'Company Performance',
-                  data: [120, 250, 80],
-                  backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)'
-                  ],
-                  borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)'
-                  ],
-                  borderWidth: 1
-                }]
-              },
-              options: {
-                scales: {
-                  y: {
-                    beginAtZero: true
-                  }
-                }
-              }
-            });
-          </script>
+          <div class="flex flex-col ml-4">
+            <p class="font-bold">{{ job.company }}</p>
+            <p>23 July 2023</p>
+          </div>
+        </div>
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h1 class="text-2xl font-bold mb-4">{{ job.title }}</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <i class="fa fa-location-dot"></i>{{ job.location }}
+              </div>
+              <div>
+                <i class="fa fa-clock"></i>{{ job.job_type }}
+              </div>
+              <div>
+                <i class="fa fa-dollar-sign"></i>{{ job.salary }}
+              </div>
+              <div>
+                <i class="fa fa-calendar"></i>20th August
+              </div>
+            </div>
+          </div>
+          <div>
+            <button class="text-white px-4 py-2 rounded apply-button" style="background-color: #1e90ff"><a href="{% url 'job:confirm_evaluation' job.id %}">Apply now</a></button>
+          </div>
+        </div>
+        <div>
+          <h2 class="font-bold text-lg mb-3">Job Description</h2>
+          <p class="text-gray-700 mb-4">{{ job.description }}</p>
+          <h2 class="font-bold text-lg mb-2">Responsibilities</h2>
+          <ul class="list-disc list-inside text-gray-700 mb-4">
+            <li>{{ job.responsibilities }}</li>
+          </ul>
+          <h2 class="font-bold text-lg mb-2">Requirements</h2>
+          <ul class="list-disc list-inside text-gray-700 mb-4">
+            <li>Proven experience as a Front End Developer or similar role.</li>
+            <li>Strong understanding of HTML, CSS, JavaScript, and related frameworks (e.g., React, Angular, Vue).</li>
+            <li>Experience with version control systems (e.g., Git).</li>
+            <li>Excellent problem-solving skills and attention to detail.</li>
+          </ul>
         </div>
       </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <h2>Our Culture</h2>
-          <p>At OpenAI, we believe that our employees are our greatest asset. We foster a culture of innovation, collaboration, and inclusivity, and we are committed to providing a work environment where everyone feels valued and can thrive.</p>
-
-          <!-- Add your company image here -->
-          <img src="{% static 'img/about-1.jpg' %}" alt="Company Image" style="max-width: 100%;">
+      <aside class="bg-white p-4 rounded-lg shadow-lg w-full lg:w-1/4 flex flex-col">
+        <p class="font-bold mb-3 text-xl">Location</p>
+        <div class="map-container mb-4">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.999009981132!2d2.292292315674248!3d48.85884417928778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66feca0c343e1%3A0x40b82c3688c9460!2sEiffel%20Tower!5e0!3m2!1sen!2sus!4v1590567179044!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
         </div>
-      </div>
-    </div>
-  </div></body>
+        <button class="text-white px-4 py-2 rounded-xl w-full mb-5 apply-button" style="background-color: #1e90ff"><a href="{% url 'job:confirm_evaluation' job.id %}">Apply now</a></button>
+        <div>
+          <h2 class="font-bold text-lg mb-4">Similar Jobs</h2>
+          <div class="space-y-4">
+            <div class="bg-gray-50 p-3 rounded-xl shadow-lg">
+              <div class="flex mb-3 p-1">
+                <div>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" class="rounded-full object-cover w-12 h-12" alt="LinkedIn Logo" />
+                </div>
+                <div class="flex flex-col ml-4">
+                  <p class="font-bold">LinkedIn</p>
+                  <p>23 Jan 2024</p>
+                </div>
+              </div>
+              <p class="text-gray-600 font-bold">User Interface Designer</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                  <i class="fa fa-location-dot"></i>Barcelone
+                </div>
+                <div>
+                  <i class="fa fa-clock"></i>Part-Time
+                </div>
+              </div>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-xl shadow-lg">
+              <div class="flex mb-3 p-1">
+                <div>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" class="rounded-full object-cover w-12 h-12" alt="Spotify Logo" />
+                </div>
+                <div class="flex flex-col ml-4">
+                  <p class="font-bold">Spotify</p>
+                  <p>23 June 2023</p>
+                </div>
+              </div>
+              <p class="text-gray-600 font-bold">Digital Marketer Strategist</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                  <i class="fa fa-location-dot"></i>USA
+                </div>
+                <div>
+                  <i class="fa fa-clock"></i>Full-Time
+                </div>
+              </div>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-xl shadow-lg">
+              <div class="flex mb-3 p-1">
+                <div>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png" class="rounded-full object-cover w-12 h-12" alt="Google Logo" />
+                </div>
+                <div class="flex flex-col ml-4">
+                  <p class="font-bold">Google</p>
+                  <p>22 Feb 2023</p>
+                </div>
+              </div>
+              <p class="text-gray-600 font-bold">Scrum Master</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                  <i class="fa fa-location-dot"></i>Inter
+                </div>
+                <div>
+                  <i class="fa fa-clock"></i>Full-Time
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
 
+    {% comment %} <div id="applyModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 class="text-2xl font-bold mb-4">Apply for Job</h2>
+        <form id="applyForm" action="/testing/intro-testing.html" method="get">
+          <div class="mb-4">
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text" id="name" name="name" required class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+          </div>
+          <div class="mb-4">
+            <label for="name" class="block text-sm font-medium text-gray-700">SurName</label>
+            <input type="text" id="name" name="name" required class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+          </div>
+          <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" name="email" required class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+          </div>
+          <div class="mb-4">
+            <label for="resume" class="block text-sm font-medium text-gray-700">Resume</label>
+            <input type="file" id="resume" name="resume" required class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="px-4 py-2 bg-indigo-500 text-white rounded-md">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div> {% endcomment %}
+
+    <footer class="bg-gray-200 py-4 text-center">
+      <p class="text-sm text-gray-600">© 2024 UmEmployed All rights reserved.</p>
+    </footer>
+
+    <script src="{% static '/jobs/asset/job_detail.js' %}"></script>
+  </body>
 </html>
-{% endblock %}

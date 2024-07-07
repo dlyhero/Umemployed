@@ -7,12 +7,15 @@ from resume.models import Resume
 from company.models import Company
 from company.views import create_company
 from django.contrib.auth.decorators import login_required
-from job.models import Job
+from job.models import Job,Application
 from .filters import OrderFilter
 from django.db.models import Q
 
 def home(request):
-    job_list = Job.objects.all()
+    job_list = Job.objects.all()    
+    jobs = Job.objects.all().first()
+    job = Job.objects.first()
+    applications = Application.objects.filter(job=job).count()
     job_filter = OrderFilter(request.GET, queryset=job_list)
     
     search_query = request.GET.get('search_query', '')
@@ -23,7 +26,10 @@ def home(request):
             Q(location__icontains=search_query)
         )
     
-    context = {'jobs': job_filter.qs, 'myFilter': job_filter}
+    context = {'jobs':jobs, 
+               'jobs': job_filter.qs, 
+               'myFilter': job_filter,
+                'applications':applications,}
     return render(request, 'website/home.html', context)
 # login a user
 def login_user(request):
@@ -104,3 +110,5 @@ def logout_user(request):
 
 def switch_account(request):
     return render(request,'users/accountType.html')
+def change_account_type(request):
+    return render(request,'users/changeAccountType.html')

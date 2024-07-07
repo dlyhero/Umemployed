@@ -122,14 +122,15 @@
                 <div class=" ">
 
                     <div id="jobsContainer w-full">
+                        {% for job in jobs %}
                         <div class="bg-white p-4 rounded-lg shadow mb-4">
                             <div class="flex justify-between">
                                 <div class="flex items-center">
                                     <img src="{% static 'build/logo/logo-black.png' %}"
                                         class="rounded-fullw-12 h-12 object-cover" alt="img" srcset="">
                                     <div class="  :flex flex-col">
-                                        <h3 class="text-lg font-bold  ml-4">Senior Frontend Developer</h3>
-                                        <p class="ml-4">Semrush</p>
+                                        <h3 class="text-lg font-bold  ml-4">{{job.title}}</h3>
+                                        <p class="ml-4">{{job.company}}</p>
                                     </div>
                                     <p class=" hidden  lg:block p-2 bg-green-400 text-white rounded-xl ml-4  " style="font-size: 10px;">
                                         Urgent</p>
@@ -141,191 +142,38 @@
                             <div class="flex justify-between">
                                 <div class=" w-4/4 lg:flex justify-between items-center w-1/2 ">
                                     <div>
-                                        <i class="fa fa-clock"></i>Full-Time
+                                        <i class="fa fa-clock"></i>{{job.job_type}}
                                     </div>
                                     <div>
-                                        <i class="fa fa-briefcase"></i> <span>Experience</span>
+                                        <i class="fa fa-briefcase"></i> <span>{{job.level}}</span>
                                     </div>
                                     <div>
-                                        <i class="fa fa-map-marker-alt"></i> <span>NY,USA</span>
+                                        <i class="fa fa-map-marker-alt"></i> <span>{{job.location}}</span>
                                     </div>
                                 </div>
                                 <p>28 Mars 2024</p>
                             </div>
-                            <p class="w-9/10 mx-auto mt-4 ">Lorem ipsum dolor sit amet, reiciendis quaerat quia placeat
-                                corrupti doloremque quisquam nemo labore, sit iste fuga commodi aut porro sint amet
-                                optio?</p>
+                            <p class="w-9/10 mx-auto mt-4 ">{{ job.description|truncatewords:31 }}</p>                            
                             <hr class="font-bold my-5">
                             <div class="flex  justify-between">
                                 <div class=" w-full lg:w-1/2 flex justify-between items-center ">
                                     <div>
-                                        <i class="fa fa-dollar-sign"></i> <span class=" mb-2 lg:font-semibold"> $300
-                                            -$400</span><span>/monthly</span>
+                                        <i class="fa fa-dollar-sign"></i> <span class=" mb-2 lg:font-semibold"> ${{job.salary}}</span><span>/monthly</span>
                                     </div>
+                                    {% with applications=job.application_set.all %}
                                     <div>
-                                        <i class="fa fa-users"></i> <span class="font-semibold mr-0">49</span><span
+                                        <i class="fa fa-users"></i> <span class="font-semibold mr-0">{{applications|length}}</span><span
                                             class="ml-0">Applied</span>
                                     </div>
+                                    {% endwith %}
                                 </div>
-                                <a href="job_detail.html">
+                                <a href="{% url 'job:job_details' job_id=job.id %}">
                                     <button type="button"  class="p-2 px-6 text-white rounded-xl"
                                     style="background-color: #1e90ff;"> Apply</button>
                                 </a>
                             </div>
                         </div>
-                        <div class="bg-white p-4 rounded-lg shadow mb-4">
-                            <div class="flex justify-between">
-                                <div class="flex items-center">
-                                    <img src="{% static 'build/logo/logo-black.png' %}"
-                                        class="rounded-fullw-12 h-12 object-cover" alt="img" srcset="">
-                                    <div class="  :flex flex-col">
-                                        <h3 class="text-lg font-bold  ml-4">Senior Frontend Developer</h3>
-                                        <p class="ml-4">Semrush</p>
-                                    </div>
-                                    <p class=" hidden  lg:block p-2 bg-green-400 text-white rounded-xl ml-4  " style="font-size: 10px;">
-                                        Urgent</p>
-                                </div>
-                                <div style="color: black ;">
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </div>
-                            </div>
-                            <div class="flex justify-between">
-                                <div class=" w-4/4 lg:flex justify-between items-center w-1/2 ">
-                                    <div>
-                                        <i class="fa fa-clock"></i>Full-Time
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-briefcase"></i> <span>Experience</span>
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-map-marker-alt"></i> <span>NY,USA</span>
-                                    </div>
-                                </div>
-                                <p>28 Mars 2024</p>
-                            </div>
-                            <p class="w-9/10 mx-auto mt-4 ">Lorem ipsum dolor sit amet, reiciendis quaerat quia placeat
-                                corrupti doloremque quisquam nemo labore, sit iste fuga commodi aut porro sint amet
-                                optio?</p>
-                            <hr class="font-bold my-5">
-                            <div class="flex justify-between">
-                                <div class=" w-full lg:w-1/2 flex justify-between items-center ">
-                                    <div>
-                                        <i class="fa fa-dollar-sign"></i> <span class=" mb-2 lg:font-semibold"> $300
-                                            -$400</span><span>/monthly</span>
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-users"></i> <span class="font-semibold mr-0">49</span><span
-                                            class="ml-0">Applied</span>
-                                    </div>
-                                </div>
-                                <a href="job_detail.html">
-                                    <button type="button"  class="p-2 px-6 text-white rounded-xl"
-                                    style="background-color: #1e90ff;"> Apply</button>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg shadow mb-4">
-                            <div class="flex justify-between">
-                                <div class="flex items-center">
-                                    <img src="{% static 'build/logo/logo-black.png' %}"
-                                        class="rounded-fullw-12 h-12 object-cover" alt="img" srcset="">
-                                    <div class="  :flex flex-col">
-                                        <h3 class="text-lg font-bold  ml-4">Senior Frontend Developer</h3>
-                                        <p class="ml-4">Semrush</p>
-                                    </div>
-                                    <p class=" hidden  lg:block p-2 bg-green-400 text-white rounded-xl ml-4  " style="font-size: 10px;">
-                                        Urgent</p>
-                                </div>
-                                <div style="color: black ;">
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </div>
-                            </div>
-                            <div class="flex justify-between">
-                                <div class=" w-4/4 lg:flex justify-between items-center w-1/2 ">
-                                    <div>
-                                        <i class="fa fa-clock"></i>Full-Time
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-briefcase"></i> <span>Experience</span>
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-map-marker-alt"></i> <span>NY,USA</span>
-                                    </div>
-                                </div>
-                                <p>28 Mars 2024</p>
-                            </div>
-                            <p class="w-9/10 mx-auto mt-4 ">Lorem ipsum dolor sit amet, reiciendis quaerat quia placeat
-                                corrupti doloremque quisquam nemo labore, sit iste fuga commodi aut porro sint amet
-                                optio?</p>
-                            <hr class="font-bold my-5">
-                            <div class="flex justify-between">
-                                <div class=" w-full lg:w-1/2 flex justify-between items-center ">
-                                    <div>
-                                        <i class="fa fa-dollar-sign"></i> <span class=" mb-2 lg:font-semibold"> $300
-                                            -$400</span><span>/monthly</span>
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-users"></i> <span class="font-semibold mr-0">49</span><span
-                                            class="ml-0">Applied</span>
-                                    </div>
-                                </div>
-                                <a href="job_detail.html">
-                                    <button type="button"  class="p-2 px-6 text-white rounded-xl"
-                                    style="background-color: #1e90ff;"> Apply</button>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg shadow mb-4">
-                            <div class="flex justify-between">
-                                <div class="flex items-center">
-                                    <img src="{% static 'build/logo/logo-black.png' %}"
-                                        class="rounded-fullw-12 h-12 object-cover" alt="img" srcset="">
-                                    <div class="  :flex flex-col">
-                                        <h3 class="text-lg font-bold  ml-4">Senior Frontend Developer</h3>
-                                        <p class="ml-4">Semrush</p>
-                                    </div>
-                                    <p class=" hidden  lg:block p-2 bg-green-400 text-white rounded-xl ml-4  " style="font-size: 10px;">
-                                        Urgent</p>
-                                </div>
-                                <div style="color: black ;">
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </div>
-                            </div>
-                            <div class="flex justify-between">
-                                <div class=" w-4/4 lg:flex justify-between items-center w-1/2 ">
-                                    <div>
-                                        <i class="fa fa-clock"></i>Full-Time
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-briefcase"></i> <span>Experience</span>
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-map-marker-alt"></i> <span>NY,USA</span>
-                                    </div>
-                                </div>
-                                <p>28 Mars 2024</p>
-                            </div>
-                            <p class="w-9/10 mx-auto mt-4 ">Lorem ipsum dolor sit amet, reiciendis quaerat quia placeat
-                                corrupti doloremque quisquam nemo labore, sit iste fuga commodi aut porro sint amet
-                                optio?</p>
-                            <hr class="font-bold my-5">
-                            <div class="flex justify-between">
-                                <div class=" w-full lg:w-1/2 flex justify-between items-center ">
-                                    <div>
-                                        <i class="fa fa-dollar-sign"></i> <span class=" mb-2 lg:font-semibold"> $300
-                                            -$400</span><span>/monthly</span>
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-users"></i> <span class="font-semibold mr-0">49</span><span
-                                            class="ml-0">Applied</span>
-                                    </div>
-                                </div>
-                                <a href="job_detail.html">
-                                    <button type="button"  class="p-2 px-6 text-white rounded-xl"
-                                    style="background-color: #1e90ff;"> Apply</button>
-                                </a>
-                            </div>
-                        </div>
+                        {% endfor %}
 
                     </div>
                 </div>
@@ -339,7 +187,7 @@
                     <div class="bg-white p-3 rounded-lg">
                         <div class="flex justify-between items-center">
                             <div class="flex justify-between items-center">
-                                <img src="{% static 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +' %}"
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
                                     class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
@@ -354,7 +202,7 @@
                     <div class="bg-white p-3 rounded-lg">
                         <div class="flex justify-between items-center">
                             <div class="flex justify-between items-center">
-                                <img src="{% static 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +' %}"
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
                                     class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
@@ -369,7 +217,7 @@
                     <div class="bg-white p-3 rounded-lg">
                         <div class="flex justify-between items-center">
                             <div class="flex justify-between items-center">
-                                <img src="{% static 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +' %}"
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
                                     class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
@@ -384,7 +232,7 @@
                     <div class="bg-white p-3 rounded-lg">
                         <div class="flex justify-between items-center">
                             <div class="flex justify-between items-center">
-                                <img src="{% static 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +' %}"
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
                                     class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
@@ -399,7 +247,7 @@
                     <div class="bg-white p-3 rounded-lg">
                         <div class="flex justify-between items-center">
                             <div class="flex justify-between items-center">
-                                <img src="{% static 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +' %}"
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
                                     class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>

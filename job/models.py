@@ -20,7 +20,7 @@ class Job(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     hire_number = models.IntegerField()
-    job_type = models.CharField(max_length=50, choices=[
+    job_location_type = models.CharField(max_length=50, choices=[
         ('remote', 'Remote'),
         ('onsite', 'Onsite'),
         ('hybrid', 'Hybrid'),
@@ -38,6 +38,10 @@ class Job(models.Model):
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default=BEGINNER)
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    job_type = models.CharField(max_length=255, blank=True)
+    experience_levels = models.CharField(max_length=255, blank=True)
+    weekly_ranges = models.CharField(max_length=255, blank=True)
+    shifts = models.CharField(max_length=255, blank=True)
 
 
     def __str__(self):
