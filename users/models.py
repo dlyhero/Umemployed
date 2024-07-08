@@ -13,3 +13,5 @@ class User(AbstractUser):
 
     has_resume = models.BooleanField(default=False)
     has_company = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    updated_at = models.DateTimeField(auto_now=True)

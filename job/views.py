@@ -106,11 +106,16 @@ def job_type_view(request):
 
 
 
+@login_required
 def enter_job_description(request):
     if request.method == 'POST':
         form = JobDescriptionForm(request.POST)
         if form.is_valid():
             job_id = request.session.get('selected_job_id')
+            if not job_id:
+                messages.error(request, "Job ID not found in session.")
+                return redirect('dashboard')
+
             job = Job.objects.get(id=job_id)
             job.description = form.cleaned_data['description']
             job.save()
@@ -124,7 +129,12 @@ def enter_job_description(request):
                 skill_obj, created = Skill.objects.get_or_create(name=skill)
                 job.extracted_skills.add(skill_obj)
 
-            # Redirect to select_skills view
+            # Ensure session data
+            request.session['selected_job_id'] = job.id
+            request.session['selected_category'] = job.category.id  # Assuming job has a category field
+
+            # Redirect to selects_skills view
+            print("Redirecting to select_skills")
             return redirect('job:select_skills')
     else:
         form = JobDescriptionForm()
@@ -132,42 +142,68 @@ def enter_job_description(request):
     return render(request, 'dashboard/recruiterDashboard/jobDescription.html', {'form': form})
 
 
+from django.shortcuts import get_object_or_404
 
 @login_required
 def select_skills(request):
+    print("Entered selects_skills view")
     if request.user.is_recruiter and request.user.has_company:
         selected_category_id = request.session.get('selected_category')
         selected_job_id = request.session.get('selected_job_id')
+        
+        # Debugging session variables
+        print(f"Selected Category ID: {selected_category_id}")
+        print(f"Selected Job ID: {selected_job_id}")
+
         if selected_category_id and selected_job_id:
-            selected_category = SkillCategory.objects.get(id=selected_category_id)
-            job_instance = Job.objects.get(id=selected_job_id)
+            try:
+                selected_category = SkillCategory.objects.get(id=selected_category_id)
+                job_instance = Job.objects.get(id=selected_job_id)
 
-            # Retrieve extracted skills for the job instance
-            extracted_skills = job_instance.extracted_skills.all()
+                # Retrieve extracted skills for the job instance
+                extracted_skills = job_instance.extracted_skills.all()
 
-            if request.method == 'POST':
-                form = SkillForm(request.POST, category=selected_category)
-                if form.is_valid():
-                    job_id = request.session.get('selected_job_id')
-                    job = Job.objects.get(id=job_id)
-                    job.requirements.set(form.cleaned_data['requirements'])        
-                    job.save()
+                if request.method == 'POST':
+                    form = SkillForm(request.POST, job_instance=job_instance)
+                    if form.is_valid():
+                        selected_extracted_skills = form.cleaned_data['extracted_skills']
+                        job_instance.extracted_skills.set(selected_extracted_skills)
 
-                    entry_level = form.cleaned_data['level']
-                    selected_skills = form.cleaned_data['requirements']
-                    selected_skill_names = [skill.name for skill in selected_skills]
+                        # Also add selected extracted skills to requirements
+                        job_instance.requirements.set(selected_extracted_skills)
 
-                    redirect_url = f'/job/generate-questions/?job_title={job_instance.title}&entry_level={entry_level}&selected_skills={",".join(selected_skill_names)}'
-                    return redirect(redirect_url)
-            else:
-                form = SkillForm(category=selected_category, extracted_skills=extracted_skills)
+                        # Set the job level
+                        job_instance.level = form.cleaned_data['level']
+                        job_instance.save()
 
-            return render(request, 'dashboard/recruiterDashboard/selectSkills.html', {'form': form, 'extracted_skills': extracted_skills})
+                        entry_level = form.cleaned_data['level']
+                        selected_skill_names = [skill.name for skill in selected_extracted_skills]
+
+                        redirect_url = f'/job/generate-questions/?job_title={job_instance.title}&entry_level={entry_level}&selected_skills={",".join(selected_skill_names)}'
+                        return redirect(redirect_url)
+                else:
+                    form = SkillForm(job_instance=job_instance)
+
+                return render(request, 'dashboard/recruiterDashboard/selectSkills.html', {
+                    'form': form,
+                    'extracted_skills': extracted_skills,
+                })
+            except SkillCategory.DoesNotExist:
+                messages.error(request, "Selected category not found.")
+                return redirect('job:select_category')
+            except Job.DoesNotExist:
+                messages.error(request, "Selected job not found.")
+                return redirect('job:select_category')
         else:
-            return redirect('select_category')
+            messages.error(request, "Session data missing for selected category or job.")
+            return redirect('job:select_category')
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
+
+
+
+
 
 
 

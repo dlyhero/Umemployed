@@ -164,7 +164,7 @@
                 <div
                   class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
                 >
-                  <a href="#" class="flex items-center gap-1">
+                  <a href="{% url 'update-resume' %}" class="flex items-center gap-1">
                     <img
                       class="w-5"
                       src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
@@ -176,7 +176,7 @@
                 <div
                   class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
                 >
-                  <a href="./switchaccounttype.html" class="flex items-center gap-1">
+                  <a href="{% url 'change_account_type' %}" class="flex items-center gap-1">
                     <img
                       class="w-5"
                       src="{% static 'build/img/user.svg' %}"
@@ -335,7 +335,7 @@
         <div>
           <a
             class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
-            href="#"
+            href="{% url 'company-details' company.id %}"
           >
             <div class="img-wrap flex items-center gap-1">
               <img
@@ -343,7 +343,7 @@
                 src="{% static 'build/img/analytics-svgrepo-com.svg' %}"
                 alt="analytics icon"
               />
-              <span>Analytics</span>
+              <span>About</span>
             </div>
             <img
               class="w-6 ml-16"
@@ -422,6 +422,12 @@
           </form>
         </div>
       </section>
+      <br>
+      {% if jobs|length == 0 %}
+        <div class="text-center text-gray-600">No Jobs Created,
+          <a style="text-decoration: underline; color: blue;" href="{% url 'job:create-job' %}">Create Job</a>
+        </div>
+      {% endif %}
       {% for job in jobs %}
       <section class="job-sec bg-gray-100 mt-5 w-full md:border rounded-lg">
         <!-- Job 1 -->

@@ -87,7 +87,9 @@ def register_applicant(request):
 
 # register recruiter only
 def register_recruiter(request):
+    print("entered recreuuu")
     if request.method == 'POST':
+        print("posteeeeeeeeeeeeeeeeeeeeeed")
         is_recruiter = request.POST.get('is_recruiter')  # Get the value of the checkbox
         if is_recruiter:
             request.user.is_recruiter = True
@@ -110,5 +112,41 @@ def logout_user(request):
 
 def switch_account(request):
     return render(request,'users/accountType.html')
+from django.http import JsonResponse
+
+from django.http import JsonResponse
+
+@login_required
 def change_account_type(request):
-    return render(request,'users/changeAccountType.html')
+
+    return render(request, 'users/changeAccountType.html')
+
+from django.urls import reverse  # Import reverse
+from resume.models import ResumeDoc
+@login_required
+def switch_account_type(request):
+    print("clicked")
+    user = request.user
+
+    if user.is_applicant:
+        if not user.has_company:
+            user.is_recruiter = True
+            user.is_applicant = False
+            user.save()
+            messages.success(request, 'You have switched to a recruiter account.')
+            return redirect(reverse('create_company'))
+        else:
+            messages.info(request, 'You already have a company associated with your account.')
+    elif user.is_recruiter:
+        user.is_applicant = True
+        user.is_recruiter = False
+        user.save()
+        if not ResumeDoc.objects.filter(user=user).exists():
+            messages.success(request, 'You have switched to an applicant account.')
+            return redirect('dashboard')
+        else:
+            messages.success(request, 'You have switched to an applicant account.')
+    else:
+        messages.error(request, 'An error occurred while switching account types.')
+
+    return redirect(reverse('home'))

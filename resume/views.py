@@ -90,7 +90,7 @@ def select_category(request):
 
 
 @login_required
-def select_skills(request):
+def selec_skills(request):
     """
     Allows applicants to select skills based on the chosen category.
     """

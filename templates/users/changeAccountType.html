@@ -1,235 +1,156 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Account Type</title>
     <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen flex flex-col text-s">
-    <header
-    class="flex justify-between items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 mb-5 bg-white"
-  >
-    <div class="flex items-center gap-x-5 md:gap-8">
-      <div class="logo-wrap flex items-center">
-        <img class="w-7 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
-        <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
-          >UmEmployed</span
-        >
+  </head>
+  <body class="min-h-screen flex flex-col text-s">
+    <header class="flex justify-between items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 mb-5 bg-white">
+      <div class="flex items-center gap-x-5 md:gap-8">
+        <div class="logo-wrap flex items-center">
+          <img class="w-7 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold">UmEmployed</span>
+        </div>
+        <a class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded" href="./home.html">Home</a>
+        <a class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded" href="./resume.html">Resume</a>
       </div>
-      <a
-        class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
-        href="./home.html"
-        >Home</a
-      >
-      <a
-        class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
-        href="./resume.html"
-        >Resume</a
-      >
-    </div>
-    <nav class="flex md:gap-x-4 items-center">
-      <ul class="flex gap-x-2 md:gap-x-6 items-center">
-        <li>
-          <a
-            class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-            href="#"
-            ><img
-              class="w-5"
-              src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
-              alt="message icon"
-            />
-            <span class="hidden md:block">Messages</span>
-          </a>
-        </li>
-        <li>
-          <a
-            class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-            href="#"
-            ><img
-              class="w-5"
-              src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
-              alt="notification icon"
-            />
-            <span class="hidden md:block">Notifications</span>
-          </a>
-        </li>
-        <li class="relative">
-          <button
-            id="option-btn"
-            class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded flex items-center"
-            href="#"
-          >
-            <img
-              class="w-[18px]"
-              src="{% static 'build/img/profile-svgrepo-com.svg' %}"
-              alt="profile icon"
-            />
-            <span class="hidden md:block">User</span>
-          </button>
-          <div
-            id="backdrop-menu"
-            class="hidden fixed flex justify-end pr-[19px] sm:pr-[100px] z-[100] top-0 bottom-0 left-0 right-0 bg-transparent"
-          >
-            <div
-              class="absolute bg-white top-[60px] z-[100] min-w-[280px] sm:w-[350px] border border-gray-400 rounded"
-            >
-              <div class="user-mail py-3 px-6 font-bold text-gray-700">
-                enugodwillenwe@gmail.com
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-              >
-                <a href="./profile.html" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static 'build/img/user.svg' %}"
-                    alt="user-icon"
-                  />
-                  Profile
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-              >
-                <a href="" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static 'build/img/help-svgrepo-com.svg' %}"
-                    alt="help-icon"
-                  />
-                  Resume help
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-              >
-                <a href="./index.html" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static 'build/img/suitcase-svgrepo-com.svg' %}"
-                    alt="job-icon"
-                  />
-                  My jobs
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-              >
-                <a href="#" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static 'build/img/page-svgrepo-com.svg' %}"
-                    alt="page-icon"
-                  />
-                  My reviews
-                </a>
-              </div>
-              <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-              >
-                <a href="#" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
-                    alt="setting-icon"
-                  />
-                  Settings
-                </a>
-              </div>
-              <hr class="my-2" />
-              <div class="flex py-4 px-6 text-gray-700 justify-center">
-                <button class="signout-btn text-[#1e90ff] font-bold">
-                  Sign out
-                </button>
+      <nav class="flex md:gap-x-4 items-center">
+        <ul class="flex gap-x-2 md:gap-x-6 items-center">
+          <li>
+            <a class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded" href="#">
+              <img class="w-5" src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}" alt="message icon" />
+              <span class="hidden md:block">Messages</span>
+            </a>
+          </li>
+          <li>
+            <a class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded" href="#">
+              <img class="w-5" src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}" alt="notification icon" />
+              <span class="hidden md:block">Notifications</span>
+            </a>
+          </li>
+          <li class="relative">
+            <button id="option-btn" class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded flex items-center" href="#">
+              <img class="w-[18px]" src="{% static 'build/img/profile-svgrepo-com.svg' %}" alt="profile icon" />
+              <span class="hidden md:block">User</span>
+            </button>
+            <div id="backdrop-menu" class="hidden fixed flex justify-end pr-[19px] sm:pr-[100px] z-[100] top-0 bottom-0 left-0 right-0 bg-transparent">
+              <div class="absolute bg-white top-[60px] z-[100] min-w-[280px] sm:w-[350px] border border-gray-400 rounded">
+                <div class="user-mail py-3 px-6 font-bold text-gray-700">enugodwillenwe@gmail.com</div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                  <a href="./profile.html" class="flex items-center gap-1">
+                    <img class="w-5" src="{% static 'build/img/user.svg' %}" alt="user-icon" />
+                    Profile
+                  </a>
+                </div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                  <a href="" class="flex items-center gap-1">
+                    <img class="w-5" src="{% static 'build/img/help-svgrepo-com.svg' %}" alt="help-icon" />
+                    Resume help
+                  </a>
+                </div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                  <a href="./index.html" class="flex items-center gap-1">
+                    <img class="w-5" src="{% static 'build/img/suitcase-svgrepo-com.svg' %}" alt="job-icon" />
+                    My jobs
+                  </a>
+                </div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                  <a href="#" class="flex items-center gap-1">
+                    <img class="w-5" src="{% static 'build/img/page-svgrepo-com.svg' %}" alt="page-icon" />
+                    My reviews
+                  </a>
+                </div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                  <a href="#" class="flex items-center gap-1">
+                    <img class="w-5" src="{% static 'build/img/setting-1-svgrepo-com.svg' %}" alt="setting-icon" />
+                    Settings
+                  </a>
+                </div>
+                <hr class="my-2" />
+                <div class="flex py-4 px-6 text-gray-700 justify-center">
+                  <button class="signout-btn text-[#1e90ff] font-bold">Sign out</button>
+                </div>
               </div>
             </div>
+          </li>
+          <li class="md:hidden">
+            <button id="menu-btn" class="text-xl"><img class="w-5" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" /></button>
+          </li>
+        </ul>
+        <div class="hidden md:block">
+          <div class="flex">
+            <div class="border-l h-[40px] ="></div>
+            <span class="ml-2 text-nowrap hover:bg-blue-50 transition-colors transition-colors p-2 rounded"><a class="text-nowrap" href="./switchaccounttype.html">Employers / Post Job</a></span>
           </div>
-        </li>
-        <li class="md:hidden">
-          <button id="menu-btn" class="text-xl">
-            <img class="w-5" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
-          </button>
-        </li>
-      </ul>
-      <div class="hidden md:block">
-        <div class="flex">
-          <div class="border-l h-[40px] ="></div>
-          <span
-            class="ml-2 text-nowrap hover:bg-blue-50 transition-colors transition-colors p-2 rounded"
-            ><a class="text-nowrap" href="./switchaccounttype.html"
-              >Employers / Post Job</a
-            >
-          </span>
+        </div>
+      </nav>
+      <div id="sidebar" class="font-bold fixed bg-[#8080803e] md:bg-none z-10 hidden top-0 bottom-0 left-0 right-0 p-10">
+        <div class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden">
+          <div class="btn-wrap text-end">
+            <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">&times</button>
+          </div>
+          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors">
+            <a class="flex justify-between items-center" href="#">Home</a>
+          </div>
+          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors">
+            <a class="flex justify-between items-center" href="./profile.html">Profile</a>
+          </div>
+          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors">
+            <a class="flex justify-between items-center" href="./resume.html">Resume</a>
+          </div>
+          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors">
+            <a class="flex justify-between items-center" href="#">Jobs</a>
+          </div>
+          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors">
+            <a class="flex justify-between items-center" href="#">Settings</a>
+          </div>
         </div>
       </div>
-    </nav>
-    <div
-      id="sidebar"
-      class="font-bold fixed bg-[#8080803e] md:bg-none z-10 hidden top-0 bottom-0 left-0 right-0 p-10"
-    >
-      <div
-        class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
-      >
-        <div class="btn-wrap text-end">
-          <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
-            &times
-          </button>
-        </div>
-        <div
-          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-        >
-          <a class="flex justify-between items-center" href="#">Home </a>
-        </div>
-        <div
-          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-        >
-          <a class="flex justify-between items-center" href="./profile.html"
-            >Profile
-          </a>
-        </div>
-        <div
-          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-        >
-          <a class="flex justify-between items-center" href="./resume.html"
-            >Resume
-          </a>
-        </div>
-        <div
-          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-        >
-          <a class="flex justify-between items-center" href="#">Jobs </a>
-        </div>
-        <div
-          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-        >
-          <a class="flex justify-between items-center" href="#">Settings </a>
-        </div>
-      </div>
+    </header>
+     <main class="bg-white shadow-md rounded-lg p-8 w-[95%] md:w-[50%] max-w-md mx-auto mt-28">
+      {% if messages %}
+    <div>
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
     </div>
-  </header>
-    <main class="bg-white shadow-md rounded-lg p-8 w-[95%] md:w-[50%] max-w-md mx-auto mt-28">
+{% endif %}
         <h1 class="text-2xl text-gray-800 font-bold text-center mb-6">Switch Account Type</h1>
+        <center><p>{{user.username}}</p><center>
         <div class="text-center mb-4">
+          {% if request.user.is_applicant %}
             <button id="toggleAccountButton" class="bg-[#1e90ff] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">
-                Switch to Employer Account
+                <a href="{% url 'switch_account_type' %}">Switch to Employer Account</a>
             </button>
+            {% elif request.user.is_recruiter %}
+            <button id="toggleAccountButton" class="bg-[#1e90ff] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">
+                <a href="{% url 'switch_account_type' %}">Switch to Job Seeker Account</a>
+            </button>
+            {% else %}
+            <button id="toggleAccountButton" class="bg-[#1e90ff] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">
+                <a href="{% url 'login' %}">Not Allowed, Please Signup</a>
+            </button>
+            {% endif %}
         </div>
         <div id="accountTypeMessage" class="text-center text-gray-700">
             You are currently logged in as a Job Seeker.
         </div>
     </main>
 
-    <footer class="w-full text-500-800 py-4  text-center mt-auto">
-        &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
-      <span class="underline"
-        ><a href="#">Cookies</a>, <a href="#">Privacy</a>, and
-        <a href="#">Terms</a></span
-      >
+   
+
+    <footer class="w-full text-500-800 py-4 text-center mt-auto">
+      &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
+      <span class="underline">
+        <a href="#">Cookies</a>, <a href="#">Privacy</a>, and
+        <a href="#">Terms</a>
+      </span>
     </footer>
 
-   <script type="module" src="{% static 'scripts/switchaccount.js' %}"></script>
-</body>
+    <script type="module" src="{% static 'scripts/switchaccount.js' %}"></script>
+  </body>
 </html>

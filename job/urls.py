@@ -28,7 +28,7 @@ urlpatterns = [
     path('fail/', views.fail_page, name='fail_page'),
 
     #skills
-    path('skills/',views.select_skills,name="select_skills"),
+    path('select-skills/',views.select_skills,name="select_skills"),
 
     #quiz
     path('job/<int:job_id>/answer/', views.answer_job_questions, name='answer_job_questions'),

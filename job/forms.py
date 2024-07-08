@@ -29,40 +29,46 @@ class JobTypeForm(forms.ModelForm):
             'shifts': forms.HiddenInput(),
         }
 
+from django import forms
+from .models import Job, Skill
+
 class SkillForm(forms.ModelForm):
     """
     Form for entering required skills for a job.
 
     Attributes:
-        requirements (CheckboxSelectMultiple): Checkbox field for selecting required skills.
         extracted_skills (CheckboxSelectMultiple): Checkbox field for selecting extracted skills.
+        level (ChoiceField): Field for selecting the skill level.
     """
+    LEVEL_CHOICES = [
+        ('Beginner', 'Beginner'),
+        ('Mid', 'Mid'),
+        ('Expert', 'Expert'),
+    ]
+
+    level = forms.ChoiceField(choices=LEVEL_CHOICES)
+
     class Meta:
         model = Job
-        fields = ['requirements', 'extracted_skills', 'level']
+        fields = ['extracted_skills', 'level']
         widgets = {
-            'requirements': forms.CheckboxSelectMultiple(),
             'extracted_skills': forms.CheckboxSelectMultiple(),
         }
 
     def __init__(self, *args, **kwargs):
-        """
-        Initialize the form.
-
-        Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
-        """
-        category = kwargs.pop('category')
-        extracted_skills = kwargs.pop('extracted_skills', None)
+        job_instance = kwargs.pop('job_instance')
         super().__init__(*args, **kwargs)
         
-        # Set queryset for 'requirements' field based on the category
-        self.fields['requirements'].queryset = Skill.objects.filter(categories=category)
-        
-        # If extracted_skills is provided, initialize the field with it
-        if extracted_skills is not None:
-            self.fields['requirements'].initial = extracted_skills
+        # Initialize extracted_skills with the job's extracted skills
+        if job_instance.extracted_skills.exists():
+            self.fields['extracted_skills'].initial = job_instance.extracted_skills.all()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Perform additional validation if necessary
+        return cleaned_data
+
+
 
 class UpdateJobForm(forms.ModelForm):
     """

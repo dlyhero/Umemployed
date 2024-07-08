@@ -5,6 +5,8 @@ from .models import Company
 from users.models import User
 from .forms import UpdateCompanyForm, CreateCompanyForm
 from django.contrib.auth.decorators import login_required
+from .decorators import company_belongs_to_user
+
 from django.shortcuts import get_object_or_404
 from resume.views import calculate_skill_match
 
@@ -15,6 +17,7 @@ from resume.models import Resume
 
 
 @login_required(login_url='login')
+@company_belongs_to_user
 def company_details(request, company_id):
     company = Company.objects.get(id=company_id)
     context = {
@@ -24,18 +27,22 @@ def company_details(request, company_id):
 #create company
 @login_required(login_url='login')
 def create_company(request):
+    print("entered create company")
     try:
         company = request.user.company
         messages.warning(request, 'Permission Denied! You have already created a company.')
         return redirect('dashboard')
     except Company.DoesNotExist:
         if request.method == 'POST':
+            print("posttttttttttttttttttttttt")
             form = CreateCompanyForm(request.POST)
             if form.is_valid():
                 company = form.save(commit=False)
                 company.user = request.user
                 company.save()
                 request.user.has_company = True
+                request.user.is_recruiter = True
+                request.user.has_resume = True
                 request.user.save()
                 messages.success(request, 'Company created successfully.')
                 # Redirect to company_details with the newly created company's ID
@@ -51,6 +58,7 @@ def create_company(request):
 
 #update company
 @login_required(login_url='login')
+@company_belongs_to_user
 def update_company(request):
     if request.user.is_recruiter:
         company = get_object_or_404(Company, user=request.user)
@@ -82,9 +90,11 @@ def update_company(request):
 #     return render(request, 'company/index.html', context)
 
 @login_required(login_url='login')
+@company_belongs_to_user
 def view_my_jobs(request, company_id):
     company = get_object_or_404(Company, id=company_id)
     jobs = Job.objects.filter(company=company)
+    print(jobs)
     context = {
         'company': company,
         "jobs":jobs,
@@ -92,8 +102,10 @@ def view_my_jobs(request, company_id):
     return render(request, 'company/myJobs.html', context)
 
 @login_required(login_url='login')
+@company_belongs_to_user
 def view_applications(request, company_id):
     # Check if the current user is the owner of the company
+    applications = []
     current_user = request.user
     company = Company.objects.get(id=company_id)
     if company.user != current_user:
@@ -104,7 +116,6 @@ def view_applications(request, company_id):
     for job in jobs:
         applications = Application.objects.filter(job=job)
         job_applications[job] = applications
-
     # Calculate match percentage for each application
     for job, applications in job_applications.items():
         for application in applications:
@@ -124,12 +135,14 @@ def view_applications(request, company_id):
     context = {
         'company': company,
         'job_applications': job_applications,
+        'applications':applications,
     }
     return render(request, 'company/candidates.html', context)
 
 
 
 @login_required(login_url='login')
+@company_belongs_to_user
 def view_application_details(request, application_id,company_id):
     application = get_object_or_404(Application, id=application_id)
     current_user = request.user
@@ -150,7 +163,8 @@ def view_application_details(request, application_id,company_id):
 
     }
     return render(request, 'company/application_details.html', context)
-
+@login_required(login_url='login')
+@company_belongs_to_user
 def company_analytics(request, company_id):
     company = Company.objects.get(id=company_id)
     current_user = request.user

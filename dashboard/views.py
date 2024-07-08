@@ -12,10 +12,11 @@ from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
 from resume.views import upload_resume
 
+@login_required
 def get_suggested_skills(request):
     user = request.user
     job_title = None
-    suggested_skills = []
+    suggested_skills = Skill.objects.none()  # Initialize as an empty QuerySet
 
     # Get the user's job title
     try:
@@ -30,7 +31,7 @@ def get_suggested_skills(request):
             job_category = SkillCategory.objects.get(name=job_title)
             suggested_skills = Skill.objects.filter(categories=job_category)
         except SkillCategory.DoesNotExist:
-            pass
+            suggested_skills = Skill.objects.none()  # Empty QuerySet if category doesn't exist
 
     suggested_skills_list = list(suggested_skills.values('id', 'name'))
     print("Suggested Skills List:", suggested_skills_list)

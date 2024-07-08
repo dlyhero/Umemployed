@@ -42,6 +42,8 @@ class Job(models.Model):
     experience_levels = models.CharField(max_length=255, blank=True)
     weekly_ranges = models.CharField(max_length=255, blank=True)
     shifts = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    updated_at = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):
@@ -101,7 +103,8 @@ class Application(models.Model):
     has_completed_quiz = models.BooleanField(default=False)
     round_scores = models.JSONField(default=dict)  # Store scores for each skill/round as a dictionary
     total_scores = models.JSONField(default=dict)  # Store total score for each skill/round as a dictionary
-
+    created_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    updated_at = models.DateTimeField(auto_now=True)
     def save(self, *args, **kwargs):
         # Always update scores
         self.update_quiz_score()

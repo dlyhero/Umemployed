@@ -348,7 +348,7 @@
         <div>
           <a
             class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
-            href="#"
+            href="{% url 'company-details' company.id %}"
           >
             <div class="img-wrap flex items-center gap-1">
               <img
@@ -356,7 +356,7 @@
                 src="{% static 'build/img/analytics-svgrepo-com.svg' %}"
                 alt="analytics icon"
               />
-              <span>Analytics</span>
+              <span>About</span>
             </div>
             <img
               class="w-6 ml-16"
@@ -436,12 +436,17 @@
       >
         All Candidates
       </h2>
+      {% if applications|length == 0 %}
+          <div class="text-center text-gray-600">No applications found</div>
+        {% endif %}
       <div class="candidateList-wrap">
+        {% for application in applications %}
+        
         <div
           id="candidate"
           class="cursor-pointer rounded-2xl shadow-sm p-4 bg-white h-fit"
         >
-          <a href="./addjob.html" class="">
+          <a href="{% url 'view_application_details' company_id=company.id application_id=application.id %}" class="">
             <div class="candidate-info flex space-x-8 items-start">
               <div class="flex space-x-4 items-start">
                 <img
@@ -451,64 +456,30 @@
                 />
                 <div>
                   <span id="candidate-name" class="font-bold text-gray-900 text-[18px] sm:text-xl text-nowrap"
-                    >Celine Francisca</span
+                    >{{application.user.first_name}} {{ application.user.last_name}}</span
                   ><br />
                   <div id="job-tile" class="text-gray-600"
-                    >apply as <span class="text-gray-900 font-[600]">UI/UX Designer</span></div
+                    >applied for <span class="text-gray-900 font-[600]">{{application.job}}</span></div
                   >
                 </div>
               </div>
               <div class="sm:mt-1">
                 <h2 class="font-bold text-gray-900">Status</h2>
-                <div class="candidate-status text-[#1e90ff] font-bold">Hired</div>
+                <div class="candidate-status text-[#1e90ff] font-bold">Pending</div>
               </div>
               <div class="sm:mt-1 hidden sm:block">
                 <h2 class="font-bold text-gray-900 text-nowrap">Date Applied</h2>
-                <div class="date text-gray-600">18 June, 2024</div>
+                <div class="date text-gray-600">{{application.created_at}}</div>
               </div>
             </div>
             <div class="flex space-x-4 mt-4">
-              <div class="percentage-match border border-gray-600 rounded-full px-4 py-2 text-nowrap">85% match <span class="hidden sm:inline">with us</span></div>
+              <div class="percentage-match border border-gray-600 rounded-full px-4 py-2 text-nowrap">{{application.matching_percentage}}% match <span class="hidden sm:inline">with us</span></div>
             <div class="percentage-match border border-gray-600 rounded-full px-4 py-2 text-nowrap">8 Years of Experience</div>
             </div>
           </a>
         </div>
-        <div
-          id="candidate"
-          class="cursor-pointer rounded-2xl shadow-sm p-4 bg-white h-fit"
-        >
-          <a href="./addjob.html" class="">
-            <div class="candidate-info flex space-x-8 items-start">
-              <div class="flex space-x-4 items-start">
-                <img
-                  class="w-20 h-20 rounded-full"
-                  src="{% static 'build/img/pp1.avif' %}"
-                  alt="profile-pitcure"
-                />
-                <div>
-                  <span id="candidate-name" class="font-bold text-gray-900 text-[18px] sm:text-xl text-nowrap"
-                    >Celine Francisca</span
-                  ><br />
-                  <div id="job-tile" class="text-gray-600"
-                    >apply as <span class="text-gray-900 font-[600]">UI/UX Designer</span></div
-                  >
-                </div>
-              </div>
-              <div class="sm:mt-1">
-                <h2 class="font-bold text-gray-900">Status</h2>
-                <div class="candidate-status text-[#1e90ff] font-bold">Hired</div>
-              </div>
-              <div class="sm:mt-1 hidden sm:block">
-                <h2 class="font-bold text-gray-900 text-nowrap">Date Applied</h2>
-                <div class="date text-gray-600">18 June, 2024</div>
-              </div>
-            </div>
-            <div class="flex space-x-4 mt-4">
-              <div class="percentage-match border border-gray-600 rounded-full px-4 py-2 text-nowrap">85% match <span class="hidden sm:inline">with us</span></div>
-            <div class="percentage-match border border-gray-600 rounded-full px-4 py-2 text-nowrap">8 Years of Experience</div>
-            </div>
-          </a>
-        </div>
+        {% endfor %}
+        
        
       </div>
     </section>

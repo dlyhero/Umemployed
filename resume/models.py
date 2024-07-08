@@ -71,6 +71,8 @@ class Resume(models.Model):
     cv = models.FileField(upload_to='resume/cv', default="", blank=False, validators=[ext_validator, validate_file_mime_type])
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, default='1', null=True)
     skills = models.ManyToManyField(Skill)
+    created_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         first_name = self.first_name if self.first_name else ""
@@ -83,6 +85,8 @@ class ResumeDoc(models.Model):
     extracted_text = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='resume_extracted_skills')
+    created_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return f"Resume for {self.user.username}"
 

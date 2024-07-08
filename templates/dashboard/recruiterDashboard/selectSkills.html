@@ -355,55 +355,35 @@
       </section>
     </aside>
 
-    <main class="flex-grow w-full px-2 md:px-3 lg:w-[100%] mx-auto">
-      <form class="p-8 w-full max-w-4xl text-center mx-auto">
+   <!-- selectSkills.html -->
+<main class="flex-grow w-full px-2 md:px-3 lg:w-[100%] mx-auto">
+    <form id="select-skills-form" class="p-8 w-full max-w-4xl text-center mx-auto" method="POST">
+        {% csrf_token %}
         <h1 class="text-2xl font-bold mb-4">Select Skills</h1>
-        <input type="text" id="skill-input" class=" outline-[#1e90ff] p-3 w-full mb-4 rounded-lg shadow-lg" placeholder="Type to search skills...">
-        <ul class="skills-list flex flex-wrap gap-2 justify-center">
-            <li>
-                <input type="checkbox" id="skill-django">
-                <label class="border border-gray-300" for="skill-django">Django</label>
-            </li>
-            <li>
-                <input type="checkbox" id="skill-python">
-                <label class="border border-gray-300" for="skill-python">Python</label>
-            </li>
-            <li>
-                <input type="checkbox" id="skill-javascript">
-                <label class="border border-gray-300" for="skill-javascript">JavaScript</label>
-            </li>
-            <li>
-                <input type="checkbox" id="skill-typescript">
-                <label class="border border-gray-300" for="skill-typescript">TypeScript</label>
-            </li>
-            <li>
-                <input type="checkbox" id="skill-php">
-                <label class="border border-gray-300" for="skill-php">PHP</label>
-            </li>
-            <li>
-                <input type="checkbox" id="skill-oracle">
-                <label class="border border-gray-300" for="skill-oracle">Oracle</label>
-            </li>
-            <li>
-                <input type="checkbox" id="skill-msw">
-                <label class="border border-gray-300" for="skill-msw">Microsoft Word</label>
-            </li>
-            <li>
-                <input type="checkbox" id="skill-mse">
-                <label class="border border-gray-300" for="skill-mse">Microsoft Excel</label>
-            </li>
-            <li>
-                <input type="checkbox" id="skill-react">
-                <label class="border border-gray-300" for="skill-react">React Js</label>
-            </li>
-            <li>
-                <input type="checkbox" id="skill-php">
-                <label class="border border-gray-300" for="skill-php">PHP</label>
-            </li>
+
+        <!-- Render extracted_skills checkboxes -->
+        <ul id="skills-list" class="skills-list flex flex-wrap gap-2 justify-center">
+            {% for skill in extracted_skills %}
+                <li>
+                    <input type="checkbox" id="skill-{{ skill.id }}" name="extracted_skills" value="{{ skill.id }}">
+                    <label class="border border-gray-300" for="skill-{{ skill.id }}">{{ skill.name }}</label>
+                </li>
+            {% endfor %}
         </ul>
-        <button id="submit-button" class="mt-6 px-4 py-2 bg-[#1e90ff] text-white rounded-lg hover:bg-blue-500 font-bold">Submit</button>
+
+        <!-- Render level field -->
+        <label for="id_level">Level:</label>
+        <select id="id_level" name="level">
+            <option value="Beginner">Beginner</option>
+            <option value="Mid">Mid</option>
+            <option value="Expert">Expert</option>
+        </select>
+
+        <button type="submit" id="submit-button" class="mt-6 px-4 py-2 bg-[#1e90ff] text-white rounded-lg hover:bg-blue-500 font-bold">Submit</button>
     </form>
-    </main>
+</main>
+
+
    
     <script src="{% static 'build/scripts/skills.js' %}"></script>
   </body>
