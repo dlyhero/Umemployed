@@ -112,9 +112,7 @@ def logout_user(request):
 
 def switch_account(request):
     return render(request,'users/accountType.html')
-from django.http import JsonResponse
 
-from django.http import JsonResponse
 
 @login_required
 def change_account_type(request):
@@ -128,6 +126,9 @@ def switch_account_type(request):
     print("clicked")
     user = request.user
 
+    # Handle case where user may not have a company
+    company = Company.objects.filter(user=user).first()
+
     if user.is_applicant:
         if not user.has_company:
             user.is_recruiter = True
@@ -137,15 +138,24 @@ def switch_account_type(request):
             return redirect(reverse('create_company'))
         else:
             messages.info(request, 'You already have a company associated with your account.')
+            if company:
+                user.is_recruiter = True
+                user.is_applicant = False
+                user.save()
+                return redirect(reverse('company-details', args=[company.id]))
+            else:
+                messages.error(request, 'An error occurred: No company found.')
+                return redirect(reverse('home'))
     elif user.is_recruiter:
         user.is_applicant = True
         user.is_recruiter = False
         user.save()
         if not ResumeDoc.objects.filter(user=user).exists():
-            messages.success(request, 'You have switched to an applicant account.')
-            return redirect('dashboard')
+            messages.success(request, 'You have switched to an applicant account. Please complete your resume.')
+            return redirect('switch_account')
         else:
             messages.success(request, 'You have switched to an applicant account.')
+            return redirect('dashboard')
     else:
         messages.error(request, 'An error occurred while switching account types.')
 
