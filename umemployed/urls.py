@@ -12,7 +12,8 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('',views.home, name = 'home'),
     path('accounts/', include('allauth.urls')),
-
+    path('social-auth/', include(('social_django.urls', 'social'), namespace='social')),
+    
     #urls for the password reset with email
     path('reset_password/',auth_views.PasswordResetView.as_view(template_name='password_reset/passwordReset.html'),name='reset_password'),
     path('password_reset_done/',auth_views.PasswordResetDoneView.as_view(template_name='password_reset/passwordResetSent.html'), name ="password_reset_done"),

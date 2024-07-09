@@ -1,10 +1,191 @@
-{% extends 'resume/base.html' %}
 {% load static %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile | {{user.username}}</title>
+    <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'build/css/profile.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/general.css' %}">
+  
+  </head>
+  <body class="text-sm relative bf-white md:bg-gray-50">
+    <header
+      class="flex justify-between items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 mb-5 bg-white"
+    >
+      <div class="flex items-center gap-x-5 md:gap-8">
+        <div class="logo-wrap flex items-center">
+          <img class="w-7 md:w-9" src="{% static './build/logo/logo-color.png' %}" alt="" />
+          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+            >UmEmployed</span
+          >
+        </div>
+        <a
+          class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
+          href="#"
+          >Home</a
+        >
+        <a
+          class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
+          href="./resume.html"
+          >Resume</a
+        >
+      </div>
+      <nav class="flex md:gap-x-4 items-center">
+        <ul class="flex gap-x-2 md:gap-x-6 items-center">
+          <li>
+            <a
+              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="#"
+              ><img
+                class="w-5"
+                src="{% static './build/img/message-square-lines-svgrepo-com.svg' %}"
+                alt="message icon"
+              />
+              <span class="hidden md:block">Messages</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded flex items-center"
+              href="#"
+              ><img
+                class="w-[18px]"
+                src="{% static './build/img/notification-bell-svgrepo-com.svg' %}"
+                alt="notification icon"
+              />
+              <span class="hidden md:block">Notifications</span>
+            </a>
+          </li>
+          <li class="relative cursor-pointer">
+            <button id="option-btn"
+              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="#"
+            >
+              <img
+                class="w-5"
+                src="{% static './build/img/profile-svgrepo-com.svg' %}"
+                alt="profile icon"
+              />
+              <span class="hidden md:block">User</span>
+            </button>
+            <div
+              id="backdrop-menu"
+              class="hidden fixed flex justify-end pr-[19px] sm:pr-[100px] z-[100] top-0 bottom-0 left-0 right-0 bg-transparent"
+            >
+              <div
+                class="absolute bg-white top-[60px] z-[100] min-w-[280px] sm:w-[350px] border border-gray-400 rounded"
+              >
+                <div class="user-mail py-3 px-6 font-bold text-gray-700">
+                  enugodwillenwe@gmail.com
+                </div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                  <a href="./profile.html" class="flex items-center gap-1">
+                    <img class="w-5" src="{% static './build/img/user.svg' %}" alt="user-icon" />
+                    Profile
+                  </a>
+                </div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                 <a href="" class="flex items-center gap-1">
+                  <img class="w-5" src="{% static './build/img/help-svgrepo-com.svg' %}" alt="help-icon" />
+                  Resume help
+                 </a>
+                </div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                 <a href="./index.html" class="flex items-center gap-1">
+                  <img class="w-5" src="{% static './build/img/suitcase-svgrepo-com.svg' %}" alt="job-icon" />
+                  My jobs
+                 </a>
+                </div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                  <a href="#" class="flex items-center gap-1">
+                    <img class="w-5" src="{% static './build/img/page-svgrepo-com.svg' %}" alt="page-icon" />
+                    My reviews
+                  </a>
+                </div>
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                  <a href="#" class="flex items-center gap-1">
+                    <img class="w-5"  src="{% static './build/img/setting-1-svgrepo-com.svg' %}" alt="setting-icon" />
+                    Settings
+                  </a>
+                </div>
+                <hr class="my-2" />
+                <div class="flex py-4 px-6 text-gray-700 justify-center">
+                  <button class="signout-btn text-[#1e90ff] font-bold">
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="md:hidden">
+            <button id="menu-btn" class="text-xl">
+              <img class="w-5" src="{% static './build/img/menu-svgrepo-com.svg' %}" alt="" />
+            </button>
+          </li>
+        </ul>
+        <div class="hidden md:block">
+          <div class="flex">
+            <div class="border-l h-[40px] ="></div>
+            <span
+              class="ml-2 text-nowrap hover:bg-blue-50 transition-colors p-2 rounded"
+              ><a class="text-nowrap" href="./switchaccounttype.html"
+                >Employers / Post Job</a
+              >
+            </span>
+          </div>
+        </div>
+      </nav>
+      <div
+        id="sidebar"
+        class="font-bold fixed bg-[#8080803e] md:bg-none z-10 hidden top-0 bottom-0 left-0 right-0 p-10"
+      >
+        <div
+          class="sidebar-conten h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+        >
+          <div class="btn-wrap text-end">
+            <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
+              &times
+            </button>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Home </a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="./profile.html"
+              >Profile
+            </a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="./resume.html"
+              >Resume
+            </a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Jobs </a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Settings </a>
+          </div>
+        </div>
+      </div>
+    </header>
   <main class="mx-auto w-[90%] max-w-[650px]">
     <section class="user-profile mx-auto border p-5 rounded-lg">
       <div class="profile-header mb-10 flex justify-between items-center">
-        <img class="w-24" src="{% static 'build/img/pp.jpg' %}" alt="profile-pic" />
+        <img class="w-32 rounded-full h-32" src="{% static 'build/img/pp.jpg' %}" alt="profile-pic" />
         <p class="font-bold text-2xl name mr-4">
           <span class="firstName">{{ contact_info.name }}</span>
         </p>
@@ -14,7 +195,7 @@
           <div class="email">{{ contact_info.email }}</div>
           <div class="phone">{{ contact_info.phone }}</div>
           <div class="country">{{ contact_info.country }}</div>
-          <div class="job-title">{{ contact_info.job_title }}</div>
+          <div class="job-title">{{ resume.category }}</div>
         </div>
         <a href="{% url 'update-resume' %}" class="text-[#1e90ff] border border-[#1e90ff] px-2 py-1 mr-4 rounded-full">Edit profile</a>
       </div>
@@ -67,144 +248,193 @@
       </div>
     </section>
     <section id="job-sec" class="mb-10 border rounded-lg">
-      <div class="">
-        <div class="border border-white bg-white rounded-lg">
-          <div class="flex justify-between items-center border-b p-4 mb-4">
-            <p class="font-bold text-xl text-[#1e90ff]">Select Job</p>
-          </div>
-          <div class="w-full p-4 mb-4">
-            <label for="job">Job</label><br />
-            <input class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" type="text" id="job" placeholder="skill (ex: Career Counselor)" />
-          </div>
-          <div class="p-4 border rounded-lg mb-4 mx-4 bg-blue-50">
-            <select name="job" id="job" class="bg-transparent w-full outline-none">
-              <option value="" selected disabled>Selcted a job</option>
-              <option value="frontend">Frontend Developer</option>
-              <option value="es">Employement Specialist</option>
-              <option value="cs">Career Counselor</option>
-              <option value="mad">Mobile App Developer</option>
-              <option value="deve">Devops Engineer</option>
-              <option value="ds">Data Scientist</option>
-              <option value="acc">Accountant</option>
-            </select>
-          </div>
-          <div class="p-4 flex justify-between border-t">
-            <div></div>
-            <button id="save-job-btn" class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1">Save</button>
-          </div>
+  <div class="">
+    <div class="border border-white bg-white rounded-lg">
+      <div class="flex justify-between items-center border-b p-4 mb-4">
+        <p class="font-bold text-xl text-[#1e90ff]">Select Job</p>
+      </div>
+      <form id="job-form" method="POST" action="{% url 'save_job' %}">
+        {% csrf_token %}
+        <div class="w-full p-4 mb-4">
+          <label for="job"> Job </label><br />
+          <input
+            class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]"
+            type="text"
+            id="job"
+            placeholder="skill (ex: Career Counselor)"
+          />
         </div>
-      </div>
-    </section>
-
-    <section id="skills-sec" class="mb-10">
-      <div class="flex justify-between items-center mb-2 p-4">
-        <h2 class="font-bold text-xl text-[#1e90ff]">Skills</h2>
-        <button class="w-6" id="add-skill-btn"><img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" /></button>
-      </div>
-      <div id="skill-modal" class="hidden absolute top-0 bottom-0 left-0 right-0 justify-center items-center mx-auto">
-        <div id="backdrop" class="bg-[#80808021] absolute top-0 bottom-0 left-0 right-0 -z-0"></div>
-        <div class="border border-white bg-white rounded-lg absolute top-1/2 w-11/12 md:w-3/4 lg:w-[48%]">
-          <div class="flex justify-between items-center border-b p-4 mb-4">
-            <p class="font-bold">Add skill</p>
-            <button id="skill-modal-btn" class="text-2xl">&times;</button>
-          </div>
-          <div class="w-full p-4 mb-4">
-            <label for="input-skill">skill</label><br />
-            <input class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" type="text" id="input-skill" placeholder="skill (ex: Reactjs)" />
-            <div id="feedback-message" class="feedback-msg italic text-red-500 hidden">Skill already exists</div>
-          </div>
-
-          <div class="p-4 border rounded-lg mb-4 mx-4 bg-white">
-            <p class="mb-3 font-bold">Suggested skills</p>
-            <ul id="suggested-skills" class="suggested-skills gap-x-2">
-              {% for suggested_skill in suggested_skills %}
-                <li>
-                  <input type="checkbox" id="skill-{{ suggested_skill.id }}" data-id="{{ suggested_skill.id }}" value="{{ suggested_skill.name }}" />
-                  <label for="skill-{{ suggested_skill.id }}">{{ suggested_skill.name }}</label>
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
-
-          <div class="p-4 flex justify-between border-t">
-            <div></div>
-            <button id="save-skill-btn" class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1">Save</button>
-          </div>
+        <div class="p-4 border rounded-lg mb-4 mx-4 bg-blue-50">
+          <select
+            name="job"
+            id="job"
+            class="bg-transparent w-full outline-none"
+          >
+            <option value="" selected disabled>Select a job</option>
+            {% for job in jobs %}
+              <option value="{{ job.id }}">{{ job.name }}</option>
+            {% endfor %}
+          </select>
         </div>
-      </div>
-      <div id="skill-wrap">
-        {% for skill in skills %}
-          <div class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
-            <p class="type">{{ skill.name }}</p>
-            <div class="btn-wraps flex gap-4">
-              <button class="w-5" id="edit-skill-btn"><img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" /></button>
-              <button class="w-6" id="delete-skill-btn"><img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" /></button>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    </section>
-
-    <section class="lang-sec mb-10">
-      <div class="flex justify-between items-center mb-2 p-4">
-        <h2 class="font-bold text-xl text-[#1e90ff]">Languages</h2>
-        <button class="w-6" id="add-lang-btn"><img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" /></button>
-      </div>
-      {% for language in languages %}
-        <div class="language border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
-          <p class="type">{{ language.name }}</p>
-          <div class="btn-wraps flex gap-4">
-            <button class="w-5" id="edit-lang-btn"><img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" /></button>
-            <button class="w-6" id="delete-lang-btn"><img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" /></button>
-          </div>
+        <div class="p-4 flex justify-between border-t">
+          <div></div>
+          <button
+            type="submit"
+            id="save-job-btn"
+            class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1"
+          >
+            Save
+          </button>
         </div>
-      {% endfor %}
-    </section>
-    <section id="experience-sec" class="mb-10">
-      <div class="flex justify-between items-center mb-2 p-4">
-        <h2 class="font-bold text-xl text-[#1e90ff]">Experience</h2>
-        <button class="w-6" id="add-experience-btn"><img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" /></button>
-      </div>
-      <div id="experience-wrap">
-        {% for experience in experiences %}
-          <div class="experience border p-5 mb-2 rounded-lg font-bold">
-            <p class="company-name">{{ experience.company_name }}</p>
-            <p class="role">{{ experience.role }}</p>
-            <p class="dates">
-              {{ experience.start_date|date:'M Y' }} -{% if experience.end_date %}
-                {{ experience.end_date|date:'M Y' }}
-              {% else %}
-                Present
-              {% endif %}
-            </p>
-            <div class="btn-wraps flex gap-4">
-              <button class="w-5" id="edit-experience-btn"><img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" /></button>
-              <button class="w-6" id="delete-experience-btn"><img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" /></button>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    </section>
+      </form>
+    </div>
+  </div>
+</section>
 
-    <section id="education-sec" class="mb-10">
-      <div class="flex justify-between items-center mb-2 p-4">
-        <h2 class="font-bold text-xl text-[#1e90ff]">Education</h2>
-        <button class="w-6" id="add-education-btn"><img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" /></button>
+
+    <section id="skills-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <div class="flex justify-between items-center mb-2 p-2">
+    <h2 class="font-bold text-xl text-[#1e90ff]">Skills</h2>
+    <button class="w-6" id="add-skill-btn">
+      <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+    </button>
+  </div>
+  <div id="skill-modal" class="hidden absolute top-0 bottom-0 left-0 right-0 justify-center items-center mx-auto">
+    <div id="backdrop" class="absolute top-0 bottom-0 left-0 right-0 -z-0"></div>
+    <div class="border border-white bg-white rounded-lg absolute top-1/2 w-11/12 md:w-3/4 lg:w-[48%]">
+      <div class="flex justify-between items-center border-b p-4 mb-4">
+        <p class="font-bold">Add skill</p>
+        <button id="skill-modal-btn" class="text-2xl">&times;</button>
       </div>
-      <div id="education-wrap">
-        {% for education in educations %}
-          <div class="education border p-5 mb-2 rounded-lg font-bold">
-            <p class="institution-name">{{ education.institution_name }}</p>
-            <p class="degree">{{ education.degree }}</p>
-            <p class="dates">{{ education.graduation_year }}</p>
-            <div class="btn-wraps flex gap-4">
-              <button class="w-5" id="edit-education-btn"><img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" /></button>
-              <button class="w-6" id="delete-education-btn"><img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" /></button>
-            </div>
+      <div class="w-full p-4 mb-4">
+        <label for="input-skill">Skill</label><br />
+        <input class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" type="text" id="input-skill" placeholder="Skill (ex: Reactjs)" />
+        <div id="feedback-message" class="feedback-msg italic text-red-500 hidden">Skill already exists</div>
+      </div>
+      <div class="p-4 border rounded-lg mb-4 mx-4 bg-white">
+        <p class="mb-3 font-bold">Suggested skills</p>
+        <ul id="suggested-skills" class="suggested-skills gap-x-2">
+          {% for suggested_skill in suggested_skills %}
+          <div>
+            <li>
+              <input type="checkbox" class="custom-checkbox" id="skill-{{ suggested_skill.id }}" data-id="{{ suggested_skill.id }}" value="{{ suggested_skill.name }}" />
+              <label for="skill-{{ suggested_skill.id }}">{{ suggested_skill.name }}</label>
+            </li>
           </div>
-        {% endfor %}
+          {% endfor %}
+        </ul>
       </div>
-    </section>
+      <div class="p-4 flex justify-between border-t">
+        <div></div>
+        <button id="save-skill-btn" class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div id="" class="p-2">
+    {% for skill in skills %}
+    <div class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+      <p class="type">{{ skill.name }}</p>
+      <div class="btn-wraps flex gap-4">
+        <button class="w-5" id="edit-skill-btn">
+          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+        <button class="w-6" id="delete-skill-btn">
+          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="lang-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <div class="flex justify-between items-center mb-2 p-2">
+    <h2 class="font-bold text-xl text-[#1e90ff]">Languages</h2>
+    <button class="w-6" id="add-lang-btn">
+      <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+    </button>
+  </div>
+  <div id="lang-wrap" class="p-2">
+    {% for language in languages %}
+    <div class="language border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+      <p class="type">{{ language.name }}</p>
+      <div class="btn-wraps flex gap-4">
+        <button class="w-5" id="edit-lang-btn">
+          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+        <button class="w-6" id="delete-lang-btn">
+          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="experience-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <div class="flex justify-between items-center mb-2 p-2">
+    <h2 class="font-bold text-xl text-[#1e90ff]">Experience</h2>
+    <button class="w-6" id="add-experience-btn">
+      <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+    </button>
+  </div>
+  <div id="experience-wrap" class="p-2">
+    {% for experience in experiences %}
+    <div class="experience border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+      <div>
+        <p class="company-name">{{ experience.company_name }}</p>
+        <p class="role">{{ experience.role }}</p>
+        <p class="dates">
+          {{ experience.start_date|date:'M Y' }} -
+          {% if experience.end_date %}
+            {{ experience.end_date|date:'M Y' }}
+          {% else %}
+            Present
+          {% endif %}
+        </p>
+      </div>
+      <div class="btn-wraps flex gap-4">
+        <button class="w-5" id="edit-experience-btn">
+          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+        <button class="w-6" id="delete-experience-btn">
+          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="education-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <div class="flex justify-between items-center mb-2 p-2">
+    <h2 class="font-bold text-xl text-[#1e90ff]">Education</h2>
+    <button class="w-6" id="add-education-btn">
+      <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+    </button>
+  </div>
+  <div id="education-wrap" class="p-2">
+    {% for education in educations %}
+    <div class="education border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+      <div>
+        <p class="institution-name">{{ education.institution_name }}</p>
+        <p class="degree">{{ education.degree }}</p>
+        <p class="dates">{{ education.graduation_year }}</p>
+      </div>
+      <div class="btn-wraps flex gap-4">
+        <button class="w-5" id="edit-education-btn">
+          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+        <button class="w-6" id="delete-education-btn">
+          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
   </main>
   <script>
     const csrfToken = '{{ csrf_token }}'
@@ -215,4 +445,5 @@
   </script>
   <script type="module" src="{% static 'scripts/Profile.js' %}"></script>
   <script type="module" src="{% static 'data/user.js' %}"></script>
-{% endblock %}
+</body>
+</html>

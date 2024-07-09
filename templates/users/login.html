@@ -9,7 +9,6 @@
     <title>Sign In | UmEmployed</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://accounts.google.com/gsi/client" async></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body class="min-h-screen flex flex-col">
@@ -20,7 +19,7 @@
       </div>
       <a class="bg-[#1e90ff] px-2 py-1 rounded-full text-white" href="{% url 'register-applicant' %}">Sign Up</a>
     </header>
-    <main class="mx-auto overflow-hidden flex-grow">
+    <main class="mx-auto flex flex-col justify-center overflow-hidden flex-grow">
       <div>
         {% for message in messages %}
           <div class="alert alert-danger" role="alert">{{ message }}</div>
@@ -52,7 +51,8 @@
               </div>
               <div class="alt-signin">
                 <div class="google-signin wrapper border p-2.5 rounded-lg mb-5 lg:w-4/5">
-                  <a class="flex justify-center items-center gap-1" href="{% provider_login_url 'google' %}?next=/">
+                  {% comment %} <a class="flex justify-center items-center gap-1" href="{% provider_login_url 'google' %}?next=/"> {% endcomment %}
+                  <a class="flex justify-center items-center gap-1" href="{% url 'social:begin' 'google-oauth2' %}?next=/">
                     <div class="icon-wrapper bg-white rounded-full">
                       <img class="icon" src="{% static 'img/icons/7123025_logo_google_g_icon.png' %}" alt="Google logo" />
                     </div>
@@ -88,47 +88,63 @@
         </div>
         <img class="desc-img mt-10 w-full h-full lg:w-1/2 md:h-1/2 mx-auto" src="{% static 'img/pics/career.jpg' %}" />
       </section>
-      <section id="articles" class="px-9 md:px-24 mx-auto py-20 lg:flex gap-32 bg-slate-100">
+       <section
+        id="articles"
+        class="px-9 md:px-24 mx-auto py-20 lg:flex gap-32 bg-slate-100"
+      >
         <div class="info lg:w-2/5 mb-5 lg:mb-0">
-          <h2 class="text-2xl md:text-3xl mb-4">Industries-specific Insight and Strategies</h2>
-          <div class="text-gray-600 text-xl md:text-2xl">These guides provide industry-specific advice for professionals shifting careers. from resume optimisation to interview success, readers gain essential tips for navigating diverse industries with confidence.</div>
+          <h2 class="text-2xl md:text-3xl mb-4">
+            Industries-specific Insight and Strategies
+          </h2>
+          <div class="text-gray-600 text-xl md:text-2xl">
+            These guides provide industry-specific advice for professionals
+            shifting careers. from resume optimisation to interview success,
+            readers gain essential tips for navigating diverse industries with
+            confidence.
+          </div>
         </div>
         <div class="article-wrap lg:w-1/2">
           <ul class="article-list gap-2">
-            <li class="article border text-nowrap rounded-full text-center text-2xl">
+            <li
+              class="article border text-nowrap rounded-full text-center text-2xl"
+            >
               <a class="text-nowrap" href="http#">Marketing</a>
             </li>
-            <li class="article border text-nowrap rounded-full text-center text-2xl">
+            <li
+              class="article border text-nowrap rounded-full text-center text-2xl"
+            >
               <a class="text-nowrap" href="http#">Software Developement</a>
             </li>
-            <li class="article border text-nowrap rounded-full text-center text-2xl">
+            <li
+              class="article border text-nowrap rounded-full text-center text-2xl"
+            >
               <a class="text-nowrap" href="http#">Publishing</a>
             </li>
-            <li class="article border rounded-full text-center text-2xl">
+            <li class="article border transition-all rounded-full text-center text-2xl">
               <a class="" href="http#">Finance</a>
             </li>
-            <li class="article border rounded-full text-center text-2xl">
+            <li class="article border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Healthcare</a>
             </li>
-            <li class="article border rounded-full text-center text-2xl">
+            <li class="article border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Education</a>
             </li>
-            <li class="article border rounded-full text-center text-2xl">
+            <li class="article border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Hospitality</a>
             </li>
-            <li class="article border rounded-full text-center text-2xl">
+            <li class="article border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Manufacturing</a>
             </li>
             <li class="article border rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Agriculture</a>
             </li>
-            <li class="article border rounded-full text-center text-2xl">
+            <li class="article border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Retail</a>
             </li>
-            <li class="article border rounded-full text-center text-2xl">
+            <li class="article border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Media & Entertainment</a>
             </li>
-            <li class="article border rounded-full text-center text-2xl">
+            <li class="article border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Show more</a>
             </li>
           </ul>
@@ -140,78 +156,138 @@
         </div>
         <div class="article-wrap lg:w-1/2">
           <ul class="article-list gap-2">
-            <li class="job border text-nowrap rounded-full text-center text-2xl">
+            <li
+              class="job border text-nowrap rounded-full text-center text-2xl"
+            >
               <a class="text-nowrap" href="http#">Software Egineer</a>
             </li>
-            <li class="job border text-nowrap rounded-full text-center text-2xl">
+            <li
+              class="job border text-nowrap rounded-full text-center text-2xl"
+            >
               <a class="text-nowrap" href="http#">Marketing Specialist</a>
             </li>
-            <li class="job border text-nowrap rounded-full text-center text-2xl">
+            <li
+              class="job border text-nowrap rounded-full text-center text-2xl"
+            >
               <a class="text-nowrap" href="http#">Financial Analyst</a>
             </li>
-            <li class="job border rounded-full text-center text-2xl">
+            <li class="job border transition-all rounded-full text-center text-2xl">
               <a class="" href="http#">Registerd Nurse</a>
             </li>
-            <li class="job border rounded-full text-center text-2xl">
+            <li class="job border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Teacher/Instructor</a>
             </li>
-            <li class="job border rounded-full text-center text-2xl">
+            <li class="job border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Education</a>
             </li>
-            <li class="job border rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Customer Service Representative</a>
+            <li class="job border transition-all rounded-full text-center text-2xl">
+              <a class="text-nowrap" href="http#"
+                >Customer Service Representative</a
+              >
             </li>
-            <li class="job border rounded-full text-center text-2xl">
+            <li class="job border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Sales Associates</a>
             </li>
-            <li class="job border rounded-full text-center text-2xl">
+            <li class="job border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Operations Manager</a>
             </li>
-            <li class="job border rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Human Resources Coordinator</a>
+            <li class="job border transition-all rounded-full text-center text-2xl">
+              <a class="text-nowrap" href="http#"
+                >Human Resources Coordinator</a
+              >
             </li>
-            <li class="job border rounded-full text-center text-2xl">
+            <li class="job border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Graphic Designer</a>
             </li>
-            <li class="job border rounded-full text-center text-2xl">
+            <li class="job border transition-all rounded-full text-center text-2xl">
               <a class="text-nowrap" href="http#">Show more</a>
             </li>
           </ul>
         </div>
       </section>
-      <section class="post-job px-9 md:px-24 mx-auto posts w-full py-20 lg:flex gap-32 items-center bg-gray-100">
-        <div class="lg:w-2/5 text-2xl md:text-3xl lg:text-4xl mb-4">Post your jobs for millions of people to see</div>
+      <section
+        class="post-job px-9 md:px-24 mx-auto posts w-full py-20 lg:flex gap-32 items-center bg-gray-100"
+      >
+        <div class="lg:w-2/5 text-2xl md:text-3xl lg:text-4xl mb-4">
+          Post your jobs for millions of people to see
+        </div>
         <a href="#" class="job-link border rounded-full">Post a job</a>
       </section>
-      <section class="call-to-action tracking-wider px-9 md:px-24 mx-auto posts w-full py-20 lg:flex gap-32 items-center bg-gray-100">
-        <div class="lg:w-2/5 text-2xl md:text-3xl lg:text-4xl mb-4">Join on UmEmployed to get connected with friends</div>
-        <a href="{% url 'register-applicant' %}" id="call-btn" class="border rounded-full">Join Now</a>
-      </section>
-      <section class="md:px-24 px-9 ]whitspace-nowrap mx-auto h-fit comments bg-slate-400 py-10 flex">
+      <section
+  class="call-to-action tracking-wider px-9 md:px-24 mx-auto posts w-full py-20 lg:flex gap-32 items-center bg-gray-100"
+  style="background-image: url('../../static/img/pics/jv.jpg'); background-size: cover; background-position: center;"
+>
+  <div class="lg:w-2/5 text-2xl md:text-3xl lg:text-4xl mb-4">
+    Join on <span class="text-[#1e90ff] font-bold">UmEmployed</span> to get connected with friends
+  </div>
+  <a href="{% url 'register-applicant' %}" id="call-btn" class="border rounded-full">Join Now</a>
+</section>
+
+      <section
+        class="md:px-24 px-9 bg-black bg-opacity-5 whitspace-nowrap mx-auto h-fit comments  py-10 flex"
+      >
         <div class="comment-wrapper flex items-center">
           <div class="">
             <div class="actual-comment w-full md:w-2/3">
-              <h4 class="title-comment text-2xl md:text-3xl mb-4">Empowering Careers, Empowering Lives</h4>
-              <di class="comment text-clip overflow-hidde text-xl md:text-2xl">We believe that the right job has the power to transform lives. Join us in empowering careers and making a positive impact on individuals and communities.</di>
+              <h4 class="title-comment text-2xl md:text-3xl mb-4">
+                Empowering Careers, Empowering Lives
+              </h4>
+              <di class="comment text-clip overflow-hidde text-xl md:text-2xl">
+                We believe that the right job has the power to transform lives.
+                Join us in empowering careers and making a positive impact on
+                individuals and communities.
+              </di>
             </div>
           </div>
-          <img class="hidden md:block md:w-1/5 align-middle rounded-full ml-10" src="{% static 'img/pics/buildind careers.jpg' %}" alt="" />
+          <img
+            class="hidden md:block md:w-1/5 align-middle rounded-full ml-10"
+            src="{% static 'img/pics/barriers.jpg' %}"
+            alt=""
+          />
         </div>
       </section>
     </main>
 
-    <footer class="px-5 sm:px-7 py-5 md:px-20 mt-20 sm:flex justify-between items-center">
-      <div class="flex gap-1 items-center flex-shrink-0 md:mb-4">
-        <div>
-          <div>&copy; Copyright</div>
+    <footer class="bg-white py-5 mt-auto px-2 md:px-6 mt-20">
+      <div class="flex justify-between sm:justify-around w-full px-[3px] md:px-3 md:px-5 gap-2 md:gap-5 flex-wrap">
+        <div class="text-start md:w-1/4">
+          <h3 class="text-lg font-bold mb-2">Company</h3>
+          <ul class="space-y-1">
+            <li>
+              <a href="./about.html" class="hover:text-[#1e90ff]">About Us</a>
+            </li>
+            <li>
+              <a href="./careers.html" class="hover:text-[#1e90ff]">Careers</a>
+            </li>
+            <li><a href="./blog.html" class="hover:text-[#1e90ff]">Blog</a></li>
+          </ul>
         </div>
-        <div class="flex justify-center items-center">
-          <img src="{% static 'img/logo/logo-black.png' %}" class="w-3 h-3 sm:h-5 sm:w-5" alt="" />
-          <div>UmEmployed</div>
+        <div class="text-start md:w-1/4">
+          <h3 class="text-lg font-bold mb-2">Resources</h3>
+          <ul class="space-y-1">
+            <li>
+              <a href="./support.html" class="hover:text-[#1e90ff]">Support</a>
+            </li>
+            <li>
+              <a href="./privacy.html" class="hover:text-[#1e90ff]"
+                >Privacy Policy</a
+              >
+            </li>
+            <li>
+              <a href="./terms.html" class="hover:text-[#1e90ff]"
+                >Terms & Conditions</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="justify-left md:w-1/4">
+          <h3 class="text-lg font-bold mb-2">Contact</h3>
+          <p class="mb-1">Email: um@umeployment.com</p>
+          <p>Phone: +1 (123) 456-7890</p>
         </div>
       </div>
-      <div>
-        Designed by<span class="eu-text">UmEmployed</span>
+      <div class="text-center mt-5">
+        <p>&copy; 2024 UmEployment. All rights reserved.</p>
       </div>
     </footer>
   </body>

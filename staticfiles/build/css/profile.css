@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+.drop-section {
+    display: grid;
+    grid-template-columns: 45% 45%;
+    justify-content: center;
+}
+
+@media (max-width: 940px) {
+    .drop-section {
+        display: grid;
+        grid-template-columns: 90%;
+    }
+}
+
+#sidebar {
+    display: none;
+    transition: 0.3s 4s ease;
+}
+
+@media (min-width: 768px) {
+    #sidebar {
+        display: none;
+        background-color: none;
+    }
+}
+
+.icon {
+    fill: white;
+}
+
+
+
+.suggested-skills {
+    display: flex;
+    flex-wrap: wrap;
+    cursor: pointer;
+
+}
+
+.suggested-skills li {
+    border: 1px solid #1e90ff;
+    color: #1e90ff;
+}
+
+/* Styling for the skill suggestion checkmarks */
+.suggested-skill {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.custom-checkbox {
+    display: none;
+}
+
+.custom-label {
+    position: relative;
+    padding-left: 18px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.custom-label:before,
+.custom-label:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.custom-label:before {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.custom-checkbox:checked+.custom-label:before {
+    background-color: #007bff;
+}
+
+.custom-label:after {
+    width: 8px;
+    height: 4px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) scale(0);
+    top: 55%;
+    left: 5px;
+    transition: transform 0.3s;
+}
+
+.custom-checkbox:checked+.custom-label:after {
+    transform: rotate(-45deg) scale(1);
+}
+
+#backdrop {
+    background-color: #80808021;
+    /* Semi-transparent background */
+    backdrop-filter: blur(0.5px);
+    /* Adjust the blur radius */
+    -webkit-backdrop-filter: blur(10px);
+    /* For Safari */
+}
