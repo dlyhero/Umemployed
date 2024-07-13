@@ -162,7 +162,6 @@ from django.shortcuts import get_object_or_404
 
 @login_required
 def select_skills(request):
-    compa
     print("Entered selects_skills view")
     if request.user.is_recruiter and request.user.has_company:
         selected_category_id = request.session.get('selected_category')
