@@ -12,7 +12,7 @@
       <link rel="stylesheet" href="{% static 'build/css/profile.css' %}" />
     </head>
   <body
-    class="text-sm md:ml-[240px] md:mt-20 relative flex flex-col min-h-screen"
+    class="md:ml-[0px] md:mt-20 relative flex flex-col "
   >
     <header
       class="flex justify-between items-center md:border-b md:fixed z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-10 bg-white"
@@ -54,6 +54,18 @@
                 alt="notification icon"
               />
               <span class="hidden md:block">Notifications</span>
+            </a>
+          </li>
+           <li>
+            <a
+              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="{% url 'dashboard' %}"
+              ><img
+                class="w-5"
+                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+                alt="user icon"
+              />
+              <span class="hidden md:block">Dashboard</span>
             </a>
           </li>
         </ul>

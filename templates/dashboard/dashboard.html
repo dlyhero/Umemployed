@@ -9,15 +9,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'build/css/profile.css' %}" />
     <link rel="stylesheet" href="{% static 'build/css/general.css' %}">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   
   </head>
   <body class="text-sm relative bf-white md:bg-gray-50">
     <header
-      class="flex justify-between items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 mb-5 bg-white"
+      class="flex justify-between sticky items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 mb-5 bg-white"
     >
-      <div class="flex items-center gap-x-5 md:gap-8">
+      <div class="flex items-center gap-x-3 md:gap-1">
         <div class="logo-wrap flex items-center">
-          <img class="w-7 md:w-9" src="{% static './build/logo/logo-color.png' %}" alt="" />
+          <img class="w-7 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
           <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
             >UmEmployed</span
           >
@@ -34,14 +35,14 @@
         >
       </div>
       <nav class="flex md:gap-x-4 items-center">
-        <ul class="flex gap-x-2 md:gap-x-6 items-center">
+        <ul class="flex gap-x-2 md:gap-x-3 items-center">
           <li>
             <a
               class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
               href="#"
               ><img
                 class="w-5"
-                src="{% static './build/img/message-square-lines-svgrepo-com.svg' %}"
+                src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
                 alt="message icon"
               />
               <span class="hidden md:block">Messages</span>
@@ -53,20 +54,21 @@
               href="#"
               ><img
                 class="w-[18px]"
-                src="{% static './build/img/notification-bell-svgrepo-com.svg' %}"
+                src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
                 alt="notification icon"
               />
               <span class="hidden md:block">Notifications</span>
             </a>
           </li>
           <li class="relative cursor-pointer">
-            <button id="option-btn"
+            <button
+              id="option-btn"
               class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
               href="#"
             >
               <img
                 class="w-5"
-                src="{% static './build/img/profile-svgrepo-com.svg' %}"
+                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
                 alt="profile icon"
               />
               <span class="hidden md:block">User</span>
@@ -81,33 +83,75 @@
                 <div class="user-mail py-3 px-6 font-bold text-gray-700">
                   enugodwillenwe@gmail.com
                 </div>
-                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
                   <a href="./profile.html" class="flex items-center gap-1">
-                    <img class="w-5" src="{% static './build/img/user.svg' %}" alt="user-icon" />
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/user.svg' %}"
+                      alt="user-icon"
+                    />
                     Profile
                   </a>
                 </div>
-                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
-                 <a href="" class="flex items-center gap-1">
-                  <img class="w-5" src="{% static './build/img/help-svgrepo-com.svg' %}" alt="help-icon" />
-                  Resume help
-                 </a>
+                <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="./resume.html" class="flex items-center gap-1">
+                  <img
+                    class="w-5"
+                    src="{% static 'build/img/resume.svg' %}"
+                    alt="user-icon"
+                  />
+                  Resume
+                </a>
+              </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/help-svgrepo-com.svg' %}"
+                      alt="help-icon"
+                    />
+                    Resume help
+                  </a>
                 </div>
-                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
-                 <a href="./index.html" class="flex items-center gap-1">
-                  <img class="w-5" src="{% static './build/img/suitcase-svgrepo-com.svg' %}" alt="job-icon" />
-                  My jobs
-                 </a>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="./index.html" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/suitcase-svgrepo-com.svg' %}"
+                      alt="job-icon"
+                    />
+                    My jobs
+                  </a>
                 </div>
-                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
                   <a href="#" class="flex items-center gap-1">
-                    <img class="w-5" src="{% static './build/img/page-svgrepo-com.svg' %}" alt="page-icon" />
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/page-svgrepo-com.svg' %}"
+                      alt="page-icon"
+                    />
                     My reviews
                   </a>
                 </div>
-                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
                   <a href="#" class="flex items-center gap-1">
-                    <img class="w-5"  src="{% static './build/img/setting-1-svgrepo-com.svg' %}" alt="setting-icon" />
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                      alt="setting-icon"
+                    />
                     Settings
                   </a>
                 </div>
@@ -122,7 +166,7 @@
           </li>
           <li class="md:hidden">
             <button id="menu-btn" class="text-xl">
-              <img class="w-5" src="{% static './build/img/menu-svgrepo-com.svg' %}" alt="" />
+              <img class="w-5" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
             </button>
           </li>
         </ul>
@@ -138,7 +182,7 @@
           </div>
         </div>
       </nav>
-      <div
+       <div
         id="sidebar"
         class="font-bold fixed bg-[#8080803e] md:bg-none z-10 hidden top-0 bottom-0 left-0 right-0 p-10"
       >
@@ -153,12 +197,12 @@
           <div
             class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
           >
-            <a class="flex justify-between items-center" href="#">Home </a>
+            <a class="flex justify-between items-center" href="{% url 'home' %}">Home </a>
           </div>
           <div
             class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
           >
-            <a class="flex justify-between items-center" href="./profile.html"
+            <a class="flex justify-between items-center" href="{% url 'dashboard' %}"
               >Profile
             </a>
           </div>
@@ -179,11 +223,16 @@
           >
             <a class="flex justify-between items-center" href="#">Settings </a>
           </div>
+           <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class=" swal-logout flex justify-between items-center" href="{% url 'logout' %}">Logout </a>
+          </div>
         </div>
       </div>
     </header>
-  <main class="mx-auto w-[90%] max-w-[650px]">
-    <section class="user-profile mx-auto border p-5 rounded-lg">
+  <main class="mx-auto w-[100%] max-w-[850px]">
+    <section class="user-profile mx-auto border p-5 rounded-lg bg-white">
       <div class="profile-header mb-10 flex justify-between items-center">
         <img class="w-32 rounded-full h-32" src="{% static 'build/img/pp.jpg' %}" alt="profile-pic" />
         <p class="font-bold text-2xl name mr-4">
@@ -201,8 +250,8 @@
       </div>
     </section>
 
-    <section class="cv-wrap mx-auto border p-5 rounded-lg my-10 relative">
-      <div class="flex justify-between items-center">
+    <section class="cv-wrap mx-auto border p-5 rounded-lg my-10 relative bg-white z-[-10]">
+      <div class="flex justify-between items-center relative">
         <div class="flex gap-4 items-center">
           <div class="file-image-wrap">
             <svg width="44" height="64" viewBox="0 0 44 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="dd-privacy-allow">
@@ -438,6 +487,9 @@
 </section>
   </main>
   <script>
+    document.getElementsByClassName('swal-logout'){
+      swal("Good job!", "You clicked the button!", "success");
+    }
     const csrfToken = '{{ csrf_token }}'
   </script>
   <script type="text/javascript">
