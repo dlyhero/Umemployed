@@ -262,7 +262,7 @@
     </header>
     <aside
       id="aside-menu"
-      class="hidden md:block transition-all fixed top-0 z-10 md:z-0 left-0 md:left-5 bottom-0 md:bottom-10 h-screen right-0 md:right-auto max-w-[350px] md:w-fit md:top-[62px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
+      class="hidden md:block transition-all fixed mt-3 top-0 z-10 md:z-0 left-0  bottom-0 md:bottom-10 h-screen right-0 md:right-auto max-w-[350px] md:w-fit md:top-[62px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
     >
       <section class="mt-5">
         <div class="cancel-wrap text-end mb-4 md:hidden">
@@ -275,15 +275,15 @@
           </button>
         </div>
         <div
-          class="p-1 md:p-2 text-white md:text-black border-b border-t md:bg-white hover:bg-gray-300 rounded mb-4 cursor-pointer"
+        class="aside-item flex p-1 cursor-pointer text-white rounded mb-4 items-center gap-1 w-full md:bg-slate-700 transition-colors"
         >
           <a
             href="#"
             class="aside-item flex items-center justify-between w-full"
           >
-            <div class="img-wrap flex items-center p-1 md:p-0">
+            <div class=" flex items-center  p-1 md:p-0">
               <img
-                class="w-6"
+                class="w-6 text-white"
                 src="{% static 'build/img/plus-svgrepo-com.svg' %}"
                 alt="plus icon"
               />
