@@ -41,7 +41,7 @@
               <div class="password-wrapper">
                 <label for="password">Password</label><br />
                 <input required class="input-field lg:w-4/5 w-full mb-2 border rounded-lg" id="password" name="password" placeholder="........" type="password" />
-                <a class="forgot-link block" href="{% url 'reset_password' %}">Forgot password?</a>
+                <a class="forgot-link block hover:text-sky-500" href="{% url 'reset_password' %}">Forgot password?</a>
               </div>
 
               <div class="wrapper flex items-center my-8 w-full lg:w-4/5">
@@ -57,7 +57,7 @@
                       <img class="icon" src="{% static 'img/icons/7123025_logo_google_g_icon.png' %}" alt="Google logo" />
                     </div>
 
-                    <div class="font-bold">Sign in with Google</div>
+                    <div class="font-bold">Login with Google</div>
                   </a>
                 </div>
                 <div id="g_id_onload" 
@@ -69,13 +69,13 @@
                     <div class="icon-wrapper bg-white rounded-full">
                       <img class="icon" src="{% static 'img/icons/Apple_logo_black.svg.png' %}" alt="Apple logo" />
                     </div>
-                    <div class="font-bold">Sign in with Apple</div>
+                    <div class="font-bold">Login with Apple</div>
                   </a>
                 </div>
               </div>
 
               <div class="btn-wrapper my-8 lg:w-4/5">
-                <button class="submit-btn w-full rounded-lg font-bold" type="submit" id="signin-btn">Sign In</button>
+                <button class="submit-btn w-full rounded-lg font-bold" type="submit" id="signin-btn">Login</button>
               </div>
             </form>
           </div>

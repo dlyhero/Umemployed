@@ -73,9 +73,9 @@
                 src="{% static 'build/img/profile-svgrepo-com.svg' %}"
                 alt="user icon"
               />
-              <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
-                >enukinsman@gmail.com</span
-              >
+              <span class="w-28 text-ellipsis overflow-hidden hidden md:block">
+                enukinsman@gmail.com
+              </span>
               <img
                 class="w-[19px] mt-1 md:mt-0 hidden md:block"
                 src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
@@ -93,9 +93,7 @@
                 <div class="user-mail py-3 px-6 font-bold text-gray-700">
                   enugodwillenwe@gmail.com
                 </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
-                >
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al">
                   <a href="#" class="flex items-center gap-1">
                     <img
                       class="w-5"
@@ -105,28 +103,21 @@
                     Account Settings
                   </a>
                 </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
-                >
+                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al">
                   <a href="./switchaccounttype.html" class="flex items-center gap-1">
-                    <img
-                    class="w-5"
-                    src="{% static 'build/img/user.svg' %}"
-                    alt="user-icon"
-                  />
+                    <img class="w-5" src="{% static 'build/img/user.svg' %}" alt="user-icon" />
                     Switch Account Type
                   </a>
                 </div>
                 <hr class="my-2" />
                 <div class="flex py-4 px-8 text-gray-700 justify-center">
-                  <button class="signout-btn text-[#1e90ff] font-bold">
-                    Sign out
-                  </button>
+                  <button class="signout-btn text-[#1e90ff] font-bold">Sign out</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        
       </nav>
       <div
         id="sidebar"
@@ -182,11 +173,11 @@
     <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto">
       <form class="max-w-3xl mx-auto p-6" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <h1 class="text-2xl font-bold mb-4 text-gray-800">Create Company</h1>
+        <h1 class="text-2xl font-bold mb-4 text-gray-800 text-center">Create Company</h1>
 
         <!-- Company Information -->
-        <section>
-          <h2 class="text-xl font-semibold mb-2">Company Information</h2>
+        <section class="bg-gray-100 p-4  rounded-xl ">
+          <h2 class="text-xl font-semibold mb-2 text-center">Company Information</h2>
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700" for="name">Company Name</label>
             <input
@@ -244,8 +235,8 @@
         </section>
 
         <!-- Social Links -->
-        <section>
-          <h2 class="text-xl font-semibold mb-2">Social Links</h2>
+        <section class="bg-gray-100 p-4  rounded-xl mt-5">
+          <h2 class="text-xl font-semibold mb-2 text-center">Social Links</h2>
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700" for="linkedin">LinkedIn</label>
             <input
@@ -299,8 +290,8 @@
         </section>
 
         <!-- Location -->
-        <section>
-          <h2 class="text-xl font-semibold mb-2">Location</h2>
+        <section class="bg-gray-100 p-4  rounded-xl mt-5">
+          <h2 class="text-xl font-semibold mb-2 text-center">Location</h2>
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700" for="location">Location</label>
             <input
@@ -314,8 +305,8 @@
         </section>
 
         <!-- About Us -->
-        <section>
-          <h2 class="text-xl font-semibold mb-2">About Us</h2>
+        <section class="bg-gray-100 p-4  rounded-xl mt-5">
+          <h2 class="text-xl font-semibold mb-2 text-center ">About Us</h2>
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700" for="about_us">About Us</label>
             <textarea
@@ -328,7 +319,7 @@
           </div>
         </section>
 
-        <div class="text-right">
+        <div class="text-right mt-4 ">
           <button
             type="submit"
             class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded"
@@ -346,6 +337,22 @@
       </p>
     </footer>
     <script>
+      document.addEventListener('DOMContentLoaded', function () {
+  const optionBtn = document.getElementById('option-btn');
+  const backdropMenu = document.getElementById('backdrop-menu');
+  const optionMenu = document.getElementById('option-menu');
+
+  optionBtn.addEventListener('click', function () {
+    backdropMenu.classList.toggle('hidden');
+  });
+
+  backdropMenu.addEventListener('click', function (e) {
+    if (e.target === backdropMenu) {
+      backdropMenu.classList.add('hidden');
+    }
+  });
+});
+
       document.querySelector(".year").textContent = new Date().getFullYear();
       const optionBtn = document.getElementById("option-btn");
       const optionMenu = document.getElementById("option-menu");
