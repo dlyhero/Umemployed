@@ -162,6 +162,7 @@ from django.shortcuts import get_object_or_404
 
 @login_required
 def select_skills(request):
+    company=request.user.company
     print("Entered selects_skills view")
     if request.user.is_recruiter and request.user.has_company:
         selected_category_id = request.session.get('selected_category')
@@ -203,6 +204,7 @@ def select_skills(request):
                 return render(request, 'dashboard/recruiterDashboard/selectSkills.html', {
                     'form': form,
                     'extracted_skills': extracted_skills,
+                    'company':company,
                 })
             except SkillCategory.DoesNotExist:
                 messages.error(request, "Selected category not found.")
