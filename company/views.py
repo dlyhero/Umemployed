@@ -59,29 +59,28 @@ def create_company(request):
 #update company
 @login_required(login_url='login')
 @company_belongs_to_user
-def update_company(request):
-    if request.user.is_recruiter:
-        company = get_object_or_404(Company, user=request.user)
+def update_company(request, company_id):
+    company = get_object_or_404(Company, id=company_id, user=request.user)
 
+    if request.user.is_recruiter:
         if request.method == 'POST':
             form = UpdateCompanyForm(request.POST, instance=company)
             if form.is_valid():
-                var = form.save(commit=False)
-                user = request.user
-                user.has_company = True
-                var.save()
-                user.save()
-                messages.info(request, 'Your company info has been Updated.')
-                return redirect('dashboard')
+                form.save()
+                request.user.has_company = True
+                request.user.save()
+                messages.success(request, 'Your company info has been updated.')
+                return redirect('view_my_jobs')
             else:
-                messages.warning(request, 'Something went wrong.')
+                messages.warning(request, 'Something went wrong with the form submission.')
         else:
             form = UpdateCompanyForm(instance=company)
         
-        context = {'form': form}
+        context = {'form': form, 'company': company}
         return render(request, 'company/update_company.html', context)
     else:
-        messages.warning(request,"Permission Denied")
+        messages.warning(request, "Permission Denied")
+        return redirect('home')
 
 # @login_required(login_url='login')
 # def company_details(request, pk):

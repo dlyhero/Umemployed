@@ -361,10 +361,10 @@
     <div class="language border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
       <p class="type">{{ language.name }}</p>
       <div class="btn-wraps flex gap-4">
-        <button class="w-5" id="edit-lang-btn">
+        <button class="w-5 edit-lang-btn">
           <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
         </button>
-        <button class="w-6" id="delete-lang-btn">
+        <button class="w-6 delete-lang-btn">
           <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
         </button>
       </div>
@@ -372,6 +372,7 @@
     {% endfor %}
   </div>
 </section>
+
 
 <section id="experience-sec" class="mb-10 bg-white p-2 rounded-lg">
   <div class="flex justify-between items-center mb-2 p-2">

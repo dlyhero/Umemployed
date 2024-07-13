@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
     <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
+    
   </head>
   <body
     class="text-sm md:ml-[240px] md:mt-20 relative flex flex-col min-h-screen"
@@ -144,6 +145,7 @@
                     Contact us
                   </a>
                 </div>
+                
                 <div
                   class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
                 >
@@ -285,7 +287,29 @@
               alt="dropdown icon"
             />
           </a>
+        </div><div
+          class="p-1 md:p-2 text-white md:text-black border-b border-t md:bg-white hover:bg-gray-300 rounded mb-4 cursor-pointer"
+        >
+          <a
+            href="{% url 'update_company' company.id %}"
+            class="aside-item flex items-center justify-between w-full"
+          >
+            <div class="img-wrap flex items-center p-1 md:p-0">
+              <img
+                class="w-6"
+                src="{% static 'build/img/plus-svgrepo-com.svg' %}"
+                alt="plus icon"
+              />
+              <span>Update</span>
+            </div>
+            <img
+              class="w-6 ml-14"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
         </div>
+       
         <div>
           <a
             class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer active"

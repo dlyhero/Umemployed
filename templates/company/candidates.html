@@ -177,7 +177,7 @@
                 <div
                   class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
                 >
-                  <a href="#" class="flex items-center gap-1">
+                  <a href="{% url 'update-resume' %}" class="flex items-center gap-1">
                     <img
                       class="w-5"
                       src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
@@ -189,7 +189,7 @@
                 <div
                   class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
                 >
-                  <a href="./switchaccounttype.html" class="flex items-center gap-1">
+                  <a href="{% url 'change_account_type' %}" class="flex items-center gap-1">
                     <img
                       class="w-5"
                       src="{% static 'build/img/user.svg' %}"
@@ -484,4 +484,6 @@
       </div>
     </section>
   </main>
+  <script type="module" src="{% static './scripts/addjob.js' %}"></script>
+    <script src="{% static './scripts/dashboard.js' %}"></script>
 </html>
