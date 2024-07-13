@@ -1,36 +1,8 @@
-{% extends 'resume/base.html' %}{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{% static 'build/logo/logo-color.png' %}" type="image/x-icon" />
-    <title>Job Listing</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-        integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/9b5a1B5Myz1QJ9y/6XbFx2D4GJ4M7K5TYJ7vD6" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="{% static 'jobs/asset/job_listing.css' %}">
-</head>
-
-<body class="bg-gray-200 min-h-screen flex flex-col">
-    <header class="bg-white shadow p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="{% static 'build/img/job-svgrepo-com.svg' %}" alt="JobTrack" class="w-8 h-8 mr-2">
-                <span class="font-bold text-xl" style="color: #1e90ff;">UmEmployed</span>
-            </div>
-            <nav class=" hidden lg:block space-x-4">
-                <a href="#" class="text-gray-600 hover:text-gray-800">Find Work</a>
-                <a href="#" class="text-gray-600 hover:text-gray-800">Portfolio</a>
-                <a href="#" class="text-gray-600 hover:text-gray-800">Applications</a>
-                <a href="#" class="text-gray-600 hover:text-gray-800">Community</a>
-            </nav>
-        </div>
-    </header>
+{% extends 'resume/base.html' %}
+{% block custom_css %}
+  {% load static %}
+  {% comment %} <link rel="stylesheet" href="{% static 'myapp/custom.css' %}"> {% endcomment %}
+{% endblock %}
 {% block content %}
     <main class=" mx-auto mt-6 flex flex-col lg:flex-row" style="width: 95%;">
         <aside class=" w-full lg:w-1/4 mr-5 bg-white shadow p-4 rounded-lg mb-6 lg:mb-0">

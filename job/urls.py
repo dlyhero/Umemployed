@@ -20,6 +20,7 @@ urlpatterns = [
     path('saved-jobs/', views.view_saved_jobs, name='view_saved_jobs'),
     path('saved-job/<int:saved_job_id>/delete/', views.delete_saved_job, name='delete_saved_job'),
     path('results/<int:job_id>/',views.evaluation_results,name="evaluation_results"),
+    
 
 
     #Compiler path

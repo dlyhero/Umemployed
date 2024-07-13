@@ -1,186 +1,275 @@
-{% load static %}
-<span style="font-family: verdana, geneva, sans-serif;"><!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Job Dashboard</title>
-  <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
-  <!-- Font Awesome Cdn Link -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-</head>
-<body>
-  <div class="container">
-    <nav>
-      <div class="navbar">
-        <div class="logo">
-          <img src="{% static 'img/about-1.jpg' %}" alt="">
-          <h1>jobs</h1>
+{% extends 'resume/base.html' %}
+{% block custom_css %}
+  {% load static %}
+  {% comment %} <link rel="stylesheet" href="{% static 'myapp/custom.css' %}"> {% endcomment %}
+{% endblock %}
+{% block content %}
+
+  <main class="mx-auto w-[100%] max-w-[850px]">
+    <section class="user-profile mx-auto border p-5 rounded-lg bg-white">
+      <div class="profile-header mb-10 flex justify-between items-center">
+        <img class="w-32 rounded-full h-32" src="{% static 'build/img/pp.jpg' %}" alt="profile-pic" />
+        <p class="font-bold text-2xl name mr-4">
+          <span class="firstName">{{ contact_info.name }}</span>
+        </p>
+      </div>
+      <div class="profile-body flex justify-between items-center">
+        <div class="profile-info text-gray-600 font-bold">
+          <div class="email">{{ contact_info.email }}</div>
+          <div class="phone">{{ contact_info.phone }}</div>
+          <div class="country">{{ contact_info.country }}</div>
+          <div class="job-title">{{ resume.category }}</div>
         </div>
-        <ul>
-          <li><a href="#">
-            <i class="fas fa-user"></i>
-            <span class="nav-item">Dashboard</span>
-          </a>
-          </li>
-          <li><a href="#">
-            <i class="fas fa-chart-bar"></i>
-            <span class="nav-item">Analytics</span>
-          </a>
-          </li>
-          <li><a href="#">
-            <i class="fas fa-tasks"></i>
-            <span class="nav-item">Jobs Board</span>
-          </a>
-          </li>
-          <li><a href="#">
-            <i class="fab fa-dochub"></i>
-            <span class="nav-item">Documnents</span>
-          </a>
-          </li>
-          <li><a href="#">
-            <i class="fas fa-cog"></i>
-            <span class="nav-item">Setting</span>
-          </a>
-          </li>
-          <li><a href="#">
-            <i class="fas fa-question-circle"></i>
-            <span class="nav-item">Help</span>
-          </a>
-          </li>
-          <li><a href="#" class="logout">
-            <i class="fas fa-sign-out-alt"></i>
-            <span class="nav-item">Logout</span>
-          </a>
-          </li>
+        <a href="{% url 'update-resume' %}" class="text-[#1e90ff] border border-[#1e90ff] px-2 py-1 mr-4 rounded-full">Edit profile</a>
+      </div>
+    </section>
+
+    <section class="cv-wrap mx-auto border p-5 rounded-lg my-10 relative bg-white z-[-10]">
+      <div class="flex justify-between items-center relative">
+        <div class="flex gap-4 items-center">
+          <div class="file-image-wrap">
+            <svg width="44" height="64" viewBox="0 0 44 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="dd-privacy-allow">
+              <path d="M26 1.09384C26 0.489727 26.4897 0 27.0938 0C27.674 0 28.2305 0.230486 28.6408 0.640755L43.3592 15.3592C43.7695 15.7695 44 16.326 44 16.9062C44 17.5103 43.5103 18 42.9062 18H28C26.8954 18 26 17.1046 26 16L26 1.09384Z" fill="#D4D2D0"></path>
+              <path d="M0 2C0 0.895431 0.895431 0 2 0H27C28.1046 0 29 0.895431 29 2V13C29 14.1046 29.8954 15 31 15H42C43.1046 15 44 15.8954 44 17V62C44 63.1046 43.1046 64 42 64H2C0.895431 64 0 63.1046 0 62V2Z" fill="#E4E2E0"></path>
+              <path d="M6 7C6 6.44772 6.44772 6 7 6H21C21.5523 6 22 6.44772 22 7C22 7.55228 21.5523 8 21 8H7C6.44772 8 6 7.55228 6 7Z" fill="#D4D2D0"></path>
+              <path d="M6 11C6 10.4477 6.44772 10 7 10H21C21.5523 10 22 10.4477 22 11C22 11.5523 21.5523 12 21 12H7C6.44772 12 6 11.5523 6 11Z" fill="#D4D2D0"></path>
+              <path d="M6 15C6 14.4477 6.44772 14 7 14H21C21.5523 14 22 14.4477 22 15C22 15.5523 21.5523 16 21 16H7C6.44772 16 6 15.5523 6 15Z" fill="#D4D2D0"></path>
+              <path d="M6 21C6 20.4477 6.44772 20 7 20H37C37.5523 20 38 20.4477 38 21C38 21.5523 37.5523 22 37 22H7C6.44772 22 6 21.5523 6 21Z" fill="#D4D2D0"></path>
+              <path d="M6 25C6 24.4477 6.44772 24 7 24H37C37.5523 24 38 24.4477 38 25C38 25.5523 37.5523 26 37 26H7C6.44772 26 6 25.5523 6 25Z" fill="#D4D2D0"></path>
+              <path d="M6 29C6 28.4477 6.44772 28 7 28H37C37.5523 28 38 28.4477 38 29C38 29.5523 37.5523 30 37 30H7C6.44772 30 6 29.5523 6 29Z" fill="#D4D2D0"></path>
+              <path d="M6 33C6 32.4477 6.44772 32 7 32H37C37.5523 32 38 32.4477 38 33C38 33.5523 37.5523 34 37 34H7C6.44772 34 6 33.5523 6 33Z" fill="#D4D2D0"></path>
+              <path d="M0 44H44V62C44 63.1046 43.1046 64 42 64H2C0.895431 64 0 63.1046 0 62V44Z" fill="#2557a7"></path>
+              <text aria-hidden="true" class="css-jhzhrd e1wnkr790">
+                <tspan x="10" y="58">PDF</tspan>
+              </text>
+            </svg>
+          </div>
+          <div>
+            <div class="cv-title font-bold text-xl">My Cv.pdf</div>
+            <div class="day text-gray-500">Added today</div>
+          </div>
+        </div>
+        <div class="">
+          <button id="option-btn" class="text-3xl font-bold"><img class="w-6" src="{% static 'build/img/hamburger-menu-dots-svgrepo-com.svg' %}" alt="menu dots" /></button>
+          <div class="absolute option-wrap gap-2 bg-white top-16 right-[20px] border rounded-lg">
+            <div id="options" hidden class="w-[130px]">
+              <div class="option mb-4 hover:bg-blue-50 flex gap-3 w-full p-2 rounded-lg">
+                <img class="w-6" src="{% static 'build/img/download-svgrepo-com.svg' %}" alt="download icon" />
+                <p class="text-gray-500">Download</p>
+              </div>
+              <div class="option mb-4 hover:bg-blue-50 flex gap-3 w-full p-2 rounded-lg">
+                <img class="w-6" src="{% static 'build/img/eye-view-svgrepo-com.svg' %}" alt="view icon" />
+                <p class="text-gray-500">View</p>
+              </div>
+              <div class="option mb-4 hover:bg-blue-50 flex gap-3 w-full p-2 rounded-lg">
+                <img class="w-6" src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+                <p class="text-gray-500">Edit</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="job-sec" class="mb-10 border rounded-lg">
+  <div class="">
+    <div class="border border-white bg-white rounded-lg">
+      <div class="flex justify-between items-center border-b p-4 mb-4">
+        <p class="font-bold text-xl text-[#1e90ff]">Select Job</p>
+      </div>
+      <form id="job-form" method="POST" action="{% url 'save_job' %}">
+        {% csrf_token %}
+        <div class="w-full p-4 mb-4">
+          <label for="job"> Job </label><br />
+          <input
+            class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]"
+            type="text"
+            id="job"
+            placeholder="skill (ex: Career Counselor)"
+          />
+        </div>
+        <div class="p-4 border rounded-lg mb-4 mx-4 bg-blue-50">
+          <select
+            name="job"
+            id="job"
+            class="bg-transparent w-full outline-none"
+          >
+            <option value="" selected disabled>Select a job</option>
+            {% for job in jobs %}
+              <option value="{{ job.id }}">{{ job.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="p-4 flex justify-between border-t">
+          <div></div>
+          <button
+            type="submit"
+            id="save-job-btn"
+            class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+    <section id="skills-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <div class="flex justify-between items-center mb-2 p-2">
+    <h2 class="font-bold text-xl text-[#1e90ff]">Skills</h2>
+    <button class="w-6" id="add-skill-btn">
+      <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+    </button>
+  </div>
+  <div id="skill-modal" class="hidden absolute top-0 bottom-0 left-0 right-0 justify-center items-center mx-auto">
+    <div id="backdrop" class="absolute top-0 bottom-0 left-0 right-0 -z-0"></div>
+    <div class="border border-white bg-white rounded-lg absolute top-1/2 w-11/12 md:w-3/4 lg:w-[48%]">
+      <div class="flex justify-between items-center border-b p-4 mb-4">
+        <p class="font-bold">Add skill</p>
+        <button id="skill-modal-btn" class="text-2xl">&times;</button>
+      </div>
+      <div class="w-full p-4 mb-4">
+        <label for="input-skill">Skill</label><br />
+        <input class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" type="text" id="input-skill" placeholder="Skill (ex: Reactjs)" />
+        <div id="feedback-message" class="feedback-msg italic text-red-500 hidden">Skill already exists</div>
+      </div>
+      <div class="p-4 border rounded-lg mb-4 mx-4 bg-white">
+        <p class="mb-3 font-bold">Suggested skills</p>
+        <ul id="suggested-skills" class="suggested-skills gap-x-2">
+          {% for suggested_skill in suggested_skills %}
+          <div>
+            <li>
+              <input type="checkbox" class="custom-checkbox" id="skill-{{ suggested_skill.id }}" data-id="{{ suggested_skill.id }}" value="{{ suggested_skill.name }}" />
+              <label for="skill-{{ suggested_skill.id }}">{{ suggested_skill.name }}</label>
+            </li>
+          </div>
+          {% endfor %}
         </ul>
       </div>
-    </nav>
-
-    <section class="main">
-      <div class="main-top">
-        <p>Explore UmEmployed!</p>
-      </div>
-      <div class="main-body">
-        <h1>Recent Jobs</h1>
-      
-      <div class="search_bar">
-        <input type="search" placeholder="Search job here...">
-        <select name="" id="">
-          <option>Category</option>
-          <option>Web Design</option>
-          <option>App Design</option>
-          <option>App Development</option>
-        </select>
-        <select class="filter">
-          <option>Filter</option>
-        </select>
-      </div>
-
-      <div class="tags_bar">
-        <div class="tag">
-          <i class="fas fa-times"></i>
-          <span>Programming</span>
-        </div>
-        <div class="tag">
-          <i class="fas fa-times"></i>
-          <span>Design</span>
-        </div>
-        <div class="tag">
-          <i class="fas fa-times"></i>
-          <span>PHP</span>
-        </div>
-        <div class="tag">
-          <i class="fas fa-times"></i>
-          <span>JavaScript</span>
-        </div>
-      </div>
-
-      <div class="row">
-        <p>There are more than <span>400</span> Jobs</p>
-        <a href="#">See all</a>
-      </div>
-
-      <div class="job_card">
-        <div class="job_details">
-          <div class="img">
-            <i class="fab fa-google-drive"></i>
-          </div>
-          <div class="text">
-            <h2>UX Designer</h2>
-            <span>Google Drive - Junior Post</span>
-          </div>
-        </div>
-        <div class="job_salary">
-          <h4>$6.7 - $12.5k /yr</h4>
-          <span>1 days ago</span>
-        </div>
-      </div>
-      
-      <div class="job_card">
-        <div class="job_details">
-          <div class="img">
-            <i class="fab fa-google"></i>
-          </div>
-          <div class="text">
-            <h2>JavaScript Developer</h2>
-            <span>Google - Senior Post</span>
-          </div>
-        </div>
-        <div class="job_salary">
-          <h4>$8.7 - $13.2k /yr</h4>
-          <span>2 days ago</span>
-        </div>
-      </div>
-
-      <div class="job_card">
-        <div class="job_details">
-          <div class="img">
-            <i class="fab fa-facebook"></i>
-          </div>
-          <div class="text">
-            <h2>Product Developer</h2>
-            <span>Facbook - Manager Post</span>
-          </div>
-        </div>
-        <div class="job_salary">
-          <h4>$11 - $18.5k /yr</h4>
-          <span>2 days ago</span>
-        </div>
-      </div>
-
-      <div class="job_card">
-        <div class="job_details">
-          <div class="img">
-            <i class="fab fa-git-alt"></i>
-          </div>
-          <div class="text">
-            <h2>Programmer</h2>
-            <span>Github - Juni Post</span>
-          </div>
-        </div>
-        <div class="job_salary">
-          <h4>$6 - $11.5k /yr</h4>
-          <span>3 days ago</span>
-        </div>
-      </div>
-
-      <div class="job_card">
-        <div class="job_details">
-          <div class="img">
-            <i class="fab fa-youtube"></i>
-          </div>
-          <div class="text">
-            <h2>React.js Expert</h2>
-            <span>Youtube - VIP</span>
-          </div>
-        </div>
-        <div class="job_salary">
-          <h4>$12.5 - $25.5k /yr</h4>
-          <span>4 days ago</span>
-        </div>
+      <div class="p-4 flex justify-between border-t">
+        <div></div>
+        <button id="save-skill-btn" class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1">Save</button>
       </div>
     </div>
-    </section>
   </div>
+</div>
 
-</body>
-</html></span>
+  <div id="" class="p-2">
+    {% for skill in skills %}
+    <div class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+      <p class="type">{{ skill.name }}</p>
+      <div class="btn-wraps flex gap-4">
+        <button class="w-5" id="edit-skill-btn">
+          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+        <button class="w-6" id="delete-skill-btn">
+          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="lang-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <div class="flex justify-between items-center mb-2 p-2">
+    <h2 class="font-bold text-xl text-[#1e90ff]">Languages</h2>
+    <button class="w-6" id="add-lang-btn">
+      <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+    </button>
+  </div>
+  <div id="lang-wrap" class="p-2">
+    {% for language in languages %}
+    <div class="language border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+      <p class="type">{{ language.name }}</p>
+      <div class="btn-wraps flex gap-4">
+        <button class="w-5 edit-lang-btn">
+          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+        <button class="w-6 delete-lang-btn">
+          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+
+<section id="experience-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <div class="flex justify-between items-center mb-2 p-2">
+    <h2 class="font-bold text-xl text-[#1e90ff]">Experience</h2>
+    <button class="w-6" id="add-experience-btn">
+      <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+    </button>
+  </div>
+  <div id="experience-wrap" class="p-2">
+    {% for experience in experiences %}
+    <div class="experience border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+      <div>
+        <p class="company-name">{{ experience.company_name }}</p>
+        <p class="role">{{ experience.role }}</p>
+        <p class="dates">
+          {{ experience.start_date|date:'M Y' }} -
+          {% if experience.end_date %}
+            {{ experience.end_date|date:'M Y' }}
+          {% else %}
+            Present
+          {% endif %}
+        </p>
+      </div>
+      <div class="btn-wraps flex gap-4">
+        <button class="w-5" id="edit-experience-btn">
+          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+        <button class="w-6" id="delete-experience-btn">
+          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="education-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <div class="flex justify-between items-center mb-2 p-2">
+    <h2 class="font-bold text-xl text-[#1e90ff]">Education</h2>
+    <button class="w-6" id="add-education-btn">
+      <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+    </button>
+  </div>
+  <div id="education-wrap" class="p-2">
+    {% for education in educations %}
+    <div class="education border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+      <div>
+        <p class="institution-name">{{ education.institution_name }}</p>
+        <p class="degree">{{ education.degree }}</p>
+        <p class="dates">{{ education.graduation_year }}</p>
+      </div>
+      <div class="btn-wraps flex gap-4">
+        <button class="w-5" id="edit-education-btn">
+          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+        <button class="w-6" id="delete-education-btn">
+          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+  </main>
+  <script>
+    document.getElementsByClassName('swal-logout'){
+      swal("Good job!", "You clicked the button!", "success");
+    }
+    const csrfToken = '{{ csrf_token }}'
+  </script>
+  <script type="text/javascript">
+    const suggestedSkills = JSON.parse('{{ suggested_skills_json|escapejs }}')
+    const skills = JSON.parse('{{ skills_json|escapejs }}'); 
+  </script>
+  <script type="module" src="{% static 'scripts/Profile.js' %}"></script>
+  <script type="module" src="{% static 'data/user.js' %}"></script>
+{% endblock %}

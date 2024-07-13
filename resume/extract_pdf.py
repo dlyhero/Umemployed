@@ -26,6 +26,7 @@ def upload_resume(request):
     """
     Handles the upload of resumes.
     """
+    company=request.user.company
     if request.method == 'POST':
         form = ResumeForm(request.POST, request.FILES)
         if form.is_valid():
@@ -52,7 +53,7 @@ def upload_resume(request):
             return redirect(redirect_url)
     else:
         form = ResumeForm()
-    return render(request, 'resume/upload_resume.html', {'form': form})
+    return render(request, 'resume/upload_resume.html', {'form': form,'company':company})
 
 
 

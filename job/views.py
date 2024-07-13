@@ -64,6 +64,8 @@ import json
 
 @login_required(login_url='/login')
 def create_job(request):
+    user = request.user
+    company=request.user.company
     if request.method == 'POST':
         form = CreateJobForm(request.POST)
         if form.is_valid():
@@ -83,12 +85,14 @@ def create_job(request):
     else:
         form = CreateJobForm()
 
-    return render(request, 'dashboard/recruiterDashboard/addJob.html', {'form': form})
+    return render(request, 'dashboard/recruiterDashboard/addJob.html', {'form': form, 'company':company})
 
 from .forms import JobTypeForm
 
 @login_required(login_url='/login')
 def job_type_view(request):
+    user = request.user
+    company=request.user.company
     if request.method == 'POST':
         form = JobTypeForm(request.POST)
         if form.is_valid():
@@ -102,12 +106,15 @@ def job_type_view(request):
             return redirect('job:enter_job_description') 
     else:
         form = JobTypeForm()
-    return render(request, 'dashboard/recruiterDashboard/jobProps.html', {'form': form})
+    return render(request, 'dashboard/recruiterDashboard/jobProps.html', {'form': form, 'company':company})
 
 
 
 @login_required
 def enter_job_description(request):
+    user = request.user
+    company = user.company
+    
     if request.method == 'POST':
         form = JobDescriptionForm(request.POST)
         if form.is_valid():
@@ -116,8 +123,15 @@ def enter_job_description(request):
                 messages.error(request, "Job ID not found in session.")
                 return redirect('dashboard')
 
-            job = Job.objects.get(id=job_id)
-            job.description = form.cleaned_data['description']
+            job = get_object_or_404(Job, id=job_id)
+            description = form.cleaned_data['description']
+            
+            # Check if the description is at least 50 words long
+            if len(description.split()) < 50:
+                messages.error(request, "The job description must be at least 50 words long.")
+                return redirect('job:enter_job_description')
+
+            job.description = description
             job.save()
 
             # Call the function to extract technical skills
@@ -136,16 +150,20 @@ def enter_job_description(request):
             # Redirect to selects_skills view
             print("Redirecting to select_skills")
             return redirect('job:select_skills')
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = JobDescriptionForm()
     
-    return render(request, 'dashboard/recruiterDashboard/jobDescription.html', {'form': form})
+    return render(request, 'dashboard/recruiterDashboard/jobDescription.html', {'form': form, 'company': company})
 
 
 from django.shortcuts import get_object_or_404
 
 @login_required
 def select_skills(request):
+    user=request.user
+    company=user.company
     print("Entered selects_skills view")
     if request.user.is_recruiter and request.user.has_company:
         selected_category_id = request.session.get('selected_category')
@@ -187,6 +205,7 @@ def select_skills(request):
                 return render(request, 'dashboard/recruiterDashboard/selectSkills.html', {
                     'form': form,
                     'extracted_skills': extracted_skills,
+                    'company':company,
                 })
             except SkillCategory.DoesNotExist:
                 messages.error(request, "Selected category not found.")

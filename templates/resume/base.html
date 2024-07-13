@@ -1,37 +1,39 @@
-  {% load static %}
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Profile | {{user.username}}</title>
-      <link rel="icon" href="./build/logo/logo-color.png" />
-      <script src="https://cdn.tailwindcss.com"></script>
-      <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
-      <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
-      <link rel="stylesheet" href="{% static 'build/css/profile.css' %}" />
-    </head>
-  <body
-    class="md:ml-[0px] md:mt-20 relative flex flex-col "
-  >
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile | {{user.username}}</title>
+    <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'build/css/profile.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/general.css' %}">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  
+  </head>
+  <body class="text-sm relative bf-white md:bg-gray-50">
     <header
-      class="flex justify-between items-center md:border-b md:fixed z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-10 bg-white"
+      class="flex justify-between sticky items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 mb-5 bg-white"
     >
-      <div class="flex items-center gap-x-5">
+      <div class="flex items-center gap-x-3 md:gap-1">
         <div class="logo-wrap flex items-center">
-          <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+          <img class="w-7 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
           <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
             >UmEmployed</span
-          > 
+          >
         </div>
         <a
           class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
           href="{% url 'home' %}"
           >Home</a
         >
+        
       </div>
       <nav class="flex md:gap-x-4 items-center">
-        <ul class="flex gap-x-2 md:gap-x-6 items-center">
+        <ul class="flex gap-x-2 md:gap-x-3 items-center">
           <li>
             <a
               class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
@@ -46,224 +48,193 @@
           </li>
           <li>
             <a
-              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded flex items-center"
               href="#"
               ><img
-                class="w-5"
+                class="w-[18px]"
                 src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
                 alt="notification icon"
               />
               <span class="hidden md:block">Notifications</span>
             </a>
           </li>
-           <li>
-            <a
+          <li class="relative cursor-pointer">
+            <button
+              id="option-btn"
               class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-              href="{% url 'dashboard' %}"
-              ><img
+              href="#"
+            >
+              <img
                 class="w-5"
                 src="{% static 'build/img/profile-svgrepo-com.svg' %}"
-                alt="user icon"
+                alt="profile icon"
               />
-              <span class="hidden md:block">Dashboard</span>
-            </a>
-          </li>
-        </ul>
-
-        <div class="hidden md:block border-l h-[40px]"></div>
-
-        <div class="relative">
-          <div class="hover:bg-blue-50 transition-colors p-2 rounded">
-            <button id="option-btn" class="flex items-center gap-2">
-              <img
-                class="w-[19px]"
-                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
-                alt="user icon"
-              />
-              <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
-                >{{ user.username }}</span
-              >
-              <img
-                class="w-[19px] mt-1 md:mt-0 hidden md:block"
-                src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
-                alt="drop down arrow"
-              />
+              <span class="hidden md:block">User</span>
             </button>
             <div
               id="backdrop-menu"
-              class="hidden fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
+              class="hidden fixed flex justify-end pr-[19px] sm:pr-[100px] z-[100] top-0 bottom-0 left-0 right-0 bg-transparent"
             >
               <div
-                id="option-menu"
-                class="absolute bg-white top-[60px] z-[100] min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
+                class="absolute bg-white top-[60px] z-[100] min-w-[280px] sm:w-[350px] border border-gray-400 rounded"
               >
-                <div
-                  class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/user.svg' %}"
-                      alt="user-icon"
-                    />
-                    User
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-1">
-                    <img
-                      class="w-6"
-                      src="{% static 'build/img/subscriptions-svgrepo-com.svg' %}"
-                      alt="Subscriptions-icon"
-                    />
-                    Subscriptions
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/billing-svgrepo-com.svg' %}"
-                      alt="Billing-icon"
-                    />
-                    Billing and invoices
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
-                >
-                  <a href="#" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
-                      alt="setting-icon"
-                    />
-                    Employer setting
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/contact-details-filled-svgrepo-com.svg' %}"
-                      alt="msg-icon"
-                    />
-                    Contact us
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
-                >
-                  <a href="./company.html" class="flex items-center gap-1">
-                    <img
-                      class="w-6"
-                      src="{% static 'build/img/company-svgrepo-com.svg' %}"
-                      alt="company-icon"
-                    />
-                    Company page
-                  </a>
-                </div>
-
-                <hr class="my-2" />
                 <div class="user-mail py-3 px-6 font-bold text-gray-700">
-                  {{ user.email }}
+                  {{user.username}}
                 </div>
                 <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                 >
-                  <a href="{% url 'update-resume' %}" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
-                      alt="setting-icon"
-                    />
-                    Account Settings
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
-                >
-                  <a href="{% url 'change_account_type' %}" class="flex items-center gap-1">
+                  <a href="{% url 'dashboard' %}" class="flex items-center gap-1">
                     <img
                       class="w-5"
                       src="{% static 'build/img/user.svg' %}"
                       alt="user-icon"
                     />
-                    Switch account Type
+                    Profile
+                  </a>
+                </div>
+                <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="#" class="flex items-center gap-1">
+                  <img
+                    class="w-5"
+                    src="{% static 'build/img/resume.svg' %}"
+                    alt="user-icon"
+                  />
+                  Resume
+                </a>
+              </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/help-svgrepo-com.svg' %}"
+                      alt="help-icon"
+                    />
+                    Resume help
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/suitcase-svgrepo-com.svg' %}"
+                      alt="job-icon"
+                    />
+                    My jobs
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/page-svgrepo-com.svg' %}"
+                      alt="page-icon"
+                    />
+                    My reviews
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                      alt="setting-icon"
+                    />
+                    Settings
                   </a>
                 </div>
                 <hr class="my-2" />
-                <div class="flex py-4 px-8 text-gray-700 justify-center">
-                  <a href="{% url 'logout' %}" class="signout-btn text-[#1e90ff] font-bold">
+                <div class="flex py-4 px-6 text-gray-700 justify-center">
+                  <button class="signout-btn text-[#1e90ff] font-bold">
                     Sign out
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
+          </li>
+          <li class="md:hidden">
+            <button id="menu-btn" class="text-xl">
+              <img class="w-5" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
+            </button>
+          </li>
+        </ul>
+        <div class="hidden md:block">
+          <div class="flex">
+            <div class="border-l h-[40px] ="></div>
+            <span
+              class="ml-2 text-nowrap hover:bg-blue-50 transition-colors p-2 rounded"
+              ><a class="text-nowrap" href="{% url 'company-details' company.id %}"
+                >Employers / Post Job</a
+              >
+            </span>
           </div>
         </div>
-        <button id="aside-menu-btn" class="md:hidden">
-          <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
-        </button>
       </nav>
-      <div
+       <div
         id="sidebar"
-        class="font-bold fixed bg-[#8080803e] z-auto md:bg-none hidden top-0 bottom-0 left-0 right-0 p-10"
+        class="font-bold fixed bg-[#8080803e] md:bg-none z-10 hidden top-0 bottom-0 left-0 right-0 p-10"
       >
         <div
-          class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+          class="sidebar-conten h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
         >
           <div class="btn-wrap text-end">
             <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
-              &times;
+              &times
             </button>
           </div>
           <div
             class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
           >
-            <a class="flex justify-between items-center" href="#">Message</a>
+            <a class="flex justify-between items-center" href="{% url 'home' %}">Home </a>
           </div>
           <div
             class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
           >
-            <a class="flex justify-between items-center" href="#"
-              >Notifications</a
-            >
+            <a class="flex justify-between items-center" href="{% url 'dashboard' %}"
+              >Profile
+            </a>
           </div>
           <div
             class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
           >
-            <a class="flex justify-between items-center" href="#"
-              >Employer settings</a
-            >
+            <a class="flex justify-between items-center" href="./resume.html"
+              >Resume
+            </a>
           </div>
           <div
             class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
           >
-            <a class="flex justify-between items-center" href="#">Contact us</a>
+            <a class="flex justify-between items-center" href="#">Jobs </a>
           </div>
           <div
             class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
           >
-            <a class="flex justify-between items-center" href="#"
-              >Account Settings</a
-            >
+            <a class="flex justify-between items-center" href="#">Settings </a>
           </div>
-          <div
+           <div
             class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
           >
-            <a class="flex justify-between items-center" href="#">Sign Out</a>
+            <a class=" swal-logout flex justify-between items-center" href="{% url 'logout' %}">Logout </a>
           </div>
         </div>
       </div>
     </header>
 
+    <div class="primary">
+        {% for message in messages %}
+          <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endfor %}
+      </div>
     {% block content %}
 
 
@@ -275,6 +246,19 @@
     </footer>
     <script type="module" src="{% static 'scripts/resume.js' %}"></script>
     <script type="module" src="{% static 'scripts/Profile.js' %}"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+     <script>
+    const csrfToken = '{{ csrf_token }}'
+  </script>
+  <script type="text/javascript">
+    const suggestedSkills = JSON.parse('{{ suggested_skills_json|escapejs }}')
+    const skills = JSON.parse('{{ skills_json|escapejs }}'); 
+  </script>
+  <script type="module" src="{% static 'scripts/Profile.js' %}"></script>
+  <script type="module" src="{% static 'data/user.js' %}"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
 
   </body>
 </html>

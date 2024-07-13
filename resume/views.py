@@ -27,6 +27,7 @@ def update_resume(request):
     """
     Allows users to update their contact information and resume.
     """
+    company=request.user.company
     if hasattr(request.user, 'is_applicant') and request.user.is_applicant:
         try:
             contact_info = ContactInfo.objects.get(user=request.user)
@@ -62,7 +63,7 @@ def update_resume(request):
         else:
             form = ContactInfoForm(instance=contact_info)
 
-        context = {'form': form}
+        context = {'form': form, 'company':company}
         return render(request, 'resume/update_resume.html', context)
     else:
         messages.warning(request, "Permission Denied")
