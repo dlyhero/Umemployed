@@ -12,7 +12,6 @@ from .filters import OrderFilter
 from django.db.models import Q
 
 def home(request):
-    company=request.user.company
     job_list = Job.objects.all()    
     jobs = Job.objects.all().first()
     job = Job.objects.first()
@@ -30,8 +29,7 @@ def home(request):
     context = {'jobs':jobs, 
                'jobs': job_filter.qs, 
                'myFilter': job_filter,
-                'applications':applications,
-                'company':company,}
+                'applications':applications,}
     return render(request, 'website/home.html', context)
 # login a user
 def login_user(request):
@@ -113,23 +111,19 @@ def logout_user(request):
     return redirect('home')  # Update the target name to match the appropriate URL name
 
 def switch_account(request):
-    user = request.user
-    company = user.company
-    return render(request,'users/accountType.html',{'company':company})
+    return render(request,'users/accountType.html')
 
 
 @login_required
 def change_account_type(request):
-    user = request.user
-    company = user.company
 
-
-    return render(request, 'users/changeAccountType.html',{'company':company})
+    return render(request, 'users/changeAccountType.html')
 
 from django.urls import reverse  # Import reverse
 from resume.models import ResumeDoc
 @login_required
 def switch_account_type(request):
+    print("clicked")
     user = request.user
 
     # Handle case where user may not have a company

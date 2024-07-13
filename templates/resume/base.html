@@ -84,7 +84,7 @@
                 <div
                   class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                 >
-                  <a href="{% url 'dashboard' %}" class="flex items-center gap-1">
+                  <a href="#" class="flex items-center gap-1">
                     <img
                       class="w-5"
                       src="{% static 'build/img/user.svg' %}"
@@ -173,9 +173,12 @@
             <div class="border-l h-[40px] ="></div>
             <span
               class="ml-2 text-nowrap hover:bg-blue-50 transition-colors p-2 rounded"
-              ><a class="text-nowrap" href="{% url 'company-details' company.id %}"
-                >Employers / Post Job</a
               >
+              <a class="text-nowrap" href="{% url 'dashboard' %}"
+                >
+                login / SignUp</a
+              >
+              
             </span>
           </div>
         </div>
@@ -233,7 +236,7 @@
     <div class="primary">
       
         {% for message in messages %}
-          <div class="alert alert-danger" role="alert">{{ message }}</div>
+          <div class="alert alert-info" role="alert">{{ message }}</div>
         {% endfor %}
       </div>
 
