@@ -231,10 +231,12 @@
     </header>
 
     <div class="primary">
+      
         {% for message in messages %}
           <div class="alert alert-danger" role="alert">{{ message }}</div>
         {% endfor %}
       </div>
+
     {% block content %}
 
 
