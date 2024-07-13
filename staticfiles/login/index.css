@@ -49,7 +49,7 @@ body {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url(../img/pics/jv.jpg);
+  background-image: url(./img/pics/barriers.jpg);
   animation: moveUp 1s ease infinite alternate;
 }
 
@@ -184,7 +184,7 @@ li.job:hover, li.article:hover{
 
 .call-to-action{
   height: 80vh;
-  background-image: url(../img/pics/jv.jpg);
+  background-image: url(./img/pics/buildind\ careers.jpg);
   background-position: center;
   background-size: contain;
 }
