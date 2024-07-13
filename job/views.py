@@ -127,7 +127,7 @@ def enter_job_description(request):
             description = form.cleaned_data['description']
             
             # Check if the description is at least 50 words long
-            if len(description.split()) < 50:
+            if len(description.split()) < 5:
                 messages.error(request, "The job description must be at least 50 words long.")
                 return redirect('job:enter_job_description')
 
@@ -162,6 +162,7 @@ from django.shortcuts import get_object_or_404
 
 @login_required
 def select_skills(request):
+    compa
     print("Entered selects_skills view")
     if request.user.is_recruiter and request.user.has_company:
         selected_category_id = request.session.get('selected_category')
