@@ -19,6 +19,7 @@ crispy-bootstrap5==2023.10
 cryptography==41.0.5
 defusedxml==0.7.1
 distro==1.9.0
+dj-database-url==2.2.0
 dj-rest-auth==6.0.0
 Django==4.2.7
 django-allauth==0.58.1
@@ -43,6 +44,7 @@ google-api-python-client==2.130.0
 google-auth==2.29.0
 google-auth-httplib2==0.2.0
 googleapis-common-protos==1.63.0
+gunicorn==22.0.0
 h11==0.14.0
 httpcore==1.0.2
 httplib2==0.22.0
@@ -52,10 +54,12 @@ kombu==5.3.5
 numpy==1.26.4
 oauthlib==3.2.2
 openai==1.11.1
+packaging==24.1
 Pillow==10.1.0
 prompt-toolkit==3.0.43
 proto-plus==1.23.0
 protobuf==4.25.3
+psycopg2-binary==2.9.9
 pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pycparser==2.21
