@@ -1,270 +1,299 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{% static 'build/logo/logo-color.png' %}" type="image/x-icon" />
     <title>Job Listing</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/9b5a1B5Myz1QJ9y/6XbFx2D4GJ4M7K5TYJ7vD6" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="{% static 'jobs/asset/job_listing.css' %}" />
-  </head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/9b5a1B5Myz1QJ9y/6XbFx2D4GJ4M7K5TYJ7vD6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'jobs/asset/job_listing.css' %}">
+</head>
 
-  <body class="bg-gray-200 min-h-screen flex flex-col">
+<body class="bg-gray-200 min-h-screen flex flex-col">
     <header class="bg-white shadow p-4">
-      <div class="container mx-auto flex justify-between items-center">
-        <div class="flex items-center">
-          <img src="{% static 'build/img/job-svgrepo-com.svg' %}" alt="JobTrack" class="w-8 h-8 mr-2" />
-          <span class="font-bold text-xl" style="color: #1e90ff;">UmEmployed</span>
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="{% static 'build/img/job-svgrepo-com.svg' %}" alt="JobTrack" class="w-8 h-8 mr-2">
+                <span class="font-bold text-xl" style="color: #1e90ff;">UmEmployed</span>
+            </div>
+            <nav class=" hidden lg:block space-x-4">
+                <a href="#" class="text-gray-600 hover:text-gray-800">Find Work</a>
+                <a href="#" class="text-gray-600 hover:text-gray-800">Portfolio</a>
+                <a href="#" class="text-gray-600 hover:text-gray-800">Applications</a>
+                <a href="#" class="text-gray-600 hover:text-gray-800">Community</a>
+            </nav>
         </div>
-        <nav class="hidden lg:block space-x-4">
-          <a href="#" class="text-gray-600 hover:text-gray-800">Find Work</a>
-          <a href="#" class="text-gray-600 hover:text-gray-800">Portfolio</a>
-          <a href="#" class="text-gray-600 hover:text-gray-800">Applications</a>
-          <a href="#" class="text-gray-600 hover:text-gray-800">Community</a>
-        </nav>
-      </div>
     </header>
-    <main class="mx-auto mt-6 flex flex-col lg:flex-row" style="width: 95%;">
-      <aside class="w-full lg:w-1/4 mr-5 bg-white shadow p-4 rounded-lg mb-6 lg:mb-0">
-        <div class="mb-4">
-          <div class="flex justify-between items-center">
-            <h2 class="font-bold text-lg mb-2">Filter</h2>
-            <p class="pointer" style="color: #1e90ff;">clear all</p>
-          </div>
-          <div class="mb-2">
-            <label class="block text-gray-700">Salary: <span id="salaryValue">$3300</span></label>
-            <input type="range" min="300" max="5000" value="3300" class="w-full mt-1" id="salaryRange" oninput="updateSalaryValue(this.value)" />
-            <div class="flex justify-between">
-              <p>$300</p>
-              <p>$5K</p>
-            </div>
-          </div>
-          <div class="mb-2">
-            <label class="block text-gray-700 font-bold">Job Type</label>
-            <div>
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Urgent</label>
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Remote</label>
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Full-Time</label>
-            </div>
-          </div>
-          <div class="mb-2">
-            <label class="block text-gray-700 font-bold">Experience Level</label>
-            <div>
-              <div class="flex justify-between">
-                <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Entry Level</label>
-                <p>325 jobs</p>
-              </div>
-              <div class="flex justify-between">
-                <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Intermediate</label>
-                <p>523 jobs</p>
-              </div>
-              <div class="flex justify-between">
-                <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Expert</label>
-                <p>200 Jobs</p>
-              </div>
-            </div>
-          </div>
-          <div class="mb-2">
-            <label class="block text-gray-700 font-bold">Job Location</label>
-            <div>
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />On Site</label>
-              <div class="relative">
-                <form method="get" action="{% url 'home' %}">
-                  <input type="text" name="search_query" placeholder="Search Job" class="border bg-gray-300 w-full py-1 px-3 text-gray-700 rounded-lg focus:outline-none focus:border-blue-500" />
-                  <button type="submit" class="absolute text-white px-8 py-1 m-1 rounded-xl" style="right: 1px; top: 0px; margin-top: 5px; background-color: #1e90ff;">Search</button>
-                </form>
-              </div>
 
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Remote</label>
-            </div>
-          </div>
-          <div class="mb-2">
-            <label class="block text-gray-700 font-bold">Applicants</label>
-            <div>
-              <div class="flex justify-between">
-                <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Less than 10</label>
-                <p>200 jobs</p>
-              </div>
-              <div class="flex justify-between">
-                <label class="block text-gray-600"><input type="checkbox" class="mr-2" />10 to 50</label>
-                <p>325 jobs</p>
-              </div>
-              <div class="flex justify-between">
-                <label class="block text-gray-600"><input type="checkbox" class="mr-2" />50 to 100</label>
-                <p>50 jobs</p>
-              </div>
-              <div class="flex justify-between">
-                <label class="block text-gray-600"><input type="checkbox" class="mr-2" />More than 100</label>
-                <p>230 jobs</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
-      <div class="lg:flex-1 flex flex-col lg:flex-row justify-between">
-        <div class="lg:w-3/4 lg:mr-5">
-          <div class="bg-white p-8 rounded-lg shadow mb-4 text-white" style="background-color:#1e90ff;">
-            <h2 class="text-xl font-bold mb-2">Find your dream job here!</h2>
-            <p class="text-white mb-4">Explore the latest job openings and apply for the best job opportunities available today!</p>
-            <div class="relative">
-              <input type="text" placeholder="Search Job" class="border w-full py-2 px-3 text-gray-700 rounded-lg focus:outline-none focus:border-blue-500" />
-              <button class="absolute text-white px-8 py-1 m-1 rounded-xl" style="right: 1px; top: 0px; margin-top: 5px; background-color: #1e90ff;">Search</button>
-            </div>
-          </div>
-          <div class="">
-            <div id="jobsContainer w-full">
-              {% for job in jobs %}
-                <div class="bg-white p-4 rounded-lg shadow mb-4">
-                  <div class="flex justify-between">
-                    <div class="flex items-center">
-                      <img src="{% static 'build/logo/logo-black.png' %}" class="rounded-fullw-12 h-12 object-cover" alt="img" srcset="" />
-                      <div class=":flex flex-col">
-                        <h3 class="text-lg font-bold ml-4">{{ job.title }}</h3>
-                        <p class="ml-4">{{ job.company }}</p>
-                      </div>
-                      <p class="hidden lg:block p-2 bg-green-400 text-white rounded-xl ml-4" style="font-size: 10px;">Urgent</p>
-                    </div>
-                    <div style="color: black ;">
-                      <i class="fa fa-ellipsis-v"></i>
-                    </div>
-                  </div>
-                  <div class="flex justify-between">
-                    <div class="w-4/4 lg:flex justify-between items-center w-1/2">
-                      <div>
-                        <i class="fa fa-clock"></i>{{ job.job_type }}
-                      </div>
-                      <div>
-                        <i class="fa fa-briefcase"></i> <span>{{ job.level }}</span>
-                      </div>
-                      <div>
-                        <i class="fa fa-map-marker-alt"></i> <span>{{ job.location }}</span>
-                      </div>
-                    </div>
-                    <p>{{job.created_at }}</p>
-                  </div>
-                  <p class="w-9/10 mx-auto mt-4">{{ job.description|truncatewords:31 }}</p>
-                  <hr class="font-bold my-5" />
-                  <div class="flex justify-between">
-                    <div class="w-full lg:w-1/2 flex justify-between items-center">
-                      <div>
-                        <i class="fa fa-dollar-sign"></i> <span class="mb-2 lg:font-semibold">${{ job.salary }}</span><span>/monthly</span>
-                      </div>
-                      {% with applications=job.application_set.all %}
-                        <div>
-                          <i class="fa fa-users"></i> <span class="font-semibold mr-0">{{ applications|length }}</span><span class="ml-0">Applied</span>
-                        </div>
-                      {% endwith %}
-                    </div>
-                    <a href="{% url 'job:job_details' job_id=job.id %}"><button type="button" class="p-2 px-6 text-white rounded-xl" style="background-color: #1e90ff;">Apply</button></a>
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-          <!--Pagination -->
-          <div class="pagination">
-            <span class="step-links">
-              {% if jobs.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ jobs.previous_page_number }}">previous</a>
-              {% endif %}
-
-              <span class="current">Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}.</span>
-
-              {% if jobs.has_next %}
-                <a href="?page={{ jobs.next_page_number }}">next</a>
-                <a href="?page={{ jobs.paginator.num_pages }}">last &raquo;</a>
-              {% endif %}
-            </span>
-          </div>
-
-        </div>
-        <div class="w-full md:w-1/4 p-4 rounded-lg">
-          <div class="mb-4 rounded-xl shadow bg-white p-3 py-2 flex justify-between items-center">
-            <h2 class="font-bold text-lg">Suggested Jobs</h2>
-            <i class="fas fa-exclamation-circle"></i>
-          </div>
-          <div class="space-y-4">
-            <div class="bg-white p-3 rounded-lg">
-              <div class="flex justify-between items-center">
-                <div class="flex justify-between items-center">
-                  <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
-                  <h3 class="text-lg font-bold">GitLab</h3>
-                </div>
-                <i class="fa fa-ellipsis-v"></i>
-              </div>
-              <div class="mb-5">
-                <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
-                <p class="text-gray-500 text-sm">Product Technologies</p>
-              </div>
-              <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
-            </div>
-            <div class="bg-white p-3 rounded-lg">
-              <div class="flex justify-between items-center">
-                <div class="flex justify-between items-center">
-                  <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
-                  <h3 class="text-lg font-bold">GitLab</h3>
-                </div>
-                <i class="fa fa-ellipsis-v"></i>
-              </div>
-              <div class="mb-5">
-                <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
-                <p class="text-gray-500 text-sm">Product Technologies</p>
-              </div>
-              <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
-            </div>
-            <div class="bg-white p-3 rounded-lg">
-              <div class="flex justify-between items-center">
-                <div class="flex justify-between items-center">
-                  <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
-                  <h3 class="text-lg font-bold">GitLab</h3>
-                </div>
-                <i class="fa fa-ellipsis-v"></i>
-              </div>
-              <div class="mb-5">
-                <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
-                <p class="text-gray-500 text-sm">Product Technologies</p>
-              </div>
-              <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
-            </div>
-            <div class="bg-white p-3 rounded-lg">
-              <div class="flex justify-between items-center">
-                <div class="flex justify-between items-center">
-                  <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
-                  <h3 class="text-lg font-bold">GitLab</h3>
-                </div>
-                <i class="fa fa-ellipsis-v"></i>
-              </div>
-              <div class="mb-5">
-                <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
-                <p class="text-gray-500 text-sm">Product Technologies</p>
-              </div>
-              <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
-            </div>
-            <div class="bg-white p-3 rounded-lg">
-              <div class="flex justify-between items-center">
-                <div class="flex justify-between items-center">
-                  <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
-                  <h3 class="text-lg font-bold">GitLab</h3>
-                </div>
-                <i class="fa fa-ellipsis-v"></i>
-              </div>
-              <div class="mb-5">
-                <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
-                <p class="text-gray-500 text-sm">Product Technologies</p>
-              </div>
-              <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
-            </div>
-          </div>
-        </div>
+    <div class="primary">
+      
+        {% for message in messages %}
+          <div class="alert alert-info" role="alert">{{ message }}</div>
+        {% endfor %}
       </div>
+    <main class=" mx-auto mt-6 flex flex-col lg:flex-row" style="width: 95%;">
+    
+        <aside class=" w-full lg:w-1/4 mr-5 bg-white shadow p-4 rounded-lg mb-6 lg:mb-0">
+            <div class="mb-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold text-lg mb-2">Filter</h2>
+                    <p class="pointer" style="color: #1e90ff;">clear all</p>
+                </div>
+                <div class="mb-2">
+                    <label class="block text-gray-700">Salary: <span id="salaryValue">$3300</span></label>
+                    <input type="range" min="300" max="5000" value="3300" class="w-full mt-1" id="salaryRange"
+                        oninput="updateSalaryValue(this.value)">
+                    <div class="flex justify-between">
+                        <p>$300</p>
+                        <p>$5K</p>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="block text-gray-700 font-bold">Job Type</label>
+                    <div>
+                        <label class="block text-gray-600"><input type="checkbox" class="mr-2">Urgent</label>
+                        <label class="block text-gray-600"><input type="checkbox" class="mr-2">Remote</label>
+                        <label class="block text-gray-600"><input type="checkbox" class="mr-2">Full-Time</label>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="block text-gray-700 font-bold">Experience Level</label>
+                    <div>
+                        <div class="flex justify-between">
+                            <label class="block text-gray-600"><input type="checkbox" class="mr-2">Entry Level</label>
+                            <p>325 jobs</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <label class="block text-gray-600"><input type="checkbox" class="mr-2">Intermediate</label>
+                            <p>523 jobs</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <label class="block text-gray-600"><input type="checkbox" class="mr-2">Expert</label>
+                            <p>200 Jobs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="block text-gray-700 font-bold">Job Location</label>
+                    <div>
+                        <label class="block text-gray-600"><input type="checkbox" class="mr-2">On Site</label>
+                        <div class="relative">
+                            <input type="text" placeholder="Search by location"
+                                class="border bg-gray-300 w-full py-1 px-3 text-gray-700 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <label class="block text-gray-600"><input type="checkbox" class="mr-2">Remote</label>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="block text-gray-700 font-bold">Applicants</label>
+                    <div>
+                        <div class="flex justify-between">
+                            <label class="block text-gray-600"><input type="checkbox" class="mr-2">Less than 10</label>
+                            <p>200 jobs</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <label class="block text-gray-600"><input type="checkbox" class="mr-2">10 to 50</label>
+                            <p>325 jobs</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <label class="block text-gray-600"><input type="checkbox" class="mr-2">50 to 100</label>
+                            <p>50 jobs</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <label class="block text-gray-600"><input type="checkbox" class="mr-2">More than 100</label>
+                            <p>230 jobs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div class="lg:flex-1 flex flex-col lg:flex-row justify-between">
+            <div class="lg:w-3/4 lg:mr-5">
+                <div class="bg-white p-8 rounded-lg shadow mb-4 text-white" style="background-color:#1e90ff;">
+                    <h2 class="text-xl font-bold mb-2">Find your dream job here!</h2>
+                    <p class="text-white mb-4">Explore the latest job openings and apply for the best job opportunities
+                        available today!</p>
+                   <div class="relative">
+    <form method="get" action="{% url 'home' %}">
+        <input type="text" name="search_query" placeholder="Search Job"
+            class="border w-full py-2 px-3 text-gray-700 rounded-lg focus:outline-none focus:border-blue-500">
+        <button type="submit" class="absolute text-white px-8 py-1 m-1 rounded-xl"
+            style="right: 1px; top: 0px; margin-top: 5px; background-color: #1e90ff;">Search</button>
+    </form>
+</div>
+                </div>
+                <div class=" ">
+
+                    <div id="jobsContainer w-full">
+                        {% for job in jobs %}
+                        <div class="bg-white p-4 rounded-lg shadow mb-4">
+                            <div class="flex justify-between">
+                                <div class="flex items-center">
+                                    <img src="{% static 'build/logo/logo-black.png' %}"
+                                        class="rounded-fullw-12 h-12 object-cover" alt="img" srcset="">
+                                    <div class="  :flex flex-col">
+                                        <h3 class="text-lg font-bold  ml-4">{{job.title}}</h3>
+                                        <p class="ml-4">{{job.company}}</p>
+                                    </div>
+                                    <p class=" hidden  lg:block p-2 bg-green-400 text-white rounded-xl ml-4  " style="font-size: 10px;">
+                                        Urgent</p>
+                                </div>
+                                <div style="color: black ;">
+                                    <i class="fa fa-ellipsis-v"></i>
+                                </div>
+                            </div>
+                            <div class="flex justify-between">
+                                <div class=" w-4/4 lg:flex justify-between items-center w-1/2 ">
+                                    <div>
+                                        <i class="fa fa-clock"></i>{{job.job_type}}
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-briefcase"></i> <span>{{job.level}}</span>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-map-marker-alt"></i> <span>{{job.location}}</span>
+                                    </div>
+                                </div>
+                                <p>{{job.created_at}}</p>
+                            </div>
+                            <p class="w-9/10 mx-auto mt-4 ">{{ job.description|truncatewords:31 }}</p>                            
+                            <hr class="font-bold my-5">
+                            <div class="flex  justify-between">
+                                <div class=" w-full lg:w-1/2 flex justify-between items-center ">
+                                    <div>
+                                        <i class="fa fa-dollar-sign"></i> <span class=" mb-2 lg:font-semibold"> ${{job.salary}}</span><span>/monthly</span>
+                                    </div>
+                                    {% with applications=job.application_set.all %}
+                                    <div>
+                                        <i class="fa fa-users"></i> <span class="font-semibold mr-0">{{applications|length}}</span><span
+                                            class="ml-0">Applied</span>
+                                    </div>
+                                    {% endwith %}
+                                </div>
+                                <a href="{% url 'job:job_details' job_id=job.id %}">
+                                    <button type="button"  class="p-2 px-6 text-white rounded-xl"
+                                    style="background-color: #1e90ff;"> Apply</button>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                <div class="pagination">
+  <span class="step-links">
+    {% if jobs.has_previous %}
+      <a href="?page=1">&laquo; first</a>
+      <a href="?page={{ jobs.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current">
+      Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}.
+    </span>
+
+    {% if jobs.has_next %}
+      <a href="?page={{ jobs.next_page_number }}">next</a>
+      <a href="?page={{ jobs.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
+  </span>
+</div>
+            </div>
+            <div class=" w-full md:w-1/4  p-4  rounded-lg ">
+                <div class="mb-4 rounded-xl shadow bg-white p-3 py-2 flex justify-between items-center">
+                    <h2 class="font-bold text-lg ">Suggested Jobs</h2>
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-white p-3 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <div class="flex justify-between items-center">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
+                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <h3 class="text-lg font-bold">GitLab</h3>
+                            </div>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </div>
+                        <div class="mb-5">
+                            <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
+                            <p class="text-gray-500 text-sm">Product Technologies</p>
+                        </div>
+                        <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <div class="flex justify-between items-center">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
+                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <h3 class="text-lg font-bold">GitLab</h3>
+                            </div>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </div>
+                        <div class="mb-5">
+                            <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
+                            <p class="text-gray-500 text-sm">Product Technologies</p>
+                        </div>
+                        <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <div class="flex justify-between items-center">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
+                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <h3 class="text-lg font-bold">GitLab</h3>
+                            </div>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </div>
+                        <div class="mb-5">
+                            <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
+                            <p class="text-gray-500 text-sm">Product Technologies</p>
+                        </div>
+                        <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <div class="flex justify-between items-center">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
+                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <h3 class="text-lg font-bold">GitLab</h3>
+                            </div>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </div>
+                        <div class="mb-5">
+                            <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
+                            <p class="text-gray-500 text-sm">Product Technologies</p>
+                        </div>
+                        <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <div class="flex justify-between items-center">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
+                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <h3 class="text-lg font-bold">GitLab</h3>
+                            </div>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </div>
+                        <div class="mb-5">
+                            <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
+                            <p class="text-gray-500 text-sm">Product Technologies</p>
+                        </div>
+                        <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
     <footer class="bg-gray-200 py-4 text-center">
-      <p class="text-sm text-gray-600">© 2024 JobWise. All rights reserved.</p>
+        <p class="text-sm text-gray-600">© 2024 JobWise. All rights reserved.</p>
     </footer>
-    <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
-  </body>
+   <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
+</body>
+
 </html>
