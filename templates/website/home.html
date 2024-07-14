@@ -172,13 +172,13 @@
                                     </div>
                                     {% with applications=job.application_set.all %}
                                     <div>
-                                        <i class="fa fa-users"></i> <span class="font-semibold mr-0">{{applications|length}}</span><span
-                                            class="ml-0">Applied</span>
+                                        <i class="fa fa-users"></i> <span class="font-semibold  mr-2 md:mr-0">{{applications|length}}</span><span
+                                            class="ml-0 mr-5 ">Applied</span>
                                     </div>
                                     {% endwith %}
                                 </div>
                                 <a href="{% url 'job:job_details' job_id=job.id %}">
-                                    <button type="button"  class="p-2 px-6 text-white rounded-xl"
+                                    <button type="button"  class=" p-1 px-3 rounded-lg xl:p-2 xl:px-6 text-white xl:rounded-xl"
                                     style="background-color: #1e90ff;"> Apply</button>
                                 </a>
                             </div>
