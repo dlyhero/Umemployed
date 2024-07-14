@@ -11,26 +11,61 @@ from job.models import Job,Application
 from .filters import OrderFilter
 from django.db.models import Q
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 def home(request):
-    job_list = Job.objects.all()    
-    jobs = Job.objects.all().first()
-    job = Job.objects.first()
-    applications = Application.objects.filter(job=job).count()
-    job_filter = OrderFilter(request.GET, queryset=job_list)
-    
-    search_query = request.GET.get('search_query', '')
+    jobs_list = Job.objects.all().order_by('-created_at')
+
+    # Get filter parameters from request
+    salary_range = request.GET.get('salary_range')
+    job_type = request.GET.getlist('job_type')
+    experience_levels = request.GET.getlist('experience_levels')
+    job_location = request.GET.get('job_location')
+    search_query = request.GET.get('search_query')
+
+    # Apply filters
+    if salary_range:
+        jobs_list = jobs_list.filter(salary__lte=salary_range)
+
+    if job_type:
+        jobs_list = jobs_list.filter(job_type__in=job_type)
+
+    if experience_levels:
+        jobs_list = jobs_list.filter(experience_levels__in=experience_levels)
+
+    if job_location:
+        if job_location == "onsite":
+            jobs_list = jobs_list.filter(job_location_type="Onsite")
+        elif job_location == "remote":
+            jobs_list = jobs_list.filter(job_location_type="Remote")
+
     if search_query:
-        job_filter = job_filter.filter(
+        jobs_list = jobs_list.filter(
             Q(title__icontains=search_query) |
-            Q(company__icontains=search_query) |
-            Q(location__icontains=search_query)
+            Q(company__name__icontains=search_query) |
+            Q(location__icontains=search_query) |
+            Q(job_type__icontains=search_query) |
+            Q(experience_levels__icontains=search_query)
         )
-    
-    context = {'jobs':jobs, 
-               'jobs': job_filter.qs, 
-               'myFilter': job_filter,
-                'applications':applications,}
+
+    # Pagination
+    paginator = Paginator(jobs_list, 7)  # Show 10 jobs per page
+    page = request.GET.get('page')
+
+    try:
+        jobs = paginator.page(page)
+    except PageNotAnInteger:
+        jobs = paginator.page(1)
+    except EmptyPage:
+        jobs = paginator.page(paginator.num_pages)
+
+    context = {
+        'jobs': jobs,
+    }
     return render(request, 'website/home.html', context)
+
+
+
 # login a user
 def login_user(request):
     if request.method == 'POST':
