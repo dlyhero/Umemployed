@@ -4,9 +4,9 @@
   <main class="mx-auto w-[100%] max-w-[850px]">
     <section class="user-profile mx-auto border p-5 rounded-lg bg-white">
       <div class="profile-header mb-10 flex justify-between items-center">
-        <img class="w-32 rounded-full h-32" src="{% static 'build/img/pp.jpg' %}" alt="profile-pic" />
+        <img class="w-32 rounded h-32" src="{% static 'build/img/pp.jpg' %}" alt="profile-pic" />
         <p class="font-bold text-2xl name mr-4">
-          <span class="firstName">{{ contact_info.name }}</span>
+          <span class="firstName uppercase">{{ contact_info.name }}</span>
         </p>
       </div>
       <div class="profile-body flex justify-between items-center">
@@ -74,7 +74,7 @@
       </div>
       <form id="job-form" method="POST" action="{% url 'save_job' %}">
         {% csrf_token %}
-        <div class="w-full p-4 mb-4">
+        <div class="w-full p-4 mb-2">
           <label for="job"> Job </label><br />
           <input
             class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]"
@@ -83,7 +83,7 @@
             placeholder="skill (ex: Career Counselor)"
           />
         </div>
-        <div class="p-4 border rounded-lg mb-4 mx-4 bg-blue-50">
+        <div class="p-2 border rounded-lg mb-4 mx-4 bg-blue-50">
           <select
             name="job"
             id="job"
@@ -110,17 +110,16 @@
   </div>
 </section>
 
-
-    <section id="skills-sec" class="mb-10 bg-white p-2 rounded-lg">
+<section id="skills-sec" class="mb-10 bg-white p-2 rounded-lg">
   <div class="flex justify-between items-center mb-2 p-2">
     <h2 class="font-bold text-xl text-[#1e90ff]">Skills</h2>
     <button class="w-6" id="add-skill-btn">
       <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
     </button>
   </div>
-  <div id="skill-modal" class="hidden absolute top-0 bottom-0 left-0 right-0 justify-center items-center mx-auto">
-    <div id="backdrop" class="absolute top-0 bottom-0 left-0 right-0 -z-0"></div>
-    <div class="border border-white bg-white rounded-lg absolute top-1/2 w-11/12 md:w-3/4 lg:w-[48%]">
+  <div id="skill-modal" class="hidden fixed inset-0 flex justify-center items-center z-50">
+    <div id="backdrop" class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="border border-white bg-white rounded-lg relative w-11/12 md:w-3/4 lg:w-[48%]">
       <div class="flex justify-between items-center border-b p-4 mb-4">
         <p class="font-bold">Add skill</p>
         <button id="skill-modal-btn" class="text-2xl">&times;</button>
@@ -149,8 +148,6 @@
       </div>
     </div>
   </div>
-</div>
-
   <div id="" class="p-2">
     {% for skill in skills %}
     <div class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
@@ -167,6 +164,7 @@
     {% endfor %}
   </div>
 </section>
+
 
 <section id="lang-sec" class="mb-10 bg-white p-2 rounded-lg">
   <div class="flex justify-between items-center mb-2 p-2">
@@ -260,6 +258,14 @@
     const csrfToken = '{{ csrf_token }}'
   </script>
   <script type="text/javascript">
+    document.getElementById('add-skill-btn').addEventListener('click', function() {
+  document.getElementById('skill-modal').classList.remove('hidden');
+});
+
+document.getElementById('skill-modal-btn').addEventListener('click', function() {
+  document.getElementById('skill-modal').classList.add('hidden');
+});
+
     const suggestedSkills = JSON.parse('{{ suggested_skills_json|escapejs }}')
     const skills = JSON.parse('{{ skills_json|escapejs }}'); 
   </script>
