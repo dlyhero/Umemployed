@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% static 'jobs/asset/job_listing.css' %}">
 </head>
 
+
 <body class="bg-gray-200 min-h-screen flex flex-col">
     <header class="bg-white shadow p-4">
         <div class="container mx-auto flex justify-between items-center">
@@ -207,17 +208,17 @@
                   
 
             </div>
-            <div class=" w-full md:w-1/4  p-4  rounded-lg ">
+            <div class="w-full md:w-1/4 p-4 rounded-lg">
                 <div class="mb-4 rounded-xl shadow bg-white p-3 py-2 flex justify-between items-center">
-                    <h2 class="font-bold text-lg ">Suggested Jobs</h2>
+                    <h2 class="font-bold text-lg">Suggested Jobs</h2>
                     <i class="fas fa-exclamation-circle"></i>
                 </div>
-                <div class="space-y-4">
-                    <div class="bg-white p-3 rounded-lg">
+                <div class="carousel space-x-2 xl:space-y-4 flex md:block overflow-x-scroll">
+                    
+                    <div class="bg-white p-3 rounded-lg min-w-[80%] md:min-w-full">
                         <div class="flex justify-between items-center cursor-pointer">
                             <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc+" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
                             <i class="fa fa-ellipsis-v"></i>
@@ -228,11 +229,11 @@
                         </div>
                         <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
                     </div>
-                    <div class="bg-white p-3 rounded-lg">
+                    
+                    <div class="bg-white p-3 rounded-lg min-w-[80%] md:min-w-full">
                         <div class="flex justify-between items-center cursor-pointer">
                             <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc+" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
                             <i class="fa fa-ellipsis-v"></i>
@@ -243,11 +244,11 @@
                         </div>
                         <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
                     </div>
-                    <div class="bg-white p-3 rounded-lg">
+                    
+                    <div class="bg-white p-3 rounded-lg min-w-[80%] md:min-w-full">
                         <div class="flex justify-between items-center cursor-pointer">
                             <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc+" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
                             <i class="fa fa-ellipsis-v"></i>
@@ -258,38 +259,15 @@
                         </div>
                         <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
                     </div>
-                    <div class="bg-white p-3 rounded-lg">
-                        <div class="flex justify-between items-center cursor-pointer">
-                            <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
-                                <h3 class="text-lg font-bold">GitLab</h3>
-                            </div>
-                            <i class="fa fa-ellipsis-v"></i>
-                        </div>
-                        <div class="mb-5">
-                            <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
-                            <p class="text-gray-500 text-sm">Product Technologies</p>
-                        </div>
-                        <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
-                    </div>
-                    <div class="bg-white p-3 rounded-lg">
-                        <div class="flex justify-between items-center cursor-pointer">
-                            <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
-                                <h3 class="text-lg font-bold">GitLab</h3>
-                            </div>
-                            <i class="fa fa-ellipsis-v"></i>
-                        </div>
-                        <div class="mb-5">
-                            <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
-                            <p class="text-gray-500 text-sm">Product Technologies</p>
-                        </div>
-                        <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
-                    </div>
+                    <!-- Additional jobs can be added similarly -->
                 </div>
             </div>
+            
+           
+            
+            
+           
+            
         </div>
     </main>
     <footer class="bg-gray-200 py-4 text-center">
