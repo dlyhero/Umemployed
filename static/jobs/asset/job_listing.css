@@ -50,4 +50,16 @@
             font-size: 18px;
             color: #666;
         }
-   
+      
+        @media (max-width: 768px) {
+            .carousel {
+                display: flex;
+                overflow-x: scroll;
+                scroll-snap-type: x mandatory;
+                gap: 1rem;
+            }
+            .carousel > div {
+                scroll-snap-align: start;
+            }
+        }
+       

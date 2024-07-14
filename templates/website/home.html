@@ -14,23 +14,250 @@
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{% static 'jobs/asset/job_listing.css' %}">
+    <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
 </head>
 
+
 <body class="bg-gray-200 min-h-screen flex flex-col">
-    <header class="bg-white shadow p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="{% static 'build/img/job-svgrepo-com.svg' %}" alt="JobTrack" class="w-8 h-8 mr-2">
-                <span class="font-bold text-xl" style="color: #1e90ff;">UmEmployed</span>
+    <header
+    class=" flex justify-between  md:border-b  z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-0  bg-white"
+  >
+    <div class="flex items-center gap-x-5">
+      <div class="logo-wrap flex items-center">
+        <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+        <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+          >UmEmployed</span
+        >
+      </div>
+      <a
+        class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
+        href="{% url 'home' %}"
+        >Home</a
+      >
+    </div>
+    <nav class="flex md:gap-x-4 items-center">
+      <ul class="flex gap-x-2 md:gap-x-6 items-center">
+        <li>
+          <a
+            class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+            href="#"
+            ><img
+              class="w-5"
+              src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
+              alt="message icon"
+            />
+            <span class="hidden md:block">Messages</span>
+          </a>
+        </li>
+        <li>
+          <a
+            class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+            href="#"
+            ><img
+              class="w-5"
+              src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
+              alt="notification icon"
+            />
+            <span class="hidden md:block">Notifications</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="hidden md:block border-l h-[40px]"></div>
+
+      <div class="relative">
+        <div class="hover:bg-blue-50 transition-colors p-2 rounded">
+          <button id="option-btn" class="flex items-center gap-2">
+            <img
+              class="w-5"
+              src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+              alt="user icon"
+            />
+            <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
+              >{{ user.username }}</span
+            >
+            <img
+              class="w-5 mt-1 md:mt-0 hidden md:block"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="drop down arrow"
+            />
+          </button>
+          <div
+            id="backdrop-menu"
+            class="hidden fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
+          >
+            <div
+              id="option-menu"
+              class="absolute bg-white top-[60px] z-[100] min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
+            >
+              <div
+                class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="#" class="flex items-center gap-1">
+                  <img
+                    class="w-5"
+                    src="{% static 'build/img/user.svg' %}"
+                    alt="user-icon"
+                  />
+                  User
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="#" class="flex items-center gap-1">
+                  <img
+                    class="w-6"
+                    src="{% static 'build/img/subscriptions-svgrepo-com.svg' %}"
+                    alt="Subscriptions-icon"
+                  />
+                  Subscriptions
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="#" class="flex items-center gap-1">
+                  <img
+                    class="w-5"
+                    src="{% static 'build/img/billing-svgrepo-com.svg' %}"
+                    alt="Billing-icon"
+                  />
+                  Billing and invoices
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+              >
+                <a href="#" class="flex items-center gap-1">
+                  <img
+                    class="w-5"
+                    src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                    alt="setting-icon"
+                  />
+                  Employer setting
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="#" class="flex items-center gap-1">
+                  <img
+                    class="w-5"
+                    src="{% static 'build/img/contact-details-filled-svgrepo-com.svg' %}"
+                    alt="msg-icon"
+                  />
+                  Contact us
+                </a>
+              </div>
+              
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+              >
+                <a href="./company.html" class="flex items-center gap-1">
+                  <img
+                    class="w-6"
+                    src="{% static 'build/img/company-svgrepo-com.svg' %}"
+                    alt="company-icon"
+                  />
+                  Company page
+                </a>
+              </div>
+
+              <hr class="my-2" />
+              <div class="user-mail py-3 px-6 font-bold text-gray-700">
+                {{ user.email }}
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+              >
+                <a href="{% url 'update-resume' %}" class="flex items-center gap-1">
+                  <img
+                    class="w-5"
+                    src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                    alt="setting-icon"
+                  />
+                  Account Settings
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+              >
+                <a href="{% url 'change_account_type' %}" class="flex items-center gap-1">
+                  <img
+                    class="w-5"
+                    src="{% static 'build/img/user.svg' %}"
+                    alt="user-icon"
+                  />
+                  Switch account Type
+                </a>
+              </div>
+              <hr class="my-2" />
+              <div class="flex py-4 px-8 text-gray-700 justify-center">
+                <a href="{% url 'logout' %}" class="signout-btn text-[#1e90ff] font-bold">
+                  Sign out
+                </a>
+              </div>
             </div>
-            <nav class=" hidden lg:block space-x-4">
-                <a href="#" class="text-gray-600 hover:text-gray-800">Find Work</a>
-                <a href="#" class="text-gray-600 hover:text-gray-800">Portfolio</a>
-                <a href="#" class="text-gray-600 hover:text-gray-800">Applications</a>
-                <a href="#" class="text-gray-600 hover:text-gray-800">Community</a>
-            </nav>
+          </div>
         </div>
-    </header>
+      </div>
+      <button id="aside-menu-btn" class="md:hidden">
+        <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
+      </button>
+    </nav>
+    <div
+      id="sidebar"
+      class="font-bold fixed bg-[#8080803e] z-auto md:bg-none hidden top-0 bottom-0 left-0 right-0 p-10"
+    >
+      <div
+        class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+      >
+        <div class="btn-wrap text-end">
+          <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
+            &times;
+          </button>
+        </div>
+        <div
+          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+        >
+          <a class="flex justify-between items-center" href="#">Message</a>
+        </div>
+        <div
+          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+        >
+          <a class="flex justify-between items-center" href="#"
+            >Notifications</a
+          >
+        </div>
+        <div
+          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+        >
+          <a class="flex justify-between items-center" href="#"
+            >Employer settings</a
+          >
+        </div>
+        <div
+          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+        >
+          <a class="flex justify-between items-center" href="#">Contact us</a>
+        </div>
+        <div
+          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+        >
+          <a class="flex justify-between items-center" href="#"
+            >Account Settings</a
+          >
+        </div>
+        <div
+          class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+        >
+          <a class="flex justify-between items-center" href="#">Sign Out</a>
+        </div>
+      </div>
+    </div>
+  </header>
 
     <div class="primary">
       
@@ -38,7 +265,7 @@
           <div class="alert alert-info" role="alert">{{ message }}</div>
         {% endfor %}
       </div>
-    <main class=" mx-auto mt-6 flex flex-col lg:flex-row" style="width: 95%;">
+    <main class=" mx-auto mt-2 flex flex-col lg:flex-row" style="width: 95%;">
     
         <aside class=" hidden  xl:block lg:w-1/32 mr-5 bg-white shadow p-4 rounded-lg mb-6 lg:mb-0 h-full">
             <div class="mb-4">
@@ -207,17 +434,17 @@
                   
 
             </div>
-            <div class=" w-full md:w-1/4  p-4  rounded-lg ">
+            <div class="w-full md:w-1/4  rounded-lg">
                 <div class="mb-4 rounded-xl shadow bg-white p-3 py-2 flex justify-between items-center">
-                    <h2 class="font-bold text-lg ">Suggested Jobs</h2>
+                    <h2 class="font-bold text-lg">Suggested Jobs</h2>
                     <i class="fas fa-exclamation-circle"></i>
                 </div>
-                <div class="space-y-4">
-                    <div class="bg-white p-3 rounded-lg">
+                <div class="carousel space-x-2 xl:space-y-4 flex md:block overflow-x-scroll">
+                    
+                    <div class="bg-white p-3 rounded-lg min-w-[80%] md:min-w-full">
                         <div class="flex justify-between items-center cursor-pointer">
                             <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc+" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
                             <i class="fa fa-ellipsis-v"></i>
@@ -228,11 +455,11 @@
                         </div>
                         <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
                     </div>
-                    <div class="bg-white p-3 rounded-lg">
+                    
+                    <div class="bg-white p-3 rounded-lg min-w-[80%] md:min-w-full">
                         <div class="flex justify-between items-center cursor-pointer">
                             <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc+" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
                             <i class="fa fa-ellipsis-v"></i>
@@ -243,11 +470,11 @@
                         </div>
                         <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
                     </div>
-                    <div class="bg-white p-3 rounded-lg">
+                    
+                    <div class="bg-white p-3 rounded-lg min-w-[80%] md:min-w-full">
                         <div class="flex justify-between items-center cursor-pointer">
                             <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc+" class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
                                 <h3 class="text-lg font-bold">GitLab</h3>
                             </div>
                             <i class="fa fa-ellipsis-v"></i>
@@ -258,44 +485,22 @@
                         </div>
                         <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
                     </div>
-                    <div class="bg-white p-3 rounded-lg">
-                        <div class="flex justify-between items-center cursor-pointer">
-                            <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
-                                <h3 class="text-lg font-bold">GitLab</h3>
-                            </div>
-                            <i class="fa fa-ellipsis-v"></i>
-                        </div>
-                        <div class="mb-5">
-                            <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
-                            <p class="text-gray-500 text-sm">Product Technologies</p>
-                        </div>
-                        <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
-                    </div>
-                    <div class="bg-white p-3 rounded-lg">
-                        <div class="flex justify-between items-center cursor-pointer">
-                            <div class="flex justify-between items-center">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDM2IDM2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtbGFiZWw9IkdpdExhYiIgcm9sZT0iaW1nIj4KICA8dGl0bGU+R2l0TGFiPC90aXRsZT4KICA8cGF0aCBmaWxsPSIjRkM2RDI2IiBkPSJNMTggMzZsNi42OC0yMC42MDZIMTEuMzIyek0xOCAzNkwxMS4zMiAxNS4zOTRI Mi41MnpNMi41IDE1LjM5NGwtMS45NCA1Ljk4YTEuMjc1IDEuMjc1IDAgMDAuNDYgMS40MjBMMTggMzZ6TTIuNSAxNS4zOTRI MTEuMzJMNy43MiA0LjI0M2EuNjQuNjQgMCAwMC0xLjIxIDB6TTIgMzZsNi42OC0yMC42MDZIOC44TDYuN2QzLjYgNTAuNzg 0IDIxLjIzIDk5LjJ6TTI4TDFpLTM5NDUtNS4yNDEtNi40NzctMTAuMTE5YS42NC42NCAwIDExIDEuMjEgMHoiLz4K ICA8cGF0aCBmaWxsPSIjRjI0MjI5IiBkPSJNMTggMzZMMTYuNjggMTUuMzk0aDguOHpNMzMuNDggMTUuMzk0bDEuOTQgNS45 OGEuM2MgMCAwMS0uNDYgMS40MjBMMTggMzZ6TTMzLjQ4IDE1LjM5NEgyNC42OGwzLjYgMTEuMTUxYS42NC42NCAwIDExIDEu MjEgMHoiLz4KICA8cGF0aCBmaWxsPSIjRjNDQkI5OSIgZD0iTTE4IDM2TDExLjMyIDE1LjM5NGgxMy4zNnciLz4KPC9zdmc +"
-                                    class="rounded-full object-cover w-12 h-12" alt="GitLab Logo" />
-                                <h3 class="text-lg font-bold">GitLab</h3>
-                            </div>
-                            <i class="fa fa-ellipsis-v"></i>
-                        </div>
-                        <div class="mb-5">
-                            <p class="text-gray-600 font-bold">Junior UI/UX Designer</p>
-                            <p class="text-gray-500 text-sm">Product Technologies</p>
-                        </div>
-                        <p class="text-gray-500 text-sm font-semibold">1 day ago - 26 Applied</p>
-                    </div>
+                   
                 </div>
             </div>
+            
+           
+            
+            
+           
+            
         </div>
     </main>
     <footer class="bg-gray-200 py-4 text-center">
         <p class="text-sm text-gray-600">© 2024 JobWise. All rights reserved.</p>
     </footer>
    <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
+
 </body>
 
 </html>
