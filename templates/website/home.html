@@ -41,25 +41,25 @@
         <li>
           <a
             class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-            href="#"
+            href="{% url 'dashboard' %}"
             ><img
               class="w-5"
               src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
               alt="message icon"
             />
-            <span class="hidden md:block">Messages</span>
+            <span class="hidden md:block">Dashboard</span>
           </a>
         </li>
         <li>
           <a
             class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-            href="#"
+            href="{% url 'login' %}"
             ><img
               class="w-5"
               src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
               alt="notification icon"
             />
-            <span class="hidden md:block">Notifications</span>
+            <span class="hidden md:block">Login</span>
           </a>
         </li>
       </ul>
