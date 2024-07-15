@@ -46,8 +46,8 @@ from django.views.decorators.http import require_POST
 def update_user_skills(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body.decode('utf-8'))
-            selected_skill_ids = data.get('selected_skills', [])
+            selected_skill_ids = request.POST.get('selected_skills', '[]')
+            selected_skill_ids = json.loads(selected_skill_ids)
             current_user = request.user
 
             print("Received POST request to update skills. User:", current_user.username)  # Debug statement
@@ -63,10 +63,8 @@ def update_user_skills(request):
         except Exception as e:
             error_message = 'Failed to update skills'
             print(error_message, str(e))  # Debug statement
-            # return JsonResponse({'error': error_message})
             return redirect('dashboard')
     
-    # Redirect to dashboard on success or failure
     print("Invalid request method or data.")  # Debug statement
     return redirect('dashboard')
 
