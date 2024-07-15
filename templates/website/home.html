@@ -66,9 +66,9 @@
 
       <div class="hidden md:block border-l h-[40px]"></div>
 
-      <div class="relative">
+      <div class="">
         <div class="hover:bg-blue-50 transition-colors p-2 rounded">
-          <button id="option-btn" class="flex items-center gap-2">
+          <button id="option-btn" class="flex items-center gap-2" onclick="setupBackdropMenu()">
             <img
               class="w-5"
               src="{% static 'build/img/profile-svgrepo-com.svg' %}"
@@ -85,7 +85,7 @@
           </button>
           <div
             id="backdrop-menu"
-            class="hidden fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
+            class="hidden fixed flex justify-end p-[18px] top-10 bottom-0 left-0 right-0 bg-transparent" 
           >
             <div
               id="option-menu"
@@ -499,7 +499,13 @@
     <footer class="bg-gray-200 py-4 text-center">
         <p class="text-sm text-gray-600">© 2024 JobWise. All rights reserved.</p>
     </footer>
+    <script>
+      function showAlert() {
+        alert("Please open");
+      }
+    </script>
    <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
+   <script src="{% static './scripts/dashboard.js' %}"></script>
 
 </body>
 
