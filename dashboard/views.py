@@ -70,7 +70,6 @@ def update_user_skills(request):
 
 @login_required(login_url='login')
 def dashboard(request):
-    company=request.user.company
     
     try:
         resume = Resume.objects.get(user=request.user)
@@ -117,7 +116,6 @@ def dashboard(request):
         'skills_json': skills_json,
         'jobs': jobs,
         'resume': resume,
-        'company':company,
     }
 
     return render(request, 'dashboard/dashboard.html', context)
