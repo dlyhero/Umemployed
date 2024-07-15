@@ -13,6 +13,9 @@ from django.db.models import Q
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+def handling_404(request, exception):
+    return render(request, '404.html', status=404)
+
 def home(request):
     jobs_list = Job.objects.all().order_by('-created_at')
 
