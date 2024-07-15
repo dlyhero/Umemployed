@@ -6,6 +6,9 @@
     background-size: cover;
     margin: 0 auto;
 }
+.testtt{
+    color: red;
+}
 
 @keyframes blink {
 
