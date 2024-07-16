@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - UmEployment</title>
+    <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
+    {% comment %} <link rel="stylesheet" href="{% static 'build/css/404.css' %}"> {% endcomment %}
+
+    <script src="https://cdn.tailwindcss.com"></script>
+   <style>
+    .logo img{
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-size: cover;
+        margin: 0 auto;
+    }
+
+  
+    @keyframes blink {
+        0%,
+        50%,
+        100% {
+            opacity: 1;
+        }
+
+        25%,
+        75% {
+            opacity: 0;
+        }
+    }
+
+    .blinking {
+        animation: blink 6s infinite;
+    }
+</style>
+
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="text-center">
+        <div class="logo blinking">
+            <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
+        </div>
+        <h1 class="text-6xl font-bold text-gray-800 mt-4">404</h1>
+        <p class="text-2xl text-gray-600 mt-4">Oops! Page not found.</p>
+        <p class="text-gray-600 mt-2">The page you are looking for does not exist or there might be a server failure.</p>
+        <p>Please try again.</p>
+        <a href="/" class="mt-6 inline-block px-6 py-3 text-white bg-[#1e90ff] rounded hover:bg-blue-600">Go Back Home</a>
+    </div>
+</body>
+</html>

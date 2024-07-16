@@ -1,6 +1,69 @@
 {% extends 'resume/base.html' %}
 {% load static %}
+ {% block custom_css %}
+    
+    <style>
+      
+ /* Styling for the skill suggestion checkmarks */
+.suggested-skill {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.custom-checkbox {
+  display: none;
+}
+
+.custom-label {
+  position: relative;
+  padding-left: 24px; /* Increase padding for larger clickable area */
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-label:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 16px; /* Adjust size of the circle */
+  height: 16px; /* Adjust size of the circle */
+  border: 1px solid #ccc; /* Default border color */
+  border-radius: 50%; /* Rounded shape for the circle */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.custom-checkbox:checked + .custom-label:before {
+  background-color: #1e90ff; /* Change to desired color when checked */
+}
+
+.custom-label:after {
+  content: ''; /* Remove the tick mark */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px; /* Adjust size of the tick mark */
+  height: 4px; /* Adjust size of the tick mark */
+  border-left: 2px solid transparent; /* Adjust thickness of the tick mark */
+  border-bottom: 2px solid transparent; /* Adjust thickness of the tick mark */
+  transform: rotate(-45deg) scale(0);
+  transition: transform 0.3s;
+}
+
+.custom-checkbox:checked + .custom-label:after {
+  transform: rotate(-45deg) scale(1);
+}
+
+
+
+    </style>  
+      
+  {% endblock %}
 {% block content %}
+
   <main class="mx-auto w-[100%] max-w-[850px]">
     <section class="user-profile mx-auto border p-5 rounded-lg bg-white">
       <div class="profile-header mb-10 flex justify-between items-center">
@@ -14,7 +77,7 @@
           <div class="email">{{ contact_info.email }}</div>
           <div class="phone">{{ contact_info.phone }}</div>
           <div class="country">{{ contact_info.country }}</div>
-          <div class="job-title">{{ resume.category }}</div>
+          <div class="job-title">{{ resume.job_title }}</div>
         </div>
         <a href="{% url 'update-resume' %}" class="text-[#1e90ff] border border-[#1e90ff] px-2 py-1 mr-4 rounded-full">Edit profile</a>
       </div>
@@ -129,40 +192,114 @@
         <input class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" type="text" id="input-skill" placeholder="Skill (ex: Reactjs)" />
         <div id="feedback-message" class="feedback-msg italic text-red-500 hidden">Skill already exists</div>
       </div>
-      <div class="p-4 border rounded-lg mb-4 mx-4 bg-white">
-        <p class="mb-3 font-bold">Suggested skills</p>
-        <ul id="suggested-skills" class="suggested-skills gap-x-2">
-          {% for suggested_skill in suggested_skills %}
-          <div>
-            <li>
-              <input type="checkbox" class="custom-checkbox" id="skill-{{ suggested_skill.id }}" data-id="{{ suggested_skill.id }}" value="{{ suggested_skill.name }}" />
-              <label for="skill-{{ suggested_skill.id }}">{{ suggested_skill.name }}</label>
-            </li>
-          </div>
-          {% endfor %}
-        </ul>
-      </div>
-      <div class="p-4 flex justify-between border-t">
-        <div></div>
-        <button id="save-skill-btn" class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1">Save</button>
-      </div>
+
+<div class="p-4 border rounded-lg mb-4 mx-4 bg-white">
+    <p class="mb-3 font-bold">Suggested skills</p>
+    <ul id="suggested-skills" class="suggested-skills gap-x-2">
+        {% for suggested_skill in suggested_skills %}
+        <li class="suggested-skill">
+            <input type="checkbox" class="custom-checkbox" id="skill-{{ suggested_skill.id }}" data-id="{{ suggested_skill.id }}" value="{{ suggested_skill.id }}" />
+            <label class="custom-label" for="skill-{{ suggested_skill.id }}">{{ suggested_skill.name }}</label>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="p-4 flex justify-between border-t">
+    <div>
+        <form id="skills-form" method="post" action="{% url 'update_user_skills' %}">
+            {% csrf_token %}
+            <input type="hidden" name="selected_skills" id="selected-skills">
+            <button id="save-skill-btn" class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1" type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+<!-- JavaScript at the end of the body -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('save-skill-btn').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Collect selected skill IDs
+            let selectedSkillIds = [];
+            document.querySelectorAll('.custom-checkbox:checked').forEach(function(checkbox) {
+                selectedSkillIds.push(checkbox.dataset.id); // Use dataset.id to get the skill ID
+            });
+
+            console.log("Selected Skill IDs:", selectedSkillIds); // Debug statement
+
+            // Update the hidden input field with the selected skill IDs
+            document.getElementById('selected-skills').value = JSON.stringify(selectedSkillIds);
+
+            console.log("Hidden Input Value:", document.getElementById('selected-skills').value); // Debug statement
+
+            // Submit the form
+            document.getElementById('skills-form').submit();
+        });
+    });
+</script>
+
+
+
     </div>
   </div>
-  <div id="" class="p-2">
+<div id="" class="p-2">
     {% for skill in skills %}
-    <div class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
-      <p class="type">{{ skill.name }}</p>
-      <div class="btn-wraps flex gap-4">
-        <button class="w-5" id="edit-skill-btn">
-          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
-        </button>
-        <button class="w-6" id="delete-skill-btn">
-          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
-        </button>
-      </div>
+    <div id="skill-{{ skill.id }}" class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+        <p class="type">{{ skill.name }}</p>
+        <div class="btn-wraps flex gap-4">
+            <button class="w-5" id="edit-skill-btn">
+                <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+            </button>
+            <button class="w-6" id="delete-skill-btn" onclick="deleteSkill({{ skill.id }})">
+                <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+            </button>
+        </div>
     </div>
     {% endfor %}
-  </div>
+</div>
+
+<div id="skills-container" class="p-2">
+    {% include 'partials/skills_list.html' with skills=skills %}
+</div>
+
+<div id="pagination-container">
+    {% include 'partials/pagination.html' with skills=skills %}
+</div>
+
+<script>
+    function fetchSkills(page) {
+        $.ajax({
+            url: "{% url 'paginated_skills' %}",
+            data: {
+                'page': page
+            },
+            success: function(data) {
+                $('#skills-container').html(data.skills_html);
+                $('#pagination-container').html(data.pagination_html);
+                attachPaginationHandlers();  // Re-attach handlers after updating pagination
+            }
+        });
+    }
+
+    function attachPaginationHandlers() {
+        $('#pagination-container a').on('click', function(event) {
+            event.preventDefault();
+            var page = $(this).data('page');
+            fetchSkills(page);
+        });
+    }
+
+    // Initial handler attachment
+    $(document).ready(function() {
+        attachPaginationHandlers();
+    });
+</script>
+
 </section>
 
 
@@ -254,23 +391,37 @@
   </div>
 </section>
   </main>
-  <script>
-    const csrfToken = '{{ csrf_token }}'
-  </script>
+<!--js for deleteing skills -->
+<script>
+    function deleteSkill(skillId) {
+        fetch(`/dashboard/delete-skill/${skillId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById(`skill-${skillId}`).remove();
+            } else {
+                alert('An error occurred while deleting the skill.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+<!--js for deleteing skills -->
   <script type="text/javascript">
-    document.getElementById('add-skill-btn').addEventListener('click', function() {
-  document.getElementById('skill-modal').classList.remove('hidden');
-});
-
-document.getElementById('skill-modal-btn').addEventListener('click', function() {
-  document.getElementById('skill-modal').classList.add('hidden');
-});
-
-    const suggestedSkills = JSON.parse('{{ suggested_skills_json|escapejs }}')
-    const skills = JSON.parse('{{ skills_json|escapejs }}'); 
-  </script>
-  <script type="module" src="{% static 'scripts/Profile.js' %}"></script>
-  <script type="module" src="{% static 'data/user.js' %}"></script>
+    const csrfToken = '{{ csrf_token }}';
+    const suggestedSkillsData = JSON.parse('{{ suggested_skills_json|escapejs }}');
+    const skillsData = JSON.parse('{{ skills_json|escapejs }}');
+</script>
+<script type="module" src="{% static 'scripts/Profile.js' %}"></script>
+<script type="module" src="{% static 'data/user.js' %}"></script>
 </body>
 </html>
 {% endblock %}

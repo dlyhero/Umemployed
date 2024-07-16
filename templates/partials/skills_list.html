@@ -1,0 +1,14 @@
+{% load static %}
+{% for skill in skills %}
+<div id="skill-{{ skill.id }}" class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+    <p class="type">{{ skill.name }}</p>
+    <div class="btn-wraps flex gap-4">
+        <button class="w-5" id="edit-skill-btn">
+            <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+        <button class="w-6" id="delete-skill-btn" onclick="deleteSkill({{ skill.id }})">
+            <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+        </button>
+    </div>
+</div>
+{% endfor %}
