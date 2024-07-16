@@ -247,7 +247,7 @@
 
     </div>
   </div>
-  <div id="" class="p-2">
+<div id="" class="p-2">
     {% for skill in skills %}
     <div id="skill-{{ skill.id }}" class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
         <p class="type">{{ skill.name }}</p>
@@ -262,6 +262,44 @@
     </div>
     {% endfor %}
 </div>
+
+<div id="skills-container" class="p-2">
+    {% include 'partials/skills_list.html' with skills=skills %}
+</div>
+
+<div id="pagination-container">
+    {% include 'partials/pagination.html' with skills=skills %}
+</div>
+
+<script>
+    function fetchSkills(page) {
+        $.ajax({
+            url: "{% url 'paginated_skills' %}",
+            data: {
+                'page': page
+            },
+            success: function(data) {
+                $('#skills-container').html(data.skills_html);
+                $('#pagination-container').html(data.pagination_html);
+                attachPaginationHandlers();  // Re-attach handlers after updating pagination
+            }
+        });
+    }
+
+    function attachPaginationHandlers() {
+        $('#pagination-container a').on('click', function(event) {
+            event.preventDefault();
+            var page = $(this).data('page');
+            fetchSkills(page);
+        });
+    }
+
+    // Initial handler attachment
+    $(document).ready(function() {
+        attachPaginationHandlers();
+    });
+</script>
+
 </section>
 
 

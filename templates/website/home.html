@@ -30,22 +30,14 @@
           >UmEmployed</span
         >
       </div>
-      
+      <a
+        class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
+        href="{% url 'home' %}"
+        >Home</a
+      >
     </div>
     <nav class="flex md:gap-x-4 items-center">
       <ul class="flex gap-x-2 md:gap-x-6 items-center">
-        <li>
-          <a
-            class=" hidden md:flex items-center flex  hover:bg-blue-50 transition-colors p-2 rounded"
-            href="{% url 'home' %}"
-            ><img
-              class="w-6"
-              src="{% static 'build/img/home-svgrepo-com.svg' %}"
-              alt="message icon"
-            />
-            <span class="hidden md:block">Home</span>
-          </a>
-        </li>
         <li>
           <a
             class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
@@ -74,21 +66,13 @@
 
       <div class="hidden md:block border-l h-[40px]"></div>
 
-      
-      <button id="aside-menu-btn" class="md:hidden">
-        <img class="w-5"   src="{% static 'build/img/profile-svgrepo-com.svg' %}"
-        alt="" />
-      </button>
       <div class="">
         <div class="hover:bg-blue-50 transition-colors p-2 rounded">
           <button id="option-btn" class="flex items-center gap-2" onclick="setupBackdropMenu()">
             <img
-              class="w-6 sm:hidden"
-              src="{% static 'build/img/menu-svgrepo-com.svg' %}"  alt="user icon"
-            />
-            <img
-              class="w-6 hidden sm:block"
-              src="{% static 'build/img/profile-svgrepo-com.svg' %}"   alt="user icon"
+              class="w-5"
+              src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+              alt="user icon"
             />
             <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
               >{{ user.username }}</span
@@ -219,6 +203,9 @@
           </div>
         </div>
       </div>
+      <button id="aside-menu-btn" class="md:hidden">
+        <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
+      </button>
     </nav>
     <div
       id="sidebar"
