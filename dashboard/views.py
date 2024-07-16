@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from resume.models import Resume,Education,Experience
 from users.models import User
 from django.contrib.auth.decorators import login_required
@@ -11,6 +11,10 @@ from resume.models import ContactInfo, WorkExperience, Skill , SkillCategory
 from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
 from resume.views import upload_resume
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 @login_required
 def get_suggested_skills(request):
@@ -37,10 +41,7 @@ def get_suggested_skills(request):
     print("Suggested Skills List:", suggested_skills_list)
     return JsonResponse(suggested_skills_list, safe=False, encoder=DjangoJSONEncoder)
 
-from django.http import JsonResponse
-import json
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+
 @require_POST
 @csrf_exempt
 def update_user_skills(request):
@@ -136,3 +137,13 @@ def save_job(request):
             # Handle the error if the resume does not exist
             pass
     return redirect('dashboard')
+#This view is to delete a selected skill from the resume object
+@login_required(login_url='login')
+def delete_skill(request, skill_id):
+    resume = get_object_or_404(Resume, user=request.user)
+    skill = get_object_or_404(Skill, id=skill_id)
+    
+    if request.method == 'POST':
+        resume.skills.remove(skill)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)

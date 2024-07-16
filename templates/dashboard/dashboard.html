@@ -249,19 +249,19 @@
   </div>
   <div id="" class="p-2">
     {% for skill in skills %}
-    <div class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
-      <p class="type">{{ skill.name }}</p>
-      <div class="btn-wraps flex gap-4">
-        <button class="w-5" id="edit-skill-btn">
-          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
-        </button>
-        <button class="w-6" id="delete-skill-btn">
-          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
-        </button>
-      </div>
+    <div id="skill-{{ skill.id }}" class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+        <p class="type">{{ skill.name }}</p>
+        <div class="btn-wraps flex gap-4">
+            <button class="w-5" id="edit-skill-btn">
+                <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+            </button>
+            <button class="w-6" id="delete-skill-btn" onclick="deleteSkill({{ skill.id }})">
+                <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+            </button>
+        </div>
     </div>
     {% endfor %}
-  </div>
+</div>
 </section>
 
 
@@ -353,7 +353,30 @@
   </div>
 </section>
   </main>
-
+<!--js for deleteing skills -->
+<script>
+    function deleteSkill(skillId) {
+        fetch(`/dashboard/delete-skill/${skillId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById(`skill-${skillId}`).remove();
+            } else {
+                alert('An error occurred while deleting the skill.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+<!--js for deleteing skills -->
   <script type="text/javascript">
     const csrfToken = '{{ csrf_token }}';
     const suggestedSkillsData = JSON.parse('{{ suggested_skills_json|escapejs }}');
