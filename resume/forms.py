@@ -2,9 +2,20 @@ from django import forms
 from .models import Resume,ResumeDoc, SkillCategory, Skill, Experience, Education, ContactInfo
 
 class ContactInfoForm(forms.ModelForm):
+    job_title = forms.ModelChoiceField(
+        queryset=SkillCategory.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label='Select job title (or enter below)'
+    )
+    other_job_title = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter job title if not in list'})
+    )
+
     class Meta:
         model = ContactInfo
-        fields = ['name', 'email', 'phone', 'country', 'job_title']
+        fields = ['name', 'email', 'phone', 'country', 'job_title', 'other_job_title']
         
 class UpdateResumeForm(forms.ModelForm):
     class Meta:

@@ -22,52 +22,55 @@ from django.contrib import messages
 from .forms import ContactInfoForm
 from .models import ContactInfo
 
-@login_required(login_url='login')
+from django.contrib import messages
+
+@login_required
 def update_resume(request):
-    """
-    Allows users to update their contact information and resume.
-    """
-    if hasattr(request.user, 'is_applicant') and request.user.is_applicant:
-        try:
-            contact_info = ContactInfo.objects.get(user=request.user)
-        except ContactInfo.DoesNotExist:
-            contact_info = ContactInfo(user=request.user)  # Create a new instance if it doesn't exist
+    api_url = "http://localhost:8000/job/execute_input/"
+    
+    try:
+        contact_info = ContactInfo.objects.get(user=request.user)
+    except ContactInfo.DoesNotExist:
+        contact_info = None
 
-        try:
-            resume = Resume.objects.get(user=request.user)
-            print("Existing Resume object found:", resume)  # Debugging statement
-        except Resume.DoesNotExist:
-            resume = Resume(user=request.user)  # Create a new instance if it doesn't exist
-            print("Creating a new Resume object")  # Debugging statement
+    try:
+        resume = Resume.objects.get(user=request.user)
+    except Resume.DoesNotExist:
+        resume = Resume(user=request.user)  # Create a new Resume object if not exists
+        resume.save()
 
-        if request.method == 'POST':
-            form = ContactInfoForm(request.POST, instance=contact_info)
-            if form.is_valid():
-                form.save()
-                messages.info(request, 'Your contact info and resume have been updated.')
-                print("Contact info and resume saved successfully")  # Debugging statement
+    if request.method == "POST":
+        form = ContactInfoForm(request.POST, request.FILES, instance=contact_info)
+        
+        if form.is_valid():
+            contact_info = form.save(commit=False)
+            contact_info.user = request.user
+            contact_info.save()
 
-                # Update the resume object with form data
-                resume.first_name = form.cleaned_data['name']
-                resume.surname = form.cleaned_data['name']
-                resume.phone = form.cleaned_data['phone']
-                resume.country = form.cleaned_data['country']
-                resume.job_title = form.cleaned_data['job_title']
-                resume.save()
+            # Update the Resume model fields based on job selection
+            job_title_id = request.POST.get("job_title")
+            other_job_title = request.POST.get("other_job_title")
+            
+            if job_title_id:
+                job_title = SkillCategory.objects.get(id=job_title_id).name  # Get job title name from ID
+                resume.job_title = job_title
+            elif other_job_title:
+                response = requests.get(f"{api_url}?input_str={other_job_title}")
+                if response.status_code == 200:
+                    job_title = other_job_title  # Use the job title entered by the user
+                    resume.job_title = job_title
+            
+            # Save the updated resume
+            resume.save()
 
-                return redirect('dashboard')
-            else:
-                messages.warning(request, 'Form is invalid. Errors: %s' % form.errors)
-                print("Form is invalid:", form.errors)  # Debugging statement
+            messages.success(request, 'Resume updated successfully.')
+            return redirect('dashboard')
         else:
-            form = ContactInfoForm(instance=contact_info)
-
-        context = {'form': form}
-        return render(request, 'resume/update_resume.html', context)
+            messages.error(request, f'Form is invalid. Errors: {form.errors}')
     else:
-        messages.warning(request, "Permission Denied")
-        return redirect('dashboard')
+        form = ContactInfoForm(instance=contact_info)
 
+    return render(request, 'resume/update_resume.html', {'form': form, 'api_url': api_url})
 
 
 def select_category(request):

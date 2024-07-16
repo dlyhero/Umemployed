@@ -78,6 +78,8 @@ class Resume(models.Model):
         first_name = self.first_name if self.first_name else ""
         surname = self.surname if self.surname else ""
         return first_name + " " + surname
+        
+        
 class ResumeDoc(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -97,7 +99,9 @@ class ContactInfo(models.Model):
     email = models.EmailField(max_length=254)
     phone = models.CharField(max_length=20)
     country = CountryField(default='CM')  # Default to 'CM' for Cameroon
-    job_title = models.CharField(max_length=100, default='Marketer')
+    # job_title = models.CharField(max_length=100, default='')
+    job_title = models.ForeignKey(SkillCategory, on_delete=models.SET_NULL, null=True, blank=True)
+
 
     def __str__(self):
         return f"Contact Information for {self.user.username}"

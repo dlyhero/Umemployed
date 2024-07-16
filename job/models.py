@@ -147,7 +147,7 @@ class CompletedSkills(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, null=True)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE, null=True)
     is_completed = models.BooleanField(default=False)
-    completed_at = models.DateTimeField(default=timezone.now())
+    completed_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         unique_together = ['user', 'job', 'skill']
