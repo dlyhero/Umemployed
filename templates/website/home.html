@@ -75,8 +75,12 @@
         <div class="hover:bg-blue-50 transition-colors p-2 rounded">
           <button id="option-btn" class="flex items-center gap-2" onclick="setupBackdropMenu()">
             <img
-              class="w-6"
+              class="w-6 sm:hidden"
               src="{% static 'build/img/menu-svgrepo-com.svg' %}"  alt="user icon"
+            />
+            <img
+              class="w-6 hidden sm:block"
+              src="{% static 'build/img/profile-svgrepo-com.svg' %}"   alt="user icon"
             />
             <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
               >{{ user.username }}</span
