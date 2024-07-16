@@ -30,50 +30,65 @@
           >UmEmployed</span
         >
       </div>
-      <a
-        class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
-        href="{% url 'home' %}"
-        >Home</a
-      >
+      
     </div>
     <nav class="flex gap-x-2 items-center">
       <ul class="flex gap-x-2 md:gap-x-6 items-center">
         <li>
           <a
-
-            class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-            href="{% url 'dashboard' %}"
+            class="  flex    hover:bg-blue-50 transition-colors p-2 rounded"
+            href="{% url 'home' %}"
             ><img
-              class="w-5"
-              src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
+              class="w-6"
+              src="{% static 'build/img/home-svgrepo-com.svg' %}"
               alt="message icon"
             />
-            <span class="hidden md:block">Dashboard</span>
+            <span class="hidden md:block">Home</span>
           </a>
         </li>
         <li>
           <a
             class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-            href="{% url 'login' %}"
+            href="#"
+            ><img
+              class="w-5"
+              src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
+              alt="message icon"
+            />
+            <span class="hidden md:block">Messages</span>
+          </a>
+        </li>
+        <li>
+          <a
+            class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+            href="#"
             ><img
               class="w-5"
               src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
               alt="notification icon"
             />
-            <span class="hidden md:block">Login</span>
+            <span class="hidden md:block">Notifications</span>
           </a>
         </li>
       </ul>
 
       <div class="hidden md:block border-l h-[40px]"></div>
 
+      
+      <button id="aside-menu-btn" class="md:hidden">
+        <img class="w-5"   src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+        alt="" />
+      </button>
       <div class="">
         <div class="hover:bg-blue-50 transition-colors p-2 rounded">
           <button id="option-btn" class="flex items-center gap-2" onclick="setupBackdropMenu()">
             <img
-              class="w-5"
-              src="{% static 'build/img/profile-svgrepo-com.svg' %}"
-              alt="user icon"
+              class="w-6 sm:hidden"
+              src="{% static 'build/img/menu-svgrepo-com.svg' %}"  alt="user icon"
+            />
+            <img
+              class="w-6 hidden sm:block"
+              src="{% static 'build/img/profile-svgrepo-com.svg' %}"   alt="user icon"
             />
             <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
               >{{ user.username }}</span
@@ -204,9 +219,6 @@
           </div>
         </div>
       </div>
-      <button id="aside-menu-btn" class="md:hidden">
-        <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
-      </button>
     </nav>
     <div
       id="sidebar"
@@ -500,7 +512,11 @@
     <footer class="bg-gray-200 py-4 text-center">
         <p class="text-sm text-gray-600">© 2024 JobWise. All rights reserved.</p>
     </footer>
-    
+    <script>
+      function showAlert() {
+        alert("Please open");
+      }
+    </script>
    <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
    <script src="{% static './scripts/dashboard.js' %}"></script>
 
