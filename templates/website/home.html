@@ -66,13 +66,17 @@
 
       <div class="hidden md:block border-l h-[40px]"></div>
 
+      
+      <button id="aside-menu-btn" class="md:hidden">
+        <img class="w-5"   src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+        alt="" />
+      </button>
       <div class="">
         <div class="hover:bg-blue-50 transition-colors p-2 rounded">
           <button id="option-btn" class="flex items-center gap-2" onclick="setupBackdropMenu()">
             <img
-              class="w-5"
-              src="{% static 'build/img/profile-svgrepo-com.svg' %}"
-              alt="user icon"
+              class="w-6"
+              src="{% static 'build/img/menu-svgrepo-com.svg' %}"               alt="user icon"
             />
             <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
               >{{ user.username }}</span
@@ -203,9 +207,6 @@
           </div>
         </div>
       </div>
-      <button id="aside-menu-btn" class="md:hidden  md:block hover:bg-blue-50 transition-colors p-2 rounded">
-        <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
-      </button>
     </nav>
     <div
       id="sidebar"
