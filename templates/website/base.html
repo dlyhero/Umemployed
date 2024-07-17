@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'build/logo/logo-color.png' %}" type="image/x-icon" />
+    <title>Job Listing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/9b5a1B5Myz1QJ9y/6XbFx2D4GJ4M7K5TYJ7vD6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'jobs/asset/job_listing.css' %}">
+    <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
+    <style>
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            min-width: 290px;
+            width: 350px;
+            border: 1px solid #d1d5db;
+            background-color: #fff;
+            border-radius: 0.5rem;
+            z-index: 100;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .dropdown-menu.hide {
+            opacity: 0;
+        }
+    </style>
+    {% block custom_css %}
+    
+      
+      
+      {% endblock %}
+</head>
+
+<body class="bg-gray-200 min-h-screen flex flex-col">
+    <header class="flex justify-between md:border-b z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-0 bg-white">
+        <div class="flex items-center gap-x-5">
+            <div class="logo-wrap flex items-center">
+                <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+                <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold">UmEmployed</span>
+            </div>
+        </div>
+        <nav class="flex gap-x-2 items-center">
+            <ul class="flex gap-x-2 md:gap-x-6 items-center">
+                <li>
+                    <a class="flex hover:bg-blue-50 transition-colors p-2 rounded" href="{% url 'home' %}">
+                        <img class="w-6" src="{% static 'build/img/home-svgrepo-com.svg' %}" alt="home icon" />
+                        <span class="hidden md:block">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded" href="#">
+                        <img class="w-5" src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}" alt="message icon" />
+                        <span class="hidden md:block">Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded" href="#">
+                        <img class="w-5" src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}" alt="notification icon" />
+                        <span class="hidden md:block">Notifications</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="hidden md:block border-l h-[40px]"></div>
+
+            <button id="aside-menu-btn" class="md:hidden">
+                <img class="w-5" src="{% static 'build/img/profile-svgrepo-com.svg' %}" alt="" />
+            </button>
+            <div class="hover:bg-blue-50 transition-colors p-2 rounded relative">
+                <button id="option-btn" class="flex items-center gap-2" onclick="toggleDropdown()">
+                    <img class="w-6 sm:hidden" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="menu icon" />
+                    <img class="w-6 hidden sm:block" src="{% static 'build/img/profile-svgrepo-com.svg' %}" alt="user icon" />
+                    <span class="w-28 text-ellipsis overflow-hidden hidden md:block">{{ user.username }}</span>
+                    <img class="w-5 mt-1 md:mt-0 hidden md:block" src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}" alt="drop down arrow" />
+                </button>
+                <div id="dropdown-menu" class="dropdown-menu">
+                    <div class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all">
+                        {% if user.is_authenticated %}
+                            <a href="#" class="flex items-center gap-1">
+                                <img class="w-5" src="{% static 'build/img/user.svg' %}" alt="user-icon" />
+                                {{ user.username }}
+                            </a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="flex items-center gap-1">
+                                <img class="w-5" src="{% static 'build/img/user.svg' %}" alt="user-icon" />
+                                Login
+                            </a>
+                        {% endif %}
+                    </div>
+                    
+                    {% if user.is_authenticated %}
+                        <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                            <a href="{% url 'dashboard' %}" class="flex items-center gap-1">
+                                <img class="w-6" src="{% static 'build/img/subscriptions-svgrepo-com.svg' %}" alt="subscriptions-icon" />
+                                Profile
+                            </a>
+                        </div>
+                        <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                            <a href="#" class="flex items-center gap-1">
+                                <img class="w-5" src="{% static 'build/img/billing-svgrepo-com.svg' %}" alt="billing-icon" />
+                                Billing and invoices
+                            </a>
+                        </div>
+                        <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                            <a href="#" class="flex items-center gap-1">
+                                <img class="w-5" src="{% static 'build/img/setting-1-svgrepo-com.svg' %}" alt="setting-icon" />
+                                Employer setting
+                            </a>
+                        </div>
+                        <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                            <a href="#" class="flex items-center gap-1">
+                                <img class="w-5" src="{% static 'build/img/contact-details-filled-svgrepo-com.svg' %}" alt="contact icon" />
+                                Contact us
+                            </a>
+                        </div>
+                        
+                        {% if user.has_company %}
+                            <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                                <a href="{% url 'company-details' user_company.id %}" class="flex items-center gap-1">
+                                    <img class="w-6" src="{% static 'build/img/company-svgrepo-com.svg' %}" alt="company-icon" />
+                                    Company page
+                                </a>
+                            </div>
+                        {% endif %}
+                        
+                        <hr class="my-2" />
+                        <div class="user-mail py-3 px-6 font-bold text-gray-700">
+                            {{ user.email }}
+                        </div>
+                        <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                            <a href="{% url 'update-resume' %}" class="flex items-center gap-1">
+                                <img class="w-5" src="{% static 'build/img/setting-1-svgrepo-com.svg' %}" alt="setting-icon" />
+                                Account Settings
+                            </a>
+                        </div>
+                        <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                            <a href="{% url 'change_account_type' %}" class="flex items-center gap-1">
+                                <img class="w-5" src="{% static 'build/img/user.svg' %}" alt="user-icon" />
+                                Switch account Type
+                            </a>
+                        </div>
+                        <hr class="my-2" />
+                        <div class="flex py-4 px-8 text-gray-700 justify-center">
+                            <a href="{% url 'logout' %}" class="signout-btn text-[#1e90ff] font-bold">
+                                Sign out
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <div class="primary">
+      
+        {% for message in messages %}
+          <div class="alert alert-info" role="alert">{{ message }}</div>
+        {% endfor %}
+      </div>
+
+
+      {% block content %}
+
+
+      {% endblock %}
+
+
+    <footer class="text-center mb-10 px-2">
+      &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
+      <span class="underline"><a href="#">Cookies</a>, <a href="#">Privacy</a>, and <a href="#">Terms</a></span>
+    </footer>
+    
+    <script>
+      function showAlert() {
+        alert("Please open");
+      }
+    </script>
+    <script src="{% static 'js/backdrop_menu.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const optionBtn = document.getElementById('option-btn');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+
+            optionBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+                dropdownMenu.classList.remove('hide');
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!dropdownMenu.contains(event.target) && !optionBtn.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                    dropdownMenu.classList.add('hide');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
+    <script src="{% static './scripts/dashboard.js' %}"></script>
+
+</body>
+
+</html>

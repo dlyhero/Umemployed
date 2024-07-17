@@ -92,6 +92,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
                 'social_django.context_processors.backends',
+                'users.context_processors.add_company_to_context',  # Add this line
             ],
         },
     },

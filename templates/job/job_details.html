@@ -1,32 +1,12 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Job|{{ job.title }}</title>
-    <link rel="shortcut icon" href="build/logo/logo-color.png" type="image/x-icon" />
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/9b5a1B5Myz1QJ9y/6XbFx2D4GJ4M7K5TYJ7vD6" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="{% static '/jobs/asset/job_detail.css' %}" />
-  </head>
+  {% extends 'website/base.html' %}
+    {% load static %}
+    {% block custom_css %}
+    
+      
+      
+      {% endblock %}
+    {% block content %}
 
-  <body class="bg-gray-100 min-h-screen flex flex-col">
-    <header class="bg-white shadow p-4">
-      <div class="container mx-auto flex justify-between items-center">
-        <div class="flex items-center">
-          <img src="{% static 'build/img/job-svgrepo-com.svg' %}" alt="JobTrack" class="w-8 h-8 mr-2" />
-          <span class="font-bold text-xl" style="color: #1e90ff">UmEmployed</span>
-        </div>
-        <nav class="hidden lg:block space-x-4">
-          <a href="#" class="text-gray-600 hover:text-gray-800">Find Work</a>
-          <a href="#" class="text-gray-600 hover:text-gray-800">Portfolio</a>
-          <a href="#" class="text-gray-600 hover:text-gray-800">Applications</a>
-          <a href="#" class="text-gray-600 hover:text-gray-800">Community</a>
-        </nav>
-      </div>
-    </header>
     <main class="flex-grow container mx-auto mt-6 flex flex-wrap lg:flex-nowrap gap-6">
       <div class="bg-white p-8 rounded-lg shadow-lg w-full lg:w-3/4">
         <div class="flex mb-6 p-3">
@@ -149,39 +129,7 @@
         </div>
       </aside>
     </main>
-
-    {% comment %} <div id="applyModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="text-2xl font-bold mb-4">Apply for Job</h2>
-        <form id="applyForm" action="/testing/intro-testing.html" method="get">
-          <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-            <input type="text" id="name" name="name" required class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-          </div>
-          <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700">SurName</label>
-            <input type="text" id="name" name="name" required class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-          </div>
-          <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-            <input type="email" id="email" name="email" required class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-          </div>
-          <div class="mb-4">
-            <label for="resume" class="block text-sm font-medium text-gray-700">Resume</label>
-            <input type="file" id="resume" name="resume" required class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-          </div>
-          <div class="flex justify-end">
-            <button type="submit" class="px-4 py-2 bg-indigo-500 text-white rounded-md">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div> {% endcomment %}
-
-    <footer class="bg-gray-200 py-4 text-center">
-      <p class="text-sm text-gray-600">© 2024 UmEmployed All rights reserved.</p>
-    </footer>
+    <br>
 
     <script src="{% static '/jobs/asset/job_detail.js' %}"></script>
-  </body>
-</html>
+  {% endblock %}

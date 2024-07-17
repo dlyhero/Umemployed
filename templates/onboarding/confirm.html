@@ -1,111 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testing Phase</title>
-    <link rel="stylesheet" href="{% static 'build/css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'build/css/input.css' %}">
-    <link
-      rel="shortcut icon"
-      href="build/logo/logo-color.png"
-      type="image/x-icon"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="flex flex-col min-h-screen bg-gray-100">
-   <div>
-      {% for message in messages %}
-      <div class="alert alert-danger" role="alert">{{ message }}</div>
-      {% endfor %}
-    </div>
-    <header
-      class="flex justify-between items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 bg-white"
-    >
-      <div class="flex items-center gap-10">
-        <div class="logo-wrap flex items-center">
-          <img class="w-7 md:w-10" src="{% static 'build/logo/logo-color.png' %}" alt="" />
-          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
-            >UmEmployed</span
-          >
-        </div>
-        <a class="hidden md:block" href="#">Home</a>
-        <a class="hidden md:block" href="#">Jobs</a>
-        <a class="hidden md:block" href="./index.html">Resume</a>
-      </div>
-      <nav class="flex md:gap-x-4 items-center">
-        <ul class="flex gap-x-8 items-center">
-          <li>
-            <a href="#"
-              ><img
-                class="w-4 icon"
-                src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
-                alt="message icon"
-            /></a>
-          </li>
-          <li>
-            <a href="#"
-              ><img
-                class="w-4"
-                src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
-                alt="notification icon"
-            /></a>
-          </li>
-          <li class="hidden md:block">
-            <a href="#"
-              ><img
-                class="w-4"
-                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
-                alt="profile icon"
-            /></a>
-          </li>
-          <li class="md:hidden">
-            <button id="menu-btn" class="text-xl">
-              <img class="w-4" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
-            </button>
-          </li>
-        </ul>
-
-        <div class="hidden md:block">
-          |
-          <span class="ml-4"><a href="#">Employers / Post Job</a> </span>
-        </div>
-      </nav>
-      <div
-        id="sidebar"
-        class="font-bold fixed bg-[#8080803e] md:bg-none z-10 hidden top-0 bottom-0 left-0 right-0 p-10"
-      >
-        <div
-          class="sidebar-conten h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
-        >
-          <div class="btn-wrap text-end">
-            <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
-              &times
-            </button>
-          </div>
-          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50">
-            <a class="flex justify-between items-center" href="#">Home </a>
-          </div>
-          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50">
-            <a class="flex justify-between items-center" href="./profile.html"
-              >Profile
-            </a>
-          </div>
-          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50">
-            <a class="flex justify-between items-center" href="./index.html"
-              >Resume
-            </a>
-          </div>
-          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50">
-            <a class="flex justify-between items-center" href="#">Jobs </a>
-          </div>
-          <div class="nav-item font-bold p-2 border-b hover:bg-blue-50">
-            <a class="flex justify-between items-center" href="#">Settings </a>
-          </div>
-        </div>
-      </div>
-    </header>
+  {% extends 'website/base.html' %}
+    {% load static %}
+    {% block custom_css %}
+    
+      
+      
+      {% endblock %}
+    {% block content %}
     <main class="flex-grow flex items-center justify-center bg-gray-100">
       <div class="bg-white p-10 rounded-lg shadow-lg text-center">
           <h1 class="text-2xl font-bold mb-4">Welcome to the Job Test</h1>
@@ -116,16 +16,10 @@
          </a> 
       </div>
     </main>
-    <footer class="bg-gray-200 py-4 text-center">
-        <p class="text-sm text-gray-600">© 2024 UmEmployed. All rights reserved.</p>
-    </footer>
+
     <script>
       function navigateToNextPage() {
         window.location.href = 'testing.html';
       }
     </script>
-</body>
-</html>
-
-
-
+    {% endblock %}
