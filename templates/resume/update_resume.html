@@ -17,39 +17,40 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <form class="p-4  rounded-xl" method="post" enctype="multipart/form-data" id="contact-info-form">
+            <form class="max-w-md mx-auto p-8 bg-white shadow-lg rounded-lg" method="post" enctype="multipart/form-data" id="contact-info-form">
                 {% csrf_token %}
-                <div class="input-wrap mb-1">
-                    <label for="{{ form.name.id_for_label }}" class="text-gray-800 font-bold mb-1">Name</label>
-                    {{ form.name|add_class:"border-b-2 border-b-solid shadow-sm border-blue-500 w-full mx-auto rounded p-1 focus:outline border-b-2 outline-1 outline-[#1e90ff]" }}
+                <div class="mb-6">
+                    <label for="{{ form.name.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Name</label>
+                    {{ form.name|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
                 </div>
-                <div class="input-wrap mb-2">
-                    <label for="{{ form.email.id_for_label }}" class="text-gray-800 font-bold mb-1">Email</label>
-                    {{ form.email|add_class:"border-b-2 border-b-solid shadow-sm border-blue-400 w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
+                <div class="mb-6">
+                    <label for="{{ form.email.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Email</label>
+                    {{ form.email|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
                 </div>
-                <div class="input-wrap mb-2">
-                    <label for="{{ form.phone.id_for_label }}" class="text-gray-800 font-bold mb-1">Phone</label>
-                    {{ form.phone|add_class:"border-b-2 border-b-solid shadow-sm border-blue-500 w-full mx-auto rounded p-1  focus:outline outline-1 outline-[#1e90ff]" }}
+                <div class="mb-6">
+                    <label for="{{ form.phone.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Phone</label>
+                    {{ form.phone|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
                 </div>
-                <div class="input-wrap mb-2">
-                    <label for="{{ form.country.id_for_label }}" class="text-gray-800 font-bold mb-1">Country</label>
-                    {{ form.country|add_class:"border-b-2 border-b-solid shadow-sm border-blue-500 w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
+                <div class="mb-6">
+                    <label for="{{ form.country.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Country</label>
+                    {{ form.country|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
                 </div>
-                <div class="input-wrap mb-2">
-                    <label for="{{ form.job_title.id_for_label }}" class="text-gray-800 font-bold mb-1">Job Title</label>
-                    {{ form.job_title|add_class:"border-b-2 border-b-solid shadow-sm border-blue-500 w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
+                <div class="mb-6">
+                    <label for="{{ form.job_title.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Job Title</label>
+                    {{ form.job_title|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
                 </div>
-                <div class="input-wrap mb-2">
-                    <label for="other-job-title" class="text-gray-500">Other Job Title</label>
-                    <input type="text" id="other-job-title" name="other_job_title" class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" />
+                <div class="mb-6">
+                    <label for="other-job-title" class="block text-gray-700 text-sm font-medium mb-2">Other Job Title</label>
+                    <input type="text" id="other-job-title" name="other_job_title" class="block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                 </div>
-                <div class="p-4 flex justify-between border-t">
-                    <div></div>
-                    <button type="submit" id="save-info-btn" class="border bg-[#1e90ff] rounded-lg text-white font-bold px-3 py-1">
+                <div class="flex justify-end">
+                    <button type="submit" id="save-info-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Save
                     </button>
                 </div>
             </form>
+            
+            
         </div>
     </section>
 </main>
