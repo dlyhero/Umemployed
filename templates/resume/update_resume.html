@@ -6,9 +6,9 @@
 
 <main class="mx-auto w-[90%] max-w-[650px] mb-2">
     <section class="">
-        <div class="border bg-white rounded">
-            <div class="flex justify-between p-4 mb-4 border-b ">
-                <p class="font-bold text-2xl text-[#1e90ff]">Edit Information</p>
+        <div class="border bg-white rounded-tl-3xl rounded-tr-3xl ">
+            <div class="text-center p-4 mb-4 border-b ">
+                <p class="font-bold  text-2xl border-b-0 text-[#1e90ff]">Edit Information</p>
             </div>
             {% if messages %}
                 <div class="messages">
@@ -17,27 +17,27 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <form class="p-4" method="post" enctype="multipart/form-data" id="contact-info-form">
+            <form class="p-4  rounded-xl" method="post" enctype="multipart/form-data" id="contact-info-form">
                 {% csrf_token %}
                 <div class="input-wrap mb-1">
-                    <label for="{{ form.name.id_for_label }}" class="text-gray-500">Name</label>
-                    {{ form.name|add_class:"border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
+                    <label for="{{ form.name.id_for_label }}" class="text-gray-800 font-bold mb-1">Name</label>
+                    {{ form.name|add_class:"border-b-2 border-b-solid shadow-sm border-blue-500 w-full mx-auto rounded p-1 focus:outline border-b-2 outline-1 outline-[#1e90ff]" }}
                 </div>
                 <div class="input-wrap mb-2">
-                    <label for="{{ form.email.id_for_label }}" class="text-gray-500">Email</label>
-                    {{ form.email|add_class:"border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
+                    <label for="{{ form.email.id_for_label }}" class="text-gray-800 font-bold mb-1">Email</label>
+                    {{ form.email|add_class:"border-b-2 border-b-solid shadow-sm border-blue-400 w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
                 </div>
                 <div class="input-wrap mb-2">
-                    <label for="{{ form.phone.id_for_label }}" class="text-gray-500">Phone</label>
-                    {{ form.phone|add_class:"border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
+                    <label for="{{ form.phone.id_for_label }}" class="text-gray-800 font-bold mb-1">Phone</label>
+                    {{ form.phone|add_class:"border-b-2 border-b-solid shadow-sm border-blue-500 w-full mx-auto rounded p-1  focus:outline outline-1 outline-[#1e90ff]" }}
                 </div>
                 <div class="input-wrap mb-2">
-                    <label for="{{ form.country.id_for_label }}" class="text-gray-500">Country</label>
-                    {{ form.country|add_class:"border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
+                    <label for="{{ form.country.id_for_label }}" class="text-gray-800 font-bold mb-1">Country</label>
+                    {{ form.country|add_class:"border-b-2 border-b-solid shadow-sm border-blue-500 w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
                 </div>
                 <div class="input-wrap mb-2">
-                    <label for="{{ form.job_title.id_for_label }}" class="text-gray-500">Job Title</label>
-                    {{ form.job_title|add_class:"border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
+                    <label for="{{ form.job_title.id_for_label }}" class="text-gray-800 font-bold mb-1">Job Title</label>
+                    {{ form.job_title|add_class:"border-b-2 border-b-solid shadow-sm border-blue-500 w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" }}
                 </div>
                 <div class="input-wrap mb-2">
                     <label for="other-job-title" class="text-gray-500">Other Job Title</label>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="p-4 flex justify-between border-t">
                     <div></div>
-                    <button type="submit" id="save-info-btn" class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1">
+                    <button type="submit" id="save-info-btn" class="border bg-[#1e90ff] rounded-lg text-white font-bold px-3 py-1">
                         Save
                     </button>
                 </div>
