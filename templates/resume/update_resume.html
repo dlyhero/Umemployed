@@ -17,27 +17,27 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <form class="max-w-md mx-auto p-8 bg-white shadow-lg rounded-lg" method="post" enctype="multipart/form-data" id="contact-info-form">
+            <form class="max-w-md mx-auto p-8 bg-white shadow-lg rounded-3xl" method="post" enctype="multipart/form-data" id="contact-info-form">
                 {% csrf_token %}
                 <div class="mb-6">
                     <label for="{{ form.name.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Name</label>
-                    {{ form.name|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                    {{ form.name|add_class:"block w-full border-3   border-blue-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
                 </div>
                 <div class="mb-6">
                     <label for="{{ form.email.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Email</label>
-                    {{ form.email|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                    {{ form.email|add_class:"block w-full border-3   border-blue-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
                 </div>
                 <div class="mb-6">
                     <label for="{{ form.phone.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Phone</label>
-                    {{ form.phone|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                    {{ form.phone|add_class:"block w-full border-3   border-blue-300   rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"  }}
                 </div>
                 <div class="mb-6">
                     <label for="{{ form.country.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Country</label>
-                    {{ form.country|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                    {{ form.country|add_class:"block w-full border-2 border-3   border-blue-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
                 </div>
                 <div class="mb-6">
                     <label for="{{ form.job_title.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Job Title</label>
-                    {{ form.job_title|add_class:"block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                    {{ form.job_title|add_class:"block w-full border-3   border-blue-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
                 </div>
                 <div class="mb-6">
                     <label for="other-job-title" class="block text-gray-700 text-sm font-medium mb-2">Other Job Title</label>
