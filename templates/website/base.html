@@ -191,9 +191,7 @@
     </footer>
     
     <script>
-      function showAlert() {
-        alert("Please open");
-      }
+      
     </script>
     <script src="{% static 'js/backdrop_menu.js' %}"></script>
     <script>
@@ -214,6 +212,32 @@
                 }
             });
         });
+        document.getElementById('job-options').addEventListener('click', function() {
+    const dropdownMenu = document.getElementById('dropdown-ellipse');
+    dropdownMenu.classList.toggle('hidden');
+    
+});
+
+function viewJobDetails() {
+    // Code to view job details
+    console.log('View job details');
+}
+
+function shareJobPosting() {
+    // Code to share job posting
+    console.log('Share job posting');
+}
+
+function saveJobPosting() {
+    // Code to save job posting
+    console.log('Save job posting');
+}
+
+function reportJobPosting() {
+    // Code to report job posting
+    console.log('Report job posting');
+}
+
     </script>
     <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
     <script src="{% static './scripts/dashboard.js' %}"></script>
