@@ -157,6 +157,7 @@
               <option value="{{ job.id }}">{{ job.name }}</option>
             {% endfor %}
           </select>
+          
         </div>
         <div class="p-4 flex justify-between border-t">
           <div></div>
@@ -169,6 +170,10 @@
           </button>
         </div>
       </form>
+      <div id="skill-{{ skill.id }}" class="skill border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+        <div>
+        <p>Current role set to: {{resume.job_title}}</p>
+      </div>
     </div>
   </div>
 </section>

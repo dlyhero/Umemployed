@@ -38,7 +38,6 @@ def get_suggested_skills(request):
             suggested_skills = Skill.objects.none()  # Empty QuerySet if category doesn't exist
 
     suggested_skills_list = list(suggested_skills.values('id', 'name'))
-    print("Suggested Skills List:", suggested_skills_list)
     return JsonResponse(suggested_skills_list, safe=False, encoder=DjangoJSONEncoder)
 
 
@@ -52,7 +51,6 @@ def update_user_skills(request):
             current_user = request.user
 
             print("Received POST request to update skills. User:", current_user.username)  # Debug statement
-            print("Selected Skill IDs:", selected_skill_ids)  # Debug statement
 
             # Add selected skills without clearing existing ones
             for skill_id in selected_skill_ids:
@@ -102,7 +100,6 @@ def dashboard(request):
             extracted_skills = resume_doc.extracted_skills.all()  # Access as queryset
 
             # Print extracted_skills for debugging
-            print(f"Extracted Skills (QuerySet): {extracted_skills}")
 
             # Iterate through the queryset and add skills to the resume
             for skill in extracted_skills:
@@ -148,22 +145,40 @@ def dashboard(request):
 
 
 
+from django.shortcuts import get_object_or_404
+
 @login_required(login_url='login')
 def save_job(request):
     if request.method == 'POST':
         job_id = request.POST.get('job')
+        print(f"Received job_id: {job_id}")
+        if not job_id:
+            print("No job_id provided in the POST request.")
+            return redirect('dashboard')
+        
         try:
             job_category = SkillCategory.objects.get(id=job_id)
-            resume = Resume.objects.get(user=request.user)
-            resume.category = job_category
-            resume.save()
+            job_title = job_category.name
+            print(f"Job category found: {job_category.name}")
         except SkillCategory.DoesNotExist:
-            # Handle the error if the category does not exist
-            pass
+            print(f"SkillCategory with id {job_id} does not exist.")
+            return redirect('dashboard')
+        
+        try:
+            resume = Resume.objects.get(user=request.user)
+            print(f"Resume found for user {request.user.email}: {resume}")
         except Resume.DoesNotExist:
-            # Handle the error if the resume does not exist
-            pass
+            print("Resume does not exist for the current user.")
+            return redirect('dashboard')
+        
+        # Update and save the resume with both job_title and category
+        resume.job_title = job_title
+        resume.category = job_category
+        resume.save()
+        print(f"Resume updated with new job_title: {job_title} and category: {job_category.name}")
+    
     return redirect('dashboard')
+
 #This view is to delete a selected skill from the resume object
 @login_required(login_url='login')
 def delete_skill(request, skill_id):
