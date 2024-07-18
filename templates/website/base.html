@@ -191,9 +191,7 @@
     </footer>
     
     <script>
-      function showAlert() {
-        alert("Please open");
-      }
+      
     </script>
     <script src="{% static 'js/backdrop_menu.js' %}"></script>
     <script>
@@ -214,6 +212,34 @@
                 }
             });
         });
+
+   document.addEventListener('DOMContentLoaded', function() {
+    const jobOptions = document.querySelectorAll('.job-options');
+    const dropdowns = document.querySelectorAll('.dropdown-ellipse');
+
+    jobOptions.forEach((option, index) => {
+        option.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
+            dropdowns[index].classList.toggle('hidden');
+        });
+    });
+
+    document.addEventListener('click', function() {
+        dropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
+    });
+
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    });
+});
+
+
+
+
+
     </script>
     <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
     <script src="{% static './scripts/dashboard.js' %}"></script>

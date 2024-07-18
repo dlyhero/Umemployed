@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<main class="mx-auto w-[90%] max-w-[650px] mb-2">
+<main class="mx-auto w-[90%] xl:w-[70%]  mb-5">
     <section class="">
         <div class="border bg-white rounded-tl-3xl rounded-tr-3xl ">
             <div class="text-center p-4 mb-4 border-b ">
@@ -17,7 +17,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <form class="max-w-md mx-auto p-8 bg-white shadow-lg rounded-3xl" method="post" enctype="multipart/form-data" id="contact-info-form">
+            <form class="max-w-md mx-auto p-8 bg-white shadow-lg rounded-3xl mb-5" method="post" enctype="multipart/form-data" id="contact-info-form">
                 {% csrf_token %}
                 <div class="mb-6">
                     <label for="{{ form.name.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Name</label>
