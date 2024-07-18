@@ -114,9 +114,30 @@
                                     <p class=" hidden  lg:block p-2 bg-green-400 text-white rounded-xl ml-4  " style="font-size: 10px;">
                                         Urgent</p>
                                 </div>
-                                <div style="color: black ;">
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </div>
+                               
+                                <div class=" text-black">
+                                  <i class="fa fa-ellipsis-v cursor-pointer" id="job-options"></i>
+                              </div>
+                              <div id="dropdown-ellipse" class="hidden  right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                                  <ul class="py-1">
+                                      <li onclick="viewJobDetails()" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                          <i class="fa fa-eye mr-2"></i> View Details
+                                      </li>
+                                      <li onclick="shareJobPosting()" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                          <i class="fa fa-share mr-2"></i> Share
+                                      </li>
+                                      <li onclick="saveJobPosting()" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                          <i class="fa fa-bookmark mr-2"></i> Save
+                                      </li>
+                                      <li onclick="reportJobPosting()" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                          <i class="fa fa-flag mr-2"></i> Report
+                                      </li>
+                                  </ul>
+                              </div>
+                               
+                              
+                              
+                              
                             </div>
                             <div class="flex justify-between">
                                 <div class=" w-4/4 lg:flex justify-between items-center w-1/2 ">
