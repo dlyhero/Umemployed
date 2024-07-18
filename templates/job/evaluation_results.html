@@ -58,35 +58,26 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for skill in skills %}
                         <tr>
-                            <td class="border px-4 py-2">HTML</td>
-                            <td class="border px-4 py-2">75%</td>
+                            <td class="border px-4 py-2">{{skill.name}}</td>
                         </tr>
-                        <tr>
-                            <td class="border px-4 py-2">JavaScript</td>
-                            <td class="border px-4 py-2">50%</td>
-                        </tr>
-                        <tr>
-                            <td class="border px-4 py-2">Python</td>
-                            <td class="border px-4 py-2">85%</td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
        </div>
         </section>
         <section class="mb-6">
-            <h3 class="text-lg font-semibold">Detailed Results</h3>
+            <h3 class="text-lg font-semibold">Recommendations</h3>
             <div class="mb-4">
                 <h4 class="font-medium">HTML</h4>
-                <p class="text-gray-700">Score: 75%</p>
                 <p class="text-gray-700 truncate">Feedback: Good understanding of HTML structure but needs improvement in semantic tags.</p>
                 <p class="text-gray-700 hidden-text">Complete feedback goes here. This is an extended feedback for the HTML section, providing more details and suggestions for improvement. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur molestias laboriosam et nisi quam ea fuga reiciendis porro molestiae autem, quas incidunt qui magni, voluptas vero aliquam quibusdam praesentium veniam. Incidunt culpa molestias minus iste, expedita quisquam dolor exercitationem, adipisci aperiam ipsam voluptatem? Aspernatur, maxime! Ex eos vitae tenetur nam debitis, at odit voluptatem, accusantium et iure architecto soluta sapiente!</p>
                 <a href="#" class="read-more text-blue-500 no-print">Read more</a>
             </div>
             <div class="mb-4">
                 <h4 class="font-medium">JavaScript</h4>
-                <p class="text-gray-700">Score: 50%</p>
                 <p class="text-gray-700 truncate">Feedback: Basic knowledge is present, but further practice with ES6 features is recommended.</p>
                 <p class="text-gray-700 hidden-text">Complete feedback goes here. This is an extended feedback for the JavaScript section, providing more details and suggestions for improvement. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis repellendus id ipsam sequi provident optio eligendi mollitia, exercitationem delectus qui quam, ea maiores ipsa tempore repellat? Nostrum possimus illo est? Nemo aut, molestiae consectetur autem labore consequuntur, iusto inventore iure magni corporis repellendus magnam esse rem temporibus quia libero in voluptatum corrupti fuga laborum aliquid vel perspiciatis dolores provident! Error. Delectus deserunt sit sunt perferendis hic quos cum illum deleniti voluptatum a. Molestiae ea debitis repellat veniam ab corrupti aliquid obcaecati eum, mollitia fugit dolorem, commodi minus? Voluptas, quas recusandae? Velit quis distinctio soluta ipsum quidem animi asperiores officiis ullam neque, vitae quisquam exercitationem. Distinctio, cumque illo quis maiores sunt accusamus eum mollitia voluptas. Dolorum, sunt. Tempore esse enim a! Esse nemo sunt, consequuntur atque illum quisquam? Iure ullam, quaerat deleniti quo harum porro voluptates nobis, dolorem unde rerum eum voluptatibus, non ipsam quae? Voluptatem temporibus sequi doloribus corrupti facere.</p>
                 <a href="#" class="read-more text-blue-500 no-print">Read more</a>

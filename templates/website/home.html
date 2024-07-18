@@ -203,8 +203,17 @@
                 </div>
               </a>
             {% endfor %}
+          {% elif not user.is_authenticated %}
+              <div>
+                <p class="text-center text-gray-500">You need to be logged in to see
+                  suggested jobs</p>
+                  <center><a href="{% url 'login' %}"><button type="button" class="p-1 px-3 rounded-lg xl:p-2 xl:px-6 text-white xl:rounded-xl" style="background-color: #1e90ff;">Login|SignUp</button></a></center>
+                  </div>
+
+              </div>
           {% else %}
             <p>No suggested jobs available.</p>
+            <p>If havent't uploaded your resume, please click here <a style="color: #1e90ff;" href="{% url 'upload'%}">Upload</a> </p>
           {% endif %}
         </div>
       </div>
