@@ -87,11 +87,12 @@ class ResumeDoc(models.Model):
     extracted_text = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='resume_extracted_skills')
-    created_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return f"Resume for {self.user.username}"
-
+    
 from django_countries.fields import CountryField
 class ContactInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

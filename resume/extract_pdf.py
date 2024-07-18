@@ -6,6 +6,7 @@ from pypdf import PdfReader
 from openai import OpenAI
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from .forms import ResumeForm
@@ -22,6 +23,7 @@ api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 logger = logging.getLogger(__name__)
 
+@login_required(login_url='login')
 def upload_resume(request):
     """
     Handles the upload of resumes.
@@ -29,23 +31,22 @@ def upload_resume(request):
     if request.method == 'POST':
         form = ResumeForm(request.POST, request.FILES)
         if form.is_valid():
-            resume = form.save(commit=False)
-            resume.user = request.user
-            resume.save()
-
             # Check if a ResumeDoc already exists for the user
             try:
                 resume_doc = ResumeDoc.objects.get(user=request.user)
-                resume_doc.file = resume.file  # Update the file if it already exists
+                resume_doc.file = form.cleaned_data['file']  # Update the file
                 resume_doc.extracted_text = ''  # Clear the extracted text
                 resume_doc.extracted_skills.clear()  # Clear the extracted skills
                 resume_doc.save()
             except ResumeDoc.DoesNotExist:
                 # Create a new ResumeDoc if it does not exist
-                resume_doc = ResumeDoc.objects.create(user=request.user, file=resume.file)
+                resume_doc = ResumeDoc.objects.create(
+                    user=request.user,
+                    file=form.cleaned_data['file']
+                )
 
             # Generate the URL for the extract_text view with the file_path parameter
-            file_path = resume.file.url.lstrip('/')
+            file_path = resume_doc.file.url.lstrip('/')
             redirect_url = reverse('extract_text', kwargs={'file_path': file_path})
 
             # Redirect to the extract_text view
@@ -53,8 +54,6 @@ def upload_resume(request):
     else:
         form = ResumeForm()
     return render(request, 'resume/upload_resume.html', {'form': form})
-
-
 
 def extract_text(request, file_path):
     """
