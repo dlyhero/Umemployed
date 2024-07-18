@@ -16,9 +16,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
 
+from django.db.models import Avg
 def home(request):
     jobs_list = Job.objects.all().order_by('-created_at')
-
+    matching_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=50.0)
+   
     # Get filter parameters from request
     salary_range = request.GET.get('salary_range')
     job_type = request.GET.getlist('job_type')
@@ -64,6 +66,7 @@ def home(request):
 
     context = {
         'jobs': jobs,
+        'matching_jobs':matching_jobs,
     }
     return render(request, 'website/home.html', context)
 

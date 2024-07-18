@@ -568,10 +568,15 @@ def run_code(request):
     # Return an error response for disallowed methods
     return HttpResponseNotAllowed(['POST'])
 
+from django.db.models import Avg
+
 def job_details(request,job_id):
     job = Job.objects.get(id=job_id)
+    similar_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=5.0)
+
     context = {
         'job':job,
+        'similar_jobs':similar_jobs,
     }
     
     return render(request, "job/job_details.html",context)
