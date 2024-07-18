@@ -1,14 +1,16 @@
 {% load static %}
-{% for skill in skills %}
-<div id="skill-{{ skill.id }}" class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
-    <p class="type">{{ skill.name }}</p>
-    <div class="btn-wraps flex gap-4">
-        <button class="w-5" id="edit-skill-btn">
-            <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
-        </button>
-        <button class="w-6" id="delete-skill-btn" onclick="deleteSkill({{ skill.id }})">
-            <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
-        </button>
+<div id="" class="p-2">
+    {% for skill in skills %}
+    <div id="skill-{{ skill.id }}" class="skill border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+        <p class="type">{{ skill.name }}</p>
+        <div class="btn-wraps flex gap-4">
+            <button class="w-5" id="edit-skill-btn">
+                <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+            </button>
+            <button class="w-6" id="delete-skill-btn" onclick="deleteSkill({{ skill.id }})">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMTAgMTJWMTciIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTE0IDEyVjE3IiBzdHJva2U9IiNGRjAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiAvPgogIDxwYXRoIGQ9Ik00IDdIMjAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTYgMTBWMThDNiAxOS42NTY5IDcuMzQzMTUgMjEgOSAyMUgxNUMxNi42NTY5IDIxIDE4IDE5LjY1NjkgMTggMThWMTAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTkgNUM5IDMuODk1NDMgOS44OTU0MyAzIDExIDNIMTNDMTQuMTA0NiAzIDE1IDMuODk1NDMgMTUgNVY3SDlWNVoiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+Cjwvc3ZnPg==" alt="delete icon" />
+            </button>
+        </div>
     </div>
+    {% endfor %}
 </div>
-{% endfor %}
