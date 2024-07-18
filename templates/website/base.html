@@ -212,31 +212,33 @@
                 }
             });
         });
-        document.getElementById('job-options').addEventListener('click', function() {
-    const dropdownMenu = document.getElementById('dropdown-ellipse');
-    dropdownMenu.classList.toggle('hidden');
-    
+
+   document.addEventListener('DOMContentLoaded', function() {
+    const jobOptions = document.querySelectorAll('.job-options');
+    const dropdowns = document.querySelectorAll('.dropdown-ellipse');
+
+    jobOptions.forEach((option, index) => {
+        option.addEventListener('click', function(event) {
+            event.stopPropagation();
+            dropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
+            dropdowns[index].classList.toggle('hidden');
+        });
+    });
+
+    document.addEventListener('click', function() {
+        dropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
+    });
+
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    });
 });
 
-function viewJobDetails() {
-    // Code to view job details
-    console.log('View job details');
-}
 
-function shareJobPosting() {
-    // Code to share job posting
-    console.log('Share job posting');
-}
 
-function saveJobPosting() {
-    // Code to save job posting
-    console.log('Save job posting');
-}
 
-function reportJobPosting() {
-    // Code to report job posting
-    console.log('Report job posting');
-}
 
     </script>
     <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
