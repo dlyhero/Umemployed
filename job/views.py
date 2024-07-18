@@ -294,7 +294,7 @@ def answer_job_questions(request, job_id):
 
     if application.has_completed_quiz:
         messages.warning(request, "You have already completed the quiz for this job.")
-        return redirect('job:job_application_success',job.id)
+        return redirect('job:job_application_success', job_id=job_id)
 
     # Determine current skill based on application round_scores
     completed_skills = application.round_scores.keys()
@@ -305,7 +305,7 @@ def answer_job_questions(request, job_id):
         application.has_completed_quiz = True
         application.save()
         messages.success(request, "Congratulations! You have completed all rounds.")
-        return redirect('job:job_application_success')
+        return redirect('job:job_application_success', job_id=job_id)
 
     # Select the next skill to test on
     current_skill = remaining_skills[0]
@@ -331,14 +331,7 @@ def answer_job_questions(request, job_id):
             # Store the score for the current skill specific to the job
             application.round_scores[str(current_skill.id)] = total_score
 
-            # Add the current skill to the list of completed skills for this application
-            CompletedSkills.objects.update_or_create(
-                user=user,
-                job=job,
-                skill=current_skill,
-                defaults={'is_completed': True}
-            )
-
+            # Save the application to update scores and percentages
             application.save()
 
             messages.success(request, f"Your answers for the skill '{current_skill.name}' have been recorded. Total score: {total_score}")
@@ -359,6 +352,8 @@ def answer_job_questions(request, job_id):
         }
 
         return render(request, 'job/rounds/round1.html', context)
+
+
 
 
 
@@ -573,10 +568,15 @@ def run_code(request):
     # Return an error response for disallowed methods
     return HttpResponseNotAllowed(['POST'])
 
+from django.db.models import Avg
+
 def job_details(request,job_id):
     job = Job.objects.get(id=job_id)
+    similar_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=5.0)
+
     context = {
         'job':job,
+        'similar_jobs':similar_jobs,
     }
     
     return render(request, "job/job_details.html",context)
