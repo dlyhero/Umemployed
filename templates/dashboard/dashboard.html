@@ -320,20 +320,21 @@
 </section>
 
 
-<div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-  <div class="bg-white p-6 rounded-lg shadow-lg">
-    <h2 class="font-bold text-lg mb-4">Add Language and Country</h2>
+<div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center  hidden">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:[80%] md:[65%] lg:w-[50%] ">
+    <h2 class="font-bold text-lg mb-2">Edit language and country</h2>
+    <hr >
     <form id="lang-form" class="space-y-4">
       <div>
-        <label for="language" class="block font-medium text-gray-700">Language</label>
-        <select id="language" name="language" class="block w-full mt-1 p-2 border rounded">
+        <label for="language" class="block font-semibold text-gray-700 mt-4">Language of job post</label>
+        <select id="language" name="language" class="block w-full mt-1 p-1 border rounded">
           <option value="english">English</option>
           <option value="spanish">Spanish</option>
         </select>
       </div>
       <div>
-        <label for="country" class="block font-medium text-gray-700">Country</label>
-        <select id="country" name="country" class="block w-full mt-1 p-2 border rounded">
+        <label for="country" class="block font-semibold text-gray-700">country where job is shown</label>
+        <select id="country" name="country" class="block w-full mt-1 p-1 border rounded">
           <option value="us">United States</option>
           <option value="es">Spain</option>
         </select>
