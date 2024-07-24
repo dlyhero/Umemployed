@@ -1,0 +1,267 @@
+{% extends 'resume/recruiterBase.html' %}
+{% load static %}
+ {% block custom_css %}
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'build/css/message.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+
+      
+      {% endblock %}
+{% block content %}
+
+    <!-- Main Content -->
+      <!-- Main Content -->
+    <main class="mx-auto flex w-full flex-grow h-[90vh] sm:mt-0">
+        <!-- Sidebar -->
+        <aside
+          id="message-sidebar"
+          class="w-full md:w-[29%] bg-white border-r p-2 md:p-[25px] sidebar"
+        >
+          <input
+            type="text"
+            placeholder="Search Direct Messages "
+            class="border rounded-full px-4 py-2  border-gray-400 w-full text-ellipsis outline-none"
+          />
+  
+          <div id="contact-list">
+            <!-- Contact List Example -->
+            <div
+              class="mb-4 cursor-pointer hover:bg-gray-200 p-2 rounded contact-item"
+              onclick="openChat('Jane Doe', 'Hi there! I saw your job posting for a Senior Developer. I\'m very interested and would love to know more details.')"
+            >
+              <div class="flex items-center space-x-3 w-full">
+                <img
+                  class="w-14 h-14 rounded-full"
+                  src="{% static 'build/img/pp.jpg' %}"
+                  alt="profile-pic"
+                />
+  
+                <div class="w-[80%]">
+                  <h3 class="text-lg font-semibold contact-name">Jane Doe</h3>
+                  <p class="text-sm text-gray-600 truncate contact-snippet">
+                    Hi there! I saw your job posting for a Senior Developer...
+                  </p>
+                  <span class="text-xs text-gray-500 contact-time"
+                    >2 hours ago</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div
+              class="mb-4 cursor-pointer hover:bg-gray-200 p-2 rounded contact-item"
+              onclick="openChat('John Smith', 'Thank you for the interview opportunity. I am eager to hear back from you regarding my application for the Marketing Manager position.')"
+            >
+              <div class="flex items-center space-x-3">
+                <img
+                  class="w-14 h-14 rounded-full"
+                  src="{% static 'build/img/pp.jpg' %}"
+                  alt="profile-pic"
+                />
+                <div class="w-[80%]">
+                  <h3 class="text-lg font-semibold contact-name">John Smith</h3>
+                  <p class="text-sm text-gray-600 truncate contact-snippet">
+                    Thank you for the interview opportunity...
+                  </p>
+                  <span class="text-xs text-gray-500 contact-time"
+                    >1 day ago</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- Add more contacts as needed -->
+          </div>
+        </aside>
+  
+        <!-- Chat Window -->
+        <section
+          id="chat-window"
+          class="w-full md:flex-1 bg-white chat-window p-3 sm:p-0"
+        >
+          <div class="flex flex-col h-[90vh] p-1 w-full relative overflow-y-auto">
+            <div
+              id="chat-header"
+              class="flex justify-between items-center chat-header sticky top-0 right-0 left-0 md:px-5 py-2"
+            >
+              <div class="flex items-center space-x-3">
+                <img
+                  class="w-10 h-10 rounded-full"
+                  src="{% static './build/img/pp.jpg' %}"
+                  alt="profile-pic"
+                />
+                <h3 id="chat-title" class="text-xl font-semibold mb-3">
+                  Select a contact
+                </h3>
+              </div>
+              <span id="chat-status" class="text-sm text-gray-500">Online</span>
+            </div>
+            <div
+              id="chat-messages"
+              class="flex-grow overflow-y-auto chat-messages md:px-5"
+            >
+              <!-- Chat Messages -->
+              <div class="mb-4">
+                <div class="flex justify-start mb-2">
+                  <div
+                    class="message-bubble received"
+                    onclick="toggleMessageOptions(this)"
+                  >
+                    <div>Hi there! How can I help you today?</div>
+                    <div class="message-meta received">10:30 AM, Today</div>
+                    <div class="message-options">
+                      <button onclick="replyMessage()">Reply</button>
+                      <button onclick="deleteMessage()">Delete</button>
+                      <button onclick="addReaction()">Add Reaction</button>
+                      <button onclick="copyMessageText()">
+                        Copy Message Text
+                      </button>
+                      <button onclick="reportMessage()">Report Message</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex justify-end mb-2">
+                  <div
+                    class="message-bubble sent"
+                    onclick="toggleMessageOptions(this)"
+                  >
+                    <div>
+                      Hello! I'm interested in the job posting for Senior
+                      Developer.
+                    </div>
+                    <div class="message-meta sent">10:32 AM, Today</div>
+                    <div class="message-options">
+                      <button onclick="replyMessage()">Reply</button>
+                      <button onclick="deleteMessage()">Delete</button>
+                      <button onclick="addReaction()">Add Reaction</button>
+                      <button onclick="copyMessageText()">
+                        Copy Message Text
+                      </button>
+                      <button onclick="reportMessage()">Report Message</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="chat-input" class="message-input-container">
+              <button id="emoji-button" class="w-60px">
+                <i class="fas fa-lg fa-grin-beam" class="w-60px"></i>
+              </button>
+              <button id="file-attachment-button">
+                <i class="fas fa-lg fa-paperclip" class="w-60px"></i>
+              </button>
+              <input
+                type="text"
+                id="message-input"
+                class="message-input"
+                placeholder="Type a message..."
+              />
+              <button id="send-button" class="send-button">Send</button>
+            </div>
+          </div>
+        </section>
+      </main>
+     </body>
+     <script>
+          function openChat(contactName, initialMessage) {
+        document.getElementById("chat-title").innerText = contactName;
+        document.getElementById("chat-messages").innerHTML = `
+                <div class="flex justify-start mb-2">
+                    <div class="message-bubble received" onclick="toggleMessageOptions(this)">
+                        <div>${initialMessage}</div>
+                        <div class="message-meta received">${formatDateTime(
+                          new Date()
+                        )}</div>
+                        <div class="message-options">
+                            <button onclick="replyMessage()">Reply</button>
+                            <button onclick="deleteMessage()">Delete</button>
+                            <button onclick="addReaction()">Add Reaction</button>
+                            <button onclick="copyMessageText()">Copy Message Text</button>
+                            <button onclick="reportMessage()">Report Message</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        document.getElementById("message-input").value = "";
+        document.getElementById("chat-window").style.display = "flex";
+        if (window.innerWidth <= 768) {
+          document.getElementById("message-sidebar").style.display = "none";
+        }
+      }
+
+      document
+        .getElementById("send-button")
+        .addEventListener("click", function () {
+          const messageInput = document.getElementById("message-input");
+          if (messageInput.value.trim() === "") return;
+
+          const messageContent = messageInput.value;
+          const messageContainer = document.createElement("div");
+          messageContainer.className = "flex justify-end mb-2";
+
+          const messageBubble = document.createElement("div");
+          messageBubble.className = "message-bubble sent";
+          messageBubble.innerHTML = `
+                <div>${messageContent}</div>
+                <div class="message-meta sent">${formatDateTime(
+                  new Date()
+                )}</div>
+                <div class="message-options">
+                    <button onclick="replyMessage()">Reply</button>
+                    <button onclick="deleteMessage()">Delete</button>
+                    <button onclick="addReaction()">Add Reaction</button>
+                    <button onclick="copyMessageText()">Copy Message Text</button>
+                    <button onclick="reportMessage()">Report Message</button>
+                </div>
+            `;
+
+          messageContainer.appendChild(messageBubble);
+          document
+            .getElementById("chat-messages")
+            .appendChild(messageContainer);
+          messageInput.value = "";
+          document.getElementById("chat-messages").scrollTop =
+            document.getElementById("chat-messages").scrollHeight;
+        });
+
+      function replyMessage() {
+        alert("Reply functionality is not implemented yet.");
+      }
+
+      function deleteMessage() {
+        alert("Delete functionality is not implemented yet.");
+      }
+
+      function addReaction() {
+        alert("Add reaction functionality is not implemented yet.");
+      }
+
+      function copyMessageText() {
+        alert("Copy message text functionality is not implemented yet.");
+      }
+
+      function reportMessage() {
+        alert("Report message functionality is not implemented yet.");
+      }
+
+      function toggleMessageOptions(messageBubble) {
+        const options = messageBubble.querySelector(".message-options");
+        const allOptions = document.querySelectorAll(".message-options");
+        allOptions.forEach((option) => {
+          if (option !== options) {
+            option.style.display = "none";
+          }
+        });
+        options.style.display =
+          options.style.display === "block" ? "none" : "block";
+      }
+
+      function formatDateTime(date) {
+        const options = { hour: "2-digit", minute: "2-digit", hour12: true };
+        const time = date.toLocaleTimeString([], options);
+        const day = date.toLocaleDateString([], { weekday: "short" });
+        return `${time}, ${day}`;
+      }
+     </script>
+ {% endblock %}

@@ -14,7 +14,7 @@
 
      {% block custom_css %}
     
-      
+
       
       {% endblock %}
     
@@ -43,7 +43,7 @@
           <li>
             <a
               class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-              href="#"
+              href="{% url 'company_inbox' company.id %}"
               ><img
                 class="w-5"
                 src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"

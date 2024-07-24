@@ -1,0 +1,134 @@
+@media (max-width: 768px) {
+    .chat-window {
+        display: none;
+    }
+}
+
+.message-input-container {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #e2e8f0;
+    padding: 0.5rem;
+}
+
+.message-input-container button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+
+.message-input-container input {
+    flex-grow: 1;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    outline: none;
+    padding-left: 1rem;
+    font-size: 0.875rem;
+}
+
+.message-input-container .send-button {
+    background-color: #1e90ff;
+    color: white;
+    border-radius: 9999px;
+    padding: 0.75rem 1.5rem;
+    transition: background-color 0.3s;
+    font-size: 0.875rem;
+    margin-left: 10px;
+}
+
+.message-input-container .send-button:hover {
+    background-color: #2384e6;
+}
+
+.contact-item:hover {
+    background-color: #f0f4f8;
+}
+
+.chat-window {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.message-bubble {
+    max-width: 70%;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    position: relative;
+    word-wrap: break-word;
+    cursor: pointer;
+}
+
+.message-bubble.sent {
+    background-color: #1e90ff;
+    align-self: flex-end;
+    color: white;
+}
+
+.message-bubble.received {
+    background-color: #eceff1;
+    color: #333;
+}
+
+.message-meta {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.25rem;
+}
+
+.message-meta.sent {
+    text-align: right;
+    margin-right: 0.5rem;
+    color: #c5ccd3;
+}
+
+.message-meta.received {
+    text-align: left;
+    margin-left: 0.5rem;
+}
+
+.message-options {
+    display: none;
+    position: absolute;
+    top: 1.5rem;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    z-index: 1000;
+    font-size: 0.875rem;
+    color: black;
+}
+
+.message-options button {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.message-options button:hover {
+    background-color: #f0f0f0;
+}
+
+::-webkit-scrollbar {
+    width: 1px;
+}
