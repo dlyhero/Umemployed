@@ -258,9 +258,10 @@
   {% include 'partials/skills_list.html' with skills=skills %}
 </div>
 
-<div id="pagination-container">
-    {% include 'partials/pagination.html' with skills=skills %}
+<div id="pagination-container" class="flex justify-center items-center p-2 bg-gray-100 rounded-lg shadow-md">
+  {% include 'partials/pagination.html' with skills=skills %}
 </div>
+
 
 <script>
     function fetchSkills(page) {
@@ -319,6 +320,52 @@
 </section>
 
 
+<div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center  hidden">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:[80%] md:[65%] lg:w-[50%] ">
+    <h2 class="font-bold text-lg mb-2">Edit language and country</h2>
+    <hr >
+    <form id="lang-form" class="space-y-4">
+      <div>
+        <label for="language" class="block font-semibold text-gray-700 mt-4">Language of job post</label>
+        <select id="language" name="language" class="block w-full mt-1 p-1 border rounded">
+          <option value="english">English</option>
+          <option value="spanish">Spanish</option>
+        </select>
+      </div>
+      <div>
+        <label for="country" class="block font-semibold text-gray-700">country where job is shown</label>
+        <select id="country" name="country" class="block w-full mt-1 p-1 border rounded">
+          <option value="us">United States</option>
+          <option value="es">Spain</option>
+        </select>
+      </div>
+      <div class="flex justify-end space-x-4">
+        <button type="button" id="cancel-btn" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+        <button type="submit" id="done-btn" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Done</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+  <script>
+
+  document.getElementById('add-lang-btn').addEventListener('click', function() {
+    document.getElementById('modal').classList.remove('hidden');
+  });
+
+  document.getElementById('cancel-btn').addEventListener('click', function() {
+    document.getElementById('modal').classList.add('hidden');
+  });
+
+  document.getElementById('lang-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const language = document.getElementById('language').value;
+    const country = document.getElementById('country').value;
+
+    document.getElementById('modal').classList.add('hidden');
+  });
+</script>
 <section id="experience-sec" class="mb-10 bg-white p-2 rounded-lg">
   <div class="flex justify-between items-center mb-2 p-2">
     <h2 class="font-bold text-xl text-[#1e90ff]">Experience</h2>
