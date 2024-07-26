@@ -105,8 +105,9 @@
 {% block content %}
 
   <main class="flex flex-col lg:flex-row mx-auto w-full max-w-[1300px] mt-4 gap-4">
-<aside class="w-full lg:w-1/4 sm:bg-white rounded-lg p-6 order-3 lg:order-3 h-fit sm:mt-4 sm:border border-gray-300">
-
+     <aside
+        class="w-full lg:w-1/4 sm:bg-white rounded-lg p-6 order-3 lg:order-3 h-fit sm:mt-4 sm:border border-gray-300"
+      >
         <!-- Top Jobs Section -->
         <section class="mb-8">
           <h3 class="text-lg font-semibold text-gray-800 mb-4">Top Jobs</h3>
@@ -264,8 +265,12 @@
         </section>
       </aside>
     <div class="w-full lg:w-1/2 rounded-lg order-2 lg:order-2">
-    <section class="user-profile mx-auto p-6 sm:rounded-lg bg-transparent sm:bg-white sm:border border-gray-300">
-        <div class="profile-header mb-8 flex flex-col md:flex-row items-center md:items-start">
+      <section
+          class="user-profile mx-auto p-6 sm:rounded-lg bg-transparent sm:bg-white sm:border border-gray-300"
+        >
+          <div
+            class="profile-header mb-8 flex flex-col md:flex-row items-center md:items-start"
+          >
             <div class="relative mb-4 md:mb-0">
               <img
                 class="w-32 h-32 rounded-full border-4 border-gray-200"
@@ -447,7 +452,7 @@
         <div class="border border-white bg-white rounded-lg relative w-11/12 md:w-3/4 lg:w-[48%]">
           <div class="flex justify-between items-center border-b p-4 mb-4">
             <p class="font-bold">Add skill</p>
-            <button id="skill-modal-btn" class="text-2xl">&times;</button>
+            <button id="skill-modal-btn"  class="text-2xl">&times;</button>
           </div>
           <div class="w-full p-4 mb-4">
             <label for="input-skill">Skill</label><br />
@@ -480,30 +485,7 @@
     
     
     
-    <!-- JavaScript at the end of the body -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('save-skill-btn').addEventListener('click', function(event) {
-                event.preventDefault(); // Prevent the default form submission
-    
-                // Collect selected skill IDs
-                let selectedSkillIds = [];
-                document.querySelectorAll('.custom-checkbox:checked').forEach(function(checkbox) {
-                    selectedSkillIds.push(checkbox.dataset.id); // Use dataset.id to get the skill ID
-                });
-    
-                console.log("Selected Skill IDs:", selectedSkillIds); // Debug statement
-    
-                // Update the hidden input field with the selected skill IDs
-                document.getElementById('selected-skills').value = JSON.stringify(selectedSkillIds);
-    
-                console.log("Hidden Input Value:", document.getElementById('selected-skills').value); // Debug statement
-    
-                // Submit the form
-                document.getElementById('skills-form').submit();
-            });
-        });
-    </script>
+   
     
     
     
@@ -959,8 +941,12 @@
   </div>
 </section>
     </div>
-   <aside class="w-full lg:w-1/4 sm:bg-white rounded-lg p-6 order-1 lg:order-1 h-fit sm:border border-gray-300 sm:mt-4">
-    <h2 class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2 text-gray-800">Recommended for You</h2>
+    <aside
+        class="w-full lg:w-1/4 sm:bg-white rounded-lg p-6 order-1 lg:order-1 h-fit sm:border border-gray-300 sm:mt-4"
+      >
+        <h2
+          class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2 text-gray-800"
+        >
           Recommended for You
         </h2>
 
@@ -977,7 +963,7 @@
             >
               <div class="flex items-start">
                 <div
-                  class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                  class="w-12 lg:w-20 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
                 >
                   <i class="fas fa-briefcase text-xl"></i>
                 </div>
@@ -998,7 +984,7 @@
             >
               <div class="flex items-start">
                 <div
-                  class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                  class="w-12 h-12 lg:w-20 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
                 >
                   <i class="fas fa-cogs text-xl"></i>
                 </div>
@@ -1020,7 +1006,7 @@
             >
               <div class="flex items-start">
                 <div
-                  class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                  class="w-12 h-12 lg:w-20 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
                 >
                   <i class="fas fa-dollar-sign text-xl"></i>
                 </div>
@@ -1138,6 +1124,37 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
   </main>
 <!--js for deleteing skills -->
+ <!-- JavaScript at the end of the body -->
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('save-skill-btn').addEventListener('click', function(event) {
+          event.preventDefault(); // Prevent the default form submission
+          var button = document.getElementById("add-skill-btn");
+
+// Add a click event listener to the button
+button.addEventListener("click", function() {
+  // Show an alert message when the button is clicked
+  alert("Button clicked!");
+});
+
+          // Collect selected skill IDs
+          let selectedSkillIds = [];
+          document.querySelectorAll('.custom-checkbox:checked').forEach(function(checkbox) {
+              selectedSkillIds.push(checkbox.dataset.id); // Use dataset.id to get the skill ID
+          });
+
+          console.log("Selected Skill IDs:", selectedSkillIds); // Debug statement
+
+          // Update the hidden input field with the selected skill IDs
+          document.getElementById('selected-skills').value = JSON.stringify(selectedSkillIds);
+
+          console.log("Hidden Input Value:", document.getElementById('selected-skills').value); // Debug statement
+
+          // Submit the form
+          document.getElementById('skills-form').submit();
+      });
+  });
+</script>
 <script>
     function deleteSkill(skillId) {
         fetch(`/dashboard/delete-skill/${skillId}/`, {
