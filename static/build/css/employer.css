@@ -1,72 +1,66 @@
 /* Add this to your CSS file */
 .aside-item {
-    transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .aside-item.active {
-    background-color: #222a38;
-    /* Darker slate gray */
-    color: white;
+  background-color: #222a38; /* Darker slate gray */
+  color: white;
 }
 
 .aside-item:hover {
-    background-color: #222a38;
-    /* Even darker slate gray for hover effect */
-    color: white;
+  background-color: #222a38; /* Even darker slate gray for hover effect */
+  color: white;
 }
-
-@media (min-width: 768px) {
-    #aside-menu{
-        height: 100vh;
-    }
-}
-
 @media (max-width: 640px) {
-    @keyframes slideIn {
-        0% {
-            transform: translateX(-100%);
-        }
-
-        100% {
-            transform: translateX(0);
-        }
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
     }
-
-    @keyframes slideOut {
-        0% {
-            transform: translateX(0);
-        }
-
-        100% {
-            transform: translateX(-100%);
-        }
+    100% {
+      transform: translateX(0);
     }
-
-    #aside-menu {
-        transition: transform 0.5s ease-in-out;
+  }
+  
+  @keyframes slideOut {
+    0% {
+      transform: translateX(0);
     }
-
-    #aside-menu.hidden {
-        transform: translateX(-100%);
-        animation: slideOut 0.5s forwards;
+    100% {
+      transform: translateX(-100%);
     }
-
-    #aside-menu.block {
-        transform: translateX(0);
-        animation: slideIn 0.5s forwards;
-    }
+  }
+  
+  #aside-menu {
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  #aside-menu.hidsen {
+    transform: translateX(-100%);
+    animation: slideOut 0.5s forwards;
+  }
+  
+  #aside-menu.block {
+    transform: translateX(0);
+    animation: slideIn 0.5s forwards;
+  }
 }
 
 
 
-@media (min-width: 1024px) {
+  @media (min-width: 1024px) {
     .job-section {
         display: grid;
         grid-template-columns: 2% 18% 32% 20% 10% 4%;
         gap: 1rem;
         align-items: center;
     }
-        #aside-menu {
-            height: 100vh;
-        }
-}
+  }
+
+  .profile-pic{
+    background-position: center;
+    background-size: contain;
+  }
+
+  
+

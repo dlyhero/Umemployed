@@ -1,0 +1,412 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Messages</title>
+    <link rel="icon" href="./build/logo/logo-color.png" />
+    <link rel="icon" href="./build/logo/logo-color.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="{% static 'build/css/sidebar_recriuter.css' %}" />
+  
+    <link rel="stylesheet" href="{% static 'build/css/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/message.css' %}" />
+  </head>
+  <body class="bg-gray-100 text-sm">
+    <!-- Header -->
+    <header
+      class="sticky top-0 left-0 right-0 flex justify-between items-center md:border-b px-4 md:px-5 py-3 bg-white z-[100] shadow-md sm:shadow-none"
+    >
+      <div class="flex items-center gap-x-3 md:gap-2">
+        <div class="logo-wrap flex items-center">
+          <img
+            class="w-7 md:w-9"
+            src="{% static 'build/logo/logo-color.png' %}"
+            alt="Logo"
+          />
+          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+            >UmEmployed</span
+          >
+        </div>
+        <a
+          class="header-link flex items-center hidden md:block p-2 rounded"
+          href="./home1.html"
+        >
+          <i class="fas fa-home"></i>
+          Home</a
+        >
+      </div>
+      <nav class="flex md:gap-x-4 items-center">
+        <ul class="flex gap-x-2 md:gap-x-4 items-center">
+          <li class="relative">
+            <a
+              id="messages-link"
+              class="header-link flex items-center gap-1 p-2 rounded"
+              href="./messages_jobseeker.html"
+            >
+              <i
+                id="messages-icon"
+                class="fas fa-lg fa-comments text-xl icon"
+              ></i>
+              <span class="hidden md:block">Messages</span>
+              <div
+                class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+              >
+                3
+              </div>
+            </a>
+          </li>
+          <li class="relative">
+            <a
+              id="notifications-link"
+              class="header-link flex items-center gap-1 p-2 rounded"
+              href="./notification.html"
+            >
+              <i id="notifications-icon" class="fas fa-bell text-xl icon"></i>
+              <span class="hidden md:block">Notifications</span>
+              <div
+                class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+              >
+                3
+              </div>
+            </a>
+          </li>
+          <li class="relative cursor-pointer">
+            <button
+              id="user-btn"
+              class="header-link flex gap-1 p-2 rounded flex items-center"
+            >
+              <i id="user-icon" class="fas fa-user text-xl icon"></i>
+              <span class="hidden md:block">User</span>
+            </button>
+            <div
+              id="backdrop-menu"
+              class="hidden fixed flex justify-end pr-[19px] sm:pr-[100px] z-[100] top-0 bottom-0 left-0 right-0 bg-transparent"
+            >
+              <div
+                class="absolute bg-white top-[60px] z-[100] min-w-[280px] sm:w-[350px] border border-gray-400 rounded shadow-lg"
+              >
+                <div
+                  class="user-mail py-3 px-6 font-bold text-gray-700 border-b border-gray-300"
+                >
+                  enugodwillenwe@gmail.com
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="./profile.html" class="flex items-center gap-2">
+                    <i class="fas fa-user w-5 text-gray-500"></i>
+                    Profile
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="./resume.html" class="flex items-center gap-2">
+                    <i class="fas fa-file-alt w-5 text-gray-500"></i>
+                    Resume
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-2">
+                    <i class="fas fa-question-circle w-5 text-gray-500"></i>
+                    Resume Help
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="./index.html" class="flex items-center gap-2">
+                    <i class="fas fa-briefcase w-5 text-gray-500"></i>
+                    My Jobs
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-2">
+                    <i class="fas fa-star w-5 text-gray-500"></i>
+                    My Reviews
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-2">
+                    <i class="fas fa-cogs w-5 text-gray-500"></i>
+                    Settings
+                  </a>
+                </div>
+                <hr class="my-2" />
+                <div class="flex py-4 px-6 text-gray-700 justify-center">
+                  <button class="signout-btn text-[#1e90ff] font-bold">
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="md:hidden">
+            <button id="menu-btn" class="text-xl">
+              <i class="fas fa-bars"></i>
+            </button>
+          </li>
+        </ul>
+        <div class="hidden md:block">
+          <div class="flex">
+            <div class="border-l h-[40px]"></div>
+            <span class="ml-2 text-nowrap p-2 rounded">
+              <a class="header-link text-nowrap" href="./switchaccounttype.html"
+                >Employers / Post Job</a
+              >
+            </span>
+          </div>
+        </div>
+      </nav>
+      <div
+        id="sidebar"
+        class="fixed inset-0 bg-black bg-opacity-50 z-2 hidden transition-all"
+      >
+        <div
+          class="sidebar-content h-fit p-6 bg-white rounded-lg shadow-lg mx-auto max-w-xs lg:max-w-sm transition-all transform hidden-sidebar"
+        >
+          <!-- Sidebar Header -->
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-gray-900">Menu</h2>
+            <button
+              id="remove-btn"
+              class="text-2xl text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              &times;
+            </button>
+          </div>
+          <!-- Navigation Items -->
+          <nav>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="./home1.html"
+            >
+              <i class="fas fa-home text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Home</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="./profile.html"
+            >
+              <i class="fas fa-user text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Profile</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="./resume.html"
+            >
+              <i class="fas fa-file-alt text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Resume</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-briefcase text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Jobs</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-cogs text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Settings</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-dollar-sign text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Find Salaries</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-sign-out-alt text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Logout</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-exchange-alt text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Switch Account Type</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <!-- Main Content -->
+    <main class="flex flex-1 overflow-hidden bg-gray-100 sm:p-2 sm:gap-2 ">
+      <!-- Sidebar -->
+      <aside
+        id="message-sidebar"
+        class="md:block bg-white sm:rounded-lg w-full sm:w-[30%] border-r border-gray-200 overflow-y-auto relative sm:shadow-md"
+      >
+        <div class="flex flex-col sticky top-0 left-0 right-0 bg-white">
+          <div
+            class="px-4 py-2 flex justify-between items-center border-b border-gray-200"
+          >
+            <h2 class="text-xl font-bold text-gray-900">Messages</h2>
+            <button
+              id="add-message-btn"
+              class="px-3 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+            >
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <input
+            type="text"
+            id="search-messages"
+            class="w-[95%] mx-auto p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 mt-4"
+            placeholder="Search messages..."
+          />
+        </div>
+        <div class="p-4">
+          <ul id="message-list" class="space-y-2">
+            <li
+              class="message-item gap-2 flex items-center mb-4 p-2 bg-gray-100 rounded-lg cursor-pointer"
+              data-username="John Doe"
+              data-message="Hey, are you available for a quick meeting tomorrow?"
+              data-profile="user1.jpg"
+            >
+              <img
+                src="https://via.placeholder.com/40"
+                alt="Profile Picture"
+                class="w-12 h-12 rounded-full"
+              />
+              <div class="overflow-hidden">
+                <h3 class="text-md font-semibold text-gray-900">John Doe</h3>
+                <p class="text-sm text-gray-600 truncate">
+                  Hey, are you available for a quick meeting tomorrow?
+                </p>
+              </div>
+            </li>
+            <li
+              class="message-item gap-2 flex items-center mb-4 p-2 bg-gray-100 rounded-lg cursor-pointer"
+              data-username="Jane Smith"
+              data-message="I have reviewed your profile and would like to discuss..."
+              data-profile="user2.jpg"
+            >
+              <img
+                src="https://via.placeholder.com/40"
+                alt="Profile Picture"
+                class="w-12 h-12 rounded-full"
+              />
+              <div class="overflow-hidden">
+                <h3 class="text-md font-semibold text-gray-900">Jane Smith</h3>
+                <p class="text-sm text-gray-600 truncate">
+                  I have reviewed your profile and would like to discuss...
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </aside>
+      <!-- Chat Window -->
+      <section id="chat-window" class="flex flex-col flex-1 hidden md:flex sm:rounded-lg sm:shadow-md">
+        <header
+          id="chat-header"
+          class="px-4 py-2 flex justify-between items-center bg-white border-b border-gray-200 sm:rounded-t-lg"
+        >
+          <div class="flex items-center gap-3">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="Profile Picture"
+              id="chat-header-profile"
+              class="w-10 h-10 rounded-full"
+            />
+            <h2
+              id="chat-header-username"
+              class="text-xl font-bold text-gray-900"
+            >
+              John Doe
+            </h2>
+          </div>
+          <button
+            id="back-button"
+            class="text-gray-500 hover:text-gray-700 transition lg:hidden"
+          >
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+        </header>
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50">
+          <div class="message-container received flex mb-4">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="Profile Picture"
+              class="w-10 h-10 rounded-full mr-3"
+            />
+            <div>
+              <div class="bg-gray-200 p-3 rounded-lg">
+                <p class="text-sm text-gray-900">
+                  Hey, are you available for a quick meeting tomorrow?
+                </p>
+              </div>
+              <span class="text-xs text-gray-600 mt-1 block">10:30 AM</span>
+            </div>
+          </div>
+          <div class="message-container sent flex mb-4 gap-3">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="Profile Picture"
+              class="w-10 h-10 rounded-full ml-3"
+            />
+            <div>
+              <div class="bg-blue-500 text-white p-3 rounded-lg">
+                <p class="text-sm">
+                  Yes, I am available. Let me know the time.
+                </p>
+              </div>
+              <span class="text-xs text-gray-600 mt-1 block">10:32 AM</span>
+            </div>
+          </div>
+        </div>
+        <div
+         id="chat-form"
+          class="px-4 py-2 bg-white border-t border-gray-200 flex items-center sm:rounded-b-lg"
+        >
+          <button id="emoji-button" class="p-2">
+            <i class="fas fa-lg fa-grin-beam"></i>
+          </button>
+          <button id="file-attachment-button" class="p-2">
+            <i class="fas fa-lg fa-paperclip"></i>
+          </button>
+          <input
+            type="text"
+            id="message-input"
+            class="flex-1 p-2 border border border-gray-300 rounded-l-lg outline-none"
+            placeholder="Type a message..."
+          />
+          <button
+            id="send-message"
+            class="bg-blue-500 text-white px-4 py-[9.2px] rounded-r-lg hover:bg-blue-600 transition"
+          >
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="{% build/static 'scripts/messages.js' %}"></script>
+    <script src="{% build/static 'scripts/header.js' %}"></script>
+    <script src="{% build/static 'scripts/sidebar_recruiter.js' %}"></script>
+  </body>
+</html>
