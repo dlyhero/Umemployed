@@ -9,6 +9,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'build/css/profile.css' %}" />
     <link rel="stylesheet" href="{% static 'build/css/general.css' %}">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      {% block custom_css %}
     
@@ -25,122 +29,236 @@
   </head>
   <body class="text-sm relative bf-white md:bg-gray-50">
     <header
-      class="flex justify-between sticky items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 mb-5 bg-white"
-    >
-      <div class="flex items-center gap-x-3 md:gap-1">
-        <div class="logo-wrap flex items-center">
-          <img class="w-7 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
-          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
-            >UmEmployed</span
-          >
-        </div>
-        
-        
-        
-      </div>
-      <nav class="flex gap-x-2 items-center">
-            <ul class="flex gap-x-2 md:gap-x-6 items-center">
-          <li>
-                    <a class="flex hover:bg-blue-50 transition-colors p-2 rounded" href="{% url 'home' %}">
-                        <img class="w-6" src="{% static 'build/img/home-svgrepo-com.svg' %}" alt="home icon" />
-                        <span class="hidden md:block">Home</span>
-                    </a>
-                </li>
-          <li>
-            <a
-              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-              href="#"
-              ><img
-                class="w-5"
-                src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
-                alt="message icon"
-              />
-              <span class="hidden md:block">Messages</span>
-            </a>
-          </li>
-          <li>
-            <a
-              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded flex items-center"
-              href="#"
-              ><img
-                class="w-[18px]"
-                src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
-                alt="notification icon"
-              />
-              <span class="hidden md:block">Notifications</span>
-            </a>
-          </li>
-         
-          <li class="md:hidden">
-            <button id="menu-btn" class="text-xl">
-              <img class="w-5" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
-            </button>
-          </li>
-        </ul>
-        <div class="hidden md:block">
-          <div class="flex">
-            <div class="border-l h-[40px] ="></div>
-            <span
-              class="ml-2 text-nowrap hover:bg-blue-50 transition-colors p-2 rounded"
-              >
-              <a class="text-nowrap" href="{% url 'switch_account_type' %}"
-                >
-                 Switch to Employer</a
-              >
-              
-            </span>
-          </div>
-        </div>
-      </nav>
-       <div
-        id="sidebar"
-        class="font-bold fixed bg-[#8080803e] md:bg-none z-10 hidden top-0 bottom-0 left-0 right-0 p-10"
-      >
-        <div
-          class="sidebar-conten h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+    class="sticky top-0 left-0 right-0 flex justify-between items-center md:border-b px-4 md:px-5 py-3 bg-white shadow-md"
+  >
+    <div class="flex items-center gap-x-3 md:gap-2">
+      <div class="logo-wrap flex items-center">
+        <img
+          class="w-7 md:w-9"
+          src="{% static 'build/logo/logo-color.png' %}" 
+          alt="Logo"
+        />
+        <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+          >UmEmployed</span
         >
-          <div class="btn-wrap text-end">
-            <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
-              &times
-            </button>
-          </div>
+      </div>
+      
+    </div>
+    <nav class="flex md:gap-x-4 items-center">
+      <ul class="flex gap-x-2 md:gap-x-4 items-center">
+        <a
+        class="header-link flex items-center hidden md:block p-2 rounded"
+        href="{% url 'home' %}"
+      >
+        <i class="fas fa-home"></i>
+        Home</a
+      >
+        <li class="relative">
+          <a
+            id="messages-link"
+            class="header-link flex items-center gap-1 p-2 rounded"
+            href="./messages_jobseeker.html"
+          >
+            <i
+              id="messages-icon"
+              class="fas fa-lg fa-comments text-xl icon"
+            ></i>
+            <span class="hidden md:block">Messages</span>
+            <div
+              class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+            >
+              3
+            </div>
+          </a>
+        </li>
+        <li class="relative">
+          <a
+            id="notifications-link"
+            class="header-link flex items-center gap-1 p-2 rounded"
+            href="./notification.html"
+          >
+            <i id="notifications-icon" class="fas fa-bell text-xl icon"></i>
+            <span class="hidden md:block">Notifications</span>
+            <div
+              class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+            >
+              3
+            </div>
+          </a>
+        </li>
+        <li class="relative cursor-pointer">
+          <button
+            id="user-btn"
+            class="header-link flex gap-1 p-2 rounded flex items-center"
+          >
+            <i id="user-icon" class="fas fa-user text-xl icon"></i>
+            <span class="hidden md:block">User</span>
+          </button>
           <div
-            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+            id="backdrop-menu"
+            class="hidden fixed flex justify-end pr-[19px] sm:pr-[100px] z-[100] top-0 bottom-0 left-0 right-0 bg-transparent"
           >
-            <a class="flex justify-between items-center" href="{% url 'home' %}">Home </a>
+            <div
+              class="absolute bg-white top-[60px] z-[100] min-w-[280px] sm:w-[350px] border border-gray-400 rounded shadow-lg"
+            >
+              <div
+                class="user-mail py-3 px-6 font-bold text-gray-700 border-b border-gray-300"
+              >
+                enugodwillenwe@gmail.com
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="./profile.html" class="flex items-center gap-2">
+                  <i class="fas fa-user w-5 text-gray-500"></i>
+                  Profile
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="./resume.html" class="flex items-center gap-2">
+                  <i class="fas fa-file-alt w-5 text-gray-500"></i>
+                  Resume
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="#" class="flex items-center gap-2">
+                  <i class="fas fa-question-circle w-5 text-gray-500"></i>
+                  Resume Help
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="./index.html" class="flex items-center gap-2">
+                  <i class="fas fa-briefcase w-5 text-gray-500"></i>
+                  My Jobs
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="#" class="flex items-center gap-2">
+                  <i class="fas fa-star w-5 text-gray-500"></i>
+                  My Reviews
+                </a>
+              </div>
+              <div
+                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+              >
+                <a href="#" class="flex items-center gap-2">
+                  <i class="fas fa-cogs w-5 text-gray-500"></i>
+                  Settings
+                </a>
+              </div>
+              <hr class="my-2" />
+              <div class="flex py-4 px-6 text-gray-700 justify-center">
+                <button class="signout-btn text-[#1e90ff] font-bold">
+                  Sign out
+                </button>
+              </div>
+            </div>
           </div>
-          <div
-            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-          >
-            <a class="flex justify-between items-center" href="{% url 'dashboard' %}"
-              >Profile
-            </a>
-          </div>
-          <div
-            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-          >
-            <a class="flex justify-between items-center" href="./resume.html"
-              >Resume
-            </a>
-          </div>
-          <div
-            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-          >
-            <a class="flex justify-between items-center" href="#">Jobs </a>
-          </div>
-          <div
-            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-          >
-            <a class="flex justify-between items-center" href="#">Settings </a>
-          </div>
-           <div
-            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-          >
-            <a class=" swal-logout flex justify-between items-center" href="{% url 'logout' %}">Logout </a>
-          </div>
+        </li>
+        <li class="md:hidden">
+          <button id="menu-btn" class="text-xl">
+            <i class="fas fa-bars"></i>
+          </button>
+        </li>
+      </ul>
+      <div class="hidden md:block">
+        <div class="flex">
+          <div class="border-l h-[40px]"></div>
+          <span class="ml-2 text-nowrap p-2 rounded">
+            <a class="header-link text-nowrap" href="{% url 'switch_account_type' %}"
+              >Switch to Employer</a
+            >
+          </span>
         </div>
       </div>
-    </header>
+    </nav>
+    <div
+      id="sidebar"
+      class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden transition-all"
+    >
+      <div
+        class="sidebar-content h-fit p-6 bg-white rounded-lg shadow-lg mx-auto max-w-xs lg:max-w-sm transition-all transform hidden-sidebar"
+      >
+        <!-- Sidebar Header -->
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-gray-900">Menu</h2>
+          <button
+            id="remove-btn"
+            class="text-2xl text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            &times;
+          </button>
+        </div>
+        <!-- Navigation Items -->
+        <nav>
+          <a
+            class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+            href="{% url 'home' %}"
+          >
+            <i class="fas fa-home text-gray-500 mr-3"></i>
+            <span class="text-gray-800 font-medium">Home</span>
+          </a>
+          <a
+            class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+            href="{% url 'dashboard' %}"
+          >
+            <i class="fas fa-user text-gray-500 mr-3"></i>
+            <span class="text-gray-800 font-medium">Profile</span>
+          </a>
+          <a
+            class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+            href="./resume.html"
+          >
+            <i class="fas fa-file-alt text-gray-500 mr-3"></i>
+            <span class="text-gray-800 font-medium">Resume</span>
+          </a>
+          <a
+            class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+            href="#"
+          >
+            <i class="fas fa-briefcase text-gray-500 mr-3"></i>
+            <span class="text-gray-800 font-medium">Jobs</span>
+          </a>
+          <a
+            class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+            href="#"
+          >
+            <i class="fas fa-cogs text-gray-500 mr-3"></i>
+            <span class="text-gray-800 font-medium">Settings</span>
+          </a>
+          <a
+            class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+            href="#"
+          >
+            <i class="fas fa-dollar-sign text-gray-500 mr-3"></i>
+            <span class="text-gray-800 font-medium">Find Salaries</span>
+          </a>
+          <a
+            class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+            href="{% url 'logout' %}"
+          >
+            <i class="fas fa-sign-out-alt text-gray-500 mr-3"></i>
+            <span class="text-gray-800 font-medium">Logout</span>
+          </a>
+          <a
+            class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+            href="{% url 'switch_account_type' %}"
+          >
+            <i class="fas fa-exchange-alt text-gray-500 mr-3"></i>
+            <span class="text-gray-800 font-medium">Switch Account Type</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </header>
 
     <div class="primary">
       
