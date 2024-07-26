@@ -71,6 +71,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms import UserLanguageForm,UserProfileForm
 from resume.models import UserProfile,UserLanguage
 import pycountry
+from job.models import Job
+from django.db.models import Avg
+
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -154,6 +157,9 @@ def dashboard(request):
 
     user_languages = UserLanguage.objects.filter(user_profile=user_profile)
     
+    top_jobs = Job.objects.order_by('-id')[:5]
+    matching_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=50.0)
+
 
     context = {
         'contact_info': contact_info,
@@ -170,6 +176,8 @@ def dashboard(request):
         'user_profile': user_profile,
         'user_languages': user_languages,
         'country_name':country_name,
+        'top_jobs':top_jobs,
+        'matching_jobs':matching_jobs,
     }
 
     return render(request, 'dashboard/dashboard.html', context)
