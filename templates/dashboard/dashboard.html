@@ -59,6 +59,46 @@
 
 
 
+/* style for education modal */
+
+  /* Modal Background */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black background with opacity */
+  }
+
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+  }
+
+  /* Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+
     </style>  
       
   {% endblock %}
@@ -139,12 +179,7 @@
         {% csrf_token %}
         <div class="w-full p-4 mb-2">
           <label for="job"> Job </label><br />
-          <input
-            class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]"
-            type="text"
-            id="job"
-            placeholder="skill (ex: Career Counselor)"
-          />
+          
         </div>
         <div class="p-2 border rounded-lg mb-4 mx-4 bg-blue-50">
           <select
@@ -296,56 +331,108 @@
 
 
 <section id="lang-sec" class="mb-10 bg-white p-2 rounded-lg">
-  <div class="flex justify-between items-center mb-2 p-2">
-    <h2 class="font-bold text-xl text-[#1e90ff]">Languages</h2>
-    <button class="w-6" id="add-lang-btn">
-      <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
-    </button>
-  </div>
-  <div id="lang-wrap" class="p-2">
-    {% for language in languages %}
-    <div class="language border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
-      <p class="type">{{ language.name }}</p>
-      <div class="btn-wraps flex gap-4">
-        <button class="w-5 edit-lang-btn">
-          <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+    <div class="flex justify-between items-center mb-2 p-2">
+        <h2 class="font-bold text-xl text-[#1e90ff]">Languages</h2>
+        <button class="w-6" id="add-lang-btn" onclick="showLanguageModal()">
+            <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
         </button>
-        <button class="w-6 delete-lang-btn">
-          <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
-        </button>
-      </div>
     </div>
-    {% endfor %}
-  </div>
+    <div id="saved-languages" class="p-2">
+        <ul>
+            {% for user_language in user_languages %}
+                <li id="language-{{ user_language.id }}" class="flex  items-center border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+                    {{ user_language.language }}
+                    <button class="w-6" onclick="deleteLanguage({{ user_language.id }})">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMTAgMTJWMTciIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTE0IDEyVjE3IiBzdHJva2U9IiNGRjAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiAvPgogIDxwYXRoIGQ9Ik00IDdIMjAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTYgMTBWMThDNiAxOS42NTY5IDcuMzQzMTUgMjEgOSAyMUgxNUMxNi42NTY5IDIxIDE4IDE5LjY1NjkgMTggMThWMTAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTkgNUM5IDMuODk1NDMgOS44OTU0MyAzIDExIDNIMTNDMTQuMTA0NiAzIDE1IDMuODk1NDMgMTUgNVY3SDlWNVoiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+Cjwvc3ZnPg==" alt="delete icon" />
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </section>
 
+<section id="country-sec" class="mb-10 bg-white p-2 rounded-lg">
+    <div class="flex justify-between items-center mb-2 p-2">
+        <h2 class="font-bold text-xl text-[#1e90ff]">Country</h2>
+        <button class="w-6" id="edit-country-btn" onclick="showCountryModal()">
+            <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+        </button>
+    </div>
+    <div id="saved-country" class="p-3 border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+        <p>{{ country_name }}</p>
+    </div>
+</section>
 
-<div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center  hidden">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:[80%] md:[65%] lg:w-[50%] ">
-    <h2 class="font-bold text-lg mb-2">Edit language and country</h2>
-    <hr >
-    <form id="lang-form" class="space-y-4">
-      <div>
-        <label for="language" class="block font-semibold text-gray-700 mt-4">Language of job post</label>
-        <select id="language" name="language" class="block w-full mt-1 p-1 border rounded">
-          <option value="english">English</option>
-          <option value="spanish">Spanish</option>
-        </select>
-      </div>
-      <div>
-        <label for="country" class="block font-semibold text-gray-700">country where job is shown</label>
-        <select id="country" name="country" class="block w-full mt-1 p-1 border rounded">
-          <option value="us">United States</option>
-          <option value="es">Spain</option>
-        </select>
-      </div>
-      <div class="flex justify-end space-x-4">
-        <button type="button" id="cancel-btn" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
-        <button type="submit" id="done-btn" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Done</button>
-      </div>
-    </form>
-  </div>
+<!-- Language Modal -->
+<div id="language-modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
+        <h2 class="font-bold text-lg mb-2">Add Language</h2>
+        <hr>
+        <form method="post" action="{% url 'dashboard' %}" class="space-y-4">
+            {% csrf_token %}
+            {{ language_form.as_p }}
+            <div class="flex justify-end space-x-4">
+                <button type="button" id="cancel-lang-btn" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Save</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<!-- Country Modal -->
+<div id="country-modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
+        <h2 class="font-bold text-lg mb-2">Edit Country</h2>
+        <hr>
+        <form method="post" action="{% url 'dashboard' %}" class="space-y-4">
+            {% csrf_token %}
+            {{ profile_form.as_p }}
+            <div class="flex justify-end space-x-4">
+                <button type="button" id="cancel-country-btn" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showLanguageModal() {
+        document.getElementById('language-modal').classList.remove('hidden');
+    }
+
+    function showCountryModal() {
+        document.getElementById('country-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('cancel-lang-btn').addEventListener('click', function() {
+        document.getElementById('language-modal').classList.add('hidden');
+    });
+
+    document.getElementById('cancel-country-btn').addEventListener('click', function() {
+        document.getElementById('country-modal').classList.add('hidden');
+    });
+
+    function deleteLanguage(languageId) {
+        fetch(`/dashboard/delete_language/${languageId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById(`language-${languageId}`).remove();
+            } else {
+                alert('Failed to delete language: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('An error occurred: ' + error);
+        });
+    }
+</script>
 
 
   <script>
@@ -374,8 +461,8 @@
     </button>
   </div>
   <div id="experience-wrap" class="p-2">
-    {% for experience in experiences %}
-    <div class="experience border p-5 mb-2 rounded-lg font-bold flex justify-between items-center">
+    {% for experience in work_experiences %}
+    <div id="experience-{{ experience.id }}" class="experience border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
       <div>
         <p class="company-name">{{ experience.company_name }}</p>
         <p class="role">{{ experience.role }}</p>
@@ -389,10 +476,10 @@
         </p>
       </div>
       <div class="btn-wraps flex gap-4">
-        <button class="w-5" id="edit-experience-btn">
+        <button class="w-5" onclick="editExperience({{ experience.id }})">
           <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
         </button>
-        <button class="w-6" id="delete-experience-btn">
+        <button class="w-6" onclick="deleteExperience({{ experience.id }})">
           <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
         </button>
       </div>
@@ -401,6 +488,86 @@
   </div>
 </section>
 
+<!-- Experience Modal -->
+<div id="experience-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
+        <h2 class="font-bold text-lg mb-4" id="modal-title">Add/Edit Experience</h2>
+        <hr class="mb-4">
+        <form id="experience-form-id" method="post" action="{% url 'save_experience' %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" id="experience-id" name="id">
+            <div>
+                <label for="company_name" class="block font-medium">Company Name:</label>
+                <input type="text" id="company_name" name="company_name" class="w-full p-2 border rounded" required>
+            </div>
+            <div>
+                <label for="role" class="block font-medium">Role:</label>
+                <input type="text" id="role" name="role" class="w-full p-2 border rounded" required>
+            </div>
+            <div>
+                <label for="start_date" class="block font-medium">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" class="w-full p-2 border rounded">
+            </div>
+            <div>
+                <label for="end_date" class="block font-medium">End Date:</label>
+                <input type="date" id="end_date" name="end_date" class="w-full p-2 border rounded">
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button type="button" id="cancel-edit" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const addExperienceBtn = document.getElementById('add-experience-btn');
+    const experienceModal = document.getElementById('experience-modal');
+    const experienceFormId = document.getElementById('experience-form-id');
+    const experienceIdInput = document.getElementById('experience-id');
+
+    addExperienceBtn.addEventListener('click', () => {
+        experienceFormId.reset(); // Reset form fields
+        experienceIdInput.value = ''; // Clear the ID for new entries
+        experienceModal.classList.remove('hidden'); // Show the modal
+    });
+
+    document.getElementById('cancel-edit').addEventListener('click', () => {
+        experienceModal.classList.add('hidden'); // Hide the modal
+    });
+
+    window.editExperience = (id) => {
+        fetch(`/dashboard/experience/${id}/`) // Your URL pattern for fetching experience details
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('company_name').value = data.company_name;
+                document.getElementById('role').value = data.role;
+                document.getElementById('start_date').value = data.start_date;
+                document.getElementById('end_date').value = data.end_date;
+                experienceIdInput.value = id;
+                experienceModal.classList.remove('hidden'); // Show the modal
+            });
+    };
+
+    window.deleteExperience = (id) => {
+        fetch(`/dashboard/experience/${id}/delete/`, { // Your URL pattern for deleting experience
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        })
+        .then(() => {
+            document.getElementById(`experience-${id}`).remove();
+        });
+    };
+});
+
+
+</script>
+
 <section id="education-sec" class="mb-10 bg-white p-2 rounded-lg">
   <div class="flex justify-between items-center mb-2 p-2">
     <h2 class="font-bold text-xl text-[#1e90ff]">Education</h2>
@@ -408,28 +575,98 @@
       <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
     </button>
   </div>
-  
 
-  <div id="" class="p-2">
+  <div id="education-list" class="p-2">
     {% for education in educations %}
-    <div id="skill-{{ skill.id }}" class="skill border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+    <div id="education-{{ education.id }}" class="education border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
         <div>
         <p class="institution-name">{{ education.institution_name }}</p>
         <p class="degree">{{ education.degree }}</p>
         <p class="dates">{{ education.graduation_year }}</p>
       </div>
         <div class="btn-wraps flex gap-4">
-            <button class="w-5" id="edit-skill-btn">
+            <button class="w-5" onclick="editEducation({{ education.id }})">
                 <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
             </button>
-            <button class="w-6" id="delete-skill-btn" onclick="deleteSkill({{ skill.id }})">
+            <button class="w-6" onclick="deleteEducation({{ education.id }})">
                 <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMTAgMTJWMTciIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTE0IDEyVjE3IiBzdHJva2U9IiNGRjAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiAvPgogIDxwYXRoIGQ9Ik00IDdIMjAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTYgMTBWMThDNiAxOS42NTY5IDcuMzQzMTUgMjEgOSAyMUgxNUMxNi42NTY5IDIxIDE4IDE5LjY1NjkgMTggMThWMTAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTkgNUM5IDMuODk1NDMgOS44OTU0MyAzIDExIDNIMTNDMTQuMTA0NiAzIDE1IDMuODk1NDMgMTUgNVY3SDlWNVoiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+Cjwvc3ZnPg==" alt="delete icon" />
             </button>
         </div>
     </div>
     {% endfor %}
+  </div>
+
+ <!-- Modal Structure -->
+<div id="education-modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
+        <h2 id="modal-title" class="font-bold text-lg mb-2">Add/Edit Education</h2>
+        <hr class="my-2">
+        <form id="education-form-id" method="post" action="{% url 'save_education' %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" id="education-id" name="id">
+            <div>
+                <label for="institution_name" class="block font-semibold">Institution Name:</label>
+                <input type="text" id="institution_name" name="institution_name" required class="w-full border rounded p-2">
+            </div>
+            <div>
+                <label for="degree" class="block font-semibold">Degree:</label>
+                <input type="text" id="degree" name="degree" required class="w-full border rounded p-2">
+            </div>
+            <div>
+                <label for="graduation_year" class="block font-semibold">Graduation Year:</label>
+                <input type="number" id="graduation_year" name="graduation_year" required class="w-full border rounded p-2">
+            </div>
+            <div class="flex justify-end space-x-4 mt-4">
+                <button type="button" id="cancel-edit" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Save</button>
+            </div>
+        </form>
+    </div>
 </div>
+
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const educationModal = document.getElementById('education-modal');
+  const addEducationBtn = document.getElementById('add-education-btn');
+  const cancelEditBtn = document.getElementById('cancel-edit');
+
+  addEducationBtn.addEventListener('click', () => {
+    educationModal.classList.remove('hidden');
+    document.getElementById('education-form-id').reset();
+    document.getElementById('education-id').value = ''; // Clear the ID for new entries
+  });
+
+  window.editEducation = (id) => {
+      fetch(`/dashboard/education/${id}/`) // Your URL pattern for fetching education details
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('institution_name').value = data.institution_name;
+          document.getElementById('degree').value = data.degree;
+          document.getElementById('graduation_year').value = data.graduation_year;
+          document.getElementById('education-id').value = id;
+          educationModal.classList.remove('hidden');
+        });
+  };
+  window.deleteEducation = (id) => {
+    fetch(`/dashboard/education/${id}/delete/`, {
+      method: 'DELETE',
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+    })
+      .then(() => {
+        document.getElementById(`education-${id}`).remove();
+      });
+  };
+
+  cancelEditBtn.addEventListener('click', () => {
+    educationModal.classList.add('hidden');
+  });
+});
+
+</script>
   </main>
 <!--js for deleteing skills -->
 <script>

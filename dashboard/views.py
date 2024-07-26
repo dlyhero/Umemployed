@@ -68,6 +68,9 @@ def update_user_skills(request):
     return redirect('dashboard')
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .forms import UserLanguageForm,UserProfileForm
+from resume.models import UserProfile,UserLanguage
+import pycountry
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -99,8 +102,6 @@ def dashboard(request):
             resume_doc = ResumeDoc.objects.get(user=request.user)
             extracted_skills = resume_doc.extracted_skills.all()  # Access as queryset
 
-            # Print extracted_skills for debugging
-
             # Iterate through the queryset and add skills to the resume
             for skill in extracted_skills:
                 resume.skills.add(skill)
@@ -108,7 +109,6 @@ def dashboard(request):
             resume.save()  # Save the updated resume
 
         except ResumeDoc.DoesNotExist:
-            print("ResumeDoc does not exist for the user.")
             pass
 
         # Implement pagination for skills
@@ -126,9 +126,35 @@ def dashboard(request):
     except ContactInfo.DoesNotExist:
         message = "No contact information found"
         return render(request, 'dashboard/dashboard.html', {'message': message})
-    
+
     jobs = SkillCategory.objects.all()
     
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        user_profile = UserProfile.objects.create(user=request.user)
+    # Get full country name for display
+    country_name = contact_info.country.name if contact_info.country else None
+    language_form = UserLanguageForm()
+    profile_form = UserProfileForm(instance=user_profile)
+
+    if request.method == 'POST':
+        if 'language' in request.POST:
+            language_form = UserLanguageForm(request.POST)
+            if language_form.is_valid():
+                user_language = language_form.save(commit=False)
+                user_language.user_profile = user_profile
+                user_language.save()
+                return redirect('dashboard')
+        elif 'country' in request.POST:
+            profile_form = UserProfileForm(request.POST, instance=user_profile)
+            if profile_form.is_valid():
+                profile_form.save()
+                return redirect('dashboard')
+
+    user_languages = UserLanguage.objects.filter(user_profile=user_profile)
+    
+
     context = {
         'contact_info': contact_info,
         'user': user,
@@ -139,11 +165,14 @@ def dashboard(request):
         'suggested_skills_json': suggested_skills_json,
         'jobs': jobs,
         'resume': resume,
+        'language_form': language_form,  # Add language form to context
+        'profile_form': profile_form,  # Add profile form to context
+        'user_profile': user_profile,
+        'user_languages': user_languages,
+        'country_name':country_name,
     }
 
     return render(request, 'dashboard/dashboard.html', context)
-
-
 
 from django.shortcuts import get_object_or_404
 
@@ -215,3 +244,103 @@ def paginated_skills(request):
         'skills_html': skills_html,
         'pagination_html': pagination_html,
     })
+    
+ 
+@login_required
+def update_profile(request):
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')  # Redirect to your desired view after saving
+    else:
+        form = UserProfileForm(instance=user_profile)
+
+    return render(request, 'dashboard/update_profile.html', {'form': form})
+
+@login_required(login_url='login')
+@require_POST
+def delete_language(request, language_id):
+    try:
+        user_language = UserLanguage.objects.get(id=language_id, user_profile__user=request.user)
+        user_language.delete()
+        return JsonResponse({'success': True})
+    except UserLanguage.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Language does not exist'})
+    
+from django.views.decorators.http import require_POST, require_http_methods
+from resume.models import Education
+from .forms import EducationForm  # Define this form in forms.py
+
+def save_education(request):
+    if request.method == 'POST':
+        form = EducationForm(request.POST)
+        if form.is_valid():
+            education_id = form.cleaned_data.get('id')
+            if education_id:
+                # Update existing record
+                education = get_object_or_404(Education, id=education_id, user=request.user)
+                form = EducationForm(request.POST, instance=education)
+            else:
+                # Create new record
+                form.instance.user = request.user  # Set the current user
+                form.instance.resume = None  # If you need to set a resume, handle it accordingly
+
+            form.save()
+            return redirect('dashboard')
+
+        return JsonResponse({'success': False, 'errors': form.errors})
+
+    return JsonResponse({'success': False, 'message': 'Invalid request'})
+def delete_education(request, id):
+    if request.method == 'DELETE':
+        education = get_object_or_404(Education, id=id)
+        education.delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
+
+def get_education(request, id):
+    education = get_object_or_404(Education, id=id)
+    data = {
+        'institution_name': education.institution_name,
+        'degree': education.degree,
+        'graduation_year': education.graduation_year,
+    }
+    return JsonResponse(data)
+
+from resume.models import WorkExperience
+from .forms import WorkExperienceForm
+
+def save_experience(request):
+    if request.method == 'POST':
+        form = WorkExperienceForm(request.POST)
+        if form.is_valid():
+            if request.user.is_authenticated:
+                # Save the instance with the user field populated
+                experience = form.save(commit=False)
+                experience.user = request.user  # Assign the logged-in user
+                experience.save()
+                return redirect('dashboard')
+            else:
+                return JsonResponse({'error': 'User is not authenticated'}, status=403)
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def delete_experience(request, id):
+    if request.method == 'DELETE':
+        experience = get_object_or_404(WorkExperience, id=id, user=request.user)
+        experience.delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def get_experience_details(request, id):
+    experience = get_object_or_404(WorkExperience, id=id, user=request.user)
+    data = {
+        'company_name': experience.company_name,
+        'role': experience.role,
+        'start_date': experience.start_date.strftime('%Y-%m-%d') if experience.start_date else '',
+        'end_date': experience.end_date.strftime('%Y-%m-%d') if experience.end_date else ''
+    }
+    return JsonResponse(data)

@@ -16,4 +16,5 @@ urlpatterns = [
     path('upload/', upload_resume, name='upload'),
     path('extract-text/<path:file_path>/', extract_text, name='extract_text'),
     path('extract-technical-skills/<path:file_path>/', extract_technical_skills, name='extract_technical_skills'),
+
 ]

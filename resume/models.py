@@ -117,3 +117,27 @@ class WorkExperience(models.Model):
 
     def __str__(self):
         return f"{self.role} at {self.company_name}"
+
+from django.db import models
+from django_countries.fields import CountryField
+import pycountry
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    country = CountryField()
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
+class Language(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class UserLanguage(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user_profile.user.username} - {self.language.name}"

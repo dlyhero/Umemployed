@@ -70,110 +70,7 @@
               <span class="hidden md:block">Notifications</span>
             </a>
           </li>
-          <li class="relative cursor-pointer">
-            <button
-              id="option-btn"
-              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-              href="#"
-            >
-              <img
-                class="w-5"
-                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
-                alt="profile icon"
-              />
-              <span class="hidden md:block">User</span>
-            </button>
-            <div
-              id="backdrop-menu"
-              class="hidden fixed flex justify-end pr-[19px] sm:pr-[100px] z-[100] top-0 bottom-0 left-0 right-0 bg-transparent"
-            >
-              <div
-                class="absolute bg-white top-[60px] z-[100] min-w-[280px] sm:w-[350px] border border-gray-400 rounded"
-              >
-                <div class="user-mail py-3 px-6 font-bold text-gray-700">
-                  {{user.username}}
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/user.svg' %}"
-                      alt="user-icon"
-                    />
-                    Profile
-                  </a>
-                </div>
-                <div
-                class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-              >
-                <a href="#" class="flex items-center gap-1">
-                  <img
-                    class="w-5"
-                    src="{% static 'build/img/resume.svg' %}"
-                    alt="user-icon"
-                  />
-                  Resume
-                </a>
-              </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/help-svgrepo-com.svg' %}"
-                      alt="help-icon"
-                    />
-                    Resume help
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/suitcase-svgrepo-com.svg' %}"
-                      alt="job-icon"
-                    />
-                    My jobs
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/page-svgrepo-com.svg' %}"
-                      alt="page-icon"
-                    />
-                    My reviews
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-1">
-                    <img
-                      class="w-5"
-                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
-                      alt="setting-icon"
-                    />
-                    Settings
-                  </a>
-                </div>
-                <hr class="my-2" />
-                <div class="flex py-4 px-6 text-gray-700 justify-center">
-                  <button class="signout-btn text-[#1e90ff] font-bold">
-                    Sign out
-                  </button>
-                </div>
-              </div>
-            </div>
-          </li>
+         
           <li class="md:hidden">
             <button id="menu-btn" class="text-xl">
               <img class="w-5" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
@@ -186,9 +83,9 @@
             <span
               class="ml-2 text-nowrap hover:bg-blue-50 transition-colors p-2 rounded"
               >
-              <a class="text-nowrap" href="{% url 'dashboard' %}"
+              <a class="text-nowrap" href="{% url 'switch_account_type' %}"
                 >
-                login / SignUp</a
+                 Switch to Employer</a
               >
               
             </span>

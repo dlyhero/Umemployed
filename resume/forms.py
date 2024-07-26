@@ -137,3 +137,4 @@ class ResumeForm(forms.ModelForm):
     class Meta:
         model = ResumeDoc
         fields = ['file']
+ 
