@@ -1,0 +1,492 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications - UmEmployed</title>
+    <link rel="icon" href="build/logo/logo-color.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'build/css/sidebar_recriuter.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'build/css/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/notifications.css' %}" />
+  </head>
+  <body class="text-sm bg-gray-100">
+    <!-- Header -->
+    <header
+      class="sticky top-0 left-0 right-0 flex justify-between items-center md:border-b px-4 md:px-5 py-3 bg-white shadow-md"
+    >
+      <div class="flex items-center gap-x-3 md:gap-2">
+        <div class="logo-wrap flex items-center">
+          <img
+            class="w-7 md:w-9"
+            src="{% static 'build/logo/logo-color.png' %}"
+            alt="Logo"
+          />
+          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+            >UmEmployed</span
+          >
+        </div>
+        <a class="header-link flex items-center hidden md:block p-2 rounded" href="./home1.html"
+          >
+          <i class="fas fa-home"></i>
+          Home</a
+        >
+      </div>
+      <nav class="flex md:gap-x-4 items-center">
+        <ul class="flex gap-x-2 md:gap-x-4 items-center">
+          <li class="relative">
+            <a
+              id="messages-link"
+              class="header-link flex items-center gap-1 p-2 rounded"
+              href="./messages_jobseeker.html"
+            >
+              <i
+                id="messages-icon"
+                class="fas fa-lg fa-comments text-xl icon"
+              ></i>
+              <span class="hidden md:block">Messages</span>
+              <div
+                class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+              >
+                3
+              </div>
+            </a>
+          </li>
+          <li class="relative">
+            <a
+              id="notifications-link"
+              class="header-link flex items-center gap-1 p-2 rounded"
+              href="./notification.html"
+            >
+              <i id="notifications-icon" class="fas fa-bell text-xl icon"></i>
+              <span class="hidden md:block">Notifications</span>
+              <div
+                class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+              >
+                3
+              </div>
+            </a>
+          </li>
+          <li class="relative cursor-pointer">
+            <button
+              id="user-btn"
+              class="header-link flex gap-1 p-2 rounded flex items-center"
+            >
+              <i id="user-icon" class="fas fa-user text-xl icon"></i>
+              <span class="hidden md:block">User</span>
+            </button>
+            <div
+              id="backdrop-menu"
+              class="hidden fixed flex justify-end pr-[19px] sm:pr-[100px] z-[100] top-0 bottom-0 left-0 right-0 bg-transparent"
+            >
+              <div
+                class="absolute bg-white top-[60px] z-[100] min-w-[280px] sm:w-[350px] border border-gray-400 rounded shadow-lg"
+              >
+                <div
+                  class="user-mail py-3 px-6 font-bold text-gray-700 border-b border-gray-300"
+                >
+                  enugodwillenwe@gmail.com
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="./profile.html" class="flex items-center gap-2">
+                    <i class="fas fa-user w-5 text-gray-500"></i>
+                    Profile
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="./resume.html" class="flex items-center gap-2">
+                    <i class="fas fa-file-alt w-5 text-gray-500"></i>
+                    Resume
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-2">
+                    <i class="fas fa-question-circle w-5 text-gray-500"></i>
+                    Resume Help
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="./index.html" class="flex items-center gap-2">
+                    <i class="fas fa-briefcase w-5 text-gray-500"></i>
+                    My Jobs
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-2">
+                    <i class="fas fa-star w-5 text-gray-500"></i>
+                    My Reviews
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-2">
+                    <i class="fas fa-cogs w-5 text-gray-500"></i>
+                    Settings
+                  </a>
+                </div>
+                <hr class="my-2" />
+                <div class="flex py-4 px-6 text-gray-700 justify-center">
+                  <button class="signout-btn text-[#1e90ff] font-bold">
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="md:hidden">
+            <button id="menu-btn" class="text-xl">
+              <i class="fas fa-bars"></i>
+            </button>
+          </li>
+        </ul>
+        <div class="hidden md:block">
+          <div class="flex">
+            <div class="border-l h-[40px]"></div>
+            <span class="ml-2 text-nowrap p-2 rounded">
+              <a class="header-link text-nowrap" href="./switchaccounttype.html"
+                >Employers / Post Job</a
+              >
+            </span>
+          </div>
+        </div>
+      </nav>
+      <div
+        id="sidebar"
+        class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden transition-all"
+      >
+        <div
+          class="sidebar-content h-fit p-6 bg-white rounded-lg shadow-lg mx-auto max-w-xs lg:max-w-sm transition-all transform hidden-sidebar"
+        >
+          <!-- Sidebar Header -->
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-gray-900">Menu</h2>
+            <button
+              id="remove-btn"
+              class="text-2xl text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              &times;
+            </button>
+          </div>
+          <!-- Navigation Items -->
+          <nav>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="./home1.html"
+            >
+              <i class="fas fa-home text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Home</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="./profile.html"
+            >
+              <i class="fas fa-user text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Profile</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="./resume.html"
+            >
+              <i class="fas fa-file-alt text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Resume</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-briefcase text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Jobs</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-cogs text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Settings</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-dollar-sign text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Find Salaries</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-sign-out-alt text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Logout</span>
+            </a>
+            <a
+              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+              href="#"
+            >
+              <i class="fas fa-exchange-alt text-gray-500 mr-3"></i>
+              <span class="text-gray-800 font-medium">Switch Account Type</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <!-- Main Content -->
+    <main
+      class="container max-w-5xl mx-auto sm:mt-4 mb-2 p-4 bg-white rounded sm:shadow-md"
+    >
+      <h2 class="text-2xl font-bold mb-4">Notifications</h2>
+
+      <!-- Summary Section -->
+      <section class="mb-6">
+        <div
+          class="flex justify-between items-center bg-gray-100 p-4 rounded shadow-sm"
+        >
+          <div class="flex flex-col">
+            <p class="text-lg font-medium">Total Notifications</p>
+            <p class="text-2xl font-bold">10</p>
+          </div>
+          <div class="flex flex-col text-right">
+            <p class="text-lg font-medium">Unread Notifications</p>
+            <p class="text-2xl font-bold">3</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications List -->
+      <div id="notification-list">
+        <!-- Notification Items -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-blue-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">
+                Job Application Received
+              </p>
+              <p class="message text-sm text-gray-600">
+                You have received a new job application for the Software
+                Engineer position.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >2 hours ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-purple-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">New Job Posted</p>
+              <p class="message text-sm text-gray-600">
+                A new job matching your profile has been posted: Frontend
+                Developer.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >1 week ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-indigo-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-thumbs-up"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Endorsement Received</p>
+              <p class="message text-sm text-gray-600">
+                Alice Johnson has endorsed you for your JavaScript skills.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >2 weeks ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-pink-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Interview Scheduled</p>
+              <p class="message text-sm text-gray-600">
+                Your interview with ABC Corp has been scheduled for July 25,
+                2024.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >3 weeks ago</span
+          >
+        </div>
+
+        <!-- Additional Notifications -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-green-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">New Skill Endorsement</p>
+              <p class="message text-sm text-gray-600">
+                John Doe has endorsed you for your React skills.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0">1 day ago</span>
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-red-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Account Security Alert</p>
+              <p class="message text-sm text-gray-600">
+                There was a recent login attempt from an unrecognized device.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >3 days ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-yellow-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Upcoming Event Reminder</p>
+              <p class="message text-sm text-gray-600">
+                Don't forget the Networking Event on July 30, 2024.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >5 days ago</span
+          >
+        </div>
+
+        <!-- More Example Notifications -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-teal-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">New Message Received</p>
+              <p class="message text-sm text-gray-600">
+                You have received a new message from Jane Doe.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >2 days ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-orange-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-gift"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Special Offer</p>
+              <p class="message text-sm text-gray-600">
+                A special offer is available for premium users. Check it out!
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >1 week ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-cyan-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-sync"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Profile Updated</p>
+              <p class="message text-sm text-gray-600">
+                Your profile has been successfully updated.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >4 weeks ago</span
+          >
+        </div>
+      </div>
+
+      <!-- Archived Notifications Section -->
+      <section class="mt-6">
+        <h3 class="text-xl font-semibold mb-2">Archived Notifications</h3>
+        <div class="bg-gray-100 p-4 rounded shadow-sm">
+          <p class="text-gray-600">
+            You can review archived notifications here.
+          </p>
+          <!-- Example Archived Notification -->
+          <div class="p-4 border-b">
+            <p class="text-lg font-semibold">Archived Notification Example</p>
+            <p class="text-sm text-gray-600">
+              Details of the archived notification.
+            </p>
+            <span class="text-xs text-gray-500">Archived 1 month ago</span>
+          </div>
+        </div>
+      </section>
+    </main>
+   
+   </script>
+    <script src="{% static './scripts/header.js' %}"></script>
+    <script src="{% static './scripts/sidebar_recruiter.js' %}"></script>
+  </body>
+</html>

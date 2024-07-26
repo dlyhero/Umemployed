@@ -1,0 +1,607 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications</title>
+    <link rel="icon" href="build/logo/logo-color.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'build/css/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/notifications.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
+  </head>
+  <body
+    class="text-sm md:ml-[265px] bg-gray-50 lg:ml-[250px] md:bg-gray-50 md:mt-14 relative flex flex-col h-screen"
+  >
+    <header
+      class="flex justify-between items-center md:border-b md:fixed z-10 top-0 right-0 left-0 px-2 md:px-5 py-3 md:mb-10 bg-white shadow-md md:shadow-none"
+    >
+      <div class="flex items-center gap-x-5">
+        <div class="logo-wrap flex items-center">
+          <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+            >UmEmployed</span
+          >
+        </div>
+        <a
+          class="hidden md:flex items-center space-x-1 hover:bg-blue-50 transition-colors p-2 rounded"
+          href="./home1.html"
+          ><i class="fas fa-home fa-lg home-icon"></i> <span>Home</span></a
+        >
+      </div>
+      <nav class="flex md:gap-x-4 items-center">
+        <ul class="flex gap-x-2 md:gap-x-6 items-center">
+          <li class="relative">
+            <a
+              class="flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="./messages_employer.html"
+              ><i class="fas fa-lg fa-comments message-icon text-[#007bff]"></i>
+              <span class="hidden md:block">Messages</span>
+              <div
+                class="absolute top-[-14px] sm:top-[-3px] left-4 py-[0.5px] px-[8px] text-[10px] text-white bg-red-500 rounded-full"
+              >
+                3
+              </div>
+            </a>
+          </li>
+          <li class="relative">
+            <a
+              class="flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="./notifications_employer.html"
+              ><i class="fas fa-bell fa-lg notification-icon"></i>
+              <span class="hidden md:block">Notifications</span>
+              <div
+                class="absolute top-[-14px] sm:top-[-3px] left-4 py-[0.5px] px-[8px] text-[10px] text-white bg-red-500 rounded-full"
+              >
+                3
+              </div>
+            </a>
+          </li>
+        </ul>
+
+        <div class="hidden md:block border-l h-[40px]"></div>
+
+        <div class="relative">
+          <div class="hover:bg-blue-50 transition-colors p-2 rounded">
+            <button id="option-btn" class="flex items-center gap-2">
+              <img
+                class="w-[19px]"
+                src="{% static 'build/img/profile-svgrepo-com.svg' %}"
+                alt="user icon"
+              />
+              <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
+                >enukinsman@gmail.com</span
+              >
+              <img
+                class="w-[19px] mt-1 md:mt-0 hidden md:block"
+                src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+                alt="drop down arrow"
+              />
+            </button>
+            <div
+              id="backdrop-menu"
+              class="hidden fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
+            >
+              <div
+                id="option-menu"
+                class="absolute bg-white top-[60px] z-[100] min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
+              >
+                <div
+                  class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/user.svg' %}"
+                      alt="user-icon"
+                    />
+                    User
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-6"
+                      src="{% static 'build/img/subscriptions-svgrepo-com.svg' %}"
+                      alt="Subscriptions-icon"
+                    />
+                    Subscriptions
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/billing-svgrepo-com.svg' %}"
+                      alt="Billing-icon"
+                    />
+                    Billing and invoices
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                      alt="setting-icon"
+                    />
+                    Employer setting
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/contact-details-filled-svgrepo-com.svg' %}"
+                      alt="msg-icon"
+                    />
+                    Contact us
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="./company.html" class="flex items-center gap-1">
+                    <img
+                      class="w-6"
+                      src="{% static 'build/img/company-svgrepo-com.svg' %}"
+                      alt="company-icon"
+                    />
+                    Company page
+                  </a>
+                </div>
+
+                <hr class="my-2" />
+                <div class="user-mail py-3 px-6 font-bold text-gray-700">
+                  enugodwillenwe@gmail.com
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a href="#" class="flex items-center gap-1">
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/setting-1-svgrepo-com.svg' %}"
+                      alt="setting-icon"
+                    />
+                    Account Settings
+                  </a>
+                </div>
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a
+                    href="./switchaccounttype.html"
+                    class="flex items-center gap-1"
+                  >
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/user.svg' %}"
+                      alt="user-icon"
+                    />
+                    Switch Acount Type
+                  </a>
+                </div>
+                <hr class="my-2" />
+                <div class="flex py-4 px-8 text-gray-700 justify-center">
+                  <button class="signout-btn text-[#1e90ff] font-bold">
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button id="aside-menu-btn" class="md:hidden">
+          <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
+        </button>
+      </nav>
+      <div
+        id="sidebar"
+        class="font-bold fixed bg-[#8080803e] z-auto md:bg-none hidden top-0 bottom-0 left-0 right-0 p-10"
+      >
+        <div
+          class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+        >
+          <div class="btn-wrap text-end">
+            <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
+              &times;
+            </button>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Message</a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#"
+              >Notifications</a
+            >
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#"
+              >Employer settings</a
+            >
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Contact us</a>
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#"
+              >Account Settings</a
+            >
+          </div>
+          <div
+            class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+          >
+            <a class="flex justify-between items-center" href="#">Sign Out</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <aside
+      id="aside-menu"
+      class="hidden md:block transition-all fixed top-0 z-10 left-0 md:left-5 bottom-0 md:bottom-2 right-0 md:right-auto max-w-[400px] md:w-fit md:top-[71px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
+    >
+      <section class="mt-5">
+        <div class="cancel-wrap text-end mb-4 md:hidden container">
+          <button id="cancel-aside-btn">
+            <img
+              class="w-6"
+              src="{% static 'build/img/cancel-svgrepo-com (1).svg' %}"
+              alt="cancel icon"
+            />
+          </button>
+        </div>
+        <div>
+          <a
+            href="#"
+            class="flex p-1 md:p-2 text-white md:text-black border-b border-t md:bg-white hover:bg-gray-300 rounded mb-4 cursor-pointer"
+          >
+            <div class="img-wrap flex items-center p-1 md:p-0">
+              <img
+                class="w-6"
+                src="{% static 'build/img/plus-svgrepo-com.svg' %}"
+                alt="plus icon"
+              />
+              <span>Create new</span>
+            </div>
+            <img
+              class="w-6 ml-14"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer"
+            href="./index.html"
+          >
+            <img
+              class="w-6"
+              src="{% static 'build/img/job-svgrepo-com.svg' %}"
+              alt="briefcase icon"
+            />
+            <span>Jobs</span>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center gap-1 w-full md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <img
+              class="w-6"
+              src="{% static 'build/img/users-svgrepo-com.svg' %}"
+              alt="users icon"
+            />
+            <span>Candidates</span>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <div class="img-wrap flex items-center gap-1">
+              <img
+                class="w-6"
+                src="{% static 'build/img/date-svgrepo-com.svg' %}"
+                alt="date icon"
+              />
+              <span>Interviews</span>
+            </div>
+            <img
+              class="w-6 ml-14"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <div class="img-wrap flex items-center gap-1">
+              <img
+                class="w-6"
+                src="{% static 'build/img/analytics-svgrepo-com.svg' %}"
+                alt="analytics icon"
+              />
+              <span>Analytics</span>
+            </div>
+            <img
+              class="w-6 ml-16"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
+        </div>
+      </section>
+    </aside>
+    <main
+      class="container sm:w-[98%] mx-auto sm:mt-4 mb-2 p-4 bg-white rounded sm:shadow-md"
+    >
+      <h2 class="text-2xl font-bold mb-4">Notifications</h2>
+
+      <!-- Summary Section -->
+      <section class="mb-6">
+        <div
+          class="flex justify-between items-center bg-gray-100 p-4 rounded shadow-sm"
+        >
+          <div class="flex flex-col">
+            <p class="text-lg font-medium">Total Notifications</p>
+            <p class="text-2xl font-bold">10</p>
+          </div>
+          <div class="flex flex-col text-right">
+            <p class="text-lg font-medium">Unread Notifications</p>
+            <p class="text-2xl font-bold">3</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications List -->
+      <div id="notification-list">
+        <!-- Notification Items -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-blue-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">
+                Job Application Received
+              </p>
+              <p class="message text-sm text-gray-600">
+                You have received a new job application for the Software
+                Engineer position.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >2 hours ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-purple-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">New Job Posted</p>
+              <p class="message text-sm text-gray-600">
+                A new job matching your profile has been posted: Frontend
+                Developer.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >1 week ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-indigo-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-thumbs-up"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Endorsement Received</p>
+              <p class="message text-sm text-gray-600">
+                Alice Johnson has endorsed you for your JavaScript skills.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >2 weeks ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-pink-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Interview Scheduled</p>
+              <p class="message text-sm text-gray-600">
+                Your interview with ABC Corp has been scheduled for July 25,
+                2024.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >3 weeks ago</span
+          >
+        </div>
+
+        <!-- Additional Notifications -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-green-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">New Skill Endorsement</p>
+              <p class="message text-sm text-gray-600">
+                John Doe has endorsed you for your React skills.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0">1 day ago</span>
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-red-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Account Security Alert</p>
+              <p class="message text-sm text-gray-600">
+                There was a recent login attempt from an unrecognized device.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >3 days ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-yellow-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Upcoming Event Reminder</p>
+              <p class="message text-sm text-gray-600">
+                Don't forget the Networking Event on July 30, 2024.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >5 days ago</span
+          >
+        </div>
+
+        <!-- More Example Notifications -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-teal-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">New Message Received</p>
+              <p class="message text-sm text-gray-600">
+                You have received a new message from Jane Doe.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >2 days ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-orange-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-gift"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Special Offer</p>
+              <p class="message text-sm text-gray-600">
+                A special offer is available for premium users. Check it out!
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >1 week ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-cyan-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-sync"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Profile Updated</p>
+              <p class="message text-sm text-gray-600">
+                Your profile has been successfully updated.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >4 weeks ago</span
+          >
+        </div>
+      </div>
+
+      <!-- Archived Notifications Section -->
+      <section class="mt-6">
+        <h3 class="text-xl font-semibold mb-2">Archived Notifications</h3>
+        <div class="bg-gray-100 p-4 rounded shadow-sm">
+          <p class="text-gray-600">
+            You can review archived notifications here.
+          </p>
+          <!-- Example Archived Notification -->
+          <div class="p-4 border-b">
+            <p class="text-lg font-semibold">Archived Notification Example</p>
+            <p class="text-sm text-gray-600">
+              Details of the archived notification.
+            </p>
+            <span class="text-xs text-gray-500">Archived 1 month ago</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+  <script type="module" src="{% static 'build/scripts/addjob.js' %}"></script>
+  <script src="{% static 'build/scripts/dashboard.js' %}"></script>
+  <script src="{% static 'build/scripts/messages.js' %}"></script>
+</html>

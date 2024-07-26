@@ -56,6 +56,9 @@ INSTALLED_APPS = [
     'easyaudit',
     'asseessments',
     'social_features',
+    
+    'messaging',
+    'notifications',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'

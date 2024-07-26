@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Messages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static './build/css/employer.css' %}" />
+    <link rel="stylesheet" href="{% static './build/css/message.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body class="text-sm bg-gray-50 relative flex flex-col relative">
+  
+  <header
+  class="sticky top-0 left-0 right-0 flex justify-between items-center md:border-b px-4 md:px-5 py-3 bg-white shadow-md sm:shadow-none"
+>
+  <div class="flex items-center gap-x-5">
+    <div class="logo-wrap flex items-center">
+      <img class="w-8 md:w-9" src="{% static './build/logo/logo-color.png' %}" alt="" />
+      <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+        >UmEmployed</span
+      >
+    </div>
+    <a
+      class="hidden  md:flex items-center space-x-1 hover:bg-blue-50 transition-colors p-2 rounded"
+      href="./home1.html"
+      ><i class="fas fa-home fa-lg home-icon"></i>
+      <span>Home</span></a
+    >
+  </div>
+  <nav class="flex md:gap-x-4 items-center">
+    <ul class="flex gap-x-2 md:gap-x-6 items-center">
+      <li class="relative">
+        <a
+          class="flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+          href="./messages_employer.html"
+          ><i class="fas fa-lg fa-comments message-icon text-[#007bff]"></i>
+          <span class="hidden md:block">Messages</span>
+          <div
+            class="absolute top-[-14px] sm:top-[-3px] left-4 py-[0.5px] px-[8px] text-[10px] text-white bg-red-500 rounded-full"
+          >
+            3
+          </div>
+        </a>
+      </li>
+      <li class="relative">
+        <a
+          class="flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+          href="./notifications_employer.html"
+          ><i class="fas fa-bell fa-lg notification-icon"></i>
+          <span class="hidden md:block">Notifications</span>
+          <div
+            class="absolute top-[-14px] sm:top-[-3px] left-4 py-[0.5px] px-[8px] text-[10px] text-white bg-red-500 rounded-full"
+          >
+            3
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <div class="hidden md:block border-l h-[40px]"></div>
+
+    <div class="relative">
+      <div class="hover:bg-blue-50 transition-colors p-2 rounded">
+        <button id="option-btn" class="flex items-center gap-2">
+          <img
+            class="w-[19px]"
+            src="{% static './build/img/profile-svgrepo-com.svg' %}"
+            alt="user icon"
+          />
+          <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
+            >enukinsman@gmail.com</span
+          >
+          <img
+            class="w-[19px] mt-1 md:mt-0 hidden md:block"
+            src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
+            alt="drop down arrow"
+          />
+        </button>
+        <div
+          id="backdrop-menu"
+          class="hidden fixed flex justify-end p-[18px] top-0 bottom-0 left-0 right-0 bg-transparent"
+        >
+          <div
+            id="option-menu"
+            class="absolute bg-white top-[60px] z-[100] min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
+          >
+            <div
+              class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all"
+            >
+              <a href="#" class="flex items-center gap-1">
+                <img class="w-5" src="{% static './build/img/user.svg' %}" alt="user-icon" />
+                User
+              </a>
+            </div>
+            <div
+              class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+            >
+              <a href="#" class="flex items-center gap-1">
+                <img
+                  class="w-6"
+                  src="{% static './build/img/subscriptions-svgrepo-com.svg' %}"
+                  alt="Subscriptions-icon"
+                />
+                Subscriptions
+              </a>
+            </div>
+            <div
+              class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+            >
+              <a href="#" class="flex items-center gap-1">
+                <img
+                  class="w-5"
+                  src="{% static './build/img/billing-svgrepo-com.svg' %}"
+                  alt="Billing-icon"
+                />
+                Billing and invoices
+              </a>
+            </div>
+            <div
+              class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+            >
+              <a href="#" class="flex items-center gap-1">
+                <img
+                  class="w-5"
+                  src="{% static './build/img/setting-1-svgrepo-com.svg' %}"
+                  alt="setting-icon"
+                />
+                Employer setting
+              </a>
+            </div>
+            <div
+              class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+            >
+              <a href="#" class="flex items-center gap-1">
+                <img
+                  class="w-5"
+                  src="{% static './build/img/contact-details-filled-svgrepo-com.svg' %}"
+                  alt="msg-icon"
+                />
+                Contact us
+              </a>
+            </div>
+            <div
+              class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+            >
+              <a href="./company.html" class="flex items-center gap-1">
+                <img
+                  class="w-6"
+                  src="{% static './build/img/company-svgrepo-com.svg' %}"
+                  alt="company-icon"
+                />
+                Company page
+              </a>
+            </div>
+
+            <hr class="my-2" />
+            <div class="user-mail py-3 px-6 font-bold text-gray-700">
+              enugodwillenwe@gmail.com
+            </div>
+            <div
+              class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+            >
+              <a href="#" class="flex items-center gap-1">
+                <img
+                  class="w-5"
+                  src="{% static './build/img/setting-1-svgrepo-com.svg' %}"
+                  alt="setting-icon"
+                />
+                Account Settings
+              </a>
+            </div>
+            <div
+              class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+            >
+              <a
+                href="./switchaccounttype.html"
+                class="flex items-center gap-1"
+              >
+                <img class="w-5" src="{% static './build/img/user.svg' %}" alt="user-icon" />
+                Switch Acount Type
+              </a>
+            </div>
+            <hr class="my-2" />
+            <div class="flex py-4 px-8 text-gray-700 justify-center">
+              <button class="signout-btn text-[#1e90ff] font-bold">
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button id="aside-menu-btn" class="md:hidden">
+      <img class="w-6" src="{% static './build/img/menu-svgrepo-com.svg' %}" alt="" />
+    </button>
+  </nav>
+  <div
+    id="sidebar"
+    class="font-bold fixed bg-[#8080803e] z-auto md:bg-none hidden top-0 bottom-0 left-0 right-0 p-10"
+  >
+    <div
+      class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+    >
+      <div class="btn-wrap text-end">
+        <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
+          &times;
+        </button>
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#">Message</a>
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#">Notifications</a>
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#"
+          >Employer settings</a
+        >
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#">Contact us</a>
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#"
+          >Account Settings</a
+        >
+      </div>
+      <div
+        class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+      >
+        <a class="flex justify-between items-center" href="#">Sign Out</a>
+      </div>
+    </div>
+  </div>
+</header>
+    <aside
+      id="aside-menu"
+      class="hidden md:block transition-all fixed top-0 md:z-2 left-0 md:left-5 bottom-0 md:bottom-2 right-0 md:right-auto max-w-[350px] md:w-fit md:top-[73px] md:rounded px-4 p-2 md:py-1 bg-gray-500"
+    >
+      <section class="mt-5">
+        <div class="cancel-wrap text-end mb-4 md:hidden container">
+          <button id="cancel-aside-btn">
+            <img
+              class="w-6"
+              src="{% static './build/img/cancel-svgrepo-com (1).svg' %}"
+              alt="cancel icon"
+            />
+          </button>
+        </div>
+        <div>
+          <a
+            href="#"
+            class="flex p-1 md:p-2 text-white md:text-black border-b border-t md:bg-white hover:bg-gray-300 rounded mb-4 cursor-pointer"
+          >
+            <div class="img-wrap flex items-center p-1 md:p-0">
+              <img
+                class="w-6"
+                src="{% static './build/img/plus-svgrepo-com.svg' %}"
+                alt="plus icon"
+              />
+              <span>Create new</span>
+            </div>
+            <img
+              class="w-6 ml-14"
+              src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer"
+            href="./index.html"
+          >
+            <img
+              class="w-6"
+              src="{% static './build/img/job-svgrepo-com.svg' %}"
+              alt="briefcase icon"
+            />
+            <span>Jobs</span>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center gap-1 w-full md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <img
+              class="w-6"
+              src="{% static './build/img/users-svgrepo-com.svg' %}"
+              alt="users icon"
+            />
+            <span>Candidates</span>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <div class="img-wrap flex items-center gap-1">
+              <img
+                class="w-6"
+                src="{% static './build/img/date-svgrepo-com.svg' %}"
+                alt="date icon"
+              />
+              <span>Interviews</span>
+            </div>
+            <img
+              class="w-6 ml-14"
+              src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <div class="img-wrap flex items-center gap-1">
+              <img
+                class="w-6"
+                src="{% static './build/img/analytics-svgrepo-com.svg' %}"
+                alt="analytics icon"
+              />
+              <span>Analytics</span>
+            </div>
+            <img
+              class="w-6 ml-16"
+              src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </a>
+        </div>
+      </section>
+    </aside>
+    <main class="flex flex-1 overflow-hidden bg-gray-100 sm:p-2 sm:gap-2  md:ml-[245px]">
+      <!-- Sidebar -->
+      <aside
+        id="message-sidebar"
+        class="md:block bg-white sm:rounded-lg w-full sm:w-[30%] border-r border-gray-200 overflow-y-auto relative "
+      >
+        <div class="flex flex-col sticky top-0 left-0 right-0 bg-white">
+          <div
+            class="px-4 py-2 flex justify-between items-center border-b border-gray-200"
+          >
+            <h2 class="text-xl font-bold text-gray-900">Messages</h2>
+            <button
+              id="add-message-btn"
+              class="px-3 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+            >
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <input
+            type="text"
+            id="search-messages"
+            class="w-[95%] mx-auto p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 mt-4"
+            placeholder="Search messages..."
+          />
+        </div>
+        <div class="p-4">
+          <ul id="message-list" class="space-y-2">
+            <li
+              class="message-item gap-2 flex items-center mb-4 p-2 bg-gray-100 rounded-lg cursor-pointer"
+              data-username="John Doe"
+              data-message="Hey, are you available for a quick meeting tomorrow?"
+              data-profile="user1.jpg"
+            >
+              <img
+                src="https://via.placeholder.com/40"
+                alt="Profile Picture"
+                class="w-12 h-12 rounded-full"
+              />
+              <div class="overflow-hidden">
+                <h3 class="text-md font-semibold text-gray-900">John Doe</h3>
+                <p class="text-sm text-gray-600 truncate">
+                  Hey, are you available for a quick meeting tomorrow?
+                </p>
+              </div>
+            </li>
+            <li
+              class="message-item gap-2 flex items-center mb-4 p-2 bg-gray-100 rounded-lg cursor-pointer"
+              data-username="Jane Smith"
+              data-message="I have reviewed your profile and would like to discuss..."
+              data-profile="user2.jpg"
+            >
+              <img
+                src="https://via.placeholder.com/40"
+                alt="Profile Picture"
+                class="w-12 h-12 rounded-full"
+              />
+              <div class="overflow-hidden">
+                <h3 class="text-md font-semibold text-gray-900">Jane Smith</h3>
+                <p class="text-sm text-gray-600 truncate">
+                  I have reviewed your profile and would like to discuss...
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </aside>
+      <!-- Chat Window -->
+      <section
+        id="chat-window"
+        class="flex flex-col flex-1 hidden md:flex sm:rounded-lg "
+      >
+        <header
+          id="chat-header"
+          class="px-4 py-2 flex justify-between items-center bg-white border-b border-gray-200 sm:rounded-t-lg"
+        >
+          <div class="flex items-center gap-3">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="Profile Picture"
+              id="chat-header-profile"
+              class="w-10 h-10 rounded-full"
+            />
+            <h2
+              id="chat-header-username"
+              class="text-xl font-bold text-gray-900"
+            >
+              John Doe
+            </h2>
+          </div>
+          <button
+            id="back-button"
+            class="text-gray-500 hover:text-gray-700 transition lg:hidden"
+          >
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+        </header>
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50">
+          <div class="message-container received flex mb-4">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="Profile Picture"
+              class="w-10 h-10 rounded-full mr-3"
+            />
+            <div>
+              <div class="bg-gray-200 p-3 rounded-lg">
+                <p class="text-sm text-gray-900">
+                  Hey, are you available for a quick meeting tomorrow?
+                </p>
+              </div>
+              <span class="text-xs text-gray-600 mt-1 block">10:30 AM</span>
+            </div>
+          </div>
+          <div class="message-container sent flex mb-4 gap-3">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="Profile Picture"
+              class="w-10 h-10 rounded-full ml-3"
+            />
+            <div>
+              <div class="bg-blue-500 text-white p-3 rounded-lg">
+                <p class="text-sm">
+                  Yes, I am available. Let me know the time.
+                </p>
+              </div>
+              <span class="text-xs text-gray-600 mt-1 block">10:32 AM</span>
+            </div>
+          </div>
+        </div>
+        <div
+          id="chat-form"
+          class="px-4 py-2 bg-white border-t border-gray-200 flex items-center sm:rounded-b-lg"
+        >
+          <button id="emoji-button" class="p-2">
+            <i class="fas fa-lg fa-grin-beam"></i>
+          </button>
+          <button id="file-attachment-button" class="p-2">
+            <i class="fas fa-lg fa-paperclip"></i>
+          </button>
+          <input
+            type="text"
+            id="message-input"
+            class="flex-1 p-2 border border border-gray-300 rounded-l-lg outline-none"
+            placeholder="Type a message..."
+          />
+          <button
+            id="send-message"
+            class="bg-blue-500 text-white px-4 py-[9.2px] rounded-r-lg hover:bg-blue-600 transition"
+          >
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </section>
+    </main>
+  </body>
+  <script type="module" src="{% static './scripts/addjob.js' %}"></script>
+    <script src="{% static './scripts/dashboard.js' %}"></script>
+  <script src="{% static './scripts/messages.js' %}"></script>
+</html>

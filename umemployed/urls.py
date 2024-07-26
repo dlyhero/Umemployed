@@ -30,6 +30,9 @@ urlpatterns = [
     path('onboarding/', include('onboarding.urls')),
     path('assessments/', include('asseessments.urls')),
     path('posts/',include('social_features.urls')),
+    
+    path('messages/',include('messaging.urls')),
+    path('notifications/',include('notifications.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
