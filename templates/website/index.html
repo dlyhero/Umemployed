@@ -270,9 +270,9 @@
       </header>
     <main class="mx-auto flex-grow w-full">
       <section
-        class="hero-section container mx-auto bg-white flex flex-col lg:flex-row items-center justify-center text-center text-white h-screen w-full"
+        class="hero-section container mx-auto bg-white flex flex-col lg:flex-row items-center justify-center text-center text-white lg:h-screen"
       >
-        <div class="lg:w-1/2 p-8 rounded hero-content text-gray-700">
+        <div class="lg:w-1/2 w-full p-8 rounded hero-content text-gray-700">
           <h1 class="text-3xl md:text-5xl font-bold mb-4">
             Find Your Dream Job.<br />
             <i>Get Hired</i>
@@ -280,7 +280,7 @@
           <p class="mb-6 text-lg md:text-xl">
             Explore thousands of job opportunities and take your career to the
             next level.
-          </p>
+          </p>  
           <a
             href="./addjob.html"
             class="px-7 py-3 text-[17px] font-semibold bg-[#1e90ff] rounded-md text-white"
@@ -522,29 +522,30 @@
         </div>
       </section>
       
-      <section class="h-screen flex bg-gray-100">
-        <div class="w-full flex flex-col lg:flex-row">
-          <!-- Testimonial Image -->
-          <div class="w-full lg:w-1/2 flex justify-center">
+      <section class="p flex bg-gray-100 items-center justify-center ">
+    <div class="w-full  p flex flex-col lg:flex-row rounded-lg " >
+        <!-- Testimonial Image -->
+        <div class="w-full lg:w-1/2">
             <img src="{% static 'build/pics/ceo.jpg' %}" 
                  alt="Testimonial Image" 
-                 class="w-full sm:h-full object-cover rounded-l-lg lg:rounded-none">
-          </div>
-          <!-- Testimonial Content -->
-          <div class="w-full lg:w-1/2 bg-[#1e90ff] opacity-100 px-6 py-16 lg:py-32 lg:px-12 flex flex-col justify-center sm:h-fit">
+                 class="w-full h-full object-cover">
+        </div>
+        <!-- Testimonial Content -->
+        <div class="w-full lg:w-1/2 bg-gradient-to-r from-blue-500 to-blue-700 px-8 py-16 lg:py-32 lg:px-12 flex flex-col justify-center">
             <h2 class="text-2xl lg:text-4xl font-bold text-white mb-4">
-              What Our Clients Say
+                What Our Clients Say
             </h2>
             <blockquote class="text-lg lg:text-xl text-white mb-6 italic">
-              "UmEployment has transformed our hiring process. The platform is intuitive and effective, and we’ve found incredible candidates through it."
+                "UmEployment has transformed our hiring process. The platform is intuitive and effective, and we’ve found incredible candidates through it."
             </blockquote>
-            <p class="text-sm lg:text-[20px] font-semibold text-[#2d3748]">John Doe</p>
-            <p class="text-[12px] lg:text-[16px] text-white">CEO of TechCorp</p>
-          </div>
+            <p class="text-sm lg:text-lg font-semibold text-gray-200">John Doe</p>
+            <p class="text-xs lg:text-sm text-gray-100">CEO of TechCorp</p>
         </div>
-      </section>
+    </div>
+</section>
+
       
-      <section class="relative h-screen flex items-center justify-center bg-gray-100 overflow-hidden">
+      <section class="relative py-36 flex items-center justify-center bg-gray-100 overflow-hidden">
         <div class="relative z-10 bg-white  p-8 max-w-4xl mx-4 md:mx-8 lg:mx-12 text-center">
           <h2 class="text-3xl lg:text-5xl font-bold text-gray-800 mb-4">
             Ready to Find Your Dream Job?
@@ -613,7 +614,7 @@
           </form>
         </div>
         
-      </div>
+      </div>  
       <!-- Footer Bottom -->
       <div class="text-center border-t border-gray-300 py-6 mt-6 w-full bg-white">
         <p class="text-sm">

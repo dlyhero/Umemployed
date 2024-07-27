@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
     <title>Sign Up &VerticalLine; UmEmployed</title>
   </head>
-  <body class="min-h-screen flex flex-col">
+  <body class="min-h-screen  text-sm flex flex-col bg-gray-100">
      
     <header class="header container px-3 mx-auto mt-3">
       <div class="logo-wrapper flex md:justify-center items-center">
@@ -23,7 +23,7 @@
         <div class="text-logo text-[14px] md:text-[20px]">UmEmployed</div>
       </div>
     </header>
-    <main class="container mx-auto mt-4 sm:mt-8 flex-grow">
+    <main class="container mx-auto mt-4 sm:mt-4 flex-grow p-4">
       <div>
         {% for message in messages %}
         <div class="alert alert-danger" role="alert">{{ message }}</div>
@@ -36,10 +36,10 @@
           </h1>
         </div>
         <div
-          class="inner-box bg-transparent md:bg-white md:flex md:max-w-4xl w-4/5 mx-auto md:border md:shadow-2xl md:rounded-xl"
+          class="inner-box bg-transparent md:bg-white md:flex  mx-auto md:border"
         >
           <div
-            class="carousol hidden relative md:block w-1/2 overflow-hidden border rounded-xl"
+            class="carousol hidden relative md:block w-1/2 overflow-hidden "
           >
             <div
               class="slide absolute top-0 bottom-0 left-10 w-full h-full"
