@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'build/css/general.css' %}">
     <link rel="stylesheet" href="{% static 'build/css/header.css' %}">
     <link rel="stylesheet" href="{% static 'build/css/sidebar_recriuter.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -48,13 +49,21 @@
     </div>
     <nav class="flex md:gap-x-4 items-center">
       <ul class="flex gap-x-2 md:gap-x-4 items-center">
-        <a
-        class="header-link flex items-center hidden md:block p-2 rounded"
-        href="{% url 'home' %}"
-      >
-        <i class="fas fa-home"></i>
-        Home</a
-      >
+        <li class="relative">
+              <a
+                id="messages-link"
+                class="header-link flex items-center gap-1 p-2 rounded"
+                href="{% url 'home' %}"
+              >
+                <i id="messages-icon" class="fas fa-lg fa-briefcase text-xl icon"></i>
+                <span class="hidden md:block">Jobs</span>
+                <div
+                  class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+                >
+                  2
+                </div>
+              </a>
+            </li>
         <li class="relative">
           <a
             id="messages-link"
