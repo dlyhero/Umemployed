@@ -5,10 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Company Page | UmEmployed</title>
-    <link rel="icon" href="./build/logo/logo-color.png" />
+    <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
     <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
@@ -33,37 +34,44 @@
           >
         </div>
         <a
-          class="hidden md:block hover:bg-blue-50 transition-colors p-2 rounded"
+          class="hidden md:flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
           href="{% url 'home' %}"
-          >Home</a
+          >
+          <i class="fas fa-home home-icon"></i>
+          <span>Home</span></a
         >
+        
       </div>
       <nav class="flex md:gap-x-4 items-center">
         <ul class="flex gap-x-2 md:gap-x-6 items-center">
-          <li>
+          
+          <li class="relative">
             <a
-              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              class="flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
               href="{% url 'company_inbox' company.id %}"
-              ><img
-                class="w-5"
-                src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}"
-                alt="message icon"
-              />
+              ><i class="fas fa-lg fa-comments message-icon text-[#007bff]"></i>
               <span class="hidden md:block">Messages</span>
+              <div
+                class="absolute top-[-3px] left-4 py-[0.5px] px-[8px] text-[10px] text-white bg-red-500 rounded-full"
+              >
+                3
+              </div>
             </a>
           </li>
-          <li>
+          <li class="relative">
             <a
-              class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
-              href="#"
-              ><img
-                class="w-5"
-                src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}"
-                alt="notification icon"
-              />
+              class="flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+              href="./notification.html"
+              ><i class="fas fa-bell fa-lg notification-icon"></i>
               <span class="hidden md:block">Notifications</span>
+              <div
+                class="absolute top-[-3px] left-4 py-[0.5px] px-[8px] text-[10px] text-white bg-red-500 rounded-full"
+              >
+                3
+              </div>
             </a>
           </li>
+          
         </ul>
 
         <div class="hidden md:block border-l h-[40px]"></div>

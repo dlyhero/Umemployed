@@ -52,33 +52,63 @@
     <header class="flex justify-between md:border-b z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-0 bg-white">
         <div class="flex items-center gap-x-5">
             <div class="logo-wrap flex items-center">
-                <a href="{% url 'home' %}">
+                <a href="{% url 'index' %}">
                 <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
                 </a>
-                <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"><a href="{% url 'home' %}">UmEmployed</a></span>
+                <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"><a href="{% url 'index' %}">UmEmployed</a></span>
             </div>
         </div>
         <nav class="flex gap-x-2 items-center">
             <ul class="flex gap-x-2 md:gap-x-6 items-center">
                 {% if user.is_authenticated %}
-                <li>
-                    <a class="flex hover:bg-blue-50 transition-colors p-2 rounded" href="{% url 'home' %}">
-                        <img class="w-6" src="{% static 'build/img/home-svgrepo-com.svg' %}" alt="home icon" />
-                        <span class="hidden md:block">Home</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded" href="#">
-                        <img class="w-5" src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}" alt="message icon" />
-                        <span class="hidden md:block">Messages</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="flex gap-1 hover:bg-blue-50 transition-colors p-2 rounded" href="#">
-                        <img class="w-5" src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}" alt="notification icon" />
-                        <span class="hidden md:block">Notifications</span>
-                    </a>
-                </li>
+                <li class="relative">
+              <a
+                id="messages-link"
+                class="header-link flex items-center gap-1 p-2 rounded"
+                href="{% url 'home' %}"
+              >
+                <i id="messages-icon" class="fas fa-lg fa-briefcase text-xl icon"></i>
+                <span class="hidden md:block">Jobs</span>
+                <div
+                  class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+                >
+                  2
+                </div>
+              </a>
+            </li>
+                <li class="relative">
+          <a
+            id="messages-link"
+            class="header-link flex items-center gap-1 p-2 rounded"
+            href="./messages_jobseeker.html"
+          >
+            <i
+              id="messages-icon"
+              class="fas fa-lg fa-comments text-xl icon"
+            ></i>
+            <span class="hidden md:block">Messages</span>
+            <div
+              class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+            >
+              3
+            </div>
+          </a>
+        </li>
+                <li class="relative">
+          <a
+            id="notifications-link"
+            class="header-link flex items-center gap-1 p-2 rounded"
+            href="./notification.html"
+          >
+            <i id="notifications-icon" class="fas fa-bell text-xl icon"></i>
+            <span class="hidden md:block">Notifications</span>
+            <div
+              class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+            >
+              3
+            </div>
+          </a>
+        </li>
             </ul>
 
             <div class="hidden md:block border-l h-[40px]"></div>
