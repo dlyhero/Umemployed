@@ -323,13 +323,7 @@ color: #297FB8; /* Primary color for icons */
       </section>
     </div>
   </main>
-  <footer class="text-center pb-8 mt-8 px-2 text-gray-500">
-    &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
-    <span class="underline">
-      <a href="#">Cookies</a>, <a href="#">Privacy</a> and
-      <a href="#">Terms</a>
-    </span>
-  </footer>
+  
   <script>
     let currentIndex = 0
     const slides = document.querySelectorAll('.carousel-slide')
@@ -358,8 +352,8 @@ color: #297FB8; /* Primary color for icons */
     showSlide(currentIndex)
   </script>
 
-  <script type="module" src="{% static './scripts/Profile.js' %}"></script>
+  <script type="module" src="{% static 'build/scripts/Profile.js' %}"></script>
 
-  <script type="module" src="{% static './scripts/addjob.js' %}"></script>
-  <script type="module" src="{% static './scripts/dashboard.js' %}"></script>
+  <script type="module" src="{% static 'build/scripts/addjob.js' %}"></script>
+  <script type="module" src="{% static 'build/scripts/dashboard.js' %}"></script>
 {% endblock %}

@@ -44,6 +44,21 @@
       </div>
       <nav class="flex md:gap-x-4 items-center">
         <ul class="flex gap-x-2 md:gap-x-6 items-center">
+          <li class="relative">
+              <a
+                id="messages-link"
+                class="header-link flex items-center gap-1 p-2 rounded"
+                href="{% url 'home' %}"
+              >
+                <i id="messages-icon" class="fas fa-lg fa-briefcase text-xl icon"></i>
+                <span class="hidden md:block">Jobs</span>
+                <div
+                  class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+                >
+                  2
+                </div>
+              </a>
+            </li>
           
           <li class="relative">
             <a
