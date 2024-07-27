@@ -1,0 +1,25 @@
+  {% extends 'website/base.html' %}
+    {% load static %}
+    {% block custom_css %}
+    
+      
+      
+      {% endblock %}
+    {% block content %}
+    <main class="flex-grow flex items-center justify-center bg-gray-100">
+      <div class="bg-white p-10 rounded-lg shadow-lg text-center">
+          <h1 class="text-2xl font-bold mb-4">Welcome to the Job Test</h1>
+          <p class="mb-4">You are about to enter a test for this job. You will be given <span class="font-semibold">2
+                  minutes</span> and the questions are in <span class="font-semibold">3 rounds</span>.</p>
+         <a href="{% url 'job:apply_job' job_id=job.id %}"> <button id="button" class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded hover:bg-[#146ac0] focus:border-none" 
+          onclick="navigateToNextPage()"    >Click to Start</button>
+         </a> 
+      </div>
+    </main>
+
+    <script>
+      function navigateToNextPage() {
+        window.location.href = 'testing.html';
+      }
+    </script>
+    {% endblock %}

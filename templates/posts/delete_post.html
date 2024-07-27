@@ -1,0 +1,12 @@
+<!-- delete_post.html -->
+
+{% extends 'users/base.html' %}
+
+{% block content %}
+<h2>Delete Post</h2>
+<p>Are you sure you want to delete the post "{{ post.content }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+{% endblock %}

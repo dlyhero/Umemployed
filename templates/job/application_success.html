@@ -1,0 +1,57 @@
+{% extends 'website/base.html' %}
+    {% load static %}
+    {% block custom_css %}
+    <link rel="stylesheet" src="{% static 'build/css/style.css' %}" />
+    <link rel="stylesheet" src="{% static 'build/css/input.css' %}" />
+    <link rel="shortcut icon" src="{% static 'build/logo/logo-color.png' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .content {
+        max-width: 32rem;
+      }
+    </style>
+      
+      
+      {% endblock %}
+    {% block content %}
+
+
+    <main class="flex-grow flex items-center justify-center">
+      <div class="bg-white shadow-md rounded-lg p-8 max-w-lg mx-auto content">
+        <h1 class="text-2xl font-bold text-center text-green-600">Congratulations!</h1>
+        <p class="mt-4 text-gray-700 text-center">You have successfully completed the test.</p>
+        <div class="mt-6">
+          <p class="text-gray-600">We are pleased with your interest in the position and appreciate the time you have dedicated to this test.</p>
+          <p class="mt-2 text-gray-600">Our team will review your performance and will be in touch with you soon for the next steps.</p>
+          <!-- Add skill scores here -->
+          {% if skill_scores %}
+            <h2 class="mb-3">Skill Scores</h2>
+            <ul class="list-group">
+              {% for skill, score in skill_scores.items %}
+                <li class="list-group-item">{{ skill }}: {{ score }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <a href="{% url 'job:evaluation_results' job_id=job.id%}"  style="color: blue; text-decoration: none;">See results</a>
+          {% endif %}
+          <!-- End of skill scores -->
+        </div>
+        <div class="mt-6 text-center">
+          <a href="{% url 'home' %}" class="inline-block px-6 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">Back to Home</a>
+        </div>
+      </div>
+    </main>
+    {% endblock %}
+   

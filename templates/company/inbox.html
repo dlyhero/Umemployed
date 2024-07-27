@@ -1,0 +1,272 @@
+{% extends 'resume/recruiterBase.html' %}
+{% load static %}
+ {% block custom_css %}
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'build/css/message.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+
+      
+      {% endblock %}
+{% block content %}
+
+    <!-- Main Content -->
+      <!-- Main Content -->
+     <main class="flex flex-1 overflow-hidden bg-gray-100 sm:p-2 sm:gap-2  md:ml-[245px]">
+      <!-- Sidebar -->
+      <aside
+        id="message-sidebar"
+        class="md:block bg-white sm:rounded-lg w-full sm:w-[30%] border-r border-gray-200 overflow-y-auto relative "
+      >
+        <div class="flex flex-col sticky top-0 left-0 right-0 bg-white">
+          <div
+            class="px-4 py-2 flex justify-between items-center border-b border-gray-200"
+          >
+            <h2 class="text-xl font-bold text-gray-900">Messages</h2>
+            <button
+              id="add-message-btn"
+              class="px-3 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+            >
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <input
+            type="text"
+            id="search-messages"
+            class="w-[95%] mx-auto p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 mt-4"
+            placeholder="Search messages..."
+          />
+        </div>
+        <div class="p-4">
+          <ul id="message-list" class="space-y-2">
+            <li
+              class="message-item gap-2 flex items-center mb-4 p-2 bg-gray-100 rounded-lg cursor-pointer"
+              data-username="John Doe"
+              data-message="Hey, are you available for a quick meeting tomorrow?"
+              data-profile="user1.jpg"
+            >
+              <img
+                src="https://via.placeholder.com/40"
+                alt="Profile Picture"
+                class="w-12 h-12 rounded-full"
+              />
+              <div class="overflow-hidden">
+                <h3 class="text-md font-semibold text-gray-900">John Doe</h3>
+                <p class="text-sm text-gray-600 truncate">
+                  Hey, are you available for a quick meeting tomorrow?
+                </p>
+              </div>
+            </li>
+            <li
+              class="message-item gap-2 flex items-center mb-4 p-2 bg-gray-100 rounded-lg cursor-pointer"
+              data-username="Jane Smith"
+              data-message="I have reviewed your profile and would like to discuss..."
+              data-profile="user2.jpg"
+            >
+              <img
+                src="https://via.placeholder.com/40"
+                alt="Profile Picture"
+                class="w-12 h-12 rounded-full"
+              />
+              <div class="overflow-hidden">
+                <h3 class="text-md font-semibold text-gray-900">Jane Smith</h3>
+                <p class="text-sm text-gray-600 truncate">
+                  I have reviewed your profile and would like to discuss...
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </aside>
+      <!-- Chat Window -->
+      <section
+        id="chat-window"
+        class="flex flex-col flex-1 hidden md:flex sm:rounded-lg "
+      >
+        <header
+          id="chat-header"
+          class="px-4 py-2 flex justify-between items-center bg-white border-b border-gray-200 sm:rounded-t-lg"
+        >
+          <div class="flex items-center gap-3">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="Profile Picture"
+              id="chat-header-profile"
+              class="w-10 h-10 rounded-full"
+            />
+            <h2
+              id="chat-header-username"
+              class="text-xl font-bold text-gray-900"
+            >
+              John Doe
+            </h2>
+          </div>
+          <button
+            id="back-button"
+            class="text-gray-500 hover:text-gray-700 transition lg:hidden"
+          >
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+        </header>
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50">
+          <div class="message-container received flex mb-4">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="Profile Picture"
+              class="w-10 h-10 rounded-full mr-3"
+            />
+            <div>
+              <div class="bg-gray-200 p-3 rounded-lg">
+                <p class="text-sm text-gray-900">
+                  Hey, are you available for a quick meeting tomorrow?
+                </p>
+              </div>
+              <span class="text-xs text-gray-600 mt-1 block">10:30 AM</span>
+            </div>
+          </div>
+          <div class="message-container sent flex mb-4 gap-3">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="Profile Picture"
+              class="w-10 h-10 rounded-full ml-3"
+            />
+            <div>
+              <div class="bg-blue-500 text-white p-3 rounded-lg">
+                <p class="text-sm">
+                  Yes, I am available. Let me know the time.
+                </p>
+              </div>
+              <span class="text-xs text-gray-600 mt-1 block">10:32 AM</span>
+            </div>
+          </div>
+        </div>
+        <div
+          id="chat-form"
+          class="px-4 py-2 bg-white border-t border-gray-200 flex items-center sm:rounded-b-lg"
+        >
+          <button id="emoji-button" class="p-2">
+            <i class="fas fa-lg fa-grin-beam"></i>
+          </button>
+          <button id="file-attachment-button" class="p-2">
+            <i class="fas fa-lg fa-paperclip"></i>
+          </button>
+          <input
+            type="text"
+            id="message-input"
+            class="flex-1 p-2 border border border-gray-300 rounded-l-lg outline-none"
+            placeholder="Type a message..."
+          />
+          <button
+            id="send-message"
+            class="bg-blue-500 text-white px-4 py-[9.2px] rounded-r-lg hover:bg-blue-600 transition"
+          >
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </section>
+    </main>
+     </body>
+     <script>
+          function openChat(contactName, initialMessage) {
+        document.getElementById("chat-title").innerText = contactName;
+        document.getElementById("chat-messages").innerHTML = `
+                <div class="flex justify-start mb-2">
+                    <div class="message-bubble received" onclick="toggleMessageOptions(this)">
+                        <div>${initialMessage}</div>
+                        <div class="message-meta received">${formatDateTime(
+                          new Date()
+                        )}</div>
+                        <div class="message-options">
+                            <button onclick="replyMessage()">Reply</button>
+                            <button onclick="deleteMessage()">Delete</button>
+                            <button onclick="addReaction()">Add Reaction</button>
+                            <button onclick="copyMessageText()">Copy Message Text</button>
+                            <button onclick="reportMessage()">Report Message</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        document.getElementById("message-input").value = "";
+        document.getElementById("chat-window").style.display = "flex";
+        if (window.innerWidth <= 768) {
+          document.getElementById("message-sidebar").style.display = "none";
+        }
+      }
+
+      document
+        .getElementById("send-button")
+        .addEventListener("click", function () {
+          const messageInput = document.getElementById("message-input");
+          if (messageInput.value.trim() === "") return;
+
+          const messageContent = messageInput.value;
+          const messageContainer = document.createElement("div");
+          messageContainer.className = "flex justify-end mb-2";
+
+          const messageBubble = document.createElement("div");
+          messageBubble.className = "message-bubble sent";
+          messageBubble.innerHTML = `
+                <div>${messageContent}</div>
+                <div class="message-meta sent">${formatDateTime(
+                  new Date()
+                )}</div>
+                <div class="message-options">
+                    <button onclick="replyMessage()">Reply</button>
+                    <button onclick="deleteMessage()">Delete</button>
+                    <button onclick="addReaction()">Add Reaction</button>
+                    <button onclick="copyMessageText()">Copy Message Text</button>
+                    <button onclick="reportMessage()">Report Message</button>
+                </div>
+            `;
+
+          messageContainer.appendChild(messageBubble);
+          document
+            .getElementById("chat-messages")
+            .appendChild(messageContainer);
+          messageInput.value = "";
+          document.getElementById("chat-messages").scrollTop =
+            document.getElementById("chat-messages").scrollHeight;
+        });
+
+      function replyMessage() {
+        alert("Reply functionality is not implemented yet.");
+      }
+
+      function deleteMessage() {
+        alert("Delete functionality is not implemented yet.");
+      }
+
+      function addReaction() {
+        alert("Add reaction functionality is not implemented yet.");
+      }
+
+      function copyMessageText() {
+        alert("Copy message text functionality is not implemented yet.");
+      }
+
+      function reportMessage() {
+        alert("Report message functionality is not implemented yet.");
+      }
+
+      function toggleMessageOptions(messageBubble) {
+        const options = messageBubble.querySelector(".message-options");
+        const allOptions = document.querySelectorAll(".message-options");
+        allOptions.forEach((option) => {
+          if (option !== options) {
+            option.style.display = "none";
+          }
+        });
+        options.style.display =
+          options.style.display === "block" ? "none" : "block";
+      }
+
+      function formatDateTime(date) {
+        const options = { hour: "2-digit", minute: "2-digit", hour12: true };
+        const time = date.toLocaleTimeString([], options);
+        const day = date.toLocaleDateString([], { weekday: "short" });
+        return `${time}, ${day}`;
+      }
+     </script>
+ {% endblock %}

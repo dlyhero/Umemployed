@@ -1,0 +1,11 @@
+<!-- user/available_assessments.html -->
+<h1>Available Assessments</h1>
+<ul>
+  {% for assessment in assessments %}
+    <li>
+      {{ assessment.title }}
+      <!-- Display other assessment details as needed -->
+      <a href="{% url 'start_session' assessment_id=assessment.id %}">Start Session</a>
+    </li>
+  {% endfor %}
+</ul>

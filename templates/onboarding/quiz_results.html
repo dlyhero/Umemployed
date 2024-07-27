@@ -1,0 +1,77 @@
+{% extends 'users/base.html' %}
+{% block content %}
+<style>
+  .container {
+    margin-top: 50px;
+  }
+
+  .card {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .results {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .results h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+  }
+
+  .results p {
+    font-size: 18px;
+    margin-bottom: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .thumbs-up {
+    font-size: 24px;
+    margin-top: 10px;
+  }
+
+  .next-phase-button {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  .next-phase-button a {
+    text-decoration: none;
+  }
+
+  .next-phase-button button {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: #000000;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+
+<div class="container">
+  <div class="card">
+    <div class="results">
+      <h1>Quiz Results</h1>
+      <p>Score: {{ quiz_score }} / {{ total_questions }}</p>
+    </div>
+
+    <h1 class="text-center mt-50">You have completed this phase of the application</h1>
+
+    <div class="text-center thumbs-up">&#x1F44D;</div>
+
+    <div class="next-phase-button">
+      <a href="{% url 'job:run_code' %}">
+        <button type="button" class="btn btn-primary">Proceed to Next Phase</button>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

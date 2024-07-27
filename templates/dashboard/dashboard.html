@@ -1,0 +1,1207 @@
+{% extends 'resume/base.html' %}
+{% load static %}
+ {% block custom_css %}
+    
+    <style>
+      
+ /* Styling for the skill suggestion checkmarks */
+.suggested-skill {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.custom-checkbox {
+  display: none;
+}
+
+.custom-label {
+  position: relative;
+  padding-left: 24px; /* Increase padding for larger clickable area */
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-label:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 16px; /* Adjust size of the circle */
+  height: 16px; /* Adjust size of the circle */
+  border: 1px solid #ccc; /* Default border color */
+  border-radius: 50%; /* Rounded shape for the circle */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.custom-checkbox:checked + .custom-label:before {
+  background-color: #1e90ff; /* Change to desired color when checked */
+}
+
+.custom-label:after {
+  content: ''; /* Remove the tick mark */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px; /* Adjust size of the tick mark */
+  height: 4px; /* Adjust size of the tick mark */
+  border-left: 2px solid transparent; /* Adjust thickness of the tick mark */
+  border-bottom: 2px solid transparent; /* Adjust thickness of the tick mark */
+  transform: rotate(-45deg) scale(0);
+  transition: transform 0.3s;
+}
+
+.custom-checkbox:checked + .custom-label:after {
+  transform: rotate(-45deg) scale(1);
+}
+
+
+
+/* style for education modal */
+
+  /* Modal Background */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black background with opacity */
+  }
+
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+  }
+
+  /* Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+
+    </style>  
+      
+  {% endblock %}
+{% block content %}
+
+  <main class="flex flex-col lg:flex-row mx-auto w-full w-[92%] sm:max-w-[85%] mt-4 gap-4 ">
+     <aside
+        class="w-full lg:w-1/4 sm:bg-white rounded-lg p-6 order-3 lg:order-3 h-fit sm:mt-4 sm:border border-gray-300"
+      >
+        <!-- Top Jobs Section -->
+        <section class="mb-8">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Top Jobs</h3>
+          <div id="top-jobs-section" class="space-y-4">
+            <!-- Job Card 1 -->
+            {% for job in top_jobs %}
+            <a
+              href="{% url 'job:job_details' job.id %}"
+              class="block p-4 bg-gray-50 rounded-lg flex flex-col items-start hover:bg-gray-100 transition"
+            >
+              <div class="flex items-center mb-2">
+                <div
+                  class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-laptop-code text-xl"></i>
+                  <!-- Job Icon -->
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-gray-800 font-semibold text-sm truncate"
+                    >{{ job.title }}</span
+                  >
+                  <span class="text-gray-600 text-xs truncate">{{ job.company }}</span>
+                </div>
+              </div>
+              <button
+                class="text-gray-600 text-xs font-semibold hover:text-gray-800 flex items-center ml-16 mt-2"
+              >
+                <i class="fas fa-info-circle text-base mr-1"></i> View More
+              </button>
+            </a>
+            <hr class="border-t border-gray-300 my-2" />
+            {% endfor %}
+           </section>
+
+        <!-- Descriptive Image Section -->
+        <section
+          class="relative bg-gray-200 rounded-lg overflow-hidden"
+          style="height: 300px"
+        >
+          <a href="/see-who-is-hiring" class="block h-full w-full">
+            <img
+              src="{% static 'build/pics/ve.svg' %}"
+              alt="Hiring on UmEmployed"
+              class="w-full h-full object-cover"
+            />
+            <div
+              class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center text-white p-6"
+            >
+              <p class="text-xl font-bold">See who's hiring on UmEmployed</p>
+            </div>
+          </a>
+        </section>
+      </aside>
+   
+   
+   
+   
+   
+      <div class="w-full lg:w-1/2 rounded-lg sm:mt-4  lg:order-2">
+      <section
+          class="user-profile mx-auto p-6 sm:rounded-lg sm:bg-white sm:border border-gray-300"
+        >
+          <div
+            class="profile-header mb-8 flex flex-col md:flex-row md:justify-between items-center md:items-start"
+          >
+            <div class="relative mb-4 md:mb-0">
+              <img
+                class="w-32 h-32 rounded-full border-4 border-gray-200"
+                src="{% static 'build/img/pp.jpg' %}"
+                alt="profile-pic"
+              />
+              <button
+                class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 text-xs shadow-md hover:bg-blue-600 transition-colors"
+                id="edit-profile-pic-btn"
+              >
+                <i class="fas fa-camera"></i>
+              </button>
+              <input
+                type="file"
+                id="profile-pic-upload"
+                class="hidden"
+                accept="image/*"
+              />
+            </div>
+            <div class="text-center md:text-left md:ml-6">
+              <p class="font-semibold text-2xl text-gray-900 mb-1">
+                <p class="font-bold text-2xl name mr-4">
+                  <span class="firstName uppercase">{{ contact_info.name }}</span>
+                </p>
+              </p>
+              <p class="text-gray-700 text-gray-500 font-semibold text-sm">
+                <div class="job-title">{{ resume.job_title }}</div>
+              </p>
+            </div>
+          </div>
+          <div
+            class="profile-body flex flex-col md:flex-row justify-between items-start md:items-center"
+          >
+            <div class="profile-info text-gray-700">
+              <div
+                class="email text-base mb-1 flex items-center text-gray-700 font-semibold text-sm"
+              >
+                
+                <div class="email"> <i class="fa-solid fa-envelope text-blue-500 mr-2"></i>{{ contact_info.email }}</div>
+              </div>
+              <div
+                class="phone text-base mb-1 flex items-center text-gray-700 font-semibold text-sm"
+              >
+                <div class="phone"><i class="fa-solid fa-phone text-blue-500 mr-2"></i>{{ contact_info.phone }}</div>
+                
+              </div>
+              <div
+                class="country text-base mb-1 flex items-center text-gray-700 font-semibold text-sm"
+              >
+                 <div class="country"> <i class="fa-solid fa-earth-americas text-blue-500 mr-2"></i>{{ contact_info.country }}</div>
+                
+              </div>
+            </div>
+            <a
+            href="{% url 'update-resume' %}"
+              class="w-full sm:w-fit text-center flex justify-center mt-4 md:mt-0 text-[#1e90ff] border border-blue-500 px-4 py-2 rounded-full shadow-md"
+            >
+              Edit Profile
+            </a>
+          </div>
+        </section>
+        <section
+        class="cv-wrap mx-auto p-6 rounded-lg my-10 relative bg-white sm:border border-gray-300"
+      >
+        <div class="flex justify-between items-center relative">
+          <div class="flex gap-4 items-center">
+            <div class="file-image-wrap">
+              <i class="fas fa-file-cv"></i>
+            </div>
+            <div>
+              <div class="cv-title font-bold text-xl">My Cv.pdf</div>
+              <div class="day text-gray-500">Added today</div>
+            </div>
+          </div>
+          <div class="">
+            <button id="cv-btn" class="text-3xl font-bold">
+              <img
+                class="w-6"
+                src="{% static 'build/img/hamburger-menu-dots-svgrepo-com.svg' %}"
+                alt="meny dots"
+              />
+            </button>
+            <div
+              id="options-backdrop"
+              class="absolute hidden h-[300px] left-[90px] top-14 right-0 p-2 option-wrap gap-2 bg-transparent flex flex justify-end"
+            >
+              <div
+                id="options"
+                class="absolute w-[250px] t0p-0 p-2 border rounded-lg bg-white"
+              >
+                <div
+                  class="option mb-4 hover:bg-blue-50 transition-colors flex gap-3 w-full p-2 rounded-t-lg"
+                >
+                  <img
+                    class="w-6"
+                    src="./build/img/download-svgrepo-com.svg"
+                    alt=""
+                  />
+                  <span>Download</span>
+                </div>
+                <div
+                  class="option mb-4 hover:bg-blue-50 transition-colors flex gap-3 w-full p-2"
+                >
+                  <img
+                    class="w-6"
+                    src="./build/img/search-and-replace-document-svgrepo-com.svg"
+                    alt=""
+                  />
+                  <span>Replace</span>
+                </div>
+                <div
+                  class="option hover:bg-blue-50 transition-colors flex gap-3 w-full p-2 rounded-b-lg"
+                >
+                  <img
+                    class="w-6"
+                    src="./build/img/delete-2-svgrepo-com.svg"
+                    alt=""
+                  />
+                  <span>Delete</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+        <section id="job-sec" class="mb-10 border rounded-lg">
+      <div class="">
+        <div class="border border-white bg-white rounded-lg">
+          <div class="flex justify-between items-center border-b p-4 mb-4">
+            <p class="font-bold text-xl text-[#1e90ff]">Select Job</p>
+          </div>
+          <form id="job-form" method="POST" action="{% url 'save_job' %}">
+            {% csrf_token %}
+            <div class="w-full p-4 mb-2">
+              <label for="job"> Job </label><br />
+              
+            </div>
+            <div class="p-2 border rounded-lg mb-4 mx-4 bg-blue-50">
+              <select
+                name="job"
+                id="job"
+                class="bg-transparent w-full outline-none"
+              >
+                <option value="" selected disabled>Select a job</option>
+                {% for job in jobs %}
+                  <option value="{{ job.id }}">{{ job.name }}</option>
+                {% endfor %}
+              </select>
+              
+            </div>
+            <div class="p-4 flex justify-between border-t">
+              <div></div>
+              <button
+                type="submit"
+                id="save-job-btn"
+                class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+          <div id="skill-{{ skill.id }}" class="skill border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+            <div>
+            <p>Current role set to: {{resume.job_title}}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="skills-sec" class="mb-10 bg-white p-2 rounded-lg">
+      <div class="flex justify-between items-center mb-2 p-2">
+        <h2 class="font-bold text-xl text-[#1e90ff]">Skills</h2>
+        <button class="w-6" id="add-skill-btn">
+          <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+        </button>
+      </div>
+      <div id="skill-modal" class="hidden fixed inset-0 flex justify-center items-center z-50">
+        <div id="backdrop" class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="border border-white bg-white rounded-lg relative w-11/12 md:w-3/4 lg:w-[48%]">
+          <div class="flex justify-between items-center border-b p-4 mb-4">
+            <p class="font-bold">Add skill</p>
+            <button id="skill-modal-btn"  class="text-2xl">&times;</button>
+          </div>
+          <div class="w-full p-4 mb-4">
+            <label for="input-skill">Skill</label><br />
+            <input class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" type="text" id="input-skill" placeholder="Skill (ex: Reactjs)" />
+            <div id="feedback-message" class="feedback-msg italic text-red-500 hidden">Skill already exists</div>
+          </div>
+    
+    <div class="p-4 border rounded-lg mb-4 mx-4 bg-white">
+        <p class="mb-3 font-bold">Suggested skills</p>
+        <ul id="suggested-skills" class="suggested-skills gap-x-2">
+            {% for suggested_skill in suggested_skills %}
+            <li class="suggested-skill">
+                <input type="checkbox" class="custom-checkbox" id="skill-{{ suggested_skill.id }}" data-id="{{ suggested_skill.id }}" value="{{ suggested_skill.id }}" />
+                <label class="custom-label" for="skill-{{ suggested_skill.id }}">{{ suggested_skill.name }}</label>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="p-4 flex justify-between border-t">
+        <div>
+            <form id="skills-form" method="post" action="{% url 'update_user_skills' %}">
+                {% csrf_token %}
+                <input type="hidden" name="selected_skills" id="selected-skills">
+                <button id="save-skill-btn" class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+   
+    
+    
+    
+        </div>
+      </div>
+    
+    
+    <div id="skills-container" class="p-2">
+      {% include 'partials/skills_list.html' with skills=skills %}
+    </div>
+    
+    <div id="pagination-container" class="flex justify-center items-center p-2 bg-gray-100 rounded-lg shadow-md">
+      {% include 'partials/pagination.html' with skills=skills %}
+    </div>
+    
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Function to show the modal
+      function showModal() {
+          fetchSuggestedSkills(); // Fetch and display suggested skills when the modal opens
+          document.getElementById('skill-modal').classList.remove('hidden');
+      }
+
+      // Function to hide the modal
+      function hideModal() {
+          document.getElementById('skill-modal').classList.add('hidden');
+      }
+
+      // Function to fetch suggested skills from the backend
+      function fetchSuggestedSkills() {
+          fetch("/dashboard/api/suggested-skills/") // Replace with your actual endpoint
+              .then(response => response.json())
+              .then(data => {
+                  initializeSuggestedSkills(data); // Initialize suggested skills
+              })
+              .catch(error => console.error("Error fetching suggested skills:", error));
+      }
+
+      // Function to initialize the suggested skills in the modal
+      function initializeSuggestedSkills(suggestedSkills) {
+          const suggestedSkillsContainer = document.getElementById('suggested-skills');
+          suggestedSkillsContainer.innerHTML = ""; // Clear previous content
+
+          if (suggestedSkills.length === 0) {
+              const notFoundElement = document.createElement("div");
+              notFoundElement.textContent = "No skills found";
+              notFoundElement.className = "not-found";
+              suggestedSkillsContainer.appendChild(notFoundElement);
+          } else {
+              suggestedSkills.forEach(skill => {
+                  const skillElement = document.createElement("div");
+                  skillElement.innerHTML = `
+                      <li data-id="${skill.id}" class="hover:bg-blue-500 hover:text-white mb-2 text-nowrap px-2 py-1 w-fit rounded-full suggested-skill">
+                          <input type="checkbox" id="skill-${skill.id}" class="custom-checkbox" data-id="${skill.id}" value="${skill.name}">
+                          <label for="skill-${skill.id}" class="custom-label">${skill.name}</label>
+                      </li>`;
+                  suggestedSkillsContainer.appendChild(skillElement);
+              });
+          }
+      }
+
+      // Function to handle skill input for auto-suggestions
+      function handleSkillInput() {
+          const skillInput = document.getElementById('input-skill');
+          const suggestedSkillsContainer = document.getElementById('suggested-skills');
+          const query = skillInput.value.toLowerCase();
+          suggestedSkillsContainer.innerHTML = "";
+
+          if (query) {
+              const filteredSkills = Array.from(suggestedSkillsContainer.querySelectorAll('.suggested-skill'))
+                  .filter(skillElement => skillElement.querySelector('.custom-label').textContent.toLowerCase().includes(query));
+
+              if (filteredSkills.length === 0) {
+                  const notFoundElement = document.createElement("div");
+                  notFoundElement.textContent = "No skills found";
+                  notFoundElement.className = "not-found";
+                  suggestedSkillsContainer.appendChild(notFoundElement);
+              } else {
+                  filteredSkills.forEach(skillElement => suggestedSkillsContainer.appendChild(skillElement));
+              }
+          }
+      }
+
+      // Add event listener to the plus icon button to show the modal
+      document.getElementById('add-skill-btn').addEventListener('click', showModal);
+
+      // Add event listener to the close button inside the modal to hide it
+      document.getElementById('skill-modal-btn').addEventListener('click', hideModal);
+
+      // Add event listener to the backdrop to hide the modal when clicked
+      document.getElementById('backdrop').addEventListener('click', hideModal);
+
+      // Add event listener to the save button to handle form submission
+      document.getElementById('save-skill-btn').addEventListener('click', function(event) {
+          event.preventDefault(); // Prevent the default form submission
+
+          // Collect selected skill IDs
+          let selectedSkillIds = [];
+          document.querySelectorAll('.custom-checkbox:checked').forEach(function(checkbox) {
+              selectedSkillIds.push(checkbox.dataset.id); // Use dataset.id to get the skill ID
+          });
+
+          console.log("Selected Skill IDs:", selectedSkillIds); // Debug statement
+
+          // Update the hidden input field with the selected skill IDs
+          document.getElementById('selected-skills').value = JSON.stringify(selectedSkillIds);
+
+          console.log("Hidden Input Value:", document.getElementById('selected-skills').value); // Debug statement
+
+          // Optionally submit the form (or use AJAX as needed)
+          document.getElementById('skills-form').submit();
+      });
+
+      // Add event listener to the skill input field for auto-suggestions
+      document.getElementById('input-skill').addEventListener('input', handleSkillInput);
+  });
+</script>
+
+    
+    <script>
+        function fetchSkills(page) {
+            $.ajax({
+                url: "{% url 'paginated_skills' %}",
+                data: {
+                    'page': page
+                },
+                success: function(data) {
+                    $('#skills-container').html(data.skills_html);
+                    $('#pagination-container').html(data.pagination_html);
+                    attachPaginationHandlers();  // Re-attach handlers after updating pagination
+                }
+            });
+        }
+    
+        function attachPaginationHandlers() {
+            $('#pagination-container a').on('click', function(event) {
+                event.preventDefault();
+                var page = $(this).data('page');
+                fetchSkills(page);
+            });
+        }
+    
+        // Initial handler attachment
+        $(document).ready(function() {
+            attachPaginationHandlers();
+        });
+    </script>
+    
+    </section>
+    
+    
+    <section id="lang-sec" class="mb-10 bg-white p-2 rounded-lg">
+        <div class="flex justify-between items-center mb-2 p-2">
+            <h2 class="font-bold text-xl text-[#1e90ff]">Languages</h2>
+            <button class="w-6" id="add-lang-btn" onclick="showLanguageModal()">
+                <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+            </button>
+        </div>
+        <div id="saved-languages" class="p-2">
+            <ul>
+                {% for user_language in user_languages %}
+                    <li id="language-{{ user_language.id }}" class="flex  items-center border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+                        {{ user_language.language }}
+                        <button class="w-6" onclick="deleteLanguage({{ user_language.id }})">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMTAgMTJWMTciIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTE0IDEyVjE3IiBzdHJva2U9IiNGRjAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiAvPgogIDxwYXRoIGQ9Ik00IDdIMjAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTYgMTBWMThDNiAxOS42NTY5IDcuMzQzMTUgMjEgOSAyMUgxNUMxNi42NTY5IDIxIDE4IDE5LjY1NjkgMTggMThWMTAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTkgNUM5IDMuODk1NDMgOS44OTU0MyAzIDExIDNIMTNDMTQuMTA0NiAzIDE1IDMuODk1NDMgMTUgNVY3SDlWNVoiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+Cjwvc3ZnPg==" alt="delete icon" />
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    
+    <section id="country-sec" class="mb-10 bg-white p-2 rounded-lg">
+        <div class="flex justify-between items-center mb-2 p-2">
+            <h2 class="font-bold text-xl text-[#1e90ff]">Country</h2>
+            <button class="w-6" id="edit-country-btn" onclick="showCountryModal()">
+                <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+            </button>
+        </div>
+        <div id="saved-country" class="p-3 border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+            <p>{{ country_name }}</p>
+        </div>
+    </section>
+    
+    <!-- Language Modal -->
+    <div id="language-modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
+            <h2 class="font-bold text-lg mb-2">Add Language</h2>
+            <hr>
+            <form method="post" action="{% url 'dashboard' %}" class="space-y-4">
+                {% csrf_token %}
+                {{ language_form.as_p }}
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancel-lang-btn" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Country Modal -->
+    <div id="country-modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
+            <h2 class="font-bold text-lg mb-2">Edit Country</h2>
+            <hr>
+            <form method="post" action="{% url 'dashboard' %}" class="space-y-4">
+                {% csrf_token %}
+                {{ profile_form.as_p }}
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancel-country-btn" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+      function showLanguageModal() {
+          document.getElementById('language-modal').classList.remove('hidden');
+      }
+  
+      function showCountryModal() {
+          document.getElementById('country-modal').classList.remove('hidden');
+      }
+  
+      document.getElementById('cancel-lang-btn').addEventListener('click', function() {
+          document.getElementById('language-modal').classList.add('hidden');
+      });
+  
+      document.getElementById('cancel-country-btn').addEventListener('click', function() {
+          document.getElementById('country-modal').classList.add('hidden');
+      });
+  
+      function deleteLanguage(languageId) {
+          fetch(`/dashboard/delete_language/${languageId}/`, {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': '{{ csrf_token }}',
+                  'Content-Type': 'application/json',
+              },
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  document.getElementById(`language-${languageId}`).remove();
+              } else {
+                  alert('Failed to delete language: ' + data.error);
+              }
+          })
+          .catch(error => {
+              alert('An error occurred: ' + error);
+          });
+      }
+  </script>
+  
+  
+    <script>
+  
+    document.getElementById('add-lang-btn').addEventListener('click', function() {
+      document.getElementById('modal').classList.remove('hidden');
+    });
+  
+    document.getElementById('cancel-btn').addEventListener('click', function() {
+      document.getElementById('modal').classList.add('hidden');
+    });
+  
+    document.getElementById('lang-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const language = document.getElementById('language').value;
+      const country = document.getElementById('country').value;
+  
+      document.getElementById('modal').classList.add('hidden');
+    });
+  </script>
+  <section id="experience-sec" class="mb-10 bg-white p-2 rounded-lg">
+    <div class="flex justify-between items-center mb-2 p-2">
+      <h2 class="font-bold text-xl text-[#1e90ff]">Experience</h2>
+      <button class="w-6" id="add-experience-btn">
+        <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+      </button>
+    </div>
+    <div id="experience-wrap" class="p-2">
+      {% for experience in work_experiences %}
+      <div id="experience-{{ experience.id }}" class="experience border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+        <div>
+          <p class="company-name">{{ experience.company_name }}</p>
+          <p class="role">{{ experience.role }}</p>
+          <p class="dates">
+            {{ experience.start_date|date:'M Y' }} -
+            {% if experience.end_date %}
+              {{ experience.end_date|date:'M Y' }}
+            {% else %}
+              Present
+            {% endif %}
+          </p>
+        </div>
+        <div class="btn-wraps flex gap-4">
+          <button class="w-5" onclick="editExperience({{ experience.id }})">
+            <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+          </button>
+          <button class="w-6" onclick="deleteExperience({{ experience.id }})">
+            <img src="{% static 'build/img/delete-2-svgrepo-com.svg' %}" alt="delete icon" />
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  
+  <!-- Experience Modal -->
+  <div id="experience-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
+          <h2 class="font-bold text-lg mb-4" id="modal-title">Add/Edit Experience</h2>
+          <hr class="mb-4">
+          <form id="experience-form-id" method="post" action="{% url 'save_experience' %}" class="space-y-4">
+              {% csrf_token %}
+              <input type="hidden" id="experience-id" name="id">
+              <div>
+                  <label for="company_name" class="block font-medium">Company Name:</label>
+                  <input type="text" id="company_name" name="company_name" class="w-full p-2 border rounded" required>
+              </div>
+              <div>
+                  <label for="role" class="block font-medium">Role:</label>
+                  <input type="text" id="role" name="role" class="w-full p-2 border rounded" required>
+              </div>
+              <div>
+                  <label for="start_date" class="block font-medium">Start Date:</label>
+                  <input type="date" id="start_date" name="start_date" class="w-full p-2 border rounded">
+              </div>
+              <div>
+                  <label for="end_date" class="block font-medium">End Date:</label>
+                  <input type="date" id="end_date" name="end_date" class="w-full p-2 border rounded">
+              </div>
+              <div class="flex justify-end space-x-4">
+                  <button type="button" id="cancel-edit" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                  <button type="submit" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Save</button>
+              </div>
+          </form>
+      </div>
+  </div>
+  
+  
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const addExperienceBtn = document.getElementById('add-experience-btn');
+      const experienceModal = document.getElementById('experience-modal');
+      const experienceFormId = document.getElementById('experience-form-id');
+      const experienceIdInput = document.getElementById('experience-id');
+  
+      addExperienceBtn.addEventListener('click', () => {
+          experienceFormId.reset(); // Reset form fields
+          experienceIdInput.value = ''; // Clear the ID for new entries
+          experienceModal.classList.remove('hidden'); // Show the modal
+      });
+  
+      document.getElementById('cancel-edit').addEventListener('click', () => {
+          experienceModal.classList.add('hidden'); // Hide the modal
+      });
+  
+      window.editExperience = (id) => {
+          fetch(`/dashboard/experience/${id}/`) // Your URL pattern for fetching experience details
+              .then(response => response.json())
+              .then(data => {
+                  document.getElementById('company_name').value = data.company_name;
+                  document.getElementById('role').value = data.role;
+                  document.getElementById('start_date').value = data.start_date;
+                  document.getElementById('end_date').value = data.end_date;
+                  experienceIdInput.value = id;
+                  experienceModal.classList.remove('hidden'); // Show the modal
+              });
+      };
+  
+      window.deleteExperience = (id) => {
+          fetch(`/dashboard/experience/${id}/delete/`, { // Your URL pattern for deleting experience
+              method: 'DELETE',
+              headers: {
+                  'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              },
+          })
+          .then(() => {
+              document.getElementById(`experience-${id}`).remove();
+          });
+      };
+  });
+  
+  
+  </script>
+  
+  <section id="education-sec" class="mb-10 bg-white p-2 rounded-lg">
+    <div class="flex justify-between items-center mb-2 p-2">
+      <h2 class="font-bold text-xl text-[#1e90ff]">Education</h2>
+      <button class="w-6" id="add-education-btn">
+        <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+      </button>
+    </div>
+  
+    <div id="education-list" class="p-2">
+      {% for education in educations %}
+      <div id="education-{{ education.id }}" class="education border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
+          <div>
+          <p class="institution-name">{{ education.institution_name }}</p>
+          <p class="degree">{{ education.degree }}</p>
+          <p class="dates">{{ education.graduation_year }}</p>
+        </div>
+          <div class="btn-wraps flex gap-4">
+              <button class="w-5" onclick="editEducation({{ education.id }})">
+                  <img src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="edit icon" />
+              </button>
+              <button class="w-6" onclick="deleteEducation({{ education.id }})">
+                  <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMTAgMTJWMTciIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTE0IDEyVjE3IiBzdHJva2U9IiNGRjAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiAvPgogIDxwYXRoIGQ9Ik00IDdIMjAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTYgMTBWMThDNiAxOS42NTY5IDcuMzQzMTUgMjEgOSAyMUgxNUMxNi42NTY5IDIxIDE4IDE5LjY1NjkgMTggMThWMTAiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+CiAgPHBhdGggZD0iTTkgNUM5IDMuODk1NDMgOS44OTU0MyAzIDExIDNIMTNDMTQuMTA0NiAzIDE1IDMuODk1NDMgMTUgNVY3SDlWNVoiIHN0cm9rZT0iI0ZGMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+Cjwvc3ZnPg==" alt="delete icon" />
+              </button>
+          </div>
+      </div>
+      {% endfor %}
+    </div>
+  
+   <!-- Modal Structure -->
+  <div id="education-modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center hidden">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
+          <h2 id="modal-title" class="font-bold text-lg mb-2">Add/Edit Education</h2>
+          <hr class="my-2">
+          <form id="education-form-id" method="post" action="{% url 'save_education' %}" class="space-y-4">
+              {% csrf_token %}
+              <input type="hidden" id="education-id" name="id">
+              <div>
+                  <label for="institution_name" class="block font-semibold">Institution Name:</label>
+                  <input type="text" id="institution_name" name="institution_name" required class="w-full border rounded p-2">
+              </div>
+              <div>
+                  <label for="degree" class="block font-semibold">Degree:</label>
+                  <input type="text" id="degree" name="degree" required class="w-full border rounded p-2">
+              </div>
+              <div>
+                  <label for="graduation_year" class="block font-semibold">Graduation Year:</label>
+                  <input type="number" id="graduation_year" name="graduation_year" required class="w-full border rounded p-2">
+              </div>
+              <div class="flex justify-end space-x-4 mt-4">
+                  <button type="button" id="cancel-edit" class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                  <button type="submit" class="px-4 py-2 bg-[#1e90ff] text-white rounded">Save</button>
+              </div>
+          </form>
+      </div>
+  </div>
+  
+  </section>
+  <section
+  class="sm:bg-white rounded-lg p-6 mb-8 sm:border border-gray-300"
+>
+  <h2
+    class="text-2xl font-semibold mb-4 border-b border-gray-200 pb-2 text-[#1e99ff]"
+  >
+    Analytics
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Analytics Card 1 -->
+    <div class="bg-gray-50 p-4 rounded-lg shadow-sm flex flex-col">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">
+        Profile Views
+      </h3>
+      <p class="text-3xl font-bold text-gray-900 mb-2">1,200</p>
+      <span class="text-sm text-gray-600">Last 30 days</span>
+      <!-- You can include a chart or graph here -->
+    </div>
+    <!-- Analytics Card 2 -->
+    <div class="bg-gray-50 p-4 rounded-lg shadow-sm flex flex-col">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">Job Apps</h3>
+      <p class="text-3xl font-bold text-gray-900 mb-2">350</p>
+      <span class="text-sm text-gray-600">Last 30 days</span>
+      <!-- You can include a chart or graph here -->
+    </div>
+    <!-- Analytics Card 3 -->
+    <div class="bg-gray-50 p-4 rounded-lg shadow-sm flex flex-col">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">
+        Endorsements
+      </h3>
+      <p class="text-3xl font-bold text-gray-900 mb-2">85</p>
+      <span class="text-sm text-gray-600">Total endorsements</span>
+      <!-- You can include a chart or graph here -->
+    </div>
+  </div>
+</section>
+
+<!-- Resources Section -->
+<section
+  class="sm:bg-white rounded-lg p-6 mb-8 sm:border border-gray-300"
+>
+  <h2
+    class="text-2xl font-semibold mb-4 border-b border-gray-200 pb-2 text-[#1e99ff]"
+  >
+    Resources
+  </h2>
+  <div class="space-y-4">
+    <!-- Resource Item 1 -->
+    <a
+      href="#resource1"
+      class="block p-4 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300"
+    >
+      <div class="flex items-center">
+        <div
+          class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+        >
+          <i class="fas fa-book text-xl"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-800 text-sm font-medium"
+            >Career Development Guide</span
+          >
+          <span class="text-gray-600 text-xs"
+            >A comprehensive guide to advance your career.</span
+          >
+        </div>
+      </div>
+    </a>
+    <!-- Resource Item 2 -->
+    <a
+      href="#resource2"
+      class="block p-4 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300"
+    >
+      <div class="flex items-center">
+        <div
+          class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+        >
+          <i class="fas fa-video text-xl"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-800 text-sm font-medium"
+            >Online Courses</span
+          >
+          <span class="text-gray-600 text-xs"
+            >Access top-rated online courses to upskill yourself.</span
+          >
+        </div>
+      </div>
+    </a>
+    <!-- Resource Item 3 -->
+    <a
+      href="#resource3"
+      class="block p-4 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300"
+    >
+      <div class="flex items-center">
+        <div
+          class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+        >
+          <i class="fas fa-link text-xl"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-gray-800 text-sm font-medium"
+            >Useful Job Boards</span
+          >
+          <span class="text-gray-600 text-xs"
+            >Explore the best job boards for your industry.</span
+          >
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+    </div>
+    <aside
+        class="w-full lg:w-1/4 sm:bg-white rounded-lg p-6 order-1 lg:order-1 h-fit sm:border border-gray-300 sm:mt-4"
+      >
+        <h2
+          class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2 text-gray-800"
+        >
+          Recommended for You
+        </h2>
+
+        <!-- Current Job Features -->
+        <section class="mb-8 bg-white">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">
+            Current Job Features
+          </h3>
+          <div id="current-job-features" class="space-y-4">
+            <!-- Feature Item 1 -->
+            <a
+              href="#feature1"
+              class="block p-4 bg-gray-50 rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:bg-gray-100"
+            >
+              <div class="flex items-start">
+                <div
+                  class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-briefcase text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-gray-800 text-sm font-medium"
+                    >Flexible Work Hours</span
+                  >
+                  <span class="text-gray-600 text-xs"
+                    >Enjoy flexible work hours that fit your lifestyle.</span
+                  >
+                </div>
+              </div>
+            </a>
+            <!-- Feature Item 2 -->
+            <a
+              href="#feature2"
+              class="block p-4 bg-gray-50 rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:bg-gray-100"
+            >
+              <div class="flex items-start">
+                <div
+                  class="w-11 h-12 lg:w-20 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-cogs text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-gray-800 text-sm font-medium"
+                    >Career Development</span
+                  >
+                  <span class="text-gray-600 text-xs"
+                    >Access to professional training and career development
+                    resources.</span
+                  >
+                </div>
+              </div>
+            </a>
+            <!-- Feature Item 3 -->
+            <a
+              href="#feature3"
+              class="block p-4 bg-gray-50 rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:bg-gray-100"
+            >
+              <div class="flex items-start">
+                <div
+                  class="w-14 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-dollar-sign text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-gray-800 text-sm font-medium"
+                    >Competitive Salary</span
+                  >
+                  <span class="text-gray-600 text-xs"
+                    >Earn a competitive salary with benefits and bonuses.</span
+                  >
+                </div>
+              </div>
+            </a>
+          </div>
+        </section>
+
+      <!-- Suggested Jobs -->
+<section>
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+        Suggested Jobs
+    </h3>
+    <div id="suggested-jobs" class="space-y-4">
+        {% if matching_jobs %}
+            <!-- Display matching jobs -->
+            {% for job in matching_jobs %}
+            <!-- Job Card -->
+            <a href="{% url 'job:job_details' job.id %}" class="block p-4 bg-gray-50 rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:bg-gray-100">
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-briefcase text-xl"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-gray-800 text-sm font-medium">{{ job.title }}</span>
+                        <span class="text-gray-600 text-xs">{{ job.company }} - {{ job.location }}</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <!-- No similar jobs message -->
+            <div class="bg-gray-100 p-4 rounded-lg">
+                <p class="text-gray-800 text-sm">No similar jobs found.</p>
+                <!-- Check if resume is uploaded -->
+                {% if user.has_resume %}
+                    <p class="text-gray-600 text-xs mt-2">You can upload your resume <a href="{% url 'upload' %}" class="text-blue-600 underline">here</a>.</p>
+                {% else %}
+                    <p class="text-gray-600 text-xs mt-2">You haven't uploaded your resume yet. Please upload it <a href="{% url 'upload' %}" class="text-blue-600 underline">here</a>.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+      </aside>
+
+      
+
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const educationModal = document.getElementById('education-modal');
+  const addEducationBtn = document.getElementById('add-education-btn');
+  const cancelEditBtn = document.getElementById('cancel-edit');
+
+  addEducationBtn.addEventListener('click', () => {
+    educationModal.classList.remove('hidden');
+    document.getElementById('education-form-id').reset();
+    document.getElementById('education-id').value = ''; // Clear the ID for new entries
+  });
+
+  window.editEducation = (id) => {
+      fetch(`/dashboard/education/${id}/`) // Your URL pattern for fetching education details
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('institution_name').value = data.institution_name;
+          document.getElementById('degree').value = data.degree;
+          document.getElementById('graduation_year').value = data.graduation_year;
+          document.getElementById('education-id').value = id;
+          educationModal.classList.remove('hidden');
+        });
+  };
+  window.deleteEducation = (id) => {
+    fetch(`/dashboard/education/${id}/delete/`, {
+      method: 'DELETE',
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+    })
+      .then(() => {
+        document.getElementById(`education-${id}`).remove();
+      });
+  };
+
+  cancelEditBtn.addEventListener('click', () => {
+    educationModal.classList.add('hidden');
+  });
+});
+
+</script>
+  </main>
+<!--js for deleteing skills -->
+ <!-- JavaScript at the end of the body -->
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('save-skill-btn').addEventListener('click', function(event) {
+          event.preventDefault(); // Prevent the default form submission
+          var button = document.getElementById("add-skill-btn");
+
+// Add a click event listener to the button
+button.addEventListener("click", function() {
+  // Show an alert message when the button is clicked
+  alert("Button clicked!");
+});
+
+          // Collect selected skill IDs
+          let selectedSkillIds = [];
+          document.querySelectorAll('.custom-checkbox:checked').forEach(function(checkbox) {
+              selectedSkillIds.push(checkbox.dataset.id); // Use dataset.id to get the skill ID
+          });
+
+          console.log("Selected Skill IDs:", selectedSkillIds); // Debug statement
+
+          // Update the hidden input field with the selected skill IDs
+          document.getElementById('selected-skills').value = JSON.stringify(selectedSkillIds);
+
+          console.log("Hidden Input Value:", document.getElementById('selected-skills').value); // Debug statement
+
+          // Submit the form
+          document.getElementById('skills-form').submit();
+      });
+  });
+</script>
+<script>
+    function deleteSkill(skillId) {
+        fetch(`/dashboard/delete-skill/${skillId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById(`skill-${skillId}`).remove();
+            } else {
+                alert('An error occurred while deleting the skill.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+
+<!-- Script for adding image on icon -->
+<script>
+      document
+        .getElementById("edit-profile-pic-btn")
+        .addEventListener("click", () => {
+          document.getElementById("profile-pic-upload").click();
+        });
+
+      document
+        .getElementById("profile-pic-upload")
+        .addEventListener("change", (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              document.querySelector(".profile-header img").src =
+                e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+    </script>
+<!--js for deleteing skills -->
+  <script type="text/javascript">
+    const csrfToken = '{{ csrf_token }}';
+    const suggestedSkillsData = JSON.parse('{{ suggested_skills_json|escapejs }}');
+    const skillsData = JSON.parse('{{ skills_json|escapejs }}');
+</script>
+<script type="module" src="{% static 'scripts/Profile.js' %}"></script>
+<script type="module" src="{% static 'data/user.js' %}"></script>
+</body>
+</html>
+{% endblock %}

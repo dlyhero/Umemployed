@@ -1,0 +1,16 @@
+<!-- user/session_results.html -->
+<h1>Session Results</h1>
+<p>Assessment: {{ session.assessment.title }}</p>
+<p>Start Time: {{ session.start_time }}</p>
+<p>End Time: {{ session.end_time }}</p>
+<!-- Display the results of the session -->
+<ul>
+  {% for result in results %}
+    <li>{{ result.question.question_text }}</li>
+    <ul>
+      {% for option in result.selected_options.all %}
+        <li>{{ option.option_text }}</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</ul>

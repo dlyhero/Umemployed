@@ -1,0 +1,11 @@
+<!-- view_post.html -->
+
+{% extends 'users/base.html' %}
+
+{% block content %}
+<h2>View Post</h2>
+<p>{{ post.content }}</p>
+{% if post.image %}
+<img src="{{ post.image.url }}" alt="Post Image">
+{% endif %}
+{% endblock %}

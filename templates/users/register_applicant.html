@@ -1,0 +1,208 @@
+{% load static %} 
+{% load socialaccount %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="{% static 'img/png/logo-color.png' %}" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    <title>Sign Up &VerticalLine; UmEmployed</title>
+  </head>
+  <body class="min-h-screen  text-sm flex flex-col bg-gray-100">
+     
+    <header class="header container px-3 mx-auto mt-3">
+      <div class="logo-wrapper flex md:justify-center items-center">
+        <img
+          class="w-7 md:w-10"
+          id="ue-logo"
+          src="{% static 'img/logo/logo-color.png' %}"
+          alt="ue logo"
+        />
+        <div class="text-logo text-[14px] md:text-[20px]">UmEmployed</div>
+      </div>
+    </header>
+    <main class="container mx-auto mt-4 sm:mt-4 flex-grow p-4">
+      <div>
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endfor %}
+    </div>
+      <div class="box">
+        <div class="headings mb-2">
+          <h1 class="title mt-2 text-center md:tracking-widest w-4/5 mx-auto">
+            Breaking Barriers &VerticalLine; Building Careers
+          </h1>
+        </div>
+        <div
+          class="inner-box bg-transparent md:bg-white md:flex  mx-auto md:border"
+        >
+          <div
+            class="carousol hidden relative md:block w-1/2 overflow-hidden "
+          >
+            <div
+              class="slide absolute top-0 bottom-0 left-10 w-full h-full"
+            ></div>
+            <div
+              class="image-overlay absolute top-0 left-0 w-full h-full"
+            ></div>
+          </div>
+          <form class="signup-form content py-4 md:w-1/2 md:px-2 md:flex flex-col justify-center" method="POST">
+          {% csrf_token %}
+            <div class="actual-form">
+              <div class="email-wrapper sm:w-4/5 mx-auto wrapper mb-1">
+                <label for="email">Email</label><br />
+                <input
+                   required
+                  class="w-full input-field border rounded-lg text-sm"
+                  id="email"
+                  name="email"
+                  placeholder="jaden@company.com"
+                  type="text"
+                />
+              </div>
+              <div class="name-wrapper sm:w-4/5 mx-auto wrapper mb-1">
+                <label for="name">First name</label><br />
+                <input
+                   required
+                  class="w-full input-field border rounded-lg text-sm"
+                  id="name"
+                  name="first_name"
+                  placeholder="e.g Jessy "
+                  type="text"
+                />
+              </div>
+              <div class="name-wrapper sm:w-4/5 mx-auto wrapper mb-1">
+                <label for="name">Last name</label><br />
+                <input
+                   required
+                  class="w-full input-field border rounded-lg text-sm"
+                  id="name"
+                  name="last_name"
+                  placeholder="e.g James"
+                  type="text"
+                />
+              </div>
+              <div class="country-wrapper sm:w-4/5 mx-auto wrapper mb-1">
+                <label for="country">Country</label><br />
+                <select
+                  class="w-full mb-2 border p-2.5 rounded-lg text-sm"
+                  name="country"
+                  id="country"
+                >
+                  <option value="" disabled>Choose Country</option>
+                  <option value="usa">United States</option>
+                  <option value="canada">Canada</option>
+                  <option value="germany">Germany</option>
+                  <option value="france">France</option>
+                </select>
+              </div>
+              <div class="password-wrapper sm:w-4/5 mx-auto wrapper">
+                <label for="password">Password</label><br />
+                <input
+                  required
+                  class="w-full input-field  mb-2 border rounded-lg text-sm"
+                  id="password"
+                  name="password1"
+                  placeholder="........"
+                  type="password"
+                />
+              </div>
+              <div class="password-wrapper sm:w-4/5 mx-auto wrapper">
+                <label for="confirm-password">Confirm password</label><br />
+                <input
+                  required
+                  class="w-full input-field  mb-2 border rounded-lg text-sm"
+                  id="confirm-password"
+                  name="password2"
+                  placeholder="........"
+                  type="password"
+                />
+              </div>
+              <div class="wrapper my-3 sm:w-4/5 mx-auto flex items-center">
+                <hr class="flex-1" />
+                <div class="mx-2">or</div>
+                <hr class="flex-1" />
+              </div>
+
+              <div class="alt-signup mb-1">
+                <div
+                  class="google-signup wrapper mb-3 border p-2.5 sm:w-4/5 mx-auto rounded-lg"
+                >
+                  <a class="flex justify-center text-sm items-center gap-1" href="{% provider_login_url 'google' %}?next=/">
+                    <div class="icon-wrapper bg-white rounded-full">
+                      <img
+                        class="icon"
+                        src="{% static 'img/icons/7123025_logo_google_g_icon.png' %}"
+                        alt="Google logo"
+                      />
+                    </div>
+
+                    <div class="font-bold">Sign up with Google</div>
+                  </a>
+                </div>
+                <div
+                  class="google-signup wrapper  border p-2.5 sm:w-4/5 mx-auto rounded-lg"
+                >
+                  <a class="flex justify-center text-sm items-center gap-1" href="#">
+                    <div class="icon-wrapper bg-white rounded-full">
+                      <img
+                        class="icon"
+                        src="{% static 'img/icons/Apple_logo_black.svg.png' %}"
+                        alt="Apple logo"
+                      />
+                    </div>
+                    <div class="font-bold">Sign up with Apple</div>
+                  </a>
+                </div>
+              </div>
+
+              <div
+                class="terms wrapper my-4 flex items-start justify-center px-1 sm:w-4/5 mx-auto"
+              >
+                <input class="mt-1 mr-2 input-field" type="checkbox" />
+
+                <div class="text-sm">
+                  By signing up, you are creating an UmEmployed acount, and you
+                  agree to UmEmployed's
+                  <span class="blue">Terms of Use</span> and
+                  <span class="blue">Privacy Policy</span>
+                </div>
+              </div>
+
+              <div class="btn-wrapper sm:w-4/5 mx-auto">
+                <button
+                  class="submit-btn w-full rounded-lg font-bold"
+                  type="submit"
+                  id="signup-btn"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </div>
+
+            <div class="signin-wrapper mt-2 mx-auto p-1 w-full sm:w-4/5">
+              <p class="text-center text-sm">
+                <span>Already on UmEmployed?</span>
+                <a class="signin-link link underline text-sm" href="{% url 'login' %}">Login</a
+                >.
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer class=" px-4  text-sm py-5 md:px-28 mt-20 sm:flex justify-between ">
+      <div class="flex gap-1 items-center flex-shrink-0 md:mb-4">
+        <div><div>&copy; Copyright</div></div>
+        <div class="flex items-center">
+          <img src="{% static 'img/logo/logo-black.png' %}" class="w-3 h-3 sm:h-5 sm:w-5" alt="">
+          <div>UmEmployed.All Rights Reserved</div>
+        </div>
+      </div>
+      <div>Designed by<span class="eu-text"> UmEmployed</span></div>
+    </footer>
+  </body>
+</html>

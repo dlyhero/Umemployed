@@ -1,0 +1,19 @@
+{% load static %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if skills.has_previous %}
+            <a href="#" data-page="1">&laquo; first</a>
+            <a href="#" data-page="{{ skills.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ skills.number }} of {{ skills.paginator.num_pages }}.
+        </span>
+
+        {% if skills.has_next %}
+            <a href="#" data-page="{{ skills.next_page_number }}">next</a>
+            <a href="#" data-page="{{ skills.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>

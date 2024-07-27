@@ -1,0 +1,17 @@
+<!-- inbox.html -->
+
+{% extends 'users/base.html' %}
+
+{% block content %}
+<h2>Inbox</h2>
+{% for message in messages %}
+<div>
+    <p>From: {{ message.sender.username }}</p>
+    <p>{{ message.content }}</p>
+    <a href="{% url 'view_message' message.id %}">View</a> |
+    <a href="{% url 'delete_message' message.id %}">Delete</a>
+</div>
+{% empty %}
+<p>Your inbox is empty.</p>
+{% endfor %}
+{% endblock %}

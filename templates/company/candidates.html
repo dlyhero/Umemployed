@@ -1,0 +1,140 @@
+
+ {% extends 'resume/recruiterBase.html' %}
+{% load static %}
+ {% block custom_css %}
+    <style>
+      .candidateList-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      @media (max-width: 1100px) {
+        .candidateList-wrap {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+      }
+    </style>
+      
+      {% endblock %}
+{% block content %}
+
+  </body>
+  <main class="flex-grow w-full px-2 md:px-3 lg:w-[100%] mx-auto">
+    <section class="md:bg-white sm:px-3 sm:py-2 md:py-0 md:shadow-xl rounded-lg w-full mx-auto ">
+      <div class="search-wrap">
+        <form class="md:flex md:gap-4 lg:gap-5 w-full items-center" action="">
+          <div class="input-wrap relative flex-1 mb-2 md:mb-0">
+            <input
+              type="text"
+              class="w-full py-2 md:py-1 pl-10 pr-3 border border-gray-400 md:border-none rounded-lg outline-1 outline-[#1e90ff] md:outline-none"
+              id="candidate-name"
+              name="candidate-name"
+              placeholder="Candidate name e.g Eddy Edinson"
+            />
+            <img
+              class="w-6 absolute top-1/2 transform -translate-y-1/2 left-2 md:left-1"
+              src="{% static 'build/img/search-svgrepo-com.svg' %}"
+              alt="search icon"
+            />
+          </div>
+          <div class="hidden md:block border-l h-[40px] my-1"></div>
+          <div class="location-wrap relative flex-1 mb-2 md:mb-0">
+            <input
+              class="w-full py-2 md:py-1 pl-10 pr-3 border border-gray-400 md:border-none rounded-lg outline-1 outline-[#1e90ff] md:outline-none"
+              type="text"
+              name="location"
+              id="location"
+              placeholder="Type to search"
+            />
+            <img
+              class="w-6 absolute top-1/2 transform -translate-y-1/2 left-2 md:left-1"
+              src="{% static 'build/img/location-svgrepo-com.svg' %}"
+              alt="location icon"
+            />
+            <img
+              class="w-6 absolute top-1/2 transform -translate-y-1/2 right-2 md:right-1"
+              src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+              alt="dropdown icon"
+            />
+          </div>
+          <div class="hidden md:block border-l h-[40px] my-1"></div>
+          <div class="flex items-center gap-4 lg:gap-6 mb-2 md:mb-0">
+            <select
+              class="px-3 py-1.5 md:py-1 outline-1 outline-[#1e90ff] border border-gray-400 md:border-none rounded-lg w-24 md:w-auto"
+              name="filter"
+              id="filter"
+            >
+              <option value="" disabled selected>Sort by</option>
+              <option value="">Applied date</option>
+              <option value="">Job title</option>
+              <option value="">Status</option>
+              <option value="">Name</option>
+            </select>
+            <button
+              class="text-white px-4 py-2 md:py-1 bg-[#1e90ff] rounded-lg font-bold"
+            >
+              Search
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+    
+    <section id="candidate-list" class="my-8 sm:px-3  w-full mx-auto">
+      <h2
+        class="w-fit rounded-full py-2 px-5 border font-bold my-4 hover:bg-[#1e90ff] hover:text-white cursor-pointer"
+      >
+        All Candidates
+      </h2>
+      {% if applications|length == 0 %}
+          <div class="text-center text-gray-600">No applications found</div>
+        {% endif %}
+      <div class="candidateList-wrap">
+        {% for application in applications %}
+        
+        <div
+          id="candidate"
+          class="cursor-pointer rounded-2xl shadow-sm p-4 bg-white h-fit"
+        >
+          <a href="{% url 'view_application_details' company_id=company.id application_id=application.id %}" class="">
+            <div class="candidate-info flex space-x-8 items-start">
+              <div class="flex space-x-4 items-start">
+                <img
+                  class="w-20 h-20 rounded-full"
+                  src="{% static 'build/img/pp.avif' %}"
+                  alt="profile-pitcure"
+                />
+                <div>
+                  <span id="candidate-name" class="font-bold text-gray-900 text-[18px] sm:text-xl text-nowrap"
+                    >{{application.user.first_name}} {{ application.user.last_name}}</span
+                  ><br />
+                  <div id="job-tile" class="text-gray-600"
+                    >applied for <span class="text-gray-900 font-[600]">{{application.job}}</span></div
+                  >
+                </div>
+              </div>
+              <div class="sm:mt-1">
+                <h2 class="font-bold text-gray-900">Status</h2>
+                <div class="candidate-status text-[#1e90ff] font-bold">Pending</div>
+              </div>
+              <div class="sm:mt-1 hidden sm:block">
+                <h2 class="font-bold text-gray-900 text-nowrap">Date Applied</h2>
+                <div class="date text-gray-600">{{application.created_at}}</div>
+              </div>
+            </div>
+            <div class="flex space-x-4 mt-4">
+              <div class="percentage-match border border-gray-600 rounded-full px-4 py-2 text-nowrap">{{application.matching_percentage}}% match <span class="hidden sm:inline">with us</span></div>
+            <div class="percentage-match border border-gray-600 rounded-full px-4 py-2 text-nowrap">8 Years of Experience</div>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+        
+       
+      </div>
+    </section>
+  </main>
+  <script type="module" src="{% static './scripts/addjob.js' %}"></script>
+    <script src="{% static './scripts/dashboard.js' %}"></script>
+{% endblock %}

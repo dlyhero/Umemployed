@@ -1,0 +1,7 @@
+<!-- assessments/update_assessment.html -->
+<h1>Update Assessment</h1>
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Update</button>
+</form>

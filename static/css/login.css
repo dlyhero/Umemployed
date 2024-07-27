@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primaryColor: #ffffff;
+    --secondaryColor: #1e90ff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+ 
+}
+
+
+.title {
+    font-size: 1.12rem;
+    font-weight: 500;
+}
+
+.signup-link,
+.blue,
+.signin-link,
+.eu-text {
+    color: var(--secondaryColor);
+    font: bold;
+    transition: 0.3s;
+}
+
+.signup-link:hover,
+.signin-link:hover {
+    color: #88abce;
+}
+
+
+
+.text-logo {
+    color: var(--secondaryColor);
+    font-weight: 600;
+}
+
+.courasol {
+    border-right: 1px solid #e0dfdf82;
+}
+
+.slide {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../img/pics/barriers.jpg);
+    animation: moveUp 1s ease infinite alternate;
+}
+
+main {
+    max-width: 2500px;
+}
+
+
+.slide.active {
+    opacity: 1;
+}
+
+
+
+.desktop div {
+    line-height: 70px;
+}
+
+
+
+#country {
+    padding: 0.8rem;
+}
+
+.icon {
+    width: 1.1rem;
+}
+
+.icon-wrapper {
+    padding: 1px;
+}
+
+input.input-field {
+    padding: 0.67rem;
+
+}
+
+input:focus,
+#country:focus {
+    outline: 1px solid var(--secondaryColor);
+}
+
+#password::placeholder,
+#confirm-password::placeholder {
+    font-size: 2rem;
+}
+
+label {
+    font-size: 0.9rem;
+}
+
+.submit-btn {
+    border: none;
+    padding: 0.67em;
+    color: var(--primaryColor);
+    background-color: var(--secondaryColor);
+    transition: background-color 1s linear;
+    font-size: 1rem;
+}
+
+#submit-btn:active,
+#submit-btn:hover {
+    background-color: #1e90fb82;
+}
+
+#forgetP-link,
+.link {
+    color: var(--secondaryColor);
+}
+
+.navbar nav li {
+    color: var(--secondaryColor);
+    transition: color 1s linear;
+    text-decoration: underline;
+}
+
+.navbar nav li:hover {
+    color: black;
+}
+
+
+
+@keyframes moveUp {
+    0% {
+        top: -8px;
+    }
+
+    100% {
+        bottom: -8px;
+    }
+}
+
+
+.image-overlay {
+    background-image: linear-gradient(45deg, #4f7090, #dbe2e8, #6897c6);
+    mix-blend-mode: multiply;
+}
+
+footer {
+    background-color: var(--primaryColor);
+}
+
+
+.article-list {
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+li.article,
+li.job {
+    font-size: 14px;
+    padding: 0.1em 0.9em;
+    text-wrap: nowrap;
+    transition: 0.1s;
+}
+
+li.job:hover,
+li.article:hover {
+    color: var(--secondaryColor);
+    border-color: var(--secondaryColor);
+}
+
+.comment {
+    text-overflow: ellipsis;
+}
+
+.job-link {
+    padding: 0.5em 1em;
+    color: var(--secondaryColor);
+    border-color: var(--secondaryColor);
+}
+
+#call-btn {
+    padding: 0.5em 1em;
+    background-color: var(--secondaryColor);
+    color: white;
+}
+
+.call-to-action {
+    height: 80vh;
+    background-image: url(../img/pics/buildind\ careers.jpg);
+    background-position: center;
+    background-size: contain;
+}

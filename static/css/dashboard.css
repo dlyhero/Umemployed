@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    background-color: #fefefe;
+}
+
+.container-wrapper {
+    max-width: 1200px;
+    /* Set the maximum width */
+    margin: 0 auto;
+    /* Center the container */
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    /* Default to single column layout */
+}
+
+.navigation {
+    background-color: #fff;
+    padding: 20px;
+}
+
+.navigation a {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    text-decoration: none;
+}
+
+.content {
+    padding: 20px;
+}
+
+.banner {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.banner-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+}
+
+.settings-button {
+    margin-left: 15px;
+}
+
+.settings-button a {
+    display: inline-block;
+    padding: 5px;
+    color: #000;
+}
+
+/* Media Query for Responsive Design */
+@media screen and (max-width: 767px) {
+    .container-wrapper {
+        padding: 0 20px;
+        /* Add padding to the wrapper */
+    }
+
+    .container {
+        grid-template-columns: 1fr;
+        /* Switch to single column layout for smaller screens */
+    }
+}

@@ -1,0 +1,129 @@
+
+ {% extends 'resume/recruiterBase.html' %}
+{% load static %}
+ {% block custom_css %}
+    
+  {% endblock %}
+{% block content %}
+
+
+    <!-- Company Page Container -->
+    <main class="flex-grow md:px-3 w-full lg:w-[100%] mx-auto">
+      <div class="mx-auto bg-white p-5">
+        <!-- Company Header -->
+        <section class="mb-10">
+          <div
+            class="flex flex-col md:flex-row items-center justify-between mb-10"
+          >
+            <div class="flex flex-col sm:flex-row items-center mb-4 md:mb-0">
+              <img
+                src="{% static 'build/img/company-svgrepo-com.svg' %}"
+                alt="Company Logo"
+                class="w-24 h-24 md:mr-2 llg:mr-4"
+              />
+              <div class="text-center sm:text-left">
+                <h1 class="text-3xl font-bold">{{ company.name}}</h1>
+                <p class="text-gray-600">{{ company.industry }}</p>
+                <p class="text-gray-600">{{ company.headquarters }}</p>
+              </div>
+            </div>
+            <a
+              href="{{company.website_url}}"
+              class="bg-[#1e90ff] font-bold text-white py-2 px-4 rounded-md hover:bg-blue-600 text-nowrap"
+              >Visit Website</a
+            >
+          </div>
+          <div class="md:flex space-x-10 items-center">
+            <div
+              class="flex flex-wrap space-x-4 items-center justify-center sm:justify-start ml-1"
+            >
+              <a href="linkedin-url" class="text-[#1e90ff] font-bold hover:underline"
+                >LinkedIn</a
+              >
+              <a href="facebook-url" class="text-[#1e90ff] font-bold hover:underline"
+                >Facebook</a
+              >
+              <a href="twitter-url" class="text-[#1e90ff] font-bold hover:underline"
+                >Twitter</a
+              >
+              <a href="instagram-url" class="text-[#1e90ff] font-bold hover:underline"
+                >Instagram</a
+              >
+            </div>
+            <a href="{% url 'update_company' company.id %}" class="text-center flex  w-[300px]  mx-auto">
+              <img class="w-6" src="{% static 'build/img/edit-svgrepo-com.svg' %}" alt="" />
+            </a>
+          </div>
+        </section>
+
+        <!-- Company Description -->
+        <section class="mb-6">
+          <h2 class="text-2xl font-semibold">About Us</h2>
+          <hr class="w-[90px] p-0 mb-4 border border-[#1e90ff]" />
+          <p class="text-gray-700">
+            {{company.about_us}}
+          </p>
+          <p class="text-gray-700 mt-4">
+           {{ company.logo.url}}
+          </p>
+        </section>
+
+        <!-- Mission, Vision, Values -->
+        <section class="mb-6">
+          <h2 class="text-2xl font-semibold">Mission Statement</h2>
+          <hr class="w-[193px] p-0 mb-4 border border-[#1e90ff]" />
+          <p class="text-gray-700">
+            {{company.mission_statement}}
+          </p>
+        </section>
+
+        <section class="mb-6">
+          <h2 class="text-2xl font-semibold">Vision Statement</h2>
+          <hr class="w-[175px] p-0 mb-4 border border-[#1e90ff]" />
+          <p class="text-gray-700">
+            {{company.vision_statement}}
+          </p>
+        </section>
+
+        <!-- Media -->
+        <section class="mb-6">
+          <h2 class="text-2xl text-gray-800 font-semibold">Company Media</h2>
+          <hr class="w-[164px] p-0 mb-6 border border-[#1e90ff]" />
+          <div
+            class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4"
+          >
+            <img
+              src="{% static 'build/pics/career.jpg' %}"
+              alt="Cover Photo"
+              class="w-full md:w-1/2 h-64 object-cover rounded-md"
+            />
+            <iframe
+              auto
+              class="w-full md:w-1/2 h-64 rounded-md"
+              src="{% static 'build/videos/Git and GitHub - 0 Experience to Professional in 1 Tutorial (Part 1).mp4' %}"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </section>
+
+        <!-- Job Opennings-->
+        <section class="mb-6">
+          <h2 class="text-2xl text-gray-800 font-semibold">
+            Job Opennings
+          </h2>
+          <hr class="w-[155px] p-0 mb-4 border border-[#1e90ff]" />
+          <div class="bg-gray-100 p-4 rounded-md">
+            <h3 class="text-xl font-semibold mb-2">Position Title</h3>
+            <p class="text-gray-700">Location: Job Location</p>
+            <p class="text-gray-700">Description: Job Description</p>
+            <p class="text-gray-700">Requirements: Job Requirements</p>
+          </div>
+        </section>
+      </div>
+    </main>
+    
+
+    <script type="module" src="{% static 'scripts/dashboard.js' %}"></script>
+  </body>
+{% endblock %}

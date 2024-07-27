@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results</title>
+    <link rel="stylesheet" href="{% static 'build/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/job/test_results.css' %}">
+    <link rel="shortcut icon" src="{% static 'build/logo/logo-color.png' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <header class="flex justify-between items-center md:border-b top-0 right-0 left-0 px-2 md:px-5 py-2 bg-white shadow-sm">
+        <div class="flex items-center gap-10">
+            <div class="logo-wrap flex items-center">
+                <img class="w-7 md:w-10" src="{% static 'build/logo/logo-color.png' %}" alt="UmEmployed Logo" />
+                <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold">UmEmployed</span>
+            </div>
+            <nav class="hidden md:flex space-x-4">
+                <a class="text-gray-700 hover:text-[#1e90ff]" href="#">Home</a>
+                <a class="text-gray-700 hover:text-[#1e90ff]" href="#">Jobs</a>
+                <a class="text-gray-700 hover:text-[#1e90ff]" href="./index.html">Resume</a>
+            </nav>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="#"><img class="w-5" src="{% static 'build/img/message-square-lines-svgrepo-com.svg' %}" alt="Messages"></a>
+            <a href="#"><img class="w-5" src="{% static 'build/img/notification-bell-svgrepo-com.svg' %}" alt="Notifications"></a>
+            <a class="hidden md:block" href="#"><img class="w-5" src="{% static 'build/img/profile-svgrepo-com.svg' %}" alt="Profile"></a>
+            <button id="menu-btn" class="md:hidden text-xl"><img class="w-5" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="Menu"></button>
+            <div class="hidden md:flex space-x-4">
+                <a class="text-gray-700 hover:text-[#1e90ff]" href="#">Employers</a>
+                <a class="text-gray-700 hover:text-[#1e90ff]" href="#">Post Job</a>
+            </div>
+        </div>
+    </header>
+    <main id="content" class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg my-10">
+       <div id="Download">
+        <h1 class="text-2xl font-bold mb-4 text-center">Results</h1>
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold">Job Title: {{job.title}}</h2>
+            <p class="text-gray-700">Location: {{job.location}}</p>
+        </section>
+        <section class="mb-6">
+            <h3 class="text-lg font-semibold">Candidate Information</h3>
+            <p class="text-gray-700">Name: {{user.first_name}} {{user.last_name}}</p>
+            <p class="text-gray-700">Email: {{user.email}}</p>
+        </section>
+        <section class="mb-6">
+            <h3 class="text-lg font-semibold">Test Summary</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 bg-gray-200 text-gray-600 font-bold">Subject</th>
+                            <th class="py-2 px-4 bg-gray-200 text-gray-600 font-bold">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for skill in skills %}
+                        <tr>
+                            <td class="border px-4 py-2">{{skill.name}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+       </div>
+        </section>
+        <section class="mb-6">
+            <h3 class="text-lg font-semibold">Recommendations</h3>
+            <div class="mb-4">
+                <h4 class="font-medium">HTML</h4>
+                <p class="text-gray-700 truncate">Feedback: Good understanding of HTML structure but needs improvement in semantic tags.</p>
+                <p class="text-gray-700 hidden-text">Complete feedback goes here. This is an extended feedback for the HTML section, providing more details and suggestions for improvement. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur molestias laboriosam et nisi quam ea fuga reiciendis porro molestiae autem, quas incidunt qui magni, voluptas vero aliquam quibusdam praesentium veniam. Incidunt culpa molestias minus iste, expedita quisquam dolor exercitationem, adipisci aperiam ipsam voluptatem? Aspernatur, maxime! Ex eos vitae tenetur nam debitis, at odit voluptatem, accusantium et iure architecto soluta sapiente!</p>
+                <a href="#" class="read-more text-blue-500 no-print">Read more</a>
+            </div>
+            <div class="mb-4">
+                <h4 class="font-medium">JavaScript</h4>
+                <p class="text-gray-700 truncate">Feedback: Basic knowledge is present, but further practice with ES6 features is recommended.</p>
+                <p class="text-gray-700 hidden-text">Complete feedback goes here. This is an extended feedback for the JavaScript section, providing more details and suggestions for improvement. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis repellendus id ipsam sequi provident optio eligendi mollitia, exercitationem delectus qui quam, ea maiores ipsa tempore repellat? Nostrum possimus illo est? Nemo aut, molestiae consectetur autem labore consequuntur, iusto inventore iure magni corporis repellendus magnam esse rem temporibus quia libero in voluptatum corrupti fuga laborum aliquid vel perspiciatis dolores provident! Error. Delectus deserunt sit sunt perferendis hic quos cum illum deleniti voluptatum a. Molestiae ea debitis repellat veniam ab corrupti aliquid obcaecati eum, mollitia fugit dolorem, commodi minus? Voluptas, quas recusandae? Velit quis distinctio soluta ipsum quidem animi asperiores officiis ullam neque, vitae quisquam exercitationem. Distinctio, cumque illo quis maiores sunt accusamus eum mollitia voluptas. Dolorum, sunt. Tempore esse enim a! Esse nemo sunt, consequuntur atque illum quisquam? Iure ullam, quaerat deleniti quo harum porro voluptates nobis, dolorem unde rerum eum voluptatibus, non ipsam quae? Voluptatem temporibus sequi doloribus corrupti facere.</p>
+                <a href="#" class="read-more text-blue-500 no-print">Read more</a>
+            </div>
+        </section>
+        <section class="mt-6 flex space-x-4">
+            <button class="bg-[#1e90ff] text-white px-4 py-2 rounded hover:bg-blue-700 no-print" onclick="downloadPDF()">Download PDF</button>
+            <button class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 no-print" onclick="location.href='{% url 'home' %}'">Back to Home</button>
+        </section>
+    </main>
+
+    <footer class="bg-gray-200 py-4 text-center">
+        <p class="text-sm text-gray-600">© 2024 UmEmployed. All rights reserved.</p>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.3/purify.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="{% static 'js/job/test_results.js' %}"></script> 
+</body>
+</html>

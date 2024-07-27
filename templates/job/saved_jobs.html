@@ -1,0 +1,15 @@
+<!-- saved_jobs.html -->
+
+{% extends 'users/base.html' %}
+{% block content %}
+  <h1>Your Saved Jobs</h1>
+  {% if saved_jobs %}
+    <ul>
+      {% for saved_job in saved_jobs %}
+        <li>{{ saved_job.job.title }} - {{ saved_job.job.company.name }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No saved jobs found.</p>
+  {% endif %}
+{% endblock %}

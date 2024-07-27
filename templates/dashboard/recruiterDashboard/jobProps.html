@@ -1,0 +1,213 @@
+
+ {% extends 'resume/recruiterBase.html' %}
+{% load static %}
+ {% block custom_css %}
+    
+  {% endblock %}
+{% block content %}
+
+  <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto">
+    <form id="jobTypeForm" class="w-full md:w-[70%] mx-auto" method="post" action="{% url 'job:job_type_view' %}">
+        {% csrf_token %}
+        <div class="jobtype-wrap">
+            <h2 class="p-1 text-[17px] font-bold text-gray-600">Job Types</h2>
+            <div class="jopTypeWrap mx-auto flex flex-wrap gap-2">
+                <!-- Job Types Checkboxes -->
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="jobType" value="fullTime" class="hidden job-type-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Full Time
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="jobType" value="partTime" class="hidden job-type-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Part Time
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="jobType" value="internship" class="hidden job-type-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Internship
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="jobType" value="contract" class="hidden job-type-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Contract
+                </label>
+            </div>
+        </div>
+
+        <hr class="my-5 border-gray-500">
+
+        <div class="experience-wrap h-fit">
+            <h2 class="p-2 text-[17px] font-bold text-gray-600">Experience Level</h2>
+            <div class="flex flex-wrap gap-2 h-fit">
+                <!-- Experience Level Checkboxes -->
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="experienceLevel" value="noExperience" class="hidden experience-level-checkbox">
+                    <span class="custom-checkbox"></span>
+                    No Experience Needed
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="experienceLevel" value="under1Year" class="hidden experience-level-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Under 1 Year
+                </label>
+                <!-- More Experience Level Checkboxes -->
+                <!-- ... (Other experience levels as previously defined) -->
+            </div>
+        </div>
+
+        <hr class="my-5 border-gray-500">
+
+        <div class="weekly-range-wrap">
+            <h2 class="p-2 text-[17px] font-bold text-gray-600">Weekly Range</h2>
+            <div class="flex flex-wrap gap-2 h-fit">
+                <!-- Weekly Range Checkboxes -->
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="mondayToFriday" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Monday to Friday
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="weekendsNeeded" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Weekends needed
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="everyWeekend" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Every weekend
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="rotatingWeekend" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Rotating weekend
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="noneWeekend" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    None weekend
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="weekendsOnly" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Weekends only
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="other" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Other
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="weeklyRange" value="none" class="hidden weekly-range-checkbox">
+                    <span class="custom-checkbox"></span>
+                    None
+                </label>
+            </div>
+        </div>
+
+        <hr class="my-5 border-gray-500">
+
+        <div class="shift-wrap">
+            <h2 class="p-2 text-[17px] font-bold text-gray-600">Shift</h2>
+            <div class="flex flex-wrap gap-2 h-fit">
+                <!-- Shift Checkboxes -->
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="morningShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Morning shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="dayShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Day shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="eveningShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Evening shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="nightShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Night shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="eightHourShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    8 hours shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="tenHourShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    10 hours shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="twelveHourShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    12 hours shift
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="otherShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    Other
+                </label>
+                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                    <input type="checkbox" name="shift" value="noneShift" class="hidden shift-checkbox">
+                    <span class="custom-checkbox"></span>
+                    None
+                </label>
+            </div>
+        </div>
+        <input type="hidden" name="job_types" id="jobTypesField">
+        <input type="hidden" name="experience_levels" id="experienceLevelsField">
+        <input type="hidden" name="weekly_ranges" id="weeklyRangesField">
+        <input type="hidden" name="shifts" id="shiftsField">
+
+        <hr class="my-14 border-gray-500">
+        <div class="btn-wrap flex justify-between items-center">
+            <button type="submit" class="px-5 py-2 text-white font-bold bg-[#1e90ff] rounded-lg">
+                <span class="inline">Submit</span>
+                <span class="text-[20px]">&RightArrow;</span>
+            </button>
+        </div>
+    </form>
+
+    
+</main>
+<script>
+    // JavaScript to handle checkbox selections
+    document.getElementById('jobTypeForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var jobTypes = [];
+        document.querySelectorAll('.job-type-checkbox:checked').forEach(function(checkbox) {
+            jobTypes.push(checkbox.value);
+        });
+        document.getElementById('jobTypesField').value = jobTypes.join(',');
+
+        var experienceLevels = [];
+        document.querySelectorAll('.experience-level-checkbox:checked').forEach(function(checkbox) {
+            experienceLevels.push(checkbox.value);
+        });
+        document.getElementById('experienceLevelsField').value = experienceLevels.join(',');
+
+        var weeklyRanges = [];
+        document.querySelectorAll('.weekly-range-checkbox:checked').forEach(function(checkbox) {
+            weeklyRanges.push(checkbox.value);
+        });
+        document.getElementById('weeklyRangesField').value = weeklyRanges.join(',');
+
+        var shifts = [];
+        document.querySelectorAll('.shift-checkbox:checked').forEach(function(checkbox) {
+            shifts.push(checkbox.value);
+        });
+        document.getElementById('shiftsField').value = shifts.join(',');
+
+        this.submit();
+    });
+</script>
+
+  >
+  <script type="module" src="{% static 'build/scripts/jobdetails.js' %}"></script>
+  <script type="module" src="{% static 'build/scripts/dashboard.js' %}"></script>
+{% endblock %}

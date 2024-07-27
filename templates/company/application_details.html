@@ -1,0 +1,359 @@
+{% extends 'resume/recruiterBase.html' %}
+{% load static %}
+{% block custom_css %}
+
+<style>
+  .text-primary {
+    color: #297FB8; /* Primary color */
+  }
+  .candidate__skills {
+border: 1px solid #e5e7eb; /* Light gray border for container */
+}
+
+.candidate__skills h3 {
+border-bottom: 2px solid #297FB8; /* Primary color underline */
+padding-bottom: 0.5rem;
+}
+
+.candidate__skills ul {
+list-style: none; /* Remove default bullets */
+padding: 0;
+}
+
+.candidate__skills li {
+position: relative;
+padding-left: 2.5rem; /* Space for icon */
+font-size: 0.875rem; /* Slightly smaller font size */
+line-height: 1.5;
+background-color: #f9fafb; /* Light background for items */
+}
+
+.candidate__skills li::before {
+content: '';
+position: absolute;
+left: 0;
+top: 50%;
+transform: translateY(-50%);
+width: 1.25rem; /* Size of icon container */
+height: 1.25rem;
+background-color: #f3f4f6; /* Light gray circle background */
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.candidate__skills i {
+color: #297FB8; /* Primary color for icons */
+}
+.candidate__contact,
+.candidate__experience,
+.candidate__education {
+border: 1px solid #e5e7eb; /* Light gray border for container */
+}
+
+.candidate__contact h3,
+.candidate__experience h3,
+.candidate__education h3 {
+border-bottom: 2px solid #297FB8; /* Primary color underline */
+padding-bottom: 0.5rem;
+}
+
+.candidate__contact p,
+.candidate__experience p,
+.candidate__education p {
+display: flex;
+align-items: center;
+}
+
+.candidate__contact i,
+.candidate__experience i,
+.candidate__education i {
+color: #297FB8; /* Primary color for icons */
+}
+
+.candidate__experience h4 {
+border-bottom: 1px solid #e5e7eb; /* Subtle border below job titles */
+padding-bottom: 0.5rem;
+}
+
+.candidate__certifications {
+border: 1px solid #e5e7eb; /* Light gray border for container */
+}
+
+.candidate__certifications h3 {
+border-bottom: 2px solid #297FB8; /* Primary color underline */
+padding-bottom: 0.5rem;
+}
+
+.candidate__certifications p {
+display: flex;
+align-items: center;
+margin-bottom: 1rem; /* Space between certification items */
+}
+
+.candidate__certifications i {
+color: #297FB8; /* Primary color for icons */
+}
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+{% endblock %}
+{% block content %}
+  <main class="flex-grow w-full px-2 mt-0 md:px-3 lg:w-[100%] ">
+    <div class="max-w-full mx-auto profile-container">
+      <section class="user-profile mx-auto">
+        <div id="candidate" class="rounded-2xl p-5 shadow-sm bg-white h-fit mx-auto border">
+          <div class="candidate__info flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-200 pb-4 mb-6">
+            <div class="flex flex-col sm:flex-row w-full gap-6">
+              <!-- Avatar and Details -->
+              <div class="flex items-start gap-4 sm:gap-6">
+                <div class="avatar-wrap w-16 h-16 rounded-full overflow-hidden border border-gray-200 shadow-sm">
+                  <img class="w-full h-full object-cover" src="{% static 'build/img/profile-svgrepo-com.svg' %}" alt="profile image" />
+                </div>
+                <div class="candidate__info--details flex flex-col justify-center">
+                  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-2">
+                    <h2 class="text-xl font-semibold text-gray-800">John Doe</h2>
+                    <span class="inline-block text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700">Job Seeker</span>
+                  </div>
+                  <p class="text-gray-700 mb-2">
+                    <span class="hidden sm:inline-block">apply as</span> <span class="font-semibold text-gray-600">Software Engineer</span>
+                  </p>
+                  <ul class="text-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                    <li class="flex items-center gap-1 text-gray-600">
+                      <img class="w-5 h-5" src="{% static 'build/img/pin-svgrepo-com.svg' %}" alt="location icon" />
+                      <span>California, USA</span>
+                    </li>
+                    <li class="flex items-center gap-1 text-gray-600">
+                      <img class="w-5 h-5" src="{% static 'build/img/clock-two-thirty-svgrepo-com.svg' %}" alt="clock icon" />
+                      <span>Full-time</span>
+                    </li>
+                    <li class="flex items-center gap-1 text-gray-600">
+                      <img class="w-5 h-5" src="{% static 'build/img/salary-wage-svgrepo-com.svg' %}" alt="salary icon" />
+                      <span>$90,000/year</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+          
+              <!-- Date Applied -->
+              <div class="text-right flex flex-col justify-center sm:text-left sm:items-end sm:ml-auto">
+                <h2 class="font-semibold text-gray-800 text-sm mb-1 hidden sm:block">Date <span class="font-normal">Applied</span></h2>
+                <div class="date text-gray-600 text-lg">18 June, 2024</div>
+              </div>
+            </div>
+          </div>
+          
+
+          <div class="candidate__bio mb-6 p-6 bg-white  shadow-sm rounded-md">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">Biography</h3>
+            <p class="text-gray-700 leading-relaxed">Experienced Software Engineer with a strong background in developing scalable web applications. Proficient in various programming languages and frameworks including JavaScript, Python, and React.</p>
+          </div>
+
+          <section class="mb-4 p-4 bg-white shadow rounded-md">
+            <div class="flex flex-col md:flex-row gap-4 justify-between">
+              <!-- Message Button -->
+              <button class="bg-[#1e90ff] hover:bg-blue-600 text-white rounded-md py-2 px-4 text-nowrap flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M2 3a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H8l-5 3V3zm2 1v10h10V6H4z" clip-rule="evenodd" />
+                </svg>Message <span class="hidden sm:inline-block">Candidate</span>
+              </button>
+
+              <!-- Schedule Interview Button -->
+              <button class="bg-green-500 hover:bg-green-600 text-white rounded-md py-2 px-4 text-nowrap flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 3a1 1 0 00-1 1v2.586l-2.707-2.707a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l4-4a1 1 0 10-1.414-1.414L11 6.586V4a1 1 0 00-1-1zM6 10a2 2 0 012-2h4a2 2 0 110 4H8a2 2 0 01-2-2zm8 2a2 2 0 100-4h-2v2a2 2 0 002 2z" clip-rule="evenodd" />
+                </svg>Schedule Interview
+              </button>
+
+              <!-- Download PDF Button -->
+              <button class="bg-red-500 hover:bg-red-600 text-white rounded-md py-2 px-4 text-nowrap flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 2a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V7l-4-4H6zm13 7.5V5.5L18.5 7H19v4.5h-1zM12 11v4.5h-1V12.5L8.5 16l-.707-.707 3.5-3.5 3.5 3.5-.707.707L12 12.5z" />
+                </svg>Download PDF
+              </button>
+            </div>
+          </section>
+
+          <!-- Contact Information -->
+
+          <div class="candidate__contact mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-address-book mr-3 text-primary"></i> Contact Information</h3>
+            <p class="text-gray-600 mb-2 flex items-center">
+              <i class="fas fa-envelope mr-3 text-primary"></i> Email: john.doe@example.com
+            </p>
+            <p class="text-gray-600 flex items-center">
+              <i class="fas fa-phone-alt mr-3 text-primary"></i> Phone: (123) 456-7890
+            </p>
+          </div>
+
+          <!-- Skills Section -->
+          <div class="candidate__skills mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-cogs mr-3 text-primary"></i> Skills</h3>
+            <ul class="grid grid-cols-2 md:grid-cols-3 gap-4 text-gray-600">
+              <li class="flex items-center bg-gray-100 p-2 rounded-md shadow-sm border border-gray-300">
+                <i class="fas fa-code mr-3 text-primary"></i> JavaScript
+              </li>
+              <li class="flex items-center bg-gray-100 p-2 rounded-md shadow-sm border border-gray-300">
+                <i class="fas fa-code mr-3 text-primary"></i> Python
+              </li>
+              <li class="flex items-center bg-gray-100 p-2 rounded-md shadow-sm border border-gray-300">
+                <i class="fas fa-code mr-3 text-primary"></i> React
+              </li>
+              <li class="flex items-center bg-gray-100 p-2 rounded-md shadow-sm border border-gray-300">
+                <i class="fas fa-code mr-3 text-primary"></i> Node.js
+              </li>
+              <li class="flex items-center bg-gray-100 p-2 rounded-md shadow-sm border border-gray-300">
+                <i class="fas fa-code mr-3 text-primary"></i> HTML/CSS
+              </li>
+            </ul>
+          </div>
+
+          <!-- Experience Section -->
+          <!-- Experience Section -->
+          <div class="candidate__experience mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-briefcase mr-3 text-primary"></i> Experience</h3>
+            <div class="mb-4">
+              <h4 class="font-semibold flex items-center mb-1"><i class="fas fa-laptop-code mr-3 text-primary"></i> Software Engineer at TechCorp</h4>
+              <p class="text-gray-600 mb-1 flex items-center">
+                <i class="fas fa-calendar-alt mr-3 text-primary"></i> Jan 2020 - Present
+              </p>
+              <p class="text-gray-600">Developed and maintained web applications using JavaScript, Python, and React.</p>
+            </div>
+            <div>
+              <h4 class="font-semibold flex items-center mb-1"><i class="fas fa-laptop-code mr-3 text-primary"></i> Junior Developer at Web Solutions</h4>
+              <p class="text-gray-600 mb-1 flex items-center">
+                <i class="fas fa-calendar-alt mr-3 text-primary"></i> Aug 2017 - Dec 2019
+              </p>
+              <p class="text-gray-600">Assisted ibuilding and deploying web applications, and provided technical support to clients.</p>
+            </div>
+          </div>
+
+          <!-- Education Section -->
+          <!-- Education Section -->
+          <div class="candidate__education mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-graduation-cap mr-3 text-primary"></i> Education</h3>
+            <p class="text-gray-600">B.Sc. in Computer Science, University of California, 2017</p>
+          </div>
+
+          <!-- Certifications Section -->
+          <!-- Certifications Section -->
+          <div class="candidate__certifications mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-certificate mr-3 text-primary"></i> Certifications</h3>
+            <p class="text-gray-600 mb-2 flex items-center">
+              <i class="fas fa-check-circle mr-3 text-primary"></i> Certified JavaScript Developer
+            </p>
+            <p class="text-gray-600 flex items-center">
+              <i class="fas fa-check-circle mr-3 text-primary"></i> AWS Certified Solutions Architect
+            </p>
+          </div>
+
+          <!-- Combined Section for Matching Percentage and Quiz Results -->
+          <div class="candidate__results mb-4 p-4 bg-white shadow rounded-md">
+            <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center justify-center"><i class="fas fa-tachometer-alt mr-2 text-[#297FB8]"></i> Performance Overview</h3>
+            <div class="flex justify-around items-center">
+              <!-- Matching Percentage -->
+              <div class="text-center">
+                <div class="relative inline-block w-24 h-24">
+                  <svg class="absolute top-0 left-0 w-full h-full transform rotate-[-90deg]" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                    <path class="text-gray-200" stroke="currentColor" stroke-width="4" fill="none" d="M18 2a16 16 0 1 1-16 16A16 16 0 0 1 18 2z" />
+                    <path class="text-[#297FB8]" stroke="currentColor" stroke-width="4" stroke-dasharray="85 100" fill="none" d="M18 2a16 16 0 1 1-16 16A16 16 0 0 1 18 2z" />
+                  </svg>
+                  <div class="absolute inset-0 flex items-center justify-center text-[#297FB8] text-2xl font-bold">85%</div>
+                </div>
+                <p class="text-gray-600 mt-2">Resume Match</p>
+              </div>
+
+              <!-- Quiz Results -->
+              <div class="text-center">
+                <div class="relative inline-block w-24 h-24">
+                  <svg class="absolute top-0 left-0 w-full h-full transform rotate-[-90deg]" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                    <path class="text-gray-200" stroke="currentColor" stroke-width="4" fill="none" d="M18 2a16 16 0 1 1-16 16A16 16 0 0 1 18 2z" />
+                    <path class="text-[#297FB8]" stroke="currentColor" stroke-width="4" stroke-dasharray="90 100" fill="none" d="M18 2a16 16 0 1 1-16 16A16 16 0 0 1 18 2z" />
+                  </svg>
+                  <div class="absolute inset-0 flex items-center justify-center text-[#297FB8] text-2xl font-bold">90%</div>
+                </div>
+                <p class="text-gray-600 mt-2">Quiz Score</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- References Section -->
+          <div class="candidate__references mb-4 p-4 bg-white shadow rounded-md">
+            <h3 class="text-lg font-bold text-gray-700 mb-2 flex items-center"><i class="fas fa-users mr-2 text-[#297FB8]"></i> References</h3>
+            <!-- Carousel Container -->
+            <div class="relative overflow-hidden">
+              <div class="carousel-wrapper flex transition-transform duration-700">
+                <!-- Slide 1 -->
+                <div class="carousel-slide flex-none w-full p-4 text-gray-600 flex items-center">
+                  <div class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden mr-4">
+                    <img src="https://picsum.photos/96/96?random=1" alt="Recruiter 1" class="w-full h-full object-cover rounded-lg" />
+                  </div>
+                  <div>
+                    <p class="font-semibold">Eddy Steve</p>
+                    <p>"John is a highly skilled developer with a strong work ethic. Highly recommend!"</p>
+                  </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="carousel-slide flex-none w-full p-4 text-gray-600 flex items-center">
+                  <div class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden mr-4">
+                    <img src="https://picsum.photos/96/96?random=2" alt="Recruiter 2" class="w-full h-full object-cover rounded-lg" />
+                  </div>
+                  <div>
+                    <p class="font-semibold">Alex Johnson</p>
+                    <p>"Exceptional candidate with great technical and communication skills."</p>
+                  </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="carousel-slide flex-none w-full p-4 text-gray-600 flex items-center">
+                  <div class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden mr-4">
+                    <img src="https://picsum.photos/96/96?random=3" alt="Recruiter 3" class="w-full h-full object-cover rounded-lg" />
+                  </div>
+                  <div>
+                    <p class="font-semibold">Jamie Lee</p>
+                    <p>"John's performance in our projects was outstanding. A true asset to any team."</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  
+  <script>
+    let currentIndex = 0
+    const slides = document.querySelectorAll('.carousel-slide')
+    const totalSlides = slides.length
+    const slideWidth = slides[0].offsetWidth
+    
+    function showSlide(index) {
+      const offset = -index * slideWidth
+      document.querySelector('.carousel-wrapper').style.transform = `translateX(${offset}px)`
+    }
+    
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides
+      showSlide(currentIndex)
+    }
+    
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % totalSlides
+      showSlide(currentIndex)
+    }
+    
+    // Automatic slide transition
+    setInterval(nextSlide, 5000)
+    
+    // Initialize carousel
+    showSlide(currentIndex)
+  </script>
+
+  <script type="module" src="{% static 'build/scripts/Profile.js' %}"></script>
+
+  <script type="module" src="{% static 'build/scripts/addjob.js' %}"></script>
+  <script type="module" src="{% static 'build/scripts/dashboard.js' %}"></script>
+{% endblock %}

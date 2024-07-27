@@ -1,0 +1,22 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Selection</title>
+</head>
+<body>
+    <h1>Job Selection</h1>
+    <form method="post" action="/index/">
+        {% csrf_token %}
+        <label for="job_title">Job Title:</label>
+        <input type="text" id="job_title" name="job_title" required><br><br>
+        <label for="selected_skills">Select Skills:</label><br>
+        <select id="selected_skills" name="selected_skills" multiple required>
+            <option value="Skill 1">Skill 1</option>
+            <option value="Skill 2">Skill 2</option>
+            <!-- Add more options as needed -->
+        </select><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

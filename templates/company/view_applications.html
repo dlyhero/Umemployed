@@ -1,0 +1,157 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="sidebar">
+        <!-- Sidebar content goes here -->
+        <h2>{{company.name}} Dashboard</h2>
+        <ul>
+            <li><i class="bi bi-house-door"></i> <a href="#">Home</a></li>
+            <li><i class="bi bi-briefcase"></i> <a href="#">Jobs</a></li>
+            <li><i class="bi bi-person-check"></i> <a href="#">Applicants</a></li>
+            <li><i class="bi bi-file-person"></i> <a href="#">Employees</a></li>
+            <li><i class="bi bi-graph-up"></i> <a href="{% url 'company_analytics' company_id=company.id%}">Analytics</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <!-- Content area goes here -->
+        {% if company.logo %}
+        <div style="flex: 0 0 auto; text-align: center;">
+            <img src="{{ company.logo.url }}" alt="{{ company.name }} Logo" style="max-width: 100px; max-height: 100px;">
+        </div>
+        {% endif %}
+        <h2>Job Openings</h2>
+            <a href="{% url 'job:create-job' %}"class="btn btn-primary mt-0" style="margin-left:1500px;">Add Job</a>
+        {% for job, applications in job_applications.items %}
+        <div class="job">
+            <ul>
+                <h3>{{ job.title }}</h3>
+                {% if applications|length == 0 %}
+                <li class="application">
+                    <div class="application-details">
+                        <strong><i class="bi bi-person"></i> Applicant:</strong> No Applicant up to Match<br>
+                        <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> None <br>
+                    </div>
+                    <div class="application-actions">
+                        <!-- Add other application details as needed -->
+                        <!-- <button class="btn btn-primary"><i class="bi bi-eye"></i> View Details</button> -->
+                        <!-- <button class="btn btn-danger"><i class="bi bi-x"></i> Reject</button> -->
+                    </div>
+                </li>
+                {% else %}
+                {% for application in applications %}
+                {% if application.overall_match_percentage >= 70 %}
+                <li class="application">
+                    <div class="application-details">
+                        <strong><i class="bi bi-person"></i> Applicant:</strong> {{ application.user.username }}<br>
+                        <strong><i class="bi bi-percent"></i> Matching Percentage:</strong> {{ application.overall_match_percentage }}%<br>
+                    </div>
+                    <div class="application-actions">
+                        <!-- Add other application details as needed -->
+                        <a href="{% url 'view_application_details' company_id=company.id application_id=application.id %}" class="btn btn-primary"><i class="bi bi-eye"></i> View Details</a>
+
+                        <button class="btn btn-danger"><i class="bi bi-x"></i> Reject</button>
+                    </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        {% endfor %}
+
+        {% if applications|length == 0 %}
+        <p>No other applications found with a match percentage of 70% or higher.</p>
+        {% endif %}
+    </div>
+</div>
+
+
+<style>
+    /* CSS styles for the dashboard container */
+    .dashboard-container {
+        display: flex;
+    }
+
+    /* CSS styles for the sidebar */
+    .sidebar {
+        width: 250px;
+        background-color: #f0f0f0;
+        padding: 20px;
+        box-sizing: border-box;
+        height:800px;
+    }
+
+    .sidebar h2 {
+        margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 10px;
+    }
+
+    .sidebar i {
+        margin-right: 10px;
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    /* CSS styles for the content area */
+    .content {
+        flex-grow: 1;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    /* CSS styles for the job container */
+    .job {
+        margin-bottom: 20px;
+    }
+
+    /* CSS styles for the application details */
+    .application {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .application-details {
+        flex-grow: 1;
+    }
+
+    .application-actions {
+        margin-left: 10px;
+    }
+
+    /* CSS styles for the buttons */
+    .btn {
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn.btn-primary {
+        background-color: #000000;
+        color: #fff;
+    }
+
+    .btn.btn-danger {
+        background-color: #dc3545;
+        color: #fff;
+    }
+</style>
+{% endblock %}

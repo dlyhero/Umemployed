@@ -1,0 +1,75 @@
+
+ {% extends 'resume/recruiterBase.html' %}
+{% load static %}
+ {% block custom_css %}
+    
+  {% endblock %}
+{% block content %}
+   <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto container">
+    <form id="addJob" class="w-full md:w-[65%] mx-auto" method="post">
+        {% csrf_token %}
+        <h1 class="text-3xl font-bold text-gray-800 my-5">Add a job</h1>
+        <div class="input-wrap mb-8">
+            <label for="job-title" class="text-[17px] font-[500] text-gray-800">Job title</label><br />
+            <input class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                type="text" placeholder="ex(Asiistant Manager)" name="title" id="job-title" required />
+        </div>
+        <div class="input-wrap mb-8">
+            <label for="hire-number" class="text-[17px] font-[500] text-gray-800">Number of persons to hire for this job</label><br />
+            <select class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                name="hire_number" id="hire-number" required>
+                <option value="" selected>Choose an option</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="more">More</option>
+            </select>
+        </div>
+        <div class="input-wrap mb-8">
+            <label for="salary" class="text-[17px] font-[500] text-gray-800">Salary</label><br />
+            <input class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                type="text" placeholder="ex($50,000 - $70,000)" name="salary" id="salary" required />
+        </div>
+        <div class="input-wrap mb-8">
+            <label for="job-location" class="text-[17px] font-[500] text-gray-800">Job Location</label><br />
+            <input class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                type="text" placeholder="ex(New York, USA)" name="location" id="job-location" required />
+        </div>
+        <div class="input-wrap mb-8">
+            <label for="job-type" class="text-[17px] font-[500] text-gray-800">Job location type</label><br />
+            <select class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                name="job_type" id="job-type" required>
+                <option value="" selected>Choose an option</option>
+                <option value="remote">Remote</option>
+                <option value="onsite">Onsite</option>
+                <option value="hybrid">Hybrid</option>
+                <option value="internship">Internship</option>
+            </select>
+        </div>
+        <div class="input-wrap mb-8">
+           <label for="id_category">Category:</label>
+<select name="category" id="id_category">
+    {% for category in form.category.field.queryset %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+    {% endfor %}
+</select>
+        </div>
+        <!-- Other fields and submit button -->
+ <div class="btn-wrap text-end">
+            <button type="submit" class="px-5 py-2 text-white font-bold bg-[#1e90ff] rounded-lg">
+                Next <span class="text-[20px]">&RightArrow;</span>
+            </button>
+        </div>    </form>
+</main>
+
+   
+    <script type="module" src="{% static './scripts/addjob.js' %}"></script>
+    <script type="module" src="{% static './scripts/dashboard.js' %}"></script>
+ {% endblock %}
