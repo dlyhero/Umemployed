@@ -2,28 +2,126 @@
 {% load static %}
 {% block custom_css %}
 
+<style>
+  .text-primary {
+    color: #297FB8; /* Primary color */
+  }
+  .candidate__skills {
+border: 1px solid #e5e7eb; /* Light gray border for container */
+}
+
+.candidate__skills h3 {
+border-bottom: 2px solid #297FB8; /* Primary color underline */
+padding-bottom: 0.5rem;
+}
+
+.candidate__skills ul {
+list-style: none; /* Remove default bullets */
+padding: 0;
+}
+
+.candidate__skills li {
+position: relative;
+padding-left: 2.5rem; /* Space for icon */
+font-size: 0.875rem; /* Slightly smaller font size */
+line-height: 1.5;
+background-color: #f9fafb; /* Light background for items */
+}
+
+.candidate__skills li::before {
+content: '';
+position: absolute;
+left: 0;
+top: 50%;
+transform: translateY(-50%);
+width: 1.25rem; /* Size of icon container */
+height: 1.25rem;
+background-color: #f3f4f6; /* Light gray circle background */
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.candidate__skills i {
+color: #297FB8; /* Primary color for icons */
+}
+.candidate__contact,
+.candidate__experience,
+.candidate__education {
+border: 1px solid #e5e7eb; /* Light gray border for container */
+}
+
+.candidate__contact h3,
+.candidate__experience h3,
+.candidate__education h3 {
+border-bottom: 2px solid #297FB8; /* Primary color underline */
+padding-bottom: 0.5rem;
+}
+
+.candidate__contact p,
+.candidate__experience p,
+.candidate__education p {
+display: flex;
+align-items: center;
+}
+
+.candidate__contact i,
+.candidate__experience i,
+.candidate__education i {
+color: #297FB8; /* Primary color for icons */
+}
+
+.candidate__experience h4 {
+border-bottom: 1px solid #e5e7eb; /* Subtle border below job titles */
+padding-bottom: 0.5rem;
+}
+
+.candidate__certifications {
+border: 1px solid #e5e7eb; /* Light gray border for container */
+}
+
+.candidate__certifications h3 {
+border-bottom: 2px solid #297FB8; /* Primary color underline */
+padding-bottom: 0.5rem;
+}
+
+.candidate__certifications p {
+display: flex;
+align-items: center;
+margin-bottom: 1rem; /* Space between certification items */
+}
+
+.candidate__certifications i {
+color: #297FB8; /* Primary color for icons */
+}
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 {% endblock %}
 {% block content %}
-  <main class="flex-grow w-full px-2 md:px-3 lg:w-[100%] mx-auto">
-    <div class="max-w-2xl mx-auto profile-container">
+  <main class="flex-grow w-full px-2 mt-0 md:px-3 lg:w-[100%] ">
+    <div class="max-w-full mx-auto profile-container">
       <section class="user-profile mx-auto">
         <div id="candidate" class="rounded-2xl p-5 shadow-sm bg-white h-fit mx-auto border">
-          <div class="candidate__info flex justify-between items-start border-b border-gray-200 pb-4 mb-6">
-            <div class="flex w-full gap-6">
+          <div class="candidate__info flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-200 pb-4 mb-6">
+            <div class="flex flex-col sm:flex-row w-full gap-6">
               <!-- Avatar and Details -->
-              <div class="flex items-start gap-6">
+              <div class="flex items-start gap-4 sm:gap-6">
                 <div class="avatar-wrap w-16 h-16 rounded-full overflow-hidden border border-gray-200 shadow-sm">
                   <img class="w-full h-full object-cover" src="{% static 'build/img/profile-svgrepo-com.svg' %}" alt="profile image" />
                 </div>
                 <div class="candidate__info--details flex flex-col justify-center">
-                  <div class="flex items-center gap-2 mb-2">
+                  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-2">
                     <h2 class="text-xl font-semibold text-gray-800">John Doe</h2>
                     <span class="inline-block text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700">Job Seeker</span>
                   </div>
                   <p class="text-gray-700 mb-2">
                     <span class="hidden sm:inline-block">apply as</span> <span class="font-semibold text-gray-600">Software Engineer</span>
                   </p>
-                  <ul class="text-sm flex items-center gap-4">
+                  <ul class="text-sm flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                     <li class="flex items-center gap-1 text-gray-600">
                       <img class="w-5 h-5" src="{% static 'build/img/pin-svgrepo-com.svg' %}" alt="location icon" />
                       <span>California, USA</span>
@@ -39,22 +137,23 @@
                   </ul>
                 </div>
               </div>
-
+          
               <!-- Date Applied -->
-              <div class="text-right flex flex-col justify-center">
+              <div class="text-right flex flex-col justify-center sm:text-left sm:items-end sm:ml-auto">
                 <h2 class="font-semibold text-gray-800 text-sm mb-1 hidden sm:block">Date <span class="font-normal">Applied</span></h2>
                 <div class="date text-gray-600 text-lg">18 June, 2024</div>
               </div>
             </div>
           </div>
+          
 
-          <div class="candidate__bio mb-6 p-6 bg-white shadow-sm rounded-md">
+          <div class="candidate__bio mb-6 p-6 bg-white  shadow-sm rounded-md">
             <h3 class="text-2xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">Biography</h3>
             <p class="text-gray-700 leading-relaxed">Experienced Software Engineer with a strong background in developing scalable web applications. Proficient in various programming languages and frameworks including JavaScript, Python, and React.</p>
           </div>
 
           <section class="mb-4 p-4 bg-white shadow rounded-md">
-            <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex flex-col md:flex-row gap-4 justify-between">
               <!-- Message Button -->
               <button class="bg-[#1e90ff] hover:bg-blue-600 text-white rounded-md py-2 px-4 text-nowrap flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
