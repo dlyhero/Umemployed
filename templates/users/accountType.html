@@ -1,11 +1,10 @@
 {% extends 'resume/base.html' %}
 {% block custom_css %}
   {% load static %}
-  {% comment %} <link rel="stylesheet" href="{% static 'myapp/custom.css' %}"> {% endcomment %}
 {% endblock %}
 {% block content %}
     <main
-      class="mx-auto w-[98%] sm:w-[90%] max-w-[650px] mb-2 flex items-center justify-center "
+      class="mx-auto w-[98%] sm:w-[90%] max-w-[720px] p-12 mb-2 flex items-center justify-center "
     >
       <div
         class="sm:bg-white p-12  text-center w-full sm:shadow-xl rounded-lg"
@@ -25,7 +24,7 @@
           >
         </div>
         <br>
-        <h1>Already have an account?</h1> <a href="{% url 'login' %}">Login</a>
+        <h1>Already have an account?</h1> <a style="color: #1e90ff;" href="{% url 'login' %}">Login</a>
       </div>
     </main>
     

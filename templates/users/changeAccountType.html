@@ -45,40 +45,7 @@
     </style>{% endblock %}
 {% block content %}
 
-     {% comment %} <main class="bg-white shadow-md rounded-lg p-8 w-[95%] md:w-[50%] max-w-md mx-auto mt-28">
-      {% if messages %}
-    <div>
-        {% for message in messages %}
-            <div class="alert {{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    </div>
-{% endif %}
-        <h1 class="text-2xl text-gray-800 font-bold text-center mb-6">Switch Account Type</h1>
-        <center><p>{{user.username}}</p><center>
-        <div class="text-center mb-4">
-          {% if request.user.is_applicant %}
-            <button id="toggleAccountButton" class="bg-[#1e90ff] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">
-                <a href="{% url 'switch_account_type' %}">Switch to Employer Account</a>
-            </button>
-            {% elif request.user.is_recruiter %}
-            <button id="toggleAccountButton" class="bg-[#1e90ff] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">
-                <a href="{% url 'switch_account_type' %}">Switch to Job Seeker Account</a>
-            </button>
-            {% else %}
-            <button id="toggleAccountButton" class="bg-[#1e90ff] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">
-                <a href="{% url 'login' %}">Not Allowed, Please Signup</a>
-            </button>
-            {% endif %}
-        </div>
-        <div id="accountTypeMessage" class="text-center text-gray-700">
-            You are currently logged in as a Job Seeker.
-        </div>
-    </main>
-
-   
-    <script type="module" src="{% static '{% staticbuild/scripts/switchaccount.js' %}' %}"></script>
-  </body>
-</html> {% endcomment %}
+ 
 
 <main class="md:bg-white w-[90%] flex-1 h-fit mt-[5%] max-w-6xl mx-auto p-3 md:p-12 sm:rounded-lg sm:shadow-lg animate-fade-in">
     <h1 class="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8 text-gray-800">
