@@ -15,6 +15,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
+def index(request):
+    return render(request, 'website/index.html')
 
 from django.db.models import Avg
 def home(request):

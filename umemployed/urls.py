@@ -11,7 +11,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/user/', include('users.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('',views.home, name = 'home'),
+    path('jobs',views.home, name = 'home'),
+    path('',views.index, name = 'index'),
+    
     path('accounts/', include('allauth.urls')),
     path('social-auth/', include(('social_django.urls', 'social'), namespace='social')),
     
@@ -33,6 +35,7 @@ urlpatterns = [
     
     path('messages/',include('messaging.urls')),
     path('notifications/',include('notifications.urls')),
+    
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
