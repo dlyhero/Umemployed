@@ -104,7 +104,7 @@
   {% endblock %}
 {% block content %}
 
-  <main class="flex flex-col lg:flex-row mx-auto w-full max-w-[85%] mt-4 gap-4">
+  <main class="flex flex-col lg:flex-row mx-auto w-full w-[92%] sm:max-w-[85%] mt-4 gap-4 ">
      <aside
         class="w-full lg:w-1/4 sm:bg-white rounded-lg p-6 order-3 lg:order-3 h-fit sm:mt-4 sm:border border-gray-300"
       >
@@ -161,12 +161,17 @@
           </a>
         </section>
       </aside>
-    <div class="w-full lg:w-1/2 rounded-lg sm:mt-4 order-2 lg:order-2">
+   
+   
+   
+   
+   
+      <div class="w-full lg:w-1/2 rounded-lg sm:mt-4  lg:order-2">
       <section
-          class="user-profile mx-auto p-6 sm:rounded-lg bg-transparent sm:bg-white sm:border border-gray-300"
+          class="user-profile mx-auto p-6 sm:rounded-lg sm:bg-white sm:border border-gray-300"
         >
           <div
-            class="profile-header mb-8 flex  justify-between items-center md:items-start"
+            class="profile-header mb-8 flex flex-col md:flex-row md:justify-between items-center md:items-start"
           >
             <div class="relative mb-4 md:mb-0">
               <img
@@ -230,7 +235,7 @@
           </div>
         </section>
         <section
-        class="cv-wrap mx-auto p-5 rounded-lg my-10 relative sm:bg-white z-[-10] sm:border border-gray-300"
+        class="cv-wrap mx-auto p-6 rounded-lg my-10 relative bg-white sm:border border-gray-300"
       >
         <div class="flex justify-between items-center relative">
           <div class="flex gap-4 items-center">
@@ -964,7 +969,7 @@
             >
               <div class="flex items-start">
                 <div
-                  class="w-12 lg:w-20 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                  class="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
                 >
                   <i class="fas fa-briefcase text-xl"></i>
                 </div>
@@ -985,7 +990,7 @@
             >
               <div class="flex items-start">
                 <div
-                  class="w-12 h-12 lg:w-20 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                  class="w-11 h-12 lg:w-20 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
                 >
                   <i class="fas fa-cogs text-xl"></i>
                 </div>
@@ -1007,7 +1012,7 @@
             >
               <div class="flex items-start">
                 <div
-                  class="w-12 h-12 lg:w-20 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
+                  class="w-14 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center mr-4"
                 >
                   <i class="fas fa-dollar-sign text-xl"></i>
                 </div>
@@ -1165,6 +1170,30 @@ button.addEventListener("click", function() {
         });
     }
 </script>
+
+
+<!-- Script for adding image on icon -->
+<script>
+      document
+        .getElementById("edit-profile-pic-btn")
+        .addEventListener("click", () => {
+          document.getElementById("profile-pic-upload").click();
+        });
+
+      document
+        .getElementById("profile-pic-upload")
+        .addEventListener("change", (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              document.querySelector(".profile-header img").src =
+                e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+    </script>
 <!--js for deleteing skills -->
   <script type="text/javascript">
     const csrfToken = '{{ csrf_token }}';

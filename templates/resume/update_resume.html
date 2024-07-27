@@ -1,123 +1,211 @@
 {% extends "resume/base.html" %}
-{% load crispy_forms_tags %}
+{% load static %}
 {% load custom_filters %}
+{% block custom_css %}
+ <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static './build/css/sidebar_recriuter.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{% static './build/css/header.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+{% endblock %}
 
 {% block content %}
+ {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
 
-<main class="mx-auto w-[90%] xl:w-[70%]  mb-5">
-    <section class="">
-        <div class="border bg-white rounded-tl-3xl rounded-tr-3xl ">
-            <div class="text-center p-4 mb-4 border-b ">
-                <p class="font-bold  text-2xl border-b-0 text-[#1e90ff]">Edit Information</p>
-            </div>
-            {% if messages %}
-                <div class="messages">
-                    {% for message in messages %}
-                        <div class="message {{ message.tags }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <form class="max-w-md mx-auto p-8 bg-white shadow-lg rounded-3xl mb-5" method="post" enctype="multipart/form-data" id="contact-info-form">
+ <main class="p-4 md:p-6 lg:p-8 max-w-8xl mx-auto">
+      <section class="flex flex-col lg:flex-row gap-6 lg:justify-center">
+        <!-- Profile Edit Form -->
+        <div
+          class="bg-white sm:bg-white sm:border border-gray-300 rounded-lg sm:shadow-md lg:ml-20 p-6"
+          style="flex: 0 0 60%"
+        >
+          <h2 class="text-[#1e90ff] font-semibold text-lg mb-4">
+            Edit Profile
+          </h2>
+
+          <!-- Illustrative Image -->
+          <div class="mb-6 text-center">
+            <img
+              src="{% static 'build/pics/20769939_Sandy_Med-02_Single-03.jpg' %}"
+              class="h-[60vh] w-full"
+              alt="edit"
+            />
+          </div>
+            <form class="bg-transparent" method="post" enctype="multipart/form-data" id="contact-info-form">
                 {% csrf_token %}
-                <div class="mb-6">
-                    <label for="{{ form.name.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Name</label>
-                    {{ form.name|add_class:"block w-full border-3   border-blue-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                <div class="grid grid-cols-1 gap-4">
+                <div class="mb-2">
+                    <label for="{{ form.name.id_for_label }}" class="block text-gray-600 font-semibold mb-1">Name</label>
+                    {{ form.name|add_class:"border w-full rounded-lg px-3 py-2 text-gray-700 bg-transparent border-gray-300 focus:ring-1 focus:ring-blue-500" }}
                 </div>
-                <div class="mb-6">
-                    <label for="{{ form.email.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Email</label>
-                    {{ form.email|add_class:"block w-full border-3   border-blue-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                <div class="mb-2">
+                    <label for="{{ form.email.id_for_label }}" class="block text-gray-600 font-semibold mb-1">Email</label>
+                    {{ form.email|add_class:"border w-full rounded-lg px-3 py-2 text-gray-700 bg-transparent border-gray-300 focus:ring-1 focus:ring-blue-500" }}
                 </div>
-                <div class="mb-6">
-                    <label for="{{ form.phone.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Phone</label>
-                    {{ form.phone|add_class:"block w-full border-3   border-blue-300   rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"  }}
+                <div class="mb-2">
+                    <label for="{{ form.phone.id_for_label }}" class="block text-gray-600 font-semibold mb-1">Phone</label>
+                    {{ form.phone|add_class:"border w-full rounded-lg px-3 py-2 text-gray-700 bg-transparent border-gray-300 focus:ring-1 focus:ring-blue-500"  }}
                 </div>
-                <div class="mb-6">
-                    <label for="{{ form.country.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Country</label>
-                    {{ form.country|add_class:"block w-full border-2 border-3   border-blue-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                <div class="mb-2">
+                    <label for="{{ form.country.id_for_label }}" class="block text-gray-600 font-semibold mb-1">Country</label>
+                    {{ form.country|add_class:"border w-full rounded-lg px-3 py-2 text-gray-700 bg-transparent border-gray-300 focus:ring-1 focus:ring-blue-500" }}
                 </div>
-                <div class="mb-6">
-                    <label for="{{ form.job_title.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Job Title</label>
-                    {{ form.job_title|add_class:"block w-full border-3   border-blue-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                <div class="mb-2">
+                    <label for="{{ form.job_title.id_for_label }}" class="block text-gray-600 font-semibold mb-1">Job Title</label>
+                    {{ form.job_title|add_class:"border w-full rounded-lg px-3 py-2 text-gray-700 bg-transparent border-gray-300 focus:ring-1 focus:ring-blue-500" }}
                 </div>
-                <div class="mb-6">
-                    <label for="other-job-title" class="block text-gray-700 text-sm font-medium mb-2">Other Job Title</label>
-                    <input type="text" id="other-job-title" name="other_job_title" class="block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                <div class="mb-2">
+                    <label for="other-job-title" class="block text-gray-600 font-semibold mb-1">Other Job Title</label>
+                    <input type="text" id="other-job-title" name="other_job_title" class="block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none sm:text-sm" />
                 </div>
                 <div class="flex justify-end">
                     <button type="submit" id="save-info-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Save
                     </button>
                 </div>
-            </form>
-            
-            
+                </div>
+            </form> 
         </div>
-    </section>
-</main>
 
-<!-- Loader HTML -->
-<div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-75 flex items-center justify-center z-50">
-    <div class="loader"></div>
-    <h1>This might take a while, we are processing the job you entered!(^_^)</h1>
-</div>
+        <!-- Additional Features -->
+        <div class="flex-1 space-y-6" style="flex: 0 0 20%">
+          <div class="bg-white border border-gray-300 rounded-lg shadow-md p-6">
+            <h2
+              class="text-[#1e90ff] font-semibold text-lg mb-4 flex items-center"
+            >
+              <i class="fas fa-briefcase mr-3 text-[#1e90ff]"></i>
+              Featured Job Opportunities
+            </h2>
+            <p class="text-gray-700 mb-4">
+              Explore top job opportunities based on your profile and
+              preferences.
+            </p>
+            <ul class="list-none text-gray-700 space-y-2">
+              <li>
+                <a
+                  href="#"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-laptop-code mr-2"></i> Software Engineer at
+                  TechCorp</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-project-diagram mr-2"></i> Product Manager
+                  at Innovate Inc.</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-pencil-ruler mr-2"></i> UX Designer at
+                  Creative Studio</a
+                >
+              </li>
+            </ul>
+          </div>
 
-<!-- Loader CSS -->
-<style>
-    .loader {
-        border: 8px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 8px solid #3498db;
-        width: 60px;
-        height: 60px;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
-    }
+          <div class="bg-white border border-gray-300 rounded-lg shadow-md p-6">
+            <h2
+              class="text-[#1e90ff] font-semibold text-lg mb-4 flex items-center"
+            >
+              <i class="fas fa-lightbulb mr-3 text-[#1e90ff]"></i>
+              Career Insights
+            </h2>
+            <p class="text-gray-700 mb-4">
+              Gain insights into your career growth and tips for improving your
+              job prospects.
+            </p>
+            <ul class="list-none text-gray-700 space-y-2">
+              <li>
+                <a
+                  href="#"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-comment-dots mr-2"></i> How to Ace a
+                  Technical Interview</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-network-wired mr-2"></i> Building a Strong
+                  Professional Network</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-file-alt mr-2"></i> Crafting an Effective
+                  Resume</a
+                >
+              </li>
+            </ul>
+          </div>
 
-    @-webkit-keyframes spin {
-        0% { -webkit-transform: rotate(0deg); }
-        100% { -webkit-transform: rotate(360deg); }
-    }
+          <div class="bg-white border border-gray-300 rounded-lg shadow-md p-6">
+            <h2
+              class="text-[#1e90ff] font-semibold text-lg mb-4 flex items-center"
+            >
+              <i class="fas fa-chart-line mr-3 text-[#1e90ff]"></i>
+              Profile Analytics
+            </h2>
+            <p class="text-gray-700 mb-4">
+              Review analytics related to your profile views and interactions to
+              enhance visibility.
+            </p>
+            <ul class="list-none text-gray-700 space-y-2">
+              <li>
+                <a
+                  href="#"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-eye mr-2"></i> View Profile Insights</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-search mr-2"></i> Track Profile Views</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-bar-chart mr-2"></i> Analyze Engagement
+                  Metrics</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+    <script src="{% static 'build/scripts/header.js' %}"></script>
+    <script src="{% static 'build/scripts/sidebar_recruiter.js' %}"></script>
+  </body>
+</html>
+{% endblock %}
 
-    .hidden {
-        display: none;
-    }
-</style>
-
-<!-- JavaScript for handling form submission and loader -->
-<script>
-document.getElementById('contact-info-form').addEventListener('submit', function(event) {
-    var otherJobTitle = document.getElementById('other-job-title').value;
-    if (otherJobTitle) {
-        event.preventDefault();
-        document.getElementById('loader').classList.remove('hidden');  // Show loader
-        fetch(`{{ api_url }}?input_str=${otherJobTitle}`)
-            .then(response => {
-                document.getElementById('loader').classList.add('hidden');  // Hide loader
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok');
-            })
-            .then(data => {
-                alert(`The job title "${otherJobTitle}" has been added. Please select it from the list and click save.`);
-                location.reload();
-            })
-            .catch(error => {
-                document.getElementById('loader').classList.add('hidden');  // Hide loader
-                alert('There was a problem with the request.');
-                console.error('There was a problem with the fetch operation:', error);
-            });
-    }
-});
-</script>
-
-{% endblock content %}
-
-
-
-
+           
+            
+           
