@@ -102,11 +102,11 @@ color: #297FB8; /* Primary color for icons */
 
 {% endblock %}
 {% block content %}
-  <main class="flex-grow w-full px-2 mt-0 md:px-3 lg:w-[100%] ">
+  <main class="flex-grow w-full px-4  mt-0 md:px-3 lg:w-[100%] ">
     <div class="max-w-full mx-auto profile-container">
       <section class="user-profile mx-auto">
-        <div id="candidate" class="rounded-2xl p-5 shadow-sm bg-white h-fit mx-auto border">
-          <div class="candidate__info flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-200 pb-4 mb-6">
+        <div id="candidate" class="rounded-2xl p-2 sm:p-5 shadow-sm bg-white h-fit mx-auto border">
+          <div class="candidate__info flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-200 pb-4 mb-4">
             <div class="flex flex-col sm:flex-row w-full gap-6">
               <!-- Avatar and Details -->
               <div class="flex items-start gap-4 sm:gap-6">
@@ -147,12 +147,12 @@ color: #297FB8; /* Primary color for icons */
           </div>
           
 
-          <div class="candidate__bio mb-6 p-6 bg-white  shadow-sm rounded-md">
+          <div class="candidate__bio mb-3 p-6 bg-white  shadow-sm rounded-md w-full">
             <h3 class="text-2xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">Biography</h3>
             <p class="text-gray-700 leading-relaxed">Experienced Software Engineer with a strong background in developing scalable web applications. Proficient in various programming languages and frameworks including JavaScript, Python, and React.</p>
           </div>
 
-          <section class="mb-4 p-4 bg-white shadow rounded-md">
+          <section class="mb-2 p-4 bg-white shadow rounded-md">
             <div class="flex flex-col md:flex-row gap-4 justify-between">
               <!-- Message Button -->
               <button class="bg-[#1e90ff] hover:bg-blue-600 text-white rounded-md py-2 px-4 text-nowrap flex items-center">
@@ -179,7 +179,7 @@ color: #297FB8; /* Primary color for icons */
 
           <!-- Contact Information -->
 
-          <div class="candidate__contact mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+          <div class="candidate__contact mb-2 p-4 bg-white shadow rounded-md border border-gray-200">
             <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-address-book mr-3 text-primary"></i> Contact Information</h3>
             <p class="text-gray-600 mb-2 flex items-center">
               <i class="fas fa-envelope mr-3 text-primary"></i> Email: john.doe@example.com
@@ -190,7 +190,7 @@ color: #297FB8; /* Primary color for icons */
           </div>
 
           <!-- Skills Section -->
-          <div class="candidate__skills mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+          <div class="candidate__skills mb-2 p-4 bg-white shadow rounded-md border border-gray-200">
             <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-cogs mr-3 text-primary"></i> Skills</h3>
             <ul class="grid grid-cols-2 md:grid-cols-3 gap-4 text-gray-600">
               <li class="flex items-center bg-gray-100 p-2 rounded-md shadow-sm border border-gray-300">
@@ -213,7 +213,7 @@ color: #297FB8; /* Primary color for icons */
 
           <!-- Experience Section -->
           <!-- Experience Section -->
-          <div class="candidate__experience mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+          <div class="candidate__experience mb-2 p-4 bg-white shadow rounded-md border border-gray-200">
             <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-briefcase mr-3 text-primary"></i> Experience</h3>
             <div class="mb-4">
               <h4 class="font-semibold flex items-center mb-1"><i class="fas fa-laptop-code mr-3 text-primary"></i> Software Engineer at TechCorp</h4>
@@ -233,14 +233,14 @@ color: #297FB8; /* Primary color for icons */
 
           <!-- Education Section -->
           <!-- Education Section -->
-          <div class="candidate__education mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+          <div class="candidate__education mb-2 p-4 bg-white shadow rounded-md border border-gray-200">
             <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-graduation-cap mr-3 text-primary"></i> Education</h3>
             <p class="text-gray-600">B.Sc. in Computer Science, University of California, 2017</p>
           </div>
 
           <!-- Certifications Section -->
           <!-- Certifications Section -->
-          <div class="candidate__certifications mb-4 p-4 bg-white shadow rounded-md border border-gray-200">
+          <div class="candidate__certifications mb-2 p-4 bg-white shadow rounded-md border border-gray-200">
             <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center"><i class="fas fa-certificate mr-3 text-primary"></i> Certifications</h3>
             <p class="text-gray-600 mb-2 flex items-center">
               <i class="fas fa-check-circle mr-3 text-primary"></i> Certified JavaScript Developer
@@ -251,7 +251,7 @@ color: #297FB8; /* Primary color for icons */
           </div>
 
           <!-- Combined Section for Matching Percentage and Quiz Results -->
-          <div class="candidate__results mb-4 p-4 bg-white shadow rounded-md">
+          <div class="candidate__results mb-2 p-4 bg-white shadow rounded-md">
             <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center justify-center"><i class="fas fa-tachometer-alt mr-2 text-[#297FB8]"></i> Performance Overview</h3>
             <div class="flex justify-around items-center">
               <!-- Matching Percentage -->
@@ -323,13 +323,7 @@ color: #297FB8; /* Primary color for icons */
       </section>
     </div>
   </main>
-  <footer class="text-center pb-8 mt-8 px-2 text-gray-500">
-    &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
-    <span class="underline">
-      <a href="#">Cookies</a>, <a href="#">Privacy</a> and
-      <a href="#">Terms</a>
-    </span>
-  </footer>
+ 
   <script>
     let currentIndex = 0
     const slides = document.querySelectorAll('.carousel-slide')
