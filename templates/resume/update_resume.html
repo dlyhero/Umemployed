@@ -2,14 +2,41 @@
 {% load static %}
 {% load custom_filters %}
 {% block custom_css %}
+<!-- Loader CSS -->
+<style>
+    .loader {
+        border: 8px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 8px solid #3498db;
+        width: 60px;
+        height: 60px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
  <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{% static './build/css/sidebar_recriuter.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/sidebar_recriuter.css' %}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    <link rel="stylesheet" href="{% static './build/css/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/header.css' %}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -17,13 +44,6 @@
 {% endblock %}
 
 {% block content %}
- {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-            <div class="message {{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    </div>
-{% endif %}
 
  <main class="p-4 md:p-6 lg:p-8 max-w-8xl mx-auto">
       <section class="flex flex-col lg:flex-row gap-6 lg:justify-center">
@@ -199,6 +219,41 @@
         </div>
       </section>
     </main>
+    <!-- Loader HTML -->
+<div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="loader"></div>
+    <h1>This might take a while, we are processing the job you entered!(^_^)</h1>
+</div>
+
+
+<!-- JavaScript for handling form submission and loader -->
+<script>
+document.getElementById('contact-info-form').addEventListener('submit', function(event) {
+    var otherJobTitle = document.getElementById('other-job-title').value;
+    if (otherJobTitle) {
+        event.preventDefault();
+        document.getElementById('loader').classList.remove('hidden');  // Show loader
+        fetch(`{{ api_url }}?input_str=${otherJobTitle}`)
+            .then(response => {
+                document.getElementById('loader').classList.add('hidden');  // Hide loader
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then(data => {
+                alert(`The job title "${otherJobTitle}" has been added. Please select it from the list and click save.`);
+                location.reload();
+            })
+            .catch(error => {
+                document.getElementById('loader').classList.add('hidden');  // Hide loader
+                alert('There was a problem with the request.');
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+});
+</script>
+
 
     <script src="{% static 'build/scripts/header.js' %}"></script>
     <script src="{% static 'build/scripts/sidebar_recruiter.js' %}"></script>

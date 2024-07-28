@@ -158,7 +158,7 @@ def dashboard(request):
     user_languages = UserLanguage.objects.filter(user_profile=user_profile)
     
     top_jobs = Job.objects.order_by('-id')[:5]
-    matching_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=50.0)
+    matching_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=10.0)
 
 
     context = {
