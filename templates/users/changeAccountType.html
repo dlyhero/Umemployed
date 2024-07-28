@@ -165,9 +165,9 @@
     function confirmSwitch() {
         const selectedAccountType = document.getElementById("selectedAccountType").innerText;
         if (selectedAccountType === "Job Seeker") {
-            window.location.href = "{% url 'switch_account_type' %}";
+            window.location.href = "{% url 'dashboard' %}";
         } else if (selectedAccountType === "Employer") {
-            window.location.href = "{% url 'switch_account_type' %}";
+            window.location.href = "{% url 'home'  %}";
         }
     }
 </script>
