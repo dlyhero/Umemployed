@@ -41,6 +41,62 @@
             opacity: 0;
         }
     </style>
+    <style>
+        @keyframes slideFadeIn {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideFadeOut {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .primary .alert {
+            animation: slideFadeIn 5s ease, slideFadeOut 5s 5s ease;
+            background-color: #f0f9ff; /* Light blue background */
+            border: 1px solid #b3e5fc; /* Matching border color */
+            border-radius: 8px; /* Rounded corners */
+            color: #0277bd; /* Darker blue text */
+            padding: 15px; /* Padding inside the alert */
+            margin: 10px 0; /* Space between alerts */
+            font-family: Arial, sans-serif; /* Font style */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            position: relative; /* Required for close button positioning */
+            max-width: 85%; /* Max width for alerts */
+            margin-left: auto; /* Center horizontally */
+            margin-right: auto; /* Center horizontally */
+        }
+
+        .primary .alert .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #0277bd;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
     {% block custom_css %}
     
       
@@ -165,7 +221,7 @@
                         
                         {% if user.has_company %}
                             <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
-                                <a href="{% url 'company-details' user_company.id %}" class="flex items-center gap-1">
+                                <a href="{% url 'view_applications' user_company.id %}" class="flex items-center gap-1">
                                     <img class="w-6" src="{% static 'build/img/company-svgrepo-com.svg' %}" alt="company-icon" />
                                     Company page
                                 </a>
@@ -202,11 +258,13 @@
 
 
     <div class="primary">
-      
         {% for message in messages %}
-          <div class="alert alert-info" role="alert">{{ message }}</div>
+            <div class="alert alert-info" role="alert">
+                {{ message }}
+                <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
         {% endfor %}
-      </div>
+    </div>
 
 
       {% block content %}
@@ -266,13 +324,19 @@
     });
 });
 
-
-
-
-
     </script>
     <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
     <script src="{% static './scripts/dashboard.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const alerts = document.querySelectorAll('.primary .alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 10000); // 10 seconds
+            });
+        });
+    </script>
 
 </body>
 

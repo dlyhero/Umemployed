@@ -47,6 +47,7 @@
         </div>
         <nav class="flex md:gap-x-4 items-center">
           <ul class="flex gap-x-2 md:gap-x-4 items-center">
+            {% if user.is_authenticated %}
             <li class="relative">
               <a
                 id="messages-link"
@@ -113,12 +114,12 @@
                   <div
                     class="user-mail py-3 px-6 font-bold text-gray-700 border-b border-gray-300"
                   >
-                    enugodwillenwe@gmail.com
+                    {{user.username}}
                   </div>
                   <div
                     class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                   >
-                    <a href="./profile.html" class="flex items-center gap-2">
+                    <a href="{% url 'dashboard' %}" class="flex items-center gap-2">
                       <i class="fas fa-user w-5 text-gray-500"></i>
                       Profile
                     </a>
@@ -126,7 +127,7 @@
                   <div
                     class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                   >
-                    <a href="./resume.html" class="flex items-center gap-2">
+                    <a href="#" class="flex items-center gap-2">
                       <i class="fas fa-file-alt w-5 text-gray-500"></i>
                       Resume
                     </a>
@@ -134,15 +135,15 @@
                   <div
                     class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                   >
-                    <a href="#" class="flex items-center gap-2">
+                    <a href="{% url 'view_applications' user_company.id %}" class="flex items-center gap-2">
                       <i class="fas fa-question-circle w-5 text-gray-500"></i>
-                      Resume Help
+                      Company
                     </a>
                   </div>
                   <div
                     class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                   >
-                    <a href="./index.html" class="flex items-center gap-2">
+                    <a href="{% url 'home' %}" class="flex items-center gap-2">
                       <i class="fas fa-briefcase w-5 text-gray-500"></i>
                       My Jobs
                     </a>
@@ -165,9 +166,11 @@
                   </div>
                   <hr class="my-2" />
                   <div class="flex py-4 px-6 text-gray-700 justify-center">
+                    <a href="{% url 'logout' %}">
                     <button class="signout-btn text-[#1e90ff] font-bold">
                       Sign out
                     </button>
+                  </a>
                   </div>
                 </div>
               </div>
@@ -177,12 +180,29 @@
                 <i class="fas fa-bars"></i>
               </button>
             </li>
+            {% else %}
+            <li class="relative">
+              <a
+                id="messages-link"
+                class="header-link flex items-center gap-1 p-2 rounded"
+                href="{% url 'inbox' %}"
+              >
+                <i
+                  id="messages-icon"
+                  class="fas fa-user text-xl icon"
+                ></i>
+                <span class="hidden md:block">Login</span>
+                
+              </a>
+            </li>
+
+            {% endif %}
           </ul>
           <div class="hidden md:block">
             <div class="flex">
               <div class="border-l h-[40px]"></div>
               <span class="ml-2 text-nowrap p-2 rounded">
-                <a class="header-link text-nowrap" href="./switchaccounttype.html"
+                <a class="header-link text-nowrap" href="{% url 'switch_account_type' %}"
                   >Employers / Post Job</a
                 >
               </span>
@@ -210,45 +230,45 @@
             <nav>
               <a
                 class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-                href="./home1.html"
+                href="{% url 'index' %}"
               >
                 <i class="fas fa-home text-gray-500 mr-3"></i>
                 <span class="text-gray-800 font-medium">Home</span>
               </a>
               <a
                 class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-                href="./profile.html"
+                href="{% url 'dashboard' %}"
               >
                 <i class="fas fa-user text-gray-500 mr-3"></i>
                 <span class="text-gray-800 font-medium">Profile</span>
               </a>
               <a
                 class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-                href="./resume.html"
+                href="#"
               >
                 <i class="fas fa-file-alt text-gray-500 mr-3"></i>
                 <span class="text-gray-800 font-medium">Resume</span>
               </a>
               <a
                 class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-                href="#"
+                href="{% url 'home' %}"
               >
                 <i class="fas fa-briefcase text-gray-500 mr-3"></i>
                 <span class="text-gray-800 font-medium">Jobs</span>
               </a>
               <a
                 class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-                href="#"
+                href="{% url 'update-resume' %}"
               >
                 <i class="fas fa-cogs text-gray-500 mr-3"></i>
                 <span class="text-gray-800 font-medium">Settings</span>
               </a>
               <a
                 class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-                href="#"
+                href="{% url 'view_applications' user_company.id %}"
               >
                 <i class="fas fa-dollar-sign text-gray-500 mr-3"></i>
-                <span class="text-gray-800 font-medium">Find Salaries</span>
+                <span class="text-gray-800 font-medium">Company</span>
               </a>
               <a
                 class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
@@ -259,7 +279,7 @@
               </a>
               <a
                 class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-                href="#"
+                href="{% url 'change_account_type' %}"
               >
                 <i class="fas fa-exchange-alt text-gray-500 mr-3"></i>
                 <span class="text-gray-800 font-medium">Switch Account Type</span>
@@ -282,9 +302,9 @@
             next level.
           </p>  
           <a
-            href="./addjob.html"
+            href="{% url 'home' %}"
             class="px-7 py-3 text-[17px] font-semibold bg-[#1e90ff] rounded-md text-white"
-            >Post a Job</a
+            >Find Jobs</a
           >
         </div>
         <div class="hero-bg lg:w-1/2 w-full">
@@ -553,7 +573,7 @@
           <p class="text-lg lg:text-xl text-gray-600 mb-6">
             Join thousands of other professionals who have found their dream jobs with us. Explore opportunities, connect with top employers, and take the next step in your career today.
           </p>
-          <a href="#" class="inline-block bg-[#1e90ff] text-white px-6 py-3 rounded-lg font-semibold text-lg transition-transform transform hover:scale-105">
+          <a href="{% url 'dashboard' %}" class="inline-block bg-[#1e90ff] text-white px-6 py-3 rounded-lg font-semibold text-lg transition-transform transform hover:scale-105">
             Get Started
           </a>
         </div>
