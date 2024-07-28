@@ -2,137 +2,134 @@
 {% load static %}
 {% block content %}
 
-    <main class="flex-grow w-full px-2 md:px-3 lg:w-[100%] mx-auto">
-      <section class="flex font-bold justify-between mb-4 px-3 mx-auto w-full ">
-        <div class="text-xl ">Jobs</div>
-        <a href="{% url 'job:create-job' %}" class="px-5 py-2 bg-[#1e90ff] text-white rounded-lg"
-          >Post Job</a
-        >
-      </section>
-      <section class="md:bg-white px-3 py-3 md:py-0 md:shadow-xl  rounded-lg w-[100%] mx-auto">
-        <div class="search-wrap">
-          <form class="md:flex md:gap-1 lg:gap-5 w-full items-center" action="">
-            <div class="input-wrap relative flex-1 mb-2 md:mb-0">
-              <input
-                type="text"
-                class="w-full py-2 md:py-1 px-11 md:px-9 border border-gray-400 md:border-none rounded-lg outline-1 outline-[#1e90ff] md:outline-none overflow-hidden text-ellipsis"
-                id="job-title"
-                name="job-title"
-                placeholder="Job Title ex(nurse, manager)"
-              />
-              <img
-                class="w-5 absolute top-2 md:top-1 left-2 md:left-1"
-                src="{% static './build/img/search-svgrepo-com.svg' %}"
-                alt="search icon"
-              />
-            </div>
-            <div class="hidden md:block border-l h-[40px] my-1"></div>
-            <div class="location-wrap flex items-center flex-1 relative">
-              <img
-                class="w-5 absolute left-2 md:left-1 top-2 md:top-1"
-                src="{% static './build//img/location-svgrepo-com.svg' %}"
-                alt="location icon"
-              />
-              <input
-                class="w-full py-2 md:py-1 px-11 md:px-9 outline-1 outline-[#1e90ff] md:outline-none border border-gray-400 md:border-none rounded-lg overflow-hidden text-ellipsis"
-                type="text"
-                name="location"
-                id="location"
-                placeholder="Type to search"
-              />
-              <img
-                class="w-6 absolute right-6 md:hidden lg:block"
-                src="{% static './build/img/dropdown-arrow-svgrepo-com.svg' %}"
-                alt="dropdown icon"
-              />
-            </div>
-            <div class="hidden md:block border-l h-[40px] my-1"></div>
-            <div
-              class="btn-wrap md:flex items-center md:gap-4 lg:gap-24  md:pb-0"
+  <!-- Main Content -->
+      <main class="max-w-7xl mx-auto py-6 px-[5px] sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="bg-white rounded-t-lg shadow sm:shadow-md">
+          <div class="max-w-7xl mx-auto p-4 flex justify-end items-center">
+            <a href="{% url 'job:create-job' %}">
+            <button
+              class="bg-[#1e90ff] text-white p-2 font-semibold rounded-md hover:bg-blue-500 transition-all duration-300 flex items-center"
             >
-              <select
-                class="px-3 py-1.5 md:py-0 outline-1 outline-[#1e90ff] border border-gray-400 md:border-none rounded-lg mb-4 mt-4 w-24"
-                name="filter"
-                id="filter"
-              >
-                <option value="" disabled selected>Sort by</option>
-                <option value="">Posting date</option>
-                <option value="">Job title</option>
-                <option value="">Job status</option>
-              </select>
-              <button
-                class="text-white px-2 md:px-1 lg:px-4 py-2 md:py-1 bg-[#1e90ff] rounded-lg font-bold w-full"
-              >
-                Search
-              </button>
-            </div>
-          </form>
+              <i class="fas fa-plus mr-2"></i> Add New Job
+            </button>
+            </a>
+          </div>
         </div>
-      </section>
-      <br>
-      {% if jobs|length == 0 %}
+        <!-- Filters -->
+        <div
+          class="bg-white p-4 shadow-md rounded-b-lg mb-6 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4"
+        >
+          <div class="flex items-center space-x-2 w-full md:w-auto">
+            <select
+              id="status"
+              name="status"
+              class="mt-1 border block w-full pl-3 pr-10 py-2 text-base border-gray-300 outline-none sm:text-sm rounded-md"
+            >
+              <option selected disabled>Status</option>
+              <option>Active</option>
+              <option>Closed</option>
+            </select>
+          </div>
+          <div
+            class="relative w-full md:w-auto flex-1 flex gap-x-2 items-center"
+          >
+            <div class="relative w-full md:w-auto flex-1">
+              <input
+                type="text"
+                id="search"
+                name="search"
+                placeholder="Search jobs..."
+                class="mt-1 flex-1 pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 sm:text-sm outline-nonetransition-all duration-300"
+              />
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <i class="fas fa-search text-gray-400"></i>
+              </div>
+            </div>
+            <button
+              class="text-white bg-[#1e90ff] py-[6px] px-4 rounded-lg font-semibold hover:bg-blue-500 transition-all duration-300"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+
+        <!-- Job Listings -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% if jobs|length == 0 %}
         <div class="text-center text-gray-600">No Jobs Created,
           <a style="text-decoration: underline; color: blue;" href="{% url 'job:create-job' %}">Create Job</a>
         </div>
       {% endif %}
-      {% for job in jobs %}
-      <section class="job-sec bg-gray-100 mt-5 w-full md:border rounded-lg">
-        <!-- Job 1 -->
-        <div class="job-section flex flex-wrap lg:grid bg-white p-3 border md:border-none ">
-            <input class="lg:w-full lg:w-auto mr-4 lg:mr-0 mb-10 lg:mb-0" type="checkbox" id="job1" name="job1" />
-            <div class="job-title-wrapper mb-2 lg:mb-0 lg:text-left lg:w-auto">
-                <h2 class="job-title font-bold">{{job.title}}</h2>
-                <p class="job-location text-gray-500">{{job.location}}</p>
-                <div class="date-wrap text-gray-500">
-                    Created: <span class="date">June 4, 2024</span>
-                </div>
-            </div>
-            <div  class="candidate-wrap w-full lg:w-fit  lg:text-left lg:w-auto flex-grow lg:flex-grow-0">
-                <p class="candidate-status text-[#1e90ff] font-bold">
-                    <span class="candidate-active">3</span> Active Candidates
+          <!-- Job Card -->
+          {% for job in jobs %}
+          <div
+            class="bg-white duration-300 border overflow-hidden rounded-md sm:rounded-lg"
+          >
+            <div
+              class="px-4 py-5 sm:px-6 flex justify-between items-center border-b"
+            >
+              <div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                  <i class="fas fa-laptop-code mr-2"></i> {{ job.title}}
+                </h3>
+                <p class="mt-1 text-sm text-gray-500">
+                  {{ job.company}} - {{ job.location }}
                 </p>
-                <div class="candidates-stats-wrap flex lg:justify-center gap-3 mt-2 lg:mt-0">
-                    <p class="awaiting-candidates">0 Awaiting</p>
-                    <p class="reviewed-candidates">1 Reviewed</p>
-                    <p class="contacted-candidates">2 Contacting</p>
-                    <p class="hired-candidates">0 Hired</p>
-                </div>
+              </div>
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-50 text-[#1e90ff] mb-6"
+              >
+                Active
+              </span>
             </div>
-            <div class="sponsorship-status lg:text-center lg:text-left lg:w-auto my-2 lg:my-0">
-                <h2 class="font-bold">Sponsored</h2>
-                <p class="text-gray-500">63.00 (USD) Total Cost | 21.00 USD Daily</p>
+            <div class="px-4 py-5 sm:px-6">
+              <p class="text-sm text-gray-900">
+                {{ job.description|truncatewords:20 }}
+              </p>
             </div>
-            <div class="job-status  w-full lg:w-fit lg:text-center lg:text-left lg:w-auto my-2 lg:my-0">
-                <select class="text-[#1e90ff] border outline-1 outline-[#1e90ff] font-bold rounded-full p-1" name="job-status1" id="job-status1">
-                    <option value="open">Open</option>
-                    <option value="closed">Closed</option>
-                    <option value="paused">Paused</option>
-                </select>
+            <div
+              class="px-4 py-4 sm:px-6 flex justify-between items-center border-t"
+            >
+              <div class="text-sm text-gray-500">{{ job.created_at }}</div>
+              <div class="flex space-x-5">
+                <a href="#">
+                <button
+                  class="text-blue-500 hover:text-blue-600 flex items-center"
+                >
+                  <i class="fas fa-edit mr-1"></i>
+                </button>
+              </a>
+                <button
+                  class="text-red-500 hover:text-red-600 flex items-center"
+                >
+                  <i class="fas fa-trash-alt mr-1"></i>
+                </button>
+              </div>
             </div>
-            <div class="actions text-center lg:text-left lg:w-auto">
-                <select class="font-bold rounded-full p-1 border" name="actions1" id="actions1">
-                    <option value="open" selected>Actions</option>
-                </select>
-            </div>
-        </div>
-        <hr class="my-5 sm:my-0">
-        {% endfor %}
-        
-        </div>
+          </div>
+          {% endfor %}
 
-    </section>
-    <hr class="w-full my-5" />
-      <section class="p-5 border rounded-lg bg-white">
-        <h3 class="font-bold">Manage billing details</h3>
-        <hr class="mt-2 my-5" />
-        <div class="flex flex-col gap-2">
-          <a href="#" class="text-[#1e90ff] font-bold block"
-            >View Billing History</a
-          >
-          <a href="#" class="text-[#1e90ff] font-bold block"
-            >Update Payment Method</a
-          >
+          <!-- Repeat the above block for each job listing -->
+
+          
+           
         </div>
-      </section>
-    </main>
+        <section class="p-5 border rounded-lg bg-white my-4">
+          <h3 class="font-bold text-lg md:text-xl lg:text-2xl">
+            Manage billing details
+          </h3>
+          <hr class="mt-2 my-5 border-gray-300" />
+          <div class="flex flex-col gap-2 md:gap-4">
+            <a href="#" class="text-[#1e90ff] font-bold hover:underline"
+              >View Billing History</a
+            >
+            <a href="#" class="text-[#1e90ff] font-bold hover:underline"
+              >Update Payment Method</a
+            >
+          </div>
+        </section>
+      </main>
    {% endblock %}

@@ -159,6 +159,8 @@ def switch_account(request):
 
 @login_required
 def change_account_type(request):
+    user=request.user
+    print(f"Ussser is_applicant: {user.is_applicant}, is_recruiter: {user.is_recruiter}")
 
     return render(request, 'users/changeAccountType.html')
 
@@ -166,17 +168,19 @@ from django.urls import reverse  # Import reverse
 from resume.models import ResumeDoc
 @login_required
 def switch_account_type(request):
-    print("clicked")
     user = request.user
 
     # Handle case where user may not have a company
     company = Company.objects.filter(user=user).first()
+
+    print(f"Initial: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
 
     if user.is_applicant:
         if not user.has_company:
             user.is_recruiter = True
             user.is_applicant = False
             user.save()
+            print(f"Switched to recruiter: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
             messages.success(request, 'You have switched to a recruiter account.')
             return redirect(reverse('create_company'))
         else:
@@ -185,7 +189,8 @@ def switch_account_type(request):
                 user.is_recruiter = True
                 user.is_applicant = False
                 user.save()
-                return redirect(reverse('company-details', args=[company.id]))
+                print(f"Switched to recruiter with company: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
+                return redirect(reverse('view_applications', args=[company.id]))
             else:
                 messages.error(request, 'An error occurred: No company found.')
                 return redirect(reverse('home'))
@@ -193,6 +198,7 @@ def switch_account_type(request):
         user.is_applicant = True
         user.is_recruiter = False
         user.save()
+        print(f"Switched to applicant: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
         if not ResumeDoc.objects.filter(user=user).exists():
             messages.success(request, 'You have switched to an applicant account. Please complete your resume.')
             return redirect('switch_account')
