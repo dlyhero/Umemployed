@@ -672,17 +672,26 @@
     <div id="experience-wrap" class="p-2">
       {% for experience in work_experiences %}
       <div id="experience-{{ experience.id }}" class="experience border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
-        <div>
-          <p class="company-name">{{ experience.company_name }}</p>
-          <p class="role">{{ experience.role }}</p>
-          <p class="dates">
-            {{ experience.start_date|date:'M Y' }} -
-            {% if experience.end_date %}
-              {{ experience.end_date|date:'M Y' }}
-            {% else %}
-              Present
-            {% endif %}
-          </p>
+        <div class="experience-details space-y-2">
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-building text-[#297FB8]"></i>
+            <p class="company-name font-semibold">{{ experience.company_name }}</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-briefcase text-[#297FB8]"></i>
+            <p class="role">{{ experience.role }}</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-calendar-alt text-[#297FB8]"></i>
+            <p class="dates">
+              {{ experience.start_date|date:'M Y' }} -
+              {% if experience.end_date %}
+                {{ experience.end_date|date:'M Y' }}
+              {% else %}
+                Present
+              {% endif %}
+            </p>
+          </div>
         </div>
         <div class="btn-wraps flex gap-4">
           <button class="w-5" onclick="editExperience({{ experience.id }})">
@@ -788,10 +797,19 @@
     <div id="education-list" class="p-2">
       {% for education in educations %}
       <div id="education-{{ education.id }}" class="education border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
-          <div>
-          <p class="institution-name">{{ education.institution_name }}</p>
-          <p class="degree">{{ education.degree }}</p>
-          <p class="dates">{{ education.graduation_year }}</p>
+        <div>
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-school text-[#297FB8]"></i>
+            <p class="institution-name">{{ education.institution_name }}</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-graduation-cap text-[#297FB8]"></i>
+            <p class="degree">{{ education.degree }}</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-calendar-alt text-[#297FB8]"></i>
+            <p class="dates">{{ education.graduation_year }}</p>
+          </div>
         </div>
           <div class="btn-wraps flex gap-4">
               <button class="w-5" onclick="editEducation({{ education.id }})">
