@@ -21,7 +21,7 @@ def index(request):
 from django.db.models import Avg
 def home(request):
     jobs_list = Job.objects.all().order_by('-created_at')
-    matching_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=50.0)
+    matching_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=10.0)
    
     # Get filter parameters from request
     salary_range = request.GET.get('salary_range')
