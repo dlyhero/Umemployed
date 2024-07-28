@@ -17,6 +17,64 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      /* styles for messages*/
+      @keyframes slideFadeIn {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes slideFadeOut {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.primary .alert {
+    animation: slideFadeIn 5s ease, slideFadeOut 5s 5s ease;
+    background-color: #f0f9ff; /* Light blue background */
+    border: 1px solid #b3e5fc; /* Matching border color */
+    border-radius: 8px; /* Rounded corners */
+    color: #0277bd; /* Darker blue text */
+    padding: 15px; /* Padding inside the alert */
+    margin: 10px 0; /* Space between alerts */
+    font-family: Arial, sans-serif; /* Font style */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    position: relative; /* Required for close button positioning */
+    max-width: 85%; /* Max width for alerts */
+    margin-left: auto; /* Center horizontally */
+    margin-right: auto; /* Center horizontally */
+}
+
+.primary .alert .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #0277bd;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+    </style>
      {% block custom_css %}
     
       
@@ -35,6 +93,7 @@
     class="sticky z-[100] top-0 left-0 right-0 flex justify-between items-center md:border-b px-4 md:px-5 py-3 bg-white shadow-md"
   >
     <div class="flex items-center gap-x-3 md:gap-2">
+      <a href="{% url 'index' %}">
       <div class="logo-wrap flex items-center">
         <img
           class="w-7 md:w-9"
@@ -45,6 +104,7 @@
           >UmEmployed</span
         >
       </div>
+    </a>
       
     </div>
     <nav class="flex md:gap-x-4 items-center">
@@ -68,7 +128,7 @@
           <a
             id="messages-link"
             class="header-link flex items-center gap-1 p-2 rounded"
-            href="./messages_jobseeker.html"
+            href="#"
           >
             <i
               id="messages-icon"
@@ -86,7 +146,7 @@
           <a
             id="notifications-link"
             class="header-link flex items-center gap-1 p-2 rounded"
-            href="./notification.html"
+            href="#"
           >
             <i id="notifications-icon" class="fas fa-bell text-xl icon"></i>
             <span class="hidden md:block">Notifications</span>
@@ -115,12 +175,12 @@
               <div
                 class="user-mail py-3 px-6 font-bold text-gray-700 border-b border-gray-300"
               >
-                enugodwillenwe@gmail.com
+                {{ user.username }}
               </div>
               <div
                 class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
               >
-                <a href="./profile.html" class="flex items-center gap-2">
+                <a href="{% url 'dashboard' %}" class="flex items-center gap-2">
                   <i class="fas fa-user w-5 text-gray-500"></i>
                   Profile
                 </a>
@@ -128,7 +188,7 @@
               <div
                 class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
               >
-                <a href="./resume.html" class="flex items-center gap-2">
+                <a href="#" class="flex items-center gap-2">
                   <i class="fas fa-file-alt w-5 text-gray-500"></i>
                   Resume
                 </a>
@@ -144,7 +204,7 @@
               <div
                 class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
               >
-                <a href="./index.html" class="flex items-center gap-2">
+                <a href="{% url 'home' %}" class="flex items-center gap-2">
                   <i class="fas fa-briefcase w-5 text-gray-500"></i>
                   My Jobs
                 </a>
@@ -160,17 +220,19 @@
               <div
                 class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
               >
-                <a href="#" class="flex items-center gap-2">
+                <a href="{% url 'update-resume' %}" class="flex items-center gap-2">
                   <i class="fas fa-cogs w-5 text-gray-500"></i>
                   Settings
                 </a>
               </div>
               <hr class="my-2" />
+              <a href="{% url 'logout' %}">
               <div class="flex py-4 px-6 text-gray-700 justify-center">
                 <button class="signout-btn text-[#1e90ff] font-bold">
                   Sign out
                 </button>
               </div>
+              </a>
             </div>
           </div>
         </li>
@@ -184,7 +246,7 @@
         <div class="flex">
           <div class="border-l h-[40px]"></div>
           <span class="ml-2 text-nowrap p-2 rounded">
-            <a class="header-link text-nowrap" href="{% url 'switch_account_type' %}"
+            <a class="header-link text-nowrap" href="{% url 'change_account_type' %}"
               >Switch to Employer</a
             >
           </span>
@@ -226,14 +288,14 @@
           </a>
           <a
             class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-            href="./resume.html"
+            href="#"
           >
             <i class="fas fa-file-alt text-gray-500 mr-3"></i>
             <span class="text-gray-800 font-medium">Resume</span>
           </a>
           <a
             class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-            href="#"
+            href="{% url 'home' %}"
           >
             <i class="fas fa-briefcase text-gray-500 mr-3"></i>
             <span class="text-gray-800 font-medium">Jobs</span>
@@ -247,10 +309,10 @@
           </a>
           <a
             class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-            href="#"
+            href="{% url 'view_applications' user_company.id %}"
           >
             <i class="fas fa-dollar-sign text-gray-500 mr-3"></i>
-            <span class="text-gray-800 font-medium">Find Salaries</span>
+            <span class="text-gray-800 font-medium">Company</span>
           </a>
           <a
             class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
@@ -261,7 +323,7 @@
           </a>
           <a
             class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-            href="{% url 'switch_account_type' %}"
+            href="{% url 'change_account_type' %}"
           >
             <i class="fas fa-exchange-alt text-gray-500 mr-3"></i>
             <span class="text-gray-800 font-medium">Switch Account Type</span>
@@ -272,11 +334,14 @@
   </header>
 
     <div class="primary">
-      
-        {% for message in messages %}
-          <div class="alert alert-info" role="alert">{{ message }}</div>
-        {% endfor %}
-      </div>
+    {% for message in messages %}
+        <div class="alert alert-info" role="alert">
+            {{ message }}
+            <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+    {% endfor %}
+    </div>
+
 
     {% block content %}
 
@@ -303,7 +368,17 @@
   <script src="{% static 'build/scripts/header.js' %}"></script>
   <script src="{% static 'build/scripts/sidebar_recruiter.js' %}"></script>
 
+<script>
+      document.addEventListener("DOMContentLoaded", function() {
+    const alerts = document.querySelectorAll('.primary .alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 20000); // 10 seconds
+    });
+});
 
+    </script>
 
   </body>
 </html>
