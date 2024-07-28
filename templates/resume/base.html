@@ -350,10 +350,103 @@
 
     {% endblock %}
 
-<footer class="text-center mb-2 px-2">
-      &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
-      <span class="underline"><a href="#">Cookies</a>, <a href="#">Privacy</a>, and <a href="#">Terms</a></span>
-    </footer>
+ <footer class="mt-20 md:mt-40 py-4 md:py-8 bg-[#121212] text-white">
+      <div class="container mx-auto px-4">
+          <div class="flex flex-col md:flex-row justify-between items-center md:items-start">
+              <div class="mb-6 md:mb-0 text-center md:text-left">
+                  <h2 class="text-lg font-bold mb-2">UmEmployed</h2>
+                  <p>&copy; <span class="year"></span> UmEmployed. All rights reserved.</p>
+              </div>
+              <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-12 text-center md:text-left">
+                  <div>
+                      <h3 class="text-lg font-semibold mb-2">Features</h3>
+                      <ul class="space-y-1">
+                          <li><a href="#" class="hover:text-[#1e90ff]">Find Salaries</a></li>
+                          <li><a href="#" class="hover:text-[#1e90ff]">Post Jobs</a></li>
+                          <li><a href="#" class="hover:text-[#1e90ff]">Browse Companies</a></li>
+                          <li><a href="#" class="hover:text-[#1e90ff]">Career Advice</a></li>
+                      </ul>
+                  </div>
+                  <div>
+                      <h3 class="text-lg font-semibold mb-2">Resources</h3>
+                      <ul class="space-y-1">
+                          <li><a href="#" class="hover:text-[#1e90ff]">Help Center</a></li>
+                          <li><a href="#" class="hover:text-[#1e90ff]">Blog</a></li>
+                          <li><a href="#" class="hover:text-[#1e90ff]">Privacy Policy</a></li>
+                          <li><a href="#" class="hover:text-[#1e90ff]">Terms of Service</a></li>
+                      </ul>
+                  </div>
+                  <div>
+                      <h3 class="text-lg font-semibold mb-2">Company</h3>
+                      <ul class="space-y-1">
+                          <li><a href="#" class="hover:text-[#1e90ff]">About Us</a></li>
+                          <li><a href="#" class="hover:text-[#1e90ff]">Contact</a></li>
+                          <li><a href="#" class="hover:text-[#1e90ff]">Careers</a></li>
+                          <li><a href="#" class="hover:text-[#1e90ff]">Press</a></li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="flex space-x-6 mt-6 md:mt-0 justify-center">
+                  <a href="#" class="text-white hover:text-[#1e90ff]"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#" class="text-white hover:text-[#1e90ff]"><i class="fab fa-twitter"></i></a>
+                  <a href="#" class="text-white hover:text-[#1e90ff]"><i class="fab fa-linkedin-in"></i></a>
+                  <a href="#" class="text-white hover:text-[#1e90ff]"><i class="fab fa-instagram"></i></a>
+              </div>
+          </div>
+      </div>
+  </footer>
+  
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const optionBtn = document.getElementById("option-btn");
+        const backdropMenu = document.getElementById("backdrop-menu");
+        const optionMenu = document.getElementById("option-menu");
+
+        optionBtn.addEventListener("click", function () {
+          backdropMenu.classList.toggle("hidden");
+        });
+
+        backdropMenu.addEventListener("click", function (e) {
+          if (e.target === backdropMenu) {
+            backdropMenu.classList.add("hidden");
+          }
+        });
+      });
+
+      document.querySelector(".year").textContent = new Date().getFullYear();
+      const optionBtn = document.getElementById("option-btn");
+      const optionMenu = document.getElementById("option-menu");
+      const backdropMenu = document.getElementById("backdrop-menu");
+      const removeBtn = document.getElementById("remove-btn");
+      const sidebar = document.getElementById("sidebar");
+      const backdrop = document.createElement("div");
+
+      backdrop.className = "fixed inset-0 bg-black opacity-50 z-20";
+      optionBtn.addEventListener("click", () => {
+        optionMenu.classList.toggle("hidden");
+        if (!optionMenu.classList.contains("hidden")) {
+          document.body.appendChild(backdrop);
+        } else {
+          backdrop.remove();
+        }
+      });
+
+      backdrop.addEventListener("click", () => {
+        optionMenu.classList.add("hidden");
+        backdrop.remove();
+      });
+
+      removeBtn.addEventListener("click", () => {
+        sidebar.classList.add("hidden");
+      });
+
+      const profileBtn = document.getElementById("profile-btn");
+      profileBtn.addEventListener("click", () => {
+        sidebar.classList.remove("hidden");
+      });
+    </script>
+  </body> 
+</html>
     <script type="module" src="{% static 'scripts/resume.js' %}"></script>
     <script type="module" src="{% static 'scripts/Profile.js' %}"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
