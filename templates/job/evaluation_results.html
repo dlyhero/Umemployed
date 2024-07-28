@@ -19,9 +19,9 @@
                 <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold">UmEmployed</span>
             </div>
             <nav class="hidden md:flex space-x-4">
-                <a class="text-gray-700 hover:text-[#1e90ff]" href="#">Home</a>
-                <a class="text-gray-700 hover:text-[#1e90ff]" href="#">Jobs</a>
-                <a class="text-gray-700 hover:text-[#1e90ff]" href="./index.html">Resume</a>
+                <a class="text-gray-700 hover:text-[#1e90ff]" href="{% url 'index' %}">Home</a>
+                <a class="text-gray-700 hover:text-[#1e90ff]" href="{% url 'home' %}">Jobs</a>
+                <a class="text-gray-700 hover:text-[#1e90ff]" href="#">Resume</a>
             </nav>
         </div>
         <div class="flex items-center space-x-4">

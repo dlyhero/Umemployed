@@ -335,7 +335,7 @@ def answer_job_questions(request, job_id):
             application.save()
 
             messages.success(request, f"Your answers for the skill '{current_skill.name}' have been recorded. Total score: {total_score}")
-            return JsonResponse({'success': True, 'next_skill': True, 'message': f"Your answers for the skill '{current_skill.name}' have been recorded. Total score: {total_score}"})
+            return redirect('evaluation_results')
         else:
             messages.error(request, "Please answer all questions.")
             return JsonResponse({'success': False, 'error': "Please answer all questions."})
