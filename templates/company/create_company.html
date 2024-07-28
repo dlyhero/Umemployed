@@ -9,18 +9,40 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
     <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 1s ease-in-out;
+      }
+    </style>
   </head>
   <body
-    class="text-sm md:mt-20 relative flex flex-col min-h-screen"
+    class="text-sm bg-gray-100 md:mt-20 relative flex flex-col mh-screen"
   >
     <header
       class="flex justify-between items-center md:border-b md:fixed z-10 top-0 right-0 left-0 px-2 md:px-5 py-2 mb-10 bg-white"
     >
       <div class="flex items-center gap-x-5">
         <div class="logo-wrap flex items-center">
-          <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
-          <span
-            class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+          <img
+            class="w-8 md:w-9"
+            src="{% static 'build/logo/logo-color.png' %}"
+            alt=""
+          />
+          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
             >UmEmployed</span
           >
         </div>
@@ -93,7 +115,9 @@
                 <div class="user-mail py-3 px-6 font-bold text-gray-700">
                   enugodwillenwe@gmail.com
                 </div>
-                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al">
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
                   <a href="#" class="flex items-center gap-1">
                     <img
                       class="w-5"
@@ -103,21 +127,31 @@
                     Account Settings
                   </a>
                 </div>
-                <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al">
-                  <a href="./switchaccounttype.html" class="flex items-center gap-1">
-                    <img class="w-5" src="{% static 'build/img/user.svg' %}" alt="user-icon" />
+                <div
+                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-al"
+                >
+                  <a
+                    href="./switchaccounttype.html"
+                    class="flex items-center gap-1"
+                  >
+                    <img
+                      class="w-5"
+                      src="{% static 'build/img/user.svg' %}"
+                      alt="user-icon"
+                    />
                     Switch Account Type
                   </a>
                 </div>
                 <hr class="my-2" />
                 <div class="flex py-4 px-8 text-gray-700 justify-center">
-                  <button class="signout-btn text-[#1e90ff] font-bold">Sign out</button>
+                  <button class="signout-btn text-[#1e90ff] font-bold">
+                    Sign out
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
       </nav>
       <div
         id="sidebar"
@@ -170,188 +204,276 @@
         </div>
       </div>
     </header>
-    <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto">
-      <form class="max-w-3xl mx-auto p-6" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <h1 class="text-2xl font-bold mb-4 text-gray-800 text-center">Create Company</h1>
-
-        <!-- Company Information -->
-        <section class="bg-gray-100 p-4  rounded-xl ">
-          <h2 class="text-xl font-semibold mb-2 text-center">Company Information</h2>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="name">Company Name</label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              placeholder="Company Name"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="industry">Industry</label>
-            <select
-              name="industry"
-              id="industry"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-            >
-              <option value="Technology">Technology</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Finance">Finance</option>
-              <option value="Education">Education</option>
-              <!-- Add more industries as needed -->
-            </select>
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="website">Website</label>
-            <input
-              type="url"
-              name="website"
-              id="website"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              placeholder="https://example.com"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="company_size">Company Size</label>
-            <input
-              type="text"
-              name="company_size"
-              id="company_size"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              placeholder="Number of Employees"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="logo">Company Logo</label>
-            <input
-              type="file"
-              name="logo"
-              id="logo"
-              class="mt-1 block w-full text-sm text-gray-700"
-              accept="image/*"
-            />
-          </div>
-        </section>
-
-        <!-- Social Links -->
-        <section class="bg-gray-100 p-4  rounded-xl mt-5">
-          <h2 class="text-xl font-semibold mb-2 text-center">Social Links</h2>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="linkedin">LinkedIn</label>
-            <input
-              type="url"
-              name="linkedin"
-              id="linkedin"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              placeholder="https://linkedin.com/company/yourcompany"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="facebook">Facebook</label>
-            <input
-              type="url"
-              name="facebook"
-              id="facebook"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              placeholder="https://facebook.com/yourcompany"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="twitter">Twitter</label>
-            <input
-              type="url"
-              name="twitter"
-              id="twitter"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              placeholder="https://twitter.com/yourcompany"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="instagram">Instagram</label>
-            <input
-              type="url"
-              name="instagram"
-              id="instagram"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              placeholder="https://instagram.com/yourcompany"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="youtube">YouTube</label>
-            <input
-              type="url"
-              name="youtube"
-              id="youtube"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              placeholder="https://youtube.com/yourcompany"
-            />
-          </div>
-        </section>
-
-        <!-- Location -->
-        <section class="bg-gray-100 p-4  rounded-xl mt-5">
-          <h2 class="text-xl font-semibold mb-2 text-center">Location</h2>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="location">Location</label>
-            <input
-              type="text"
-              name="location"
-              id="location"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              placeholder="Company Location"
-            />
-          </div>
-        </section>
-
-        <!-- About Us -->
-        <section class="bg-gray-100 p-4  rounded-xl mt-5">
-          <h2 class="text-xl font-semibold mb-2 text-center ">About Us</h2>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700" for="about_us">About Us</label>
-            <textarea
-              name="about_us"
-              id="about_us"
-              class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-              rows="5"
-              placeholder="Tell us about your company"
-            ></textarea>
-          </div>
-        </section>
-
-        <div class="text-right mt-4 ">
-          <button
-            type="submit"
-            class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded"
+    <main class="px-1 md:px-3 lg:px-4 w-full flex justify-center">
+      <div
+        class="md:bg-white rounded-lg sm:border w-full max-w-5xl mx-auto p-4 space-x-4 animate-fadeIn flex flex-col md:flex-row"
+      >
+        <!-- Form Section - appears first on mobile -->
+        <div class="w-full md:w-2/3 md:pr-6 order-1 md:order-1 mb-10 sm:mb-0">
+          <h1 class="text-3xl font-bold mb-6 text-gray-800">
+            Create Your Company
+          </h1>
+          <form
+            id="companyForm"
+            class="space-y-4"
+            method="POST"
+            enctype="multipart/form-data"
+            onsubmit="return validateForm()"
           >
-            Create Company
-          </button>
+            {% csrf_token %}
+            <div class="flex flex-wrap -mx-3 mb-6">
+              <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label
+                  for="companyName"
+                  class="block text-sm font-medium text-gray-700"
+                  >Company Name</label
+                >
+                <div class="relative mt-2">
+                  <input
+                    type="text"
+                    id="companyName"
+                    name="companyName"
+                    required
+                    class="bg-transparent block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <i
+                    class="fas fa-building absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400"
+                  ></i>
+                </div>
+              </div>
+              <div class="w-full md:w-1/2 px-3">
+                <label
+                  for="industry"
+                  class="block text-sm font-medium text-gray-700"
+                  >Industry</label
+                >
+                <div class="relative mt-2">
+                  <select
+                    id="industry"
+                    name="industry"
+                    required
+                    class="bg-transparent block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                  >
+                    <option value="">Select Industry</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Education">Education</option>
+                    <!-- Add more industries as needed -->
+                  </select>
+                  <i
+                    class="fas fa-chevron-down absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                  ></i>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap -mx-3 mb-6">
+              <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label
+                  for="location"
+                  class="block text-sm font-medium text-gray-700"
+                  >Location</label
+                >
+                <div class="relative mt-2">
+                  <select
+                    id="location"
+                    name="location"
+                    required
+                    class="bg-transparent block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                  >
+                    <option value="">Select Location</option>
+                    <option value="New York">New York</option>
+                    <option value="San Francisco">San Francisco</option>
+                    <option value="Los Angeles">Los Angeles</option>
+                    <option value="Chicago">Chicago</option>
+                    <!-- Add more locations as needed -->
+                  </select>
+                  <i
+                    class="fas fa-chevron-down absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                  ></i>
+                </div>
+              </div>
+              <div class="w-full md:w-1/2 px-3">
+                <label
+                  for="country"
+                  class="block text-sm font-medium text-gray-700"
+                  >Country</label
+                >
+                <div class="relative mt-2">
+                  <select
+                    id="country"
+                    name="country"
+                    required
+                    class="bg-transparent block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                  >
+                    <option value="">Select Country</option>
+                    <option value="United States">United States</option>
+                    <option value="Canada">Canada</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Australia">Australia</option>
+                    <!-- Add more countries as needed -->
+                  </select>
+                  <i
+                    class="fas fa-chevron-down absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                  ></i>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap -mx-3 mb-6">
+              <div class="w-full px-3">
+                <label
+                  for="description"
+                  class="block text-sm font-medium text-gray-700"
+                  >Company Description</label
+                >
+                <div class="relative mt-2">
+                  <textarea
+                    id="description"
+                    name="description"
+                    rows="3"
+                    required
+                    class="bg-transparent block resize-none w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  ></textarea>
+                  <i
+                    class="fas fa-align-left absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400"
+                  ></i>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap -mx-3 mb-6">
+              <div class="w-full px-3">
+                <label
+                  for="logo"
+                  class="block text-sm font-medium text-gray-700"
+                  >Company Logo</label
+                >
+                <div class="relative mt-2">
+                  <input
+                    type="file"
+                    id="logo"
+                    name="logo"
+                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+               </div>
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button
+                type="submit"
+                class="py-2 px-4 bg-[#1e90ff] text-white font-semibold rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Create Company
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+        <!-- Description and Image Section -->
+        <div
+          class="md:w-1/3 mr:pl-6 flex flex-col justify-between order-2 md:order-2 mb-6 md:mb-0"
+        >
+          <div>
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">
+              Why Create a Company?
+            </h2>
+            <p class="text-gray-600 mb-4">
+              Creating a company profile on UmEmployed offers numerous benefits:
+            </p>
+            <ul class="space-y-2 text-gray-600">
+              <li class="flex items-center">
+                <i class="fas fa-eye text-blue-500 mr-2"></i> Increase your
+                visibility to potential employees.
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-tasks text-blue-500 mr-2"></i> Easily manage
+                job postings and applications.
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-chart-line text-blue-500 mr-2"></i> Track the
+                performance of your job postings.
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-users text-blue-500 mr-2"></i> Build your
+                company's reputation.
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-briefcase text-blue-500 mr-2"></i> Access a
+                larger pool of qualified candidates.
+              </li>
+            </ul>
+          </div>
+          <div>
+            <img
+              src="https://via.placeholder.com/400x300"
+              alt="Benefits of Creating a Company"
+              class="w-full h-48 object-cover rounded-md shadow-md mt-6 md:mt-0"
+            />
+          </div>
+        </div>
+      </div>
     </main>
-    <footer
-      class="mt-20 md:mt-40 flex-shrink-0 py-4 md:py-8 bg-[#121212] text-white flex justify-center"
-    >
-      <p class="text-center">
-        &copy; <span class="year"></span> UmEmployed. All rights reserved.
-      </p>
-    </footer>
+
+    <footer class="mt-20 md:mt-40 py-4 md:py-8 bg-[#121212] text-white">
+      <div class="container mx-auto px-4">
+          <div class="flex flex-col md:flex-row justify-between items-center md:items-start">
+              <div class="mb-6 md:mb-0 text-center md:text-left">
+                  <h2 class="text-lg font-bold mb-2">UmEmployed</h2>
+                  <p>&copy; <span class="year"></span> UmEmployed. All rights reserved.</p>
+              </div>
+              <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-12 text-center md:text-left">
+                  <div>
+                      <h3 class="text-lg font-semibold mb-2">Features</h3>
+                      <ul class="space-y-1">
+                          <li><a href="#" class="hover:text-blue-500">Find Salaries</a></li>
+                          <li><a href="#" class="hover:text-blue-500">Post Jobs</a></li>
+                          <li><a href="#" class="hover:text-blue-500">Browse Companies</a></li>
+                          <li><a href="#" class="hover:text-blue-500">Career Advice</a></li>
+                      </ul>
+                  </div>
+                  <div>
+                      <h3 class="text-lg font-semibold mb-2">Resources</h3>
+                      <ul class="space-y-1">
+                          <li><a href="#" class="hover:text-blue-500">Help Center</a></li>
+                          <li><a href="#" class="hover:text-blue-500">Blog</a></li>
+                          <li><a href="#" class="hover:text-blue-500">Privacy Policy</a></li>
+                          <li><a href="#" class="hover:text-blue-500">Terms of Service</a></li>
+                      </ul>
+                  </div>
+                  <div>
+                      <h3 class="text-lg font-semibold mb-2">Company</h3>
+                      <ul class="space-y-1">
+                          <li><a href="#" class="hover:text-blue-500">About Us</a></li>
+                          <li><a href="#" class="hover:text-blue-500">Contact</a></li>
+                          <li><a href="#" class="hover:text-blue-500">Careers</a></li>
+                          <li><a href="#" class="hover:text-blue-500">Press</a></li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="flex space-x-6 mt-6 md:mt-0 justify-center">
+                  <a href="#" class="text-white hover:text-blue-500"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#" class="text-white hover:text-blue-500"><i class="fab fa-twitter"></i></a>
+                  <a href="#" class="text-white hover:text-blue-500"><i class="fab fa-linkedin-in"></i></a>
+                  <a href="#" class="text-white hover:text-blue-500"><i class="fab fa-instagram"></i></a>
+              </div>
+          </div>
+      </div>
+  </footer>
+  
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-  const optionBtn = document.getElementById('option-btn');
-  const backdropMenu = document.getElementById('backdrop-menu');
-  const optionMenu = document.getElementById('option-menu');
+      document.addEventListener("DOMContentLoaded", function () {
+        const optionBtn = document.getElementById("option-btn");
+        const backdropMenu = document.getElementById("backdrop-menu");
+        const optionMenu = document.getElementById("option-menu");
 
-  optionBtn.addEventListener('click', function () {
-    backdropMenu.classList.toggle('hidden');
-  });
+        optionBtn.addEventListener("click", function () {
+          backdropMenu.classList.toggle("hidden");
+        });
 
-  backdropMenu.addEventListener('click', function (e) {
-    if (e.target === backdropMenu) {
-      backdropMenu.classList.add('hidden');
-    }
-  });
-});
+        backdropMenu.addEventListener("click", function (e) {
+          if (e.target === backdropMenu) {
+            backdropMenu.classList.add("hidden");
+          }
+        });
+      });
 
       document.querySelector(".year").textContent = new Date().getFullYear();
       const optionBtn = document.getElementById("option-btn");
