@@ -49,9 +49,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Fetch suggested skills from backend and initialize them
 function fetchSuggestedSkills() {
+  console.log("Fetching suggested skills...");
   fetch("/dashboard/api/suggested-skills/") // replace with your actual endpoint
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+      return response.json();
+    })
     .then((data) => {
+      console.log("Suggested skills fetched successfully:", data);
       suggestedSkills = data;
       initializeSuggestedSkills();
     })
@@ -86,130 +93,49 @@ function handleSkillInput() {
   }
 }
 
+
+
+document.getElementById('skills-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Collect selected skills
+    let selectedSkills = [];
+    document.querySelectorAll('.skill-checkbox:checked').forEach(function (checkbox) {
+        selectedSkills.push(checkbox.value);
+    });
+
+    console.log("Selected Skills:", selectedSkills); // Debug statement
+
+    // Update the hidden input field with the selected skills
+    document.getElementById('selected-skills').value = JSON.stringify(selectedSkills);
+
+    console.log("Hidden Input Value:", document.getElementById('selected-skills').value); // Debug statement
+
+    // Submit the form
+    this.submit();
+});
+
+
+
+
 // Initialize suggested skills
-// Handle save skill button click
-
-
-
-// Get the CSRF token from the cookie
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === name + "=") {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
+function initializeSuggestedSkills() {
+  suggestedSkillsContainer.innerHTML = "";
+  suggestedSkills.forEach((skill) => {
+    const skillElement = document.createElement("div");
+    skillElement.innerHTML = `
+      <li data-id="${skill.id}" class="hover:bg-blue-500 hover:text-white mb-2 text-nowrap px-2 py-1 w-fit rounded-full suggested-skill">
+        <input type="checkbox" id="skill-${skill.id}" class="custom-checkbox" data-id="${skill.id}" value="${skill.name}">
+        <label for="skill-${skill.id}" class="custom-label">${skill.name}</label>
+      </li>`;
+    suggestedSkillsContainer.appendChild(skillElement);
+  });
 }
 
-const csrfToken = getCookie("csrftoken");
-
-saveSkillBtn.addEventListener("click", handleSaveSkill);
-
-function handleSaveSkill() {
-  console.log("handleSaveSkill function called"); // Add this line for debugging
-
-  // Get the IDs of selected skills
-  const selectedSkillIds = [];
-  document
-    .querySelectorAll('#suggested-skills input[type="checkbox"]:checked')
-    .forEach((checkbox) => {
-      selectedSkillIds.push(checkbox.dataset.id);
-    });
-
-  console.log("Selected Skill IDs:", selectedSkillIds); // Print selected skill IDs to the console
-
-  // Send a POST request to update user skills
-  fetch("/dashboard/update-user-skills/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken, // Assuming you have a CSRF token available
-    },
-    body: JSON.stringify({ selected_skills: selectedSkillIds }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        console.log("Redirecting to dashboard..."); // Add this line for debugging
-        window.location.href = "/dashboard";
-        throw new Error("Failed to update skills");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      // Handle success response
-      console.log("Success:", data.message); // Log success message
-      renderSkillList();
-      attachDeleteButtonListeners();
-      initializeSuggestedSkills();
-      skillModal.style.display = "none"; // Hide the modal after saving
-
-      // Redirect to dashboard (debugging)
-      console.log("Redirecting to dashboard..."); // Add this line for debugging
-      window.location.href = "/dashboard"; // Replace with the correct URL if necessary
-    })
-
-    .catch((error) => {
-      // Handle error
-      console.error(error);
-      console.log("Redirecting to dashboard..."); // Add this line for debugging
-      window.location.href = "/dashboard";
-      displayMessage("", "error");
-    });
-}
-
-// Fetch user's skills to update the skill list
-function fetchUserSkills() {
-  fetch("/dashboard/api/user-skills/") // replace with your actual endpoint to fetch user skills
-    .then((response) => response.json())
-    .then((data) => {
-      user.skills = data;
-      renderSkillList();
-      attachDeleteButtonListeners();
-    })
-    .catch((error) => console.error("Error fetching user skills:", error));
-}
-
-// Render skill list
 function renderSkillList() {
-  let skillHtml = "";
-  user.skills.forEach((item) => {
-    let htmlcode = `
-      <div class="skill border p-5 mb-2 rounded-lg font-bold flex justify-between items-center" data-id="${item.id}">
-        <p class="title">${item.name}</p>
-        <div class="btn-wraps flex gap-4">
-          <button class="w-6 delete-skill-btn" data-id="${item.id}"><img src="../build/img/delete-2-svgrepo-com.svg" alt="delete icon"></button>
-        </div>
-      </div>
-    `;
-    skillHtml += htmlcode;
-  });
-  document.getElementById("skill-wrap").innerHTML = skillHtml;
+  // Implement rendering skill list from the existing skills
 }
 
-// Display feedback message
-function displayMessage(message, type) {
-  feedbackMessage.textContent = message;
-  feedbackMessage.classList.remove("hidden", "success", "error");
-  feedbackMessage.classList.add(type);
-
-  setTimeout(() => {
-    feedbackMessage.classList.add("hidden");
-  }, 3000);
-}
-
-// Attach delete button listeners
 function attachDeleteButtonListeners() {
-  document.querySelectorAll(".delete-skill-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-      const skillId = button.dataset.id;
-      user.skills = user.skills.filter((skill) => skill.id !== skillId);
-      renderSkillList();
-    });
-  });
+  // Implement attaching listeners to delete buttons
 }
