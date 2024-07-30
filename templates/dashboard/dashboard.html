@@ -247,72 +247,77 @@
               <div class="day text-gray-500">Added today</div>
             </div>
           </div>
-          <div class=" relative inline-block text-left">
-            <button id="cv-btn" class=" text-3xl font-bold" onclick="toggleMenu()">
-              <img
-                class="w-6"
-                src="{% static 'build/img/hamburger-menu-dots-svgrepo-com.svg' %}"
-                alt="meny dots"
-              />
-            </button>
-            <div id="dropdownMenu " class=" absolute right-0 rounded-lg  shadow-lg ring-1 ring-black ring-opacity-1   " >
-              <div class="py-2 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
-                  <i class="fas fa-book mr-1"></i>
-                    <a href="#" class="block  "  role="menuitem">Download </a>
-                </div>
-                <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
-                  <i class="fas fa-share mr-1"></i>
-                  <a href="#" class="block  " role="menuitem">Share</a>
-                </div>
-                <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
-                  <i class="fas fa-eye mr-1"></i>
-                  <a href="#" class="block   " role="menuitem">View </a>
+          <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown Example</title>
+  <style>
+    /* Add some basic styling for demonstration */
+    .hidden {
+      display: none;
+    }
+    .block {
+      display: block;
+    }
+    .relative {
+      position: relative;
+    }
+    .absolute {
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
 
-                </div>
-              </div>
-            </div>
-            <div
-              id="options-backdrop"
-              class="absolute hidden h-[300px] left-[90px] top-14 right-0 p-2 option-wrap gap-2 bg-transparent flex flex justify-end"
-            >
-              <div
-                id="options"
-                class="absolute w-[250px] t0p-0 p-2 border rounded-lg bg-white"
-              >
-                <div
-                  class="option mb-4 hover:bg-blue-50 transition-colors flex gap-3 w-full p-2 rounded-t-lg"
-                >
-                  <img
-                    class="w-6"
-                    src="./build/img/download-svgrepo-com.svg"
-                    alt=""
-                  />
-                  <span>Download</span>
-                </div>
-                <div
-                  class="option mb-4 hover:bg-blue-50 transition-colors flex gap-3 w-full p-2"
-                >
-                  <img
-                    class="w-6"
-                    src="./build/img/search-and-replace-document-svgrepo-com.svg"
-                    alt=""
-                  />
-                  <span>Replace</span>
-                </div>
-                <div
-                  class="option hover:bg-blue-50 transition-colors flex gap-3 w-full p-2 rounded-b-lg"
-                >
-                  <img
-                    class="w-6"
-                    src="./build/img/delete-2-svgrepo-com.svg"
-                    alt=""
-                  />
-                  <span>Delete</span>
-                </div>
-              </div>
-            </div>
-          </div>
+<div class="relative inline-block text-left">
+  <button id="cv-btn" class="text-3xl font-bold" onclick="toggleMenu()">
+    <img class="w-6" src="{% static 'build/img/hamburger-menu-dots-svgrepo-com.svg' %}" alt="menu dots" />
+  </button>
+  <div id="dropdownMenu" class="hidden absolute right-0 rounded-lg shadow-lg ring-1 ring-black ring-opacity-1">
+    <div class="py-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+      <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
+        <i class="fas fa-book mr-1"></i>
+        <a href="#" class="block" role="menuitem">Download</a>
+      </div>
+      <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
+        <i class="fas fa-share mr-1"></i>
+        <a href="#" class="block" role="menuitem">Share</a>
+      </div>
+      <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
+        <i class="fas fa-eye mr-1"></i>
+        <a href="#" class="block" role="menuitem">View</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleMenu() {
+    var menu = document.getElementById("dropdownMenu");
+    if (menu.classList.contains('hidden')) {
+      menu.classList.remove('hidden');
+      menu.classList.add('block');
+    } else {
+      menu.classList.add('hidden');
+      menu.classList.remove('block');
+    }
+  }
+
+  document.addEventListener('click', function(event) {
+    var menu = document.getElementById("dropdownMenu");
+    var button = document.getElementById("cv-btn");
+    
+    if (!button.contains(event.target) && !menu.contains(event.target)) {
+      menu.classList.add('hidden');
+      menu.classList.remove('block');
+    }
+  });
+</script>
+
+</body>
+</html>
         </div>
       </section>
         <section id="job-sec" class="mb-10 border rounded-lg">
