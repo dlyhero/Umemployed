@@ -247,14 +247,31 @@
               <div class="day text-gray-500">Added today</div>
             </div>
           </div>
-          <div class="">
-            <button id="cv-btn" class="text-3xl font-bold">
+          <div class=" relative inline-block text-left">
+            <button id="cv-btn" class=" text-3xl font-bold" onclick="toggleMenu()">
               <img
                 class="w-6"
                 src="{% static 'build/img/hamburger-menu-dots-svgrepo-com.svg' %}"
                 alt="meny dots"
               />
             </button>
+            <div id="dropdownMenu " class=" absolute right-0 rounded-lg  shadow-lg ring-1 ring-black ring-opacity-1   " >
+              <div class="py-2 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
+                  <i class="fas fa-book mr-1"></i>
+                    <a href="#" class="block  "  role="menuitem">Download </a>
+                </div>
+                <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
+                  <i class="fas fa-share mr-1"></i>
+                  <a href="#" class="block  " role="menuitem">Share</a>
+                </div>
+                <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
+                  <i class="fas fa-eye mr-1"></i>
+                  <a href="#" class="block   " role="menuitem">View </a>
+
+                </div>
+              </div>
+            </div>
             <div
               id="options-backdrop"
               class="absolute hidden h-[300px] left-[90px] top-14 right-0 p-2 option-wrap gap-2 bg-transparent flex flex justify-end"
