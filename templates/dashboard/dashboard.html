@@ -73,6 +73,22 @@
     overflow: auto; /* Enable scroll if needed */
     background-color: rgba(0,0,0,0.4); /* Black background with opacity */
   }
+  
+    /* Add some basic styling for demonstration */
+    .hidden {
+      display: none;
+    }
+    .block {
+      display: block;
+    }
+    .relative {
+      position: relative;
+    }
+    .absolute {
+      position: absolute;
+    }
+  
+
 
   /* Modal Content */
   .modal-content {
@@ -97,7 +113,10 @@
     text-decoration: none;
     cursor: pointer;
   }
-
+.blue-icon{
+  color: #1e90ff;
+  opacity: 0.8;
+}
 
     </style>  
       
@@ -238,38 +257,16 @@
         class="cv-wrap mx-auto p-6 rounded-lg my-10 relative bg-white sm:border border-gray-300"
       >
         <div class="flex justify-between items-center relative">
-          <div class="flex gap-4 items-center">
+          <div class="flex  items-center">
             <div class="file-image-wrap">
-              <i class="fas fa-file-cv"></i>
+              <i class="fas fa-file mr-2 blue-icon " style="font-size: 50px; cursor: pointer; "></i>
             </div>
             <div>
               <div class="cv-title font-bold text-xl">My Cv.pdf</div>
               <div class="day text-gray-500">Added today</div>
             </div>
           </div>
-          <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dropdown Example</title>
-  <style>
-    /* Add some basic styling for demonstration */
-    .hidden {
-      display: none;
-    }
-    .block {
-      display: block;
-    }
-    .relative {
-      position: relative;
-    }
-    .absolute {
-      position: absolute;
-    }
-  </style>
-</head>
-<body>
+    
 
 <div class="relative inline-block text-left">
   <button id="cv-btn" class="text-3xl font-bold" onclick="toggleMenu()">
@@ -278,16 +275,16 @@
   <div id="dropdownMenu" class="hidden absolute right-0 rounded-lg shadow-lg ring-1 ring-black ring-opacity-1">
     <div class="py-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
       <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
-        <i class="fas fa-book mr-1"></i>
+        <i class="fas fa-book mr-1 " style="color: #e6362a;"></i>
         <a href="#" class="block" role="menuitem">Download</a>
       </div>
       <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
-        <i class="fas fa-share mr-1"></i>
+        <i class="fas fa-share mr-1" style="color: #57ce21;"></i>
         <a href="#" class="block" role="menuitem">Share</a>
       </div>
       <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
-        <i class="fas fa-eye mr-1"></i>
-        <a href="#" class="block" role="menuitem">View</a>
+        <i class="fas fa-eye mr-1" style="color: #2876c4;"></i>
+        <a href="#" class="block" role="menuitem" >View</a>
       </div>
     </div>
   </div>
@@ -316,8 +313,7 @@
   });
 </script>
 
-</body>
-</html>
+
         </div>
       </section>
         <section id="job-sec" class="mb-10 border rounded-lg">
