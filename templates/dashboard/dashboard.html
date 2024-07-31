@@ -73,6 +73,22 @@
     overflow: auto; /* Enable scroll if needed */
     background-color: rgba(0,0,0,0.4); /* Black background with opacity */
   }
+  
+    /* Add some basic styling for demonstration */
+    .hidden {
+      display: none;
+    }
+    .block {
+      display: block;
+    }
+    .relative {
+      position: relative;
+    }
+    .absolute {
+      position: absolute;
+    }
+  
+
 
   /* Modal Content */
   .modal-content {
@@ -97,7 +113,10 @@
     text-decoration: none;
     cursor: pointer;
   }
-
+.blue-icon{
+  color: #1e90ff;
+  opacity: 0.8;
+}
 
     </style>  
       
@@ -238,64 +257,63 @@
         class="cv-wrap mx-auto p-6 rounded-lg my-10 relative bg-white sm:border border-gray-300"
       >
         <div class="flex justify-between items-center relative">
-          <div class="flex gap-4 items-center">
+          <div class="flex  items-center">
             <div class="file-image-wrap">
-              <i class="fas fa-file-cv"></i>
+              <i class="fas fa-file mr-2 blue-icon " style="font-size: 50px; cursor: pointer; "></i>
             </div>
             <div>
               <div class="cv-title font-bold text-xl">My Cv.pdf</div>
               <div class="day text-gray-500">Added today</div>
             </div>
           </div>
-          <div class="">
-            <button id="cv-btn" class="text-3xl font-bold">
-              <img
-                class="w-6"
-                src="{% static 'build/img/hamburger-menu-dots-svgrepo-com.svg' %}"
-                alt="meny dots"
-              />
-            </button>
-            <div
-              id="options-backdrop"
-              class="absolute hidden h-[300px] left-[90px] top-14 right-0 p-2 option-wrap gap-2 bg-transparent flex flex justify-end"
-            >
-              <div
-                id="options"
-                class="absolute w-[250px] t0p-0 p-2 border rounded-lg bg-white"
-              >
-                <div
-                  class="option mb-4 hover:bg-blue-50 transition-colors flex gap-3 w-full p-2 rounded-t-lg"
-                >
-                  <img
-                    class="w-6"
-                    src="./build/img/download-svgrepo-com.svg"
-                    alt=""
-                  />
-                  <span>Download</span>
-                </div>
-                <div
-                  class="option mb-4 hover:bg-blue-50 transition-colors flex gap-3 w-full p-2"
-                >
-                  <img
-                    class="w-6"
-                    src="./build/img/search-and-replace-document-svgrepo-com.svg"
-                    alt=""
-                  />
-                  <span>Replace</span>
-                </div>
-                <div
-                  class="option hover:bg-blue-50 transition-colors flex gap-3 w-full p-2 rounded-b-lg"
-                >
-                  <img
-                    class="w-6"
-                    src="./build/img/delete-2-svgrepo-com.svg"
-                    alt=""
-                  />
-                  <span>Delete</span>
-                </div>
-              </div>
-            </div>
-          </div>
+    
+
+<div class="relative inline-block text-left">
+  <button id="cv-btn" class="text-3xl font-bold" onclick="toggleMenu()">
+    <img class="w-6" src="{% static 'build/img/hamburger-menu-dots-svgrepo-com.svg' %}" alt="menu dots" />
+  </button>
+  <div id="dropdownMenu" class="hidden absolute right-0 rounded-lg shadow-lg ring-1 ring-black ring-opacity-1">
+    <div class="py-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+      <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
+        <i class="fas fa-book mr-1 " style="color: #e6362a;"></i>
+        <a href="#" class="block" role="menuitem">Download</a>
+      </div>
+      <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
+        <i class="fas fa-share mr-1" style="color: #57ce21;"></i>
+        <a href="#" class="block" role="menuitem">Share</a>
+      </div>
+      <div class="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-200 items-center">
+        <i class="fas fa-eye mr-1" style="color: #2876c4;"></i>
+        <a href="#" class="block" role="menuitem" >View</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleMenu() {
+    var menu = document.getElementById("dropdownMenu");
+    if (menu.classList.contains('hidden')) {
+      menu.classList.remove('hidden');
+      menu.classList.add('block');
+    } else {
+      menu.classList.add('hidden');
+      menu.classList.remove('block');
+    }
+  }
+
+  document.addEventListener('click', function(event) {
+    var menu = document.getElementById("dropdownMenu");
+    var button = document.getElementById("cv-btn");
+    
+    if (!button.contains(event.target) && !menu.contains(event.target)) {
+      menu.classList.add('hidden');
+      menu.classList.remove('block');
+    }
+  });
+</script>
+
+
         </div>
       </section>
         <section id="job-sec" class="mb-10 border rounded-lg">
