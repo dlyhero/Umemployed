@@ -130,9 +130,7 @@ def register_applicant(request):
 
 # register recruiter only
 def register_recruiter(request):
-    print("entered recreuuu")
     if request.method == 'POST':
-        print("posteeeeeeeeeeeeeeeeeeeeeed")
         is_recruiter = request.POST.get('is_recruiter')  # Get the value of the checkbox
         if is_recruiter:
             request.user.is_recruiter = True
@@ -172,11 +170,15 @@ def switch_account_type(request):
     user = request.user
 
     if new_role == 'Job Seeker':
-        user.is_applicant = True
-        user.is_recruiter = False
-        user.save()
-        messages.success(request, 'You have switched to a Job Seeker account.')
-        return redirect('dashboard')
+        if not ResumeDoc.objects.filter(user=user).exists():
+            messages.success(request, 'You need to complete your resume before switching to an applicant account.')
+            return redirect('switch_account')
+        else:
+            user.is_applicant = True
+            user.is_recruiter = False
+            user.save()
+            messages.success(request, 'You have switched to a Job Seeker account.')
+            return redirect('dashboard')
     elif new_role == 'Employer':
         if not user.has_company:
             user.is_recruiter = True

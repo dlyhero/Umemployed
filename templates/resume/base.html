@@ -242,6 +242,7 @@
           </button>
         </li>
       </ul>
+      {% if user.has_company %}
       <div class="hidden md:block">
         <div class="flex">
           <div class="border-l h-[40px]"></div>
@@ -252,6 +253,18 @@
           </span>
         </div>
       </div>
+      {% else %}
+        <div class="hidden md:block">
+        <div class="flex">
+          <div class="border-l h-[40px]"></div>
+          <span class="ml-2 text-nowrap p-2 rounded">
+            <a class="header-link text-nowrap" href="{% url 'change_account_type' %}"
+              >Become an Employer</a
+            >
+          </span>
+        </div>
+      </div>
+      {% endif %}
     </nav>
     <div
       id="sidebar"
