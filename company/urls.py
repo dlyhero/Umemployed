@@ -10,6 +10,7 @@ urlpatterns = [
     path('analytics/<uuid:company_id>/',views.company_analytics,name="company_analytics"),
     path('jobs/<uuid:company_id>/', views.view_my_jobs, name='view_my_jobs'),
     path('inbox/<uuid:company_id>/',views.company_inbox, name='company_inbox'),
+    path('notifications/<uuid:company_id>/',views.company_notifications, name='company_notifications'),
     
 
 ]

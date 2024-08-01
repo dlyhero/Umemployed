@@ -10,3 +10,6 @@ def notifications(request):
         return render(request, 'notifications/recruiter_notifications.html', {'notifications': notifications})
     else:
         return render(request, 'notifications/applicant_notifications.html', {'notifications': notifications})
+
+def user_notifications(request):
+    return render(request, 'dashboard/notifications.html')
