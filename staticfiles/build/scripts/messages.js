@@ -21,6 +21,7 @@ function sendMessage() {
     messageContainer.classList.add(
       "message-container",
       "sent",
+      "animate-slide-in-right",
       "flex",
       "mb-4",
       "gap-3"
@@ -63,7 +64,7 @@ messageItems.forEach((item) => {
     // For demo purposes, we'll just reset the chat messages
     const chatMessages = document.getElementById("chat-messages");
     chatMessages.innerHTML = `
-    <div class="message-container received flex mb-4">
+    <div class="message-container received animate-slide-in-left flex mb-4">
       <img src="https://via.placeholder.com/40" alt="Profile Picture" class="w-10 h-10 rounded-full mr-3">
       <div>
         <div class="bg-gray-200 p-3 rounded-lg">
