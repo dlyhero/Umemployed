@@ -1,139 +1,143 @@
+
 {% extends 'resume/base.html' %}
 {% load static %}
 {% block custom_css %}
-<style>
-  .apply-button {
-    background-color: #1e90ff;
-    transition: background-color 0.3s ease;
-  }
 
-  .apply-button:hover {
-    background-color: #1c86ee;
-  }
-
-  .rounded-full {
-    border-radius: 50%;
-  }
-
-  .shadow-lg {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .container {
-    max-width: 1200px;
-  }
-
-  .text-gray-700 {
-    color: #4a4a4a;
-  }
-
-  .text-white a {
-    color: white;
-    text-decoration: none;
-  }
-
-  .text-white a:hover {
-    text-decoration: underline;
-  }
-</style>
 {% endblock %}
 {% block content %}
 
-<main class="flex-grow container mx-auto mt-6 sm:flex  gap-6">
-  <div class="sm:bg-white p-8 sm:rounded-lg sm:shadow-lg w-full lg:w-3/4">
-    <div class="flex mb-6 p-3 items-center">
-      <div>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" class="rounded-full object-cover w-12 h-12" alt="Facebook Logo" />
-      </div>
-      <div class="flex flex-col ml-4">
-        <p class="font-bold">{{ job.company }}</p>
-        <p>23 July 2023</p>
-      </div>
-    </div>
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <h1 class="text-2xl font-bold mb-4">{{ job.title }}</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <i class="fa fa-location-dot"></i> {{ job.location }}
+  <body class="bg-gray-100 text-sm">
+    <!-- Main Content -->
+    <div class="container mx-auto py-8 px-4 flex flex-col lg:flex-row">
+      <!-- Job Details Section -->
+      <main class="flex-1 lg:mr-8">
+        <!-- Job Title Section -->
+        <section class="sm:bg-white p-6 sm:rounded-lg sm:border border-gray-300 mb-6 fade-in visible">
+          <h1 class="text-2xl font-bold text-gray-800">
+            <i class="fas fa-code"></i> {{job.title}}
+          </h1>
+          <p class="text-lg text-gray-600">
+            at <span class="font-semibold">{{job.company}}</span>
+          </p>
+          <p class="text-gray-500">
+            <i class="fas fa-map-marker-alt"></i> {{job.location}} &middot;
+            <i class="fas fa-calendar-alt"></i> since {{job.created_at}}
+          </p>
+        </section>
+
+        <!-- Job Summary -->
+        <section class="sm:bg-white p-6 sm:rounded-lg sm:border border-gray-300 mb-6 fade-in visible">
+          <div class="mb-4">
+            <p class="text-gray-600">
+              <i class="fas fa-briefcase"></i> {{job.job_type}}
+            </p>
+            <p class="text-gray-600">
+              <i class="fas fa-dollar-sign"></i> {{job.salary}}
+            </p>
+            <p class="text-gray-600">
+              <i class="fas fa-hourglass-end"></i> {{job.created_at}}
+            </p>
+            <p class="text-gray-600 mt-2">
+              <i class="fas fa-globe"></i> {{job.job_type}}
+            </p>
           </div>
-          <div>
-            <i class="fa fa-clock"></i> {{ job.job_type }}
+
+          <!-- Job Description -->
+          <h2 class="text-xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-file-alt text-[18px] text-[#1e90ff]"></i> Job
+            Description
+          </h2>
+          <p class="text-gray-700 mb-6">
+           {{job.description}}
+          </p>
+
+          <!-- Requirements -->
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-check text-[18px] text-[#1e90ff]"></i> Requirements
+          </h2>
+          <ul class="list-disc list-inside text-gray-700">
+            {% for skill in job.requirements.all %}
+            <li>{{ skill.name }}</li>
+              {% endfor %}
+          </ul>
+
+          <!-- Company Information -->
+          <div class="sm:bg-white my-4">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+              <i class="fas fa-building text-[#1e90ff]"></i> About the Company
+            </h2>
+            <p class="text-gray-700">
+              {{ company.about_us }}
+            </p>
           </div>
-          <div>
-            <i class="fa fa-dollar-sign"></i> {{ job.salary }}
+
+          <!-- Action Buttons -->
+          <div class="flex justify-end space-x-4 mt-8">
+            <a href="{% url 'job:confirm_evaluation' job.id %}"
+              class="bg-[#1e99ff] text-white px-4 py-2 rounded-lg text-center"
+            >
+              <i class="fas fa-paper-plane"></i> Apply <span class="hidden sm:inline-block text-nowrap">Now</span>
+            </a>
+            <button
+              class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg "
+            >
+              <i class="fas fa-bookmark"></i> Save <span class="hidden sm:inline-block text-nowrap">Job</span>
+            </button>
+            <button
+              class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg "
+            >
+              <i class="fas fa-share-alt"></i> Share
+            </button>
           </div>
-          <div>
-            <i class="fa fa-calendar"></i> {{ job.created_at }}
-          </div>
-        </div>
-      </div>
-      <div>
-        <button class="text-white px-4 py-2 rounded apply-button">
-          <a href="{% url 'job:confirm_evaluation' job.id %}">Apply now</a>
-        </button>
-      </div>
-    </div>
-    <div>
-      <h2 class="font-bold text-lg mb-3">Job Description</h2>
-      <p class="text-gray-700 mb-4">{{ job.description }}</p>
-      <h2 class="font-bold text-lg mb-2">Responsibilities</h2>
-      <ul class="list-disc list-inside text-gray-700 mb-4">
-        <li>{{ job.responsibilities }}</li>
-      </ul>
-      
-      <h2 class="font-bold text-lg mb-2">Skills Required</h2>
-      <ul class="list-disc list-inside text-gray-700 mb-4">
-        {% for skill in job.requirements.all %}
-        <li>{{ skill.name }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-  <aside class="sm:bg-white p-4 sm:rounded-lg sm:shadow-lg w-full lg:w-1/4 flex flex-col">
-    <p class="font-bold mb-3 text-xl">Location</p>
-    <div class="map-container mb-4">
-      <iframe class="border w-full" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.999009981132!2d2.292292315674248!3d48.85884417928778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66feca0c343e1%3A0x40b82c3688c9460!2sEiffel%20Tower!5e0!3m2!1sen!2sus!4v1590567179044!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
-    </div>
-    <button class="text-white px-4 py-2 rounded-xl w-full mb-5 apply-button">
-      <a href="{% url 'job:confirm_evaluation' job.id %}">Apply now</a>
-    </button>
-    <div>
-      <h2 class="font-bold text-lg mb-4">Similar Jobs</h2>
-      <div class="space-y-4">
-        {% if similar_jobs %}
-        {% for job in similar_jobs %}
-        <div class="bg-white p-3 border rounded-xl sm:shadow-lg">
-          <a href="{% url 'job:job_details' job.id %}">
-            <div class="flex mb-3 p-1 items-center">
-              <div>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png" class="rounded-full object-cover w-12 h-12" alt="Google Logo" />
-              </div>
-              <div class="flex flex-col ml-4">
-                <p class="font-bold">{{ job.company }}</p>
-                <p>{{ job.created_at }}</p>
-              </div>
-            </div>
-            <p class="text-gray-600 font-bold">{{ job.title }}</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <div>
-                <i class="fa fa-location-dot"></i> {{ job.location }}
-              </div>
-              <div>
-                <i class="fa fa-clock"></i> {{ job.job_type }}
-              </div>
-            </div>
-          </a>
-        </div>
-        {% endfor %}
-        {% else %}
+        </section>
+      </main>
+
+      <!-- Aside Section -->
+      <aside class="w-full lg:w-1/3">
+        <!-- Map -->
+        <section class="sm:bg-white p-1 rounded-lg sm:border border-gray-300 mb-6 fade-in visible">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3021.1234523452!2d-73.9352423!3d40.7306102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259af18c23b8b%3A0xa5e1f3b3!2sDouala%2C%20Cameroon!5e0!3m2!1sen!2sus!4v1616098005129!5m2!1sen!2sus"
+            width="100%"
+            height="250"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+          ></iframe>
+        </section>
+
+        <!-- Similar Jobs -->
+        <section class="sm:bg-white p-4 rounded-lg  sm:border border-gray-300 mb-6 fade-in visible">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-suitcase"></i> Similar Jobs
+          </h2>
+          <div class="space-y-4">
+            {% if similar_jobs %}
+            {% for job in similar_jobs %}
+            <a
+              class="bg-gray-50 p-4 rounded-lg block hover:bg-slate-100"
+              href="{% url 'job:job_details' job.id %}">
+              <h3 class="text-lg font-bold text-gray-800">
+                <i class="fas fa-laptop-code"></i> {{ job.title }}
+              </h3>
+              <p class="text-gray-600 ml-6">{{job.company}} &middot; {{job.location}}</p>
+              <button class="px-4 text-[#1e90ff] py-2 mt-2 rounded-lg">
+                <i class="fas fa-info-circle"></i> View More
+              </button>
+            </a>
+            {% endfor %}
+             {% else %}
         <p>No similar jobs found.</p>
         {% endif %}
-      </div>
+            <!-- Additional similar job cards... -->
+          </div>
+        </section>
+      </aside>
     </div>
-  </aside>
-</main>
-<br>
 
-<script src="{% static 'jobs/asset/job_detail.js' %}"></script>
+    
+  </body>
 {% endblock %}
+
+
+
