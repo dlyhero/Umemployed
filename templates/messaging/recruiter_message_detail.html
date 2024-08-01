@@ -5,260 +5,423 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Messages</title>
-    <link rel="icon" href="./build/logo/logo-color.png" />
-    <link rel="icon" href="./build/logo/logo-color.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
-
-    <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
+    <link rel="stylesheet" href="{% static 'build/css/message.css' %}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-
-    <link rel="stylesheet" href="{% static 'build/css/sidebar_recriuter.css' %}" />
+    <style>
+      @keyframes slide-in-left {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%);
+      }
   
-    <link rel="stylesheet" href="{% static 'build/css/header.css' %}" />
-    <link rel="stylesheet" href="{% static 'build/css/message.css' %}" />
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  
+    @keyframes slide-in-right {
+      0% {
+        opacity: 0;
+        transform: translateX(50%);
+      }
+  
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  
+    .animate-slide-in-left {
+      animation: slide-in-left 0.5s ease-out;
+    }
+  
+    .animate-slide-in-right {
+      animation: slide-in-right 0.5s ease-out;
+    }
+    </style>
+
   </head>
-  <body class="bg-gray-100 text-sm">
-    <!-- Header -->
-    <header
-      class="sticky top-0 left-0 right-0 flex justify-between items-center md:border-b px-4 md:px-5 py-3 bg-white z-[100] shadow-md sm:shadow-none"
-    >
-      <div class="flex items-center gap-x-3 md:gap-2">
-        <div class="logo-wrap flex items-center">
-          <img
-            class="w-7 md:w-9"
-            src="{% static 'build/logo/logo-color.png' %}"
-            alt="Logo"
-          />
-          <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
-            >UmEmployed</span
-          >
-        </div>
-        <a
-          class="header-link flex items-center hidden md:block p-2 rounded"
-          href="./home1.html"
-        >
-          <i class="fas fa-home"></i>
-          Home</a
-        >
+  <body class="text-sm bg-gray-50 flex flex-row">
+    <!--Aside Desktop-->
+<aside
+  id="aside-menu"
+  class="hidden md:block min-h-screen bg-gray-800 text-white transition-all duration-300 ease-in-out pz-2"
+  style="width: 60px"
+>
+  <!-- Menu and Cancel Icons -->
+  <div class="p-3">
+    <button id="toggle-aside-btn" class="text-2xl text-center w-full">
+      <i class="fas fa-bars flex justify-center"></i>
+      <!-- Menu icon -->
+      <i class="fas fa-times fa-time hidden flex justify-end"></i>
+      <!-- Cancel icon -->
+    </button>
+  </div>
+
+
+  <!-- Aside Items -->
+  <section class="mt-5 space-y-4">
+    <div class="aside-item flex items-center text-black flex items-center p-3.5 mx-2 bg-white rounded transition-colors relative">
+      <i class="fas fa-plus"></i>
+      <span class="ml-3 hidden">Create new</span>
+      <!-- Dropdown -->
+      <div class="dropdown hidden absolute left-full top-0 mt-2 ml-2 bg-white text-gray-700 p-3.5 rounded shadow-lg">
+        <a href="#" class="block py-2">Job Creation Option 1</a>
+        <a href="#" class="block py-2">Job Creation Option 2</a>
       </div>
-      <nav class="flex md:gap-x-4 items-center">
-        <ul class="flex gap-x-2 md:gap-x-4 items-center">
-          <li class="relative">
-            <a
-              id="messages-link"
-              class="header-link flex items-center gap-1 p-2 rounded"
-              href="./messages_jobseeker.html"
+    </div>
+    <div class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors relative">
+      <i class="fas fa-edit"></i>
+      <span class="ml-3 hidden">Update</span>
+      <!-- Dropdown -->
+      <div class="dropdown hidden absolute left-full top-0 mt-2 ml-2 bg-white text-gray-700 p-3.5 rounded shadow-lg">
+        <a href="#" class="block py-2">Profile</a>
+        <a href="#" class="block py-2">Update Option 2</a>
+      </div>
+    </div>
+
+    <a href="{% url 'view_my_jobs' company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors">
+      <i class="fas fa-briefcase"></i>
+      <span class="ml-3 hidden">Jobs</span>
+    </a>
+    <a href="{% url 'view_applications' company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors">
+      <i class="fas fa-users"></i>
+      <span class="ml-3 hidden">Candidates</span>
+    </a>
+    <div class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors">
+      <i class="fas fa-calendar"></i>
+      <span class="ml-3 hidden">Interviews</span>
+    </div>
+    <a href="{% url 'company-details' company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors">
+      <i class="fas fa-info-circle"></i>
+      <span class="ml-3 hidden">About</span>
+    </a>
+  </section>
+</aside>
+
+
+    <!--Aside Mobile-->
+    <aside
+      id="aside-menu-mobile"
+      class="hidden sm:hidden transition-all fixed top-0 z-[100] md:z-0 left-0 md:left-5 bottom-0 md:bottom-10 h-screen right-0 md:right-auto max-w-[350px] md:w-fit md:top-[62px] px-4 p-2 md:py-1 bg-gray-500"
+    >
+      <section class="mt-5">
+        <div class="cancel-wrap text-end mb-4">
+          <button id="cancel-aside-btn">
+            <i
+              class="fas fa-times sm:hidden flex justify-end text-white mr-4"
+            ></i>
+          </button>
+        </div>
+        <div
+          class="p-1 md:p-2 text-white md:text-black border-b border-t md:bg-white hover:bg-gray-300 rounded mb-4 cursor-pointer"
+        >
+          <a
+            href="#"
+            class="aside-item flex items-center justify-between w-full"
+          >
+            <div class="img-wrap flex items-center p-1 md:p-0">
+              <i class="fas fa-plus w-6"></i>
+              <div>Create new</div>
+            </div>
+            <i class="fas fa-chevron-down w-6 ml-14"></i>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer active"
+            href="{% url 'view_my_jobs' company.id %}"
+          >
+            <i class="fas fa-briefcase w-6"></i>
+            <div>Jobs</div>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center gap-1 w-full md:bg-slate-700 transition-colors"
+            href="{% url 'view_applications' company.id %}"
+          >
+            <i class="fas fa-users w-6"></i>
+            <div>Candidates</div>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+            href="#"
+          >
+            <div class="img-wrap flex items-center gap-1">
+              <i class="fas fa-calendar-alt w-6"></i>
+              <div>Interviews</div>
+            </div>
+            <i class="fas fa-chevron-down w-6 ml-14"></i>
+          </a>
+        </div>
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+            href="{% url 'company-details' company.id %}"
+          >
+            <div class="img-wrap flex items-center gap-1">
+              <i class="fas fa-chart-bar w-6"></i>
+              <div>Analytics</div>
+            </div>
+            <i class="fas fa-chevron-down w-6 ml-16"></i>
+          </a>
+        </div>
+      </section>
+    </aside>
+  <div class="flex-1 flex flex-col">
+        <header
+        class="flex justify-between items-center md:border-b px-2 md:px-5 py-3 bg-white shadow-md md:shadow-none"
+      >
+        <div class="flex items-center gap-x-5">
+          <div class="logo-wrap flex items-center">
+            <img class="w-8 md:w-9" src="{% static 'build/logo/logo-color.png' %}" alt="" />
+            <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
+              >UmEmployed</span
             >
-              <i
-                id="messages-icon"
-                class="fas fa-lg fa-envelopes text-xl icon"
-              ></i>
-              <span class="hidden md:block">Messages</span>
-              <div
-                class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+          </div>
+          <a
+            class="hidden md:flex items-center space-x-1 hover:bg-blue-50 transition-colors p-2 rounded"
+            href="{% url 'index' %}"
+          >
+            <i class="fas fa-home home-icon"></i>
+            <span>Home</span>
+          </a>
+        </div>
+        <nav class="flex md:gap-x-4 items-center">
+          <ul class="flex gap-x-2 md:gap-x-6 items-center">
+            <li class="relative">
+              <a
+                class="flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+                href="{% url 'company_inbox' company.id %}"
               >
-                3
-              </div>
-            </a>
-          </li>
-          <li class="relative">
-            <a
-              id="notifications-link"
-              class="header-link flex items-center gap-1 p-2 rounded"
-              href="./notification.html"
-            >
-              <i id="notifications-icon" class="fas fa-bell text-xl icon"></i>
-              <span class="hidden md:block">Notifications</span>
-              <div
-                class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
+                <i class="fas fa-envelope message-icon text-[#1e90ff]"></i>
+                <span class="hidden md:block">Messages</span>
+                <div
+                  class="absolute sm:top-[-5px] top-[-1px] left-3 py-[-1px] py-[0.5px] px-[8px] text-[10px] text-white bg-red-500 rounded-full"
+                >
+                  3
+                </div>
+              </a>
+            </li>
+            <li class="relative">
+              <a
+                class="flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
+                href="{% url 'notifications:user_notifications' %}"
               >
-                3
-              </div>
-            </a>
-          </li>
-          <li class="relative cursor-pointer">
-            <button
-              id="user-btn"
-              class="header-link flex gap-1 p-2 rounded flex items-center"
-            >
-              <i id="user-icon" class="fas fa-user text-xl icon"></i>
-              <span class="hidden md:block">User</span>
-            </button>
-            <div
-              id="backdrop-menu"
-              class="hidden fixed flex justify-end pr-[19px] sm:pr-[100px] z-[100] top-0 bottom-0 left-0 right-0 bg-transparent"
-            >
+                <i class="fas fa-bell notification-icon"></i>
+                <span class="hidden md:block">Notifications</span>
+                <div
+                  class="absolute sm:top-[-5px] top-[-1px] left-3 py-[-1px] px-[8px] text-[10px] text-white bg-red-500 rounded-full"
+                >
+                  3
+                </div>
+              </a>
+            </li>
+          </ul>
+
+          <div class="hidden md:block border-l h-[40px]"></div>
+
+          <div class="relative">
+            <div class="hover:bg-blue-50 transition-colors p-2 rounded">
+              <button id="option-btn" class="flex items-center gap-2">
+                <i class="fas fa-user"></i>
+                <span class="w-28 text-ellipsis overflow-hidden hidden md:block"
+                  >{{user.username}}</span
+                >
+                <img
+                  class="w-[19px] mt-1 md:mt-0 hidden md:block"
+                  src="{% static 'build/img/dropdown-arrow-svgrepo-com.svg' %}"
+                  alt="drop down arrow"
+                />
+              </button>
               <div
-                class="absolute bg-white top-[60px] z-[100] min-w-[280px] sm:w-[350px] border border-gray-400 rounded shadow-lg"
+                id="backdrop-menu"
+                class="hidden fixed flex justify-end p-[18px] top-0 bottom-0 left-0 z-[100] right-0 bg-transparent"
               >
                 <div
-                  class="user-mail py-3 px-6 font-bold text-gray-700 border-b border-gray-300"
+                  id="option-menu"
+                  class="absolute bg-white top-[60px] min-w-[290px] sm:w-[350px] border border-gray-400 rounded"
                 >
-                  enugodwillenwe@gmail.com
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="./profile.html" class="flex items-center gap-2">
-                    <i class="fas fa-user w-5 text-gray-500"></i>
-                    Profile
+                  <div
+                    class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <a href="#" class="flex items-center gap-1">
+                      <i class="fas fa-user fa-lg" aria-hidden="true"></i>
+                      <span class="sr-only">User</span>
+                      User
+                    </a>
+                  </div>
+                  <div
+                    class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <a href="#" class="flex items-center gap-1">
+                      <i class="fas fa-box fa-lg" aria-hidden="true"></i>
+                      <span class="sr-only">Subscriptions</span>
+                      Subscriptions
+                    </a>
+                  </div>
+                  <div
+                    class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <a href="#" class="flex items-center gap-1">
+                      <i
+                        class="fas fa-file-invoice-dollar fa-lg"
+                        aria-hidden="true"
+                      ></i>
+                      <span class="sr-only">Billing and invoices</span>
+                      Billing and invoices
+                    </a>
+                  </div>
+                  <div
+                    class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <a href="#" class="flex items-center gap-1">
+                      <i class="fas fa-cog fa-lg" aria-hidden="true"></i>
+                      <span class="sr-only">Employer setting</span>
+                      Employer setting
+                    </a>
+                  </div>
+                  <div
+                    class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <a href="#" class="flex items-center gap-1">
+                      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+                      <span class="sr-only">Contact us</span>
+                      Contact us
+                    </a>
+                  </div>
+                  <div
+                    class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <a href="{% url 'view_my_jobs' company.id %}" class="flex items-center gap-1">
+                      <i class="fas f{% static 'building fa-lg" aria-hidden="true"></i>
+                      <span class="sr-only">Company page</span>
+                      Company page
+                    </a>
+                  </div>
+
+                  <hr class="my-2" />
+                  <div class="user-mail py-3 px-6 font-bold text-gray-700">
+                    {{user.username}}
+                  </div>
+                  <div
+                    class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <a href="#" class="flex items-center gap-1">
+                      <i class="fas fa-user-cog fa-lg" aria-hidden="true"></i>
+                      <span class="sr-only">Account Settings</span>
+                      Account Settings
+                    </a>
+                  </div>
+                  <div
+                    class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
+                  >
+                    <a
+                      href="{% url 'change_account_type' %}"
+                      class="flex items-center gap-1"
+                    >
+                      <i
+                        class="fas fa-exchange-alt fa-lg"
+                        aria-hidden="true"
+                      ></i>
+                      <span class="sr-only">Switch Account Type</span>
+                      Switch Account Type
+                    </a>
+                  </div>
+                  <hr class="my-2" />
+                  <div class="flex py-4 px-8 text-gray-700 justify-center">
+                    <a href="{% url 'logout' %}">
+                    <button class="signout-btn text-[#1e90ff] font-bold">
+                      Sign out
+                    </button>
                   </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="./resume.html" class="flex items-center gap-2">
-                    <i class="fas fa-file-alt w-5 text-gray-500"></i>
-                    Resume
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-2">
-                    <i class="fas fa-question-circle w-5 text-gray-500"></i>
-                    Resume Help
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="./index.html" class="flex items-center gap-2">
-                    <i class="fas fa-briefcase w-5 text-gray-500"></i>
-                    My Jobs
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-2">
-                    <i class="fas fa-star w-5 text-gray-500"></i>
-                    My Reviews
-                  </a>
-                </div>
-                <div
-                  class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                >
-                  <a href="#" class="flex items-center gap-2">
-                    <i class="fas fa-cogs w-5 text-gray-500"></i>
-                    Settings
-                  </a>
-                </div>
-                <hr class="my-2" />
-                <div class="flex py-4 px-6 text-gray-700 justify-center">
-                  <button class="signout-btn text-[#1e90ff] font-bold">
-                    Sign out
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </li>
-          <li class="md:hidden">
-            <button id="menu-btn" class="text-xl">
-              <i class="fas fa-bars"></i>
-            </button>
-          </li>
-        </ul>
-        <div class="hidden md:block">
-          <div class="flex">
-            <div class="border-l h-[40px]"></div>
-            <span class="ml-2 text-nowrap p-2 rounded">
-              <a class="header-link text-nowrap" href="./switchaccounttype.html"
-                >Employers / Post Job</a
-              >
-            </span>
           </div>
-        </div>
-      </nav>
-      <div
-        id="sidebar"
-        class="fixed inset-0 bg-black bg-opacity-50 z-2 hidden transition-all"
-      >
+          <button id="aside-menu-btn" class="md:hidden">
+            <img class="w-6" src="{% static 'build/img/menu-svgrepo-com.svg' %}" alt="" />
+          </button>
+        </nav>
         <div
-          class="sidebar-content h-fit p-6 bg-white rounded-lg shadow-lg mx-auto max-w-xs lg:max-w-sm transition-all transform hidden-sidebar"
+          id="sidebar"
+          class="font-bold fixed bg-[#8080803e] z-auto md:bg-none hidden top-0 bottom-0 left-0 right-0 p-10"
         >
-          <!-- Sidebar Header -->
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-2xl font-bold text-gray-900">Menu</h2>
-            <button
-              id="remove-btn"
-              class="text-2xl text-gray-500 hover:text-gray-700 transition-colors"
+          <div
+            class="sidebar-content h-fit p-2 bg-white rounded-lg absolute bottom-2 right-2 left-2 mx-auto md:hidden"
+          >
+            <div class="btn-wrap text-end">
+              <button id="remove-btn" class="text-2xl text-end ml-auto mr-2">
+                &times;
+              </button>
+            </div>
+            <div
+              class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
             >
-              &times;
-            </button>
+              <a class="flex justify-between items-center" href="{% url 'company_inbox' company.id %}">Message</a>
+            </div>
+            <div
+              class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+            >
+              <a class="flex justify-between items-center" href="#"
+                >Notifications</a
+              >
+            </div>
+            <div
+              class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+            >
+              <a class="flex justify-between items-center" href="{% url 'change_account_type' %}"
+                >Employer settings</a
+              >
+            </div>
+            <div
+              class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+            >
+              <a class="flex justify-between items-center" href="#"
+                >Contact us</a
+              >
+            </div>
+            <div
+              class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+            >
+              <a class="flex justify-between items-center" href="#"
+                >Account Settings</a
+              >
+            </div>
+            <div
+              class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
+            >
+              <a class="flex justify-between items-center" href="{% url 'logout' %}">Sign Out</a>
+            </div>
           </div>
-          <!-- Navigation Items -->
-          <nav>
-            <a
-              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-              href="./home1.html"
-            >
-              <i class="fas fa-home text-gray-500 mr-3"></i>
-              <span class="text-gray-800 font-medium">Home</span>
-            </a>
-            <a
-              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-              href="./profile.html"
-            >
-              <i class="fas fa-user text-gray-500 mr-3"></i>
-              <span class="text-gray-800 font-medium">Profile</span>
-            </a>
-            <a
-              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-              href="./resume.html"
-            >
-              <i class="fas fa-file-alt text-gray-500 mr-3"></i>
-              <span class="text-gray-800 font-medium">Resume</span>
-            </a>
-            <a
-              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-              href="#"
-            >
-              <i class="fas fa-briefcase text-gray-500 mr-3"></i>
-              <span class="text-gray-800 font-medium">Jobs</span>
-            </a>
-            <a
-              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-              href="#"
-            >
-              <i class="fas fa-cogs text-gray-500 mr-3"></i>
-              <span class="text-gray-800 font-medium">Settings</span>
-            </a>
-            <a
-              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-              href="#"
-            >
-              <i class="fas fa-dollar-sign text-gray-500 mr-3"></i>
-              <span class="text-gray-800 font-medium">Find Salaries</span>
-            </a>
-            <a
-              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-              href="#"
-            >
-              <i class="fas fa-sign-out-alt text-gray-500 mr-3"></i>
-              <span class="text-gray-800 font-medium">Logout</span>
-            </a>
-            <a
-              class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-              href="#"
-            >
-              <i class="fas fa-exchange-alt text-gray-500 mr-3"></i>
-              <span class="text-gray-800 font-medium">Switch Account Type</span>
-            </a>
-          </nav>
         </div>
+      </header>
+
+       <div class="primary">
+        {% for message in messages %}
+            <div class="alert alert-info" role="alert">
+                {{ message }}
+                <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+        {% endfor %}
       </div>
-    </header>
-    <!-- Main Content -->
-    <main class="flex flex-1 overflow-hidden bg-gray-100 sm:p-2 sm:gap-2 ">
+
+
+    <main class="flex flex-1 overflow-hidden bg-gray-100 sm:p-2 sm:gap-2">
       <!-- Sidebar -->
       <aside
         id="message-sidebar"
-        class="md:block bg-white sm:rounded-lg w-full sm:w-[30%] border-r border-gray-200 overflow-y-auto relative sm:shadow-md"
+        class="md:block bg-white sm:rounded-lg w-full sm:w-[30%] border-r border-gray-200 overflow-y-auto relative "
       >
         <div class="flex flex-col sticky top-0 left-0 right-0 bg-white">
           <div
@@ -321,7 +484,10 @@
         </div>
       </aside>
       <!-- Chat Window -->
-      <section id="chat-window" class="flex flex-col flex-1 hidden md:flex sm:rounded-lg sm:shadow-md">
+      <section
+        id="chat-window"
+        class="flex flex-col flex-1 hidden md:flex sm:rounded-lg "
+      >
         <header
           id="chat-header"
           class="px-4 py-2 flex justify-between items-center bg-white border-b border-gray-200 sm:rounded-t-lg"
@@ -348,7 +514,7 @@
           </button>
         </header>
         <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50">
-          <div class="message-container received flex mb-4">
+          <div class="message-container received flex mb-4 animate-slide-in-left ">
             <img
               src="https://via.placeholder.com/40"
               alt="Profile Picture"
@@ -363,7 +529,7 @@
               <span class="text-xs text-gray-600 mt-1 block">10:30 AM</span>
             </div>
           </div>
-          <div class="message-container sent flex mb-4 gap-3">
+          <div class="message-container sent flex mb-4 gap-3 animate-slide-in-right">
             <img
               src="https://via.placeholder.com/40"
               alt="Profile Picture"
@@ -380,7 +546,7 @@
           </div>
         </div>
         <div
-         id="chat-form"
+          id="chat-form"
           class="px-4 py-2 bg-white border-t border-gray-200 flex items-center sm:rounded-b-lg"
         >
           <button id="emoji-button" class="p-2">
@@ -404,9 +570,153 @@
         </div>
       </section>
     </main>
-
-    <script src="{% static 'build/scripts/messages.js' %}"></script>
-    <script src="{% static 'build/scripts/header.js' %}"></script>
-    <script src="{% static 'build/scripts/sidebar_recruiter.js' %}"></script>
+  </div>
+    
   </body>
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const asideMenu = document.getElementById("aside-menu");
+        const toggleAsideBtn = document.getElementById("toggle-aside-btn");
+        const menuIcon = toggleAsideBtn.querySelector(".fa-bars");
+        const cancelIcon = toggleAsideBtn.querySelector(".fa-time");
+        const asideItems = document.querySelectorAll(".aside-item span");
+        const dropdowns = document.querySelectorAll(".dropdown");
+
+        toggleAsideBtn.addEventListener("click", () => {
+          if (asideMenu.style.width === "60px") {
+            // Extend aside
+            asideMenu.style.width = "250px";
+            menuIcon.classList.add("hidden");
+            cancelIcon.classList.remove("hidden");
+            asideItems.forEach((item) => item.classList.remove("hidden"));
+          } else {
+            // Collapse aside
+            asideMenu.style.width = "60px";
+            menuIcon.classList.remove("hidden");
+            cancelIcon.classList.add("hidden");
+            asideItems.forEach((item) => item.classList.add("hidden"));
+            dropdowns.forEach((dropdown) => dropdown.classList.add("hidden"));
+          }
+        });
+
+        // Handle dropdowns
+        const createNewItem = document.querySelector(
+          ".aside-item:nth-child(1)"
+        );
+        const updateItem = document.querySelector(".aside-item:nth-child(2)");
+
+        createNewItem.addEventListener("click", (e) => {
+          e.stopPropagation();
+          document
+            .getElementById("dropdown-create-new")
+            .classList.toggle("hidden");
+          document.getElementById("dropdown-update").classList.add("hidden");
+        });
+
+        updateItem.addEventListener("click", (e) => {
+          e.stopPropagation();
+          document.getElementById("dropdown-update").classList.toggle("hidden");
+          document
+            .getElementById("dropdown-create-new")
+            .classList.add("hidden");
+        });
+
+        // Hide dropdowns when clicking outside
+        document.addEventListener("click", () => {
+          document
+            .getElementById("dropdown-create-new")
+            .classList.add("hidden");
+          document.getElementById("dropdown-update").classList.add("hidden");
+        });
+      });
+    </script>
+
+    <!--dashboard code for aside -->
+    <script>
+      const menu = document.getElementById("aside-menu-mobile");
+const menuBtn = document.getElementById("aside-menu-btn");
+const asideCancelBtn = document.getElementById("cancel-aside-btn");
+
+const asideItems = document.querySelectorAll(".aside-item");
+
+
+asideItems.forEach((item) => {
+  item.addEventListener("click", (event) => {
+    // Prevent default link behavior if necessary
+    event.preventDefault();
+
+    // Remove 'active' class from all items
+    asideItems.forEach((i) => i.classList.remove("active"));
+
+    // Add 'active' class to the clicked item
+    item.classList.add("active");
+
+    // Optionally navigate to the link
+    const link = item.getAttribute("href");
+    if (link) {
+      window.location.href = link;
+    }
+  });
+});
+
+// Mark the appropriate link as active based on current URL
+const currentPath = window.location.pathname;
+asideItems.forEach((item) => {
+  const link = item.getAttribute("href");
+  if (link === currentPath) {
+    item.classList.add("active");
+  }
+});
+
+function displayMenu() {
+  menuBtn.addEventListener("click", () => {
+    if (window.innerWidth <= 765) {
+      menu.classList.remove("hidden");
+      menu.classList.add("block");
+    }
+  });
+}
+
+displayMenu();
+
+function removeMenu() {
+  asideCancelBtn.addEventListener("click", () => {
+    if (window.innerWidth <= 765) {
+      menu.classList.add("hidden");
+
+      menu.classList.remove("block");
+    }
+  });
+}
+
+removeMenu();
+
+function setupBackdropMenu() {
+  document.getElementById("option-btn").addEventListener("click", () => {
+    document.getElementById("backdrop-menu").classList.remove("hidden");
+  });
+
+  document.getElementById("backdrop-menu").addEventListener("click", () => {
+    document.getElementById("backdrop-menu").classList.add("hidden");
+  });
+}
+
+setupBackdropMenu();
+
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+    const alerts = document.querySelectorAll('.primary .alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 10000); // 10 seconds
+    });
+});
+
+    </script>
+
+  <script type="module" src="{% static 'build/scripts/addjob.js' %}"></script>
+    <script src="{% static 'build/scripts/dashboard.js' %}"></script>
+  <script src="{% static 'build/scripts/messages.js' %}"></script>
 </html>
