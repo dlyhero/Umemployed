@@ -130,9 +130,7 @@ def register_applicant(request):
 
 # register recruiter only
 def register_recruiter(request):
-    print("entered recreuuu")
     if request.method == 'POST':
-        print("posteeeeeeeeeeeeeeeeeeeeeed")
         is_recruiter = request.POST.get('is_recruiter')  # Get the value of the checkbox
         if is_recruiter:
             request.user.is_recruiter = True
@@ -168,44 +166,32 @@ from django.urls import reverse  # Import reverse
 from resume.models import ResumeDoc
 @login_required
 def switch_account_type(request):
+    new_role = request.GET.get('new_role', None)
     user = request.user
 
-    # Handle case where user may not have a company
-    company = Company.objects.filter(user=user).first()
-
-    print(f"Initial: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
-
-    if user.is_applicant:
+    if new_role == 'Job Seeker':
+        if not ResumeDoc.objects.filter(user=user).exists():
+            messages.success(request, 'You need to complete your resume before switching to an applicant account.')
+            return redirect('switch_account')
+        else:
+            user.is_applicant = True
+            user.is_recruiter = False
+            user.save()
+            messages.success(request, 'You have switched to a Job Seeker account.')
+            return redirect('dashboard')
+    elif new_role == 'Employer':
         if not user.has_company:
             user.is_recruiter = True
             user.is_applicant = False
             user.save()
-            print(f"Switched to recruiter: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
             messages.success(request, 'You have switched to a recruiter account.')
             return redirect(reverse('create_company'))
         else:
-            messages.info(request, 'You already have a company associated with your account.')
-            if company:
-                user.is_recruiter = True
-                user.is_applicant = False
-                user.save()
-                print(f"Switched to recruiter with company: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
-                return redirect(reverse('view_applications', args=[company.id]))
-            else:
-                messages.error(request, 'An error occurred: No company found.')
-                return redirect(reverse('home'))
-    elif user.is_recruiter:
-        user.is_applicant = True
-        user.is_recruiter = False
-        user.save()
-        print(f"Switched to applicant: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
-        if not ResumeDoc.objects.filter(user=user).exists():
-            messages.success(request, 'You have switched to an applicant account. Please complete your resume.')
-            return redirect('switch_account')
-        else:
-            messages.success(request, 'You have switched to an applicant account.')
-            return redirect('dashboard')
+            user.is_recruiter = True
+            user.is_applicant = False
+            user.save()
+            messages.success(request, 'You have switched to a recruiter account.')
+            return redirect(reverse('view_applications', args=[user.company.id]))
     else:
-        messages.error(request, 'An error occurred while switching account types.')
-
-    return redirect(reverse('home'))
+        messages.error(request, 'Invalid role switch request.')
+        return redirect('home')

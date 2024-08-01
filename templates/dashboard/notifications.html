@@ -1,0 +1,250 @@
+ {% extends 'resume/base.html' %}
+{% load static %}
+ {% block custom_css %}
+    
+  {% endblock %}
+{% block content %}
+
+    <main
+      class="container sm:w-[80%] mx-auto sm:mt-4 mb-2 p-4 bg-white rounded sm:shadow-md"
+    >
+      <h2 class="text-2xl font-bold mb-4">Notifications</h2>
+
+      <!-- Summary Section -->
+      <section class="mb-6">
+        <div
+          class="flex justify-between items-center bg-gray-100 p-4 rounded shadow-sm"
+        >
+          <div class="flex flex-col">
+            <p class="text-lg font-medium">Total Notifications</p>
+            <p class="text-2xl font-bold">10</p>
+          </div>
+          <div class="flex flex-col text-right">
+            <p class="text-lg font-medium">Unread Notifications</p>
+            <p class="text-2xl font-bold">3</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications List -->
+      <div id="notification-list">
+        <!-- Notification Items -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-blue-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">
+                Job Application Received
+              </p>
+              <p class="message text-sm text-gray-600">
+                You have received a new job application for the Software
+                Engineer position.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >2 hours ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-purple-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">New Job Posted</p>
+              <p class="message text-sm text-gray-600">
+                A new job matching your profile has been posted: Frontend
+                Developer.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >1 week ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-indigo-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-thumbs-up"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Endorsement Received</p>
+              <p class="message text-sm text-gray-600">
+                Alice Johnson has endorsed you for your JavaScript skills.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >2 weeks ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-pink-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Interview Scheduled</p>
+              <p class="message text-sm text-gray-600">
+                Your interview with ABC Corp has been scheduled for July 25,
+                2024.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >3 weeks ago</span
+          >
+        </div>
+
+        <!-- Additional Notifications -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-green-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">New Skill Endorsement</p>
+              <p class="message text-sm text-gray-600">
+                John Doe has endorsed you for your React skills.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0">1 day ago</span>
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-red-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Account Security Alert</p>
+              <p class="message text-sm text-gray-600">
+                There was a recent login attempt from an unrecognized device.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >3 days ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-yellow-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Upcoming Event Reminder</p>
+              <p class="message text-sm text-gray-600">
+                Don't forget the Networking Event on July 30, 2024.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >5 days ago</span
+          >
+        </div>
+
+        <!-- More Example Notifications -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-teal-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">New Message Received</p>
+              <p class="message text-sm text-gray-600">
+                You have received a new message from Jane Doe.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >2 days ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-orange-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-gift"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Special Offer</p>
+              <p class="message text-sm text-gray-600">
+                A special offer is available for premium users. Check it out!
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >1 week ago</span
+          >
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
+        >
+          <div class="flex items-start sm:items-center">
+            <div class="icon text-cyan-600 mr-4 mb-2 sm:mb-0">
+              <i class="fas fa-sync"></i>
+            </div>
+            <div class="notification-content">
+              <p class="title text-lg font-semibold">Profile Updated</p>
+              <p class="message text-sm text-gray-600">
+                Your profile has been successfully updated.
+              </p>
+            </div>
+          </div>
+          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
+            >4 weeks ago</span
+          >
+        </div>
+      </div>
+
+      <!-- Archived Notifications Section -->
+      <section class="mt-6">
+        <h3 class="text-xl font-semibold mb-2">Archived Notifications</h3>
+        <div class="bg-gray-100 p-4 rounded shadow-sm">
+          <p class="text-gray-600">
+            You can review archived notifications here.
+          </p>
+          <!-- Example Archived Notification -->
+          <div class="p-4 border-b">
+            <p class="text-lg font-semibold">Archived Notification Example</p>
+            <p class="text-sm text-gray-600">
+              Details of the archived notification.
+            </p>
+            <span class="text-xs text-gray-500">Archived 1 month ago</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+  <script type="module" src="{% static 'build/scripts/addjob.js' %}"></script>
+  <script src="{% static 'build/scripts/dashboard.js' %}"></script>
+  <script src="{% static 'build/scripts/messages.js' %}"></script>
+{% endblock %}

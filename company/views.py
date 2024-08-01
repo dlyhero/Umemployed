@@ -181,3 +181,11 @@ def company_inbox(request,company_id):
         return HttpResponse("You are not authorized to view this page.")
 
     return render(request, 'company/inbox.html',{'company':company})
+
+def company_notifications(request,company_id):
+    company = Company.objects.get(id=company_id)
+    current_user = request.user
+    if company.user != current_user:
+        return HttpResponse("You are not authorized to view this page.")
+
+    return render(request, 'company/notifications.html',{'company':company})

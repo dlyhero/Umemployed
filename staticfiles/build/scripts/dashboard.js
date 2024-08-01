@@ -1,22 +1,23 @@
-const menu = document.getElementById("aside-menu");
+const menu = document.getElementById("aside-menu-mobile");
 const menuBtn = document.getElementById("aside-menu-btn");
-const asideCancelBtn = document.getElementById('cancel-aside-btn');
+const asideCancelBtn = document.getElementById("cancel-aside-btn");
 
 const asideItems = document.querySelectorAll(".aside-item");
 
-asideItems.forEach(item => {
+
+asideItems.forEach((item) => {
   item.addEventListener("click", (event) => {
     // Prevent default link behavior if necessary
     event.preventDefault();
-    
+
     // Remove 'active' class from all items
-    asideItems.forEach(i => i.classList.remove("active"));
-    
+    asideItems.forEach((i) => i.classList.remove("active"));
+
     // Add 'active' class to the clicked item
     item.classList.add("active");
-    
+
     // Optionally navigate to the link
-    const link = item.getAttribute('href');
+    const link = item.getAttribute("href");
     if (link) {
       window.location.href = link;
     }
@@ -25,32 +26,30 @@ asideItems.forEach(item => {
 
 // Mark the appropriate link as active based on current URL
 const currentPath = window.location.pathname;
-asideItems.forEach(item => {
-  const link = item.getAttribute('href');
+asideItems.forEach((item) => {
+  const link = item.getAttribute("href");
   if (link === currentPath) {
-    item.classList.add('active');
+    item.classList.add("active");
   }
 });
 
 function displayMenu() {
   menuBtn.addEventListener("click", () => {
     if (window.innerWidth <= 765) {
-      menu.classList.remove('hidden');
-      menu.classList.add('block');
+      menu.classList.remove("hidden");
+      menu.classList.add("block");
     }
   });
 }
 
 displayMenu();
 
-function removeMenu(){
-  asideCancelBtn.addEventListener('click', ()=> {
+function removeMenu() {
+  asideCancelBtn.addEventListener("click", () => {
     if (window.innerWidth <= 765) {
-      menu.classList.add('hidden');
-<<<<<<< HEAD
-      menu.classList.remove('block');
-=======
->>>>>>> 8222eeae3514d2200daa4ded86d6dcfaaaa90bcd
+      menu.classList.add("hidden");
+
+      menu.classList.remove("block");
     }
   });
 }
@@ -67,8 +66,4 @@ function setupBackdropMenu() {
   });
 }
 
-
-
 setupBackdropMenu();
-
-

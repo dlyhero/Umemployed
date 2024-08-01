@@ -111,11 +111,11 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        updateButtonText();
-    });
+   document.addEventListener("DOMContentLoaded", function () {
+    updateButtonText();
+});
 
-    function updateButtonText() {
+function updateButtonText() {
     const currentAccountType = document.getElementById("currentAccountType").innerText.split(": ")[1];
     if (currentAccountType === "Job Seeker") {
         document.getElementById("jobSeekerButton").innerText = "Go to Dashboard";
@@ -123,25 +123,35 @@
             window.location.href = "{% url 'dashboard' %}";
         };
         document.getElementById("employerButton").innerText = "Switch to Employer";
+        document.getElementById("employerButton").onclick = function () {
+            showModal('Employer');
+        };
     } else if (currentAccountType === "Employer") {
         document.getElementById("employerButton").innerText = "Go to Dashboard";
         document.getElementById("employerButton").onclick = function () {
             window.location.href = "{% url 'view_applications' user_company.id %}";
         };
         document.getElementById("jobSeekerButton").innerText = "Switch to Job Seeker";
+        document.getElementById("jobSeekerButton").onclick = function () {
+            showModal('Job Seeker');
+        };
     }
 }
 
-    function handleButtonClick(accountType) {
+function handleButtonClick(accountType) {
     const currentAccountType = document.getElementById("currentAccountType").innerText.split(": ")[1];
     if (currentAccountType === accountType) {
-        window.location.href = "{% url 'switch_account_type' %}";
+        if (accountType === "Job Seeker") {
+            window.location.href = "{% url 'dashboard' %}";
+        } else if (accountType === "Employer") {
+            window.location.href = "{% url 'view_applications' user_company.id %}";
+        }
     } else {
         showModal(accountType);
     }
 }
 
-    function showModal(accountType) {
+function showModal(accountType) {
     document.getElementById("selectedAccountType").innerText = accountType;
     document.getElementById("confirmationModal").classList.remove("hidden");
 }
@@ -152,11 +162,7 @@ function hideModal() {
 
 function confirmSwitch() {
     const selectedAccountType = document.getElementById("selectedAccountType").innerText;
-    if (selectedAccountType === "Job Seeker") {
-        window.location.href = "{% url 'switch_account_type' %}";
-    } else if (selectedAccountType === "Employer") {
-        window.location.href = "{% url 'switch_account_type' %}";
-    }
+    window.location.href = "{% url 'switch_account_type' %}?new_role=" + selectedAccountType;
 }
 
 </script>

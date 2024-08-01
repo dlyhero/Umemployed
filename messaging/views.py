@@ -18,3 +18,8 @@ def message_detail(request, message_id):
         return render(request, 'messaging/recruiter_message_detail.html', {'message': message})
     else:
         return render(request, 'messaging/applicant_message_detail.html', {'message': message})
+
+
+def user_inbox_detail(request):
+    return render(request,'messaging/applicant_inbox.html')
+
