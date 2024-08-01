@@ -569,14 +569,16 @@ def run_code(request):
     return HttpResponseNotAllowed(['POST'])
 
 from django.db.models import Avg
+from company.models import Company
 
 def job_details(request,job_id):
     job = Job.objects.get(id=job_id)
     similar_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=5.0)
-
+    company = Company.objects.get(job=job)
     context = {
         'job':job,
         'similar_jobs':similar_jobs,
+        'company':company
     }
     
     return render(request, "job/job_details.html",context)
