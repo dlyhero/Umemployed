@@ -186,6 +186,8 @@ EMAIL_PORT = 587 #new
 EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
 EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
 EMAIL_USE_TLS = True #new
+DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
+
 
 
 
