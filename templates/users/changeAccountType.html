@@ -111,7 +111,7 @@
 </div>
 
 <script>
-   document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     updateButtonText();
 });
 
@@ -126,19 +126,16 @@ function updateButtonText() {
         document.getElementById("employerButton").onclick = function () {
             showModal('Employer');
         };
-
-    }{% if user.has_company %}
-     else if (currentAccountType === "Employer" && user.has_company && user_company)  {
+    } else if (currentAccountType === "Employer") {
         document.getElementById("employerButton").innerText = "Go to Dashboard";
         document.getElementById("employerButton").onclick = function () {
-            window.location.href = "{% url 'view_applications' user_company.id %}";
+            handleEmployerDashboard();
         };
         document.getElementById("jobSeekerButton").innerText = "Switch to Job Seeker";
         document.getElementById("jobSeekerButton").onclick = function () {
             showModal('Job Seeker');
         };
     }
-    {% endif %}
 }
 
 function handleButtonClick(accountType) {
@@ -146,14 +143,20 @@ function handleButtonClick(accountType) {
     if (currentAccountType === accountType) {
         if (accountType === "Job Seeker") {
             window.location.href = "{% url 'dashboard' %}";
-        } 
-        {% if user.has_company %}
-        else if (accountType === "Employer") {
-            window.location.href = "{% url 'view_applications' user_company.id %}";
+        } else if (accountType === "Employer") {
+            handleEmployerDashboard();
         }
-        {% endif %}
     } else {
         showModal(accountType);
+    }
+}
+
+function handleEmployerDashboard() {
+    if ({{ user.has_company|yesno:"true,false" }}) {
+        window.location.href = "{% url 'view_applications' user_company.id %}";
+    } else {
+        alert("You need to create a company first.");
+        window.location.href = "{% url 'create_company' %}";
     }
 }
 
@@ -170,8 +173,8 @@ function confirmSwitch() {
     const selectedAccountType = document.getElementById("selectedAccountType").innerText;
     window.location.href = "{% url 'switch_account_type' %}?new_role=" + selectedAccountType;
 }
-
 </script>
+
 <br><br><br><br><br>
 
 {% endblock %}
