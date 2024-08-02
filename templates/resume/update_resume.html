@@ -3,29 +3,32 @@
 {% load custom_filters %}
 {% block custom_css %}
 <!-- Loader CSS -->
+
 <style>
-    .loader {
-        border: 8px solid #f3f3f3;
+    .loader .logo img{
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
-        border-top: 8px solid #3498db;
-        width: 60px;
-        height: 60px;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
+        background-size: cover;
+        margin: 0 auto;
     }
 
-    @-webkit-keyframes spin {
-        0% { -webkit-transform: rotate(0deg); }
-        100% { -webkit-transform: rotate(360deg); }
+  
+    @keyframes blink {
+        0%,
+        50%,
+        100% {
+            opacity: 1;
+        }
+
+        25%,
+        75% {
+            opacity: 0;
+        }
     }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .hidden {
-        display: none;
+    .blinking {
+        animation: blink 6s infinite;
     }
 </style>
 
@@ -220,9 +223,14 @@
       </section>
     </main>
     <!-- Loader HTML -->
-<div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-75 flex items-center justify-center z-50">
-    <div class="loader"></div>
-    <h1>This might take a while, we are processing the job you entered!(^_^)</h1>
+<div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="loader">
+      <div class="logo blinking">
+            <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
+          </div>
+          <br><br>
+          <span><p>Processing, this might take some seconds.</p><span>
+    </div>
 </div>
 
 

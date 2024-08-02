@@ -1,5 +1,36 @@
 {% extends 'resume/base.html' %}
 {% load static %}
+{% block custom_css %}
+<!-- Loader CSS -->
+
+<style>
+    .loader .logo img{
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-size: cover;
+        margin: 0 auto;
+    }
+
+  
+    @keyframes blink {
+        0%,
+        50%,
+        100% {
+            opacity: 1;
+        }
+
+        25%,
+        75% {
+            opacity: 0;
+        }
+    }
+
+    .blinking {
+        animation: blink 6s infinite;
+    }
+</style>
+{% endblock %}
 {% block content %}
 
 <main class="w-[93%] mx-auto flex-grow">
@@ -19,21 +50,33 @@
       </div>
     </div>
     <div class="h-fit md:h-[300px]">
-      <form method="post" enctype="multipart/form-data" class="w-full h-full">
-        {% csrf_token %}
-        <label id="drop-area" for="input-file" class="w-full text-white h-full border flex flex-col justify-center items-center px-[20px] py-[10px] md:p-[30px] text-center bg-blue-500 rounded-xl">
-          <div id="file-view" class="w-full h-full rounded-xl md:border-2 md:border-dashed md:bg-blue-400 md:p-[20px]">
+      <!-- Loader HTML -->
+<div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-2 flex items-center justify-center z-50">
+    <div class="loader">
+        <div class="logo blinking">
+            <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
+        </div>
+        <br>
+        <span><p><b>Processing, this might take some seconds.</b></p><span>
+    </div>
+</div>
+
+<form id="upload-form" method="post" enctype="multipart/form-data" class="w-full h-full">
+    {% csrf_token %}
+    <label id="drop-area" for="input-file" class="w-full text-white h-full border flex flex-col justify-center items-center px-[20px] py-[10px] md:p-[30px] text-center bg-blue-500 rounded-xl">
+        <div id="file-view" class="w-full h-full rounded-xl md:border-2 md:border-dashed md:bg-blue-400 md:p-[20px]">
             <img class="hidden md:block w-24 mt-6 mx-auto" src="{% static 'build/img/upload.svg' %}" alt="" />
             <p>
-              Choose files to upload <br />
-              <span class="hidden md:block">or drag and drop here</span>
+                Choose files to upload <br />
+                <span class="hidden md:block">or drag and drop here</span>
             </p>
             {{ form.file }}
-          </div>
-        </label>
-        <button type="submit" class="btn btn-primary mt-4">Upload</button>
-        <br>
-      </form>
+        </div>
+    </label>
+    <button type="submit" class="btn btn-primary mt-4">Upload</button>
+    <br>
+</form>
+
     </div>
   </section>
   <br><br>
@@ -43,5 +86,18 @@
     </div>
   </section>
 </main>
+
+<!-- JavaScript for handling form submission and loader -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('upload-form');
+    const loader = document.getElementById('loader');
+
+    form.addEventListener('submit', function () {
+        loader.classList.remove('hidden');
+    });
+});
+
+</script>
 
 {% endblock %}

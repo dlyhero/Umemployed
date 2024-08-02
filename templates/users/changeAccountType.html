@@ -126,7 +126,9 @@ function updateButtonText() {
         document.getElementById("employerButton").onclick = function () {
             showModal('Employer');
         };
-    } else if (currentAccountType === "Employer") {
+
+    }{% if user.has_company %}
+     else if (currentAccountType === "Employer" && user.has_company && user_company)  {
         document.getElementById("employerButton").innerText = "Go to Dashboard";
         document.getElementById("employerButton").onclick = function () {
             window.location.href = "{% url 'view_applications' user_company.id %}";
@@ -136,6 +138,7 @@ function updateButtonText() {
             showModal('Job Seeker');
         };
     }
+    {% endif %}
 }
 
 function handleButtonClick(accountType) {
@@ -143,9 +146,12 @@ function handleButtonClick(accountType) {
     if (currentAccountType === accountType) {
         if (accountType === "Job Seeker") {
             window.location.href = "{% url 'dashboard' %}";
-        } else if (accountType === "Employer") {
+        } 
+        {% if user.has_company %}
+        else if (accountType === "Employer") {
             window.location.href = "{% url 'view_applications' user_company.id %}";
         }
+        {% endif %}
     } else {
         showModal(accountType);
     }
