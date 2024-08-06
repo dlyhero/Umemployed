@@ -24,7 +24,6 @@ def index(request):
 
 from django.db.models import Avg
 def home(request):
-    jobs_list = Job.objects.all().order_by('-created_at')
     matching_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=10.0)
    
     # Get filter parameters from request
@@ -33,6 +32,20 @@ def home(request):
     experience_levels = request.GET.getlist('experience_levels')
     job_location = request.GET.get('job_location')
     search_query = request.GET.get('search_query')
+    
+    user = request.user
+    if user.is_authenticated:
+        # Check if the authenticated user has a resume
+        if hasattr(user, 'resume') and user.resume.skills.exists():
+            user_resume_skills = user.resume.skills.all()
+            query = Q()
+            for skill in user_resume_skills:
+                query |= Q(requirements=skill)
+            jobs_list = Job.objects.filter(query).distinct().order_by('-created_at')
+        else:
+            jobs_list = Job.objects.all().order_by('-created_at')
+    else:
+        jobs_list = Job.objects.all().order_by('-created_at')
 
     # Apply filters
     if salary_range:
@@ -60,7 +73,7 @@ def home(request):
         )
 
     # Pagination
-    paginator = Paginator(jobs_list, 7)  # Show 10 jobs per page
+    paginator = Paginator(jobs_list, 7)  # Show 7 jobs per page
     page = request.GET.get('page')
 
     try:
@@ -72,10 +85,9 @@ def home(request):
 
     context = {
         'jobs': jobs,
-        'matching_jobs':matching_jobs,
+        'matching_jobs': matching_jobs,
     }
     return render(request, 'website/home.html', context)
-
 
 
 # login a user
