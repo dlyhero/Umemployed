@@ -59,7 +59,10 @@ def update_resume(request):
                 if response.status_code == 200:
                     job_title = other_job_title  # Use the job title entered by the user
                     resume.job_title = job_title
-            
+            user=request.user
+            user.is_applicant = True
+            user.has_resume = True
+            user.save()
             # Save the updated resume
             resume.save()
 

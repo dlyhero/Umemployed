@@ -152,12 +152,18 @@ function handleButtonClick(accountType) {
 }
 
 function handleEmployerDashboard() {
-    if ({{ user.has_company|yesno:"true,false" }}) {
-        window.location.href = "{% url 'view_applications' user_company.id %}";
-    } else {
+    {% if user.has_company %}
+        var userCompanyId = "{{ user.company.id }}";
+        if (userCompanyId) {
+            window.location.href = "{% url 'view_applications' user.company.id %}";
+        } else {
+            alert("Company ID is missing.");
+            window.location.href = "{% url 'create_company' %}";
+        }
+    {% else %}
         alert("You need to create a company first.");
         window.location.href = "{% url 'create_company' %}";
-    }
+    {% endif %}
 }
 
 function showModal(accountType) {

@@ -16,7 +16,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
 def index(request):
-    return render(request, 'website/index.html')
+    job_count = Job.objects.count()
+    context={
+        'job_count':job_count,
+    }
+    return render(request, 'website/index.html',context)
 
 from django.db.models import Avg
 def home(request):

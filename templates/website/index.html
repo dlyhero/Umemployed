@@ -62,7 +62,7 @@
                 <div
                   class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
                 >
-                  3
+                  
                 </div>
               </a>
             </li>
@@ -77,7 +77,7 @@
                 <div
                   class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
                 >
-                  2
+                  {{ job_count }}
                 </div>
               </a>
             </li>
@@ -132,16 +132,24 @@
                       Resume
                     </a>
                   </div>
-                  {% if user.is_recruiter %}
-                  <div
-                    class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                  >
-                    <a href="{% url 'view_applications' user_company.id %}" class="flex items-center gap-2">
-                      <i class="fas fa-question-circle w-5 text-gray-500"></i>
-                      Company
-                    </a>
+                  <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                    {% if user.is_recruiter and user.has_company %}
+                      <a href="{% url 'view_applications' user.company.id %}" class="flex items-center gap-2">
+                        <i class="fas fa-question-circle w-5 text-gray-500"></i>
+                        Company
+                      </a>
+                    {% elif user.is_recruiter %}
+                      <a href="{% url 'create_company' %}" class="flex items-center gap-2">
+                        <i class="fas fa-question-circle w-5 text-gray-500"></i>
+                        Create Company
+                      </a>
+                      {% else %}
+                      <a href="{% url 'change_account_type' %}" class="flex items-center gap-2">
+                        <i class="fas fa-question-circle w-5 text-gray-500"></i>
+                        Switch Account Type
+                    {% endif %}
                   </div>
-                  {% endif %}
+
                   <div
                     class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                   >
@@ -266,14 +274,25 @@
                 <span class="text-gray-800 font-medium">Settings</span>
               </a>
               {% if user.is_recruiter %}
-              <a
-                class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
-                href="{% url 'view_applications' user_company.id %}"
-              >
-                <i class="fas fa-dollar-sign text-gray-500 mr-3"></i>
-                <span class="text-gray-800 font-medium">Company</span>
-              </a>
+                {% if user.has_company %}
+                  <a
+                    class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+                    href="{% url 'view_applications' user.company.id %}"
+                  >
+                    <i class="fas fa-dollar-sign text-gray-500 mr-3"></i>
+                    <span class="text-gray-800 font-medium">Company</span>
+                  </a>
+                {% else %}
+                  <a
+                    class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+                    href="{% url 'create_company' %}"
+                  >
+                    <i class="fas fa-dollar-sign text-gray-500 mr-3"></i>
+                    <span class="text-gray-800 font-medium">Create Company</span>
+                  </a>
+                {% endif %}
               {% endif %}
+
               <a
                 class="nav-item flex items-center p-3 mb-2 border-b border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
                 href="#"

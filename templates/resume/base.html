@@ -109,6 +109,7 @@
     </div>
     <nav class="flex md:gap-x-4 items-center">
       <ul class="flex gap-x-2 md:gap-x-4 items-center">
+        {% if user.is_authenticated %}
         <li class="relative">
               <a
                 id="messages-link"
@@ -120,7 +121,7 @@
                 <div
                   class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
                 >
-                  2
+                  20
                 </div>
               </a>
             </li>
@@ -138,7 +139,7 @@
             <div
               class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
             >
-              3
+              
             </div>
           </a>
         </li>
@@ -153,7 +154,7 @@
             <div
               class="absolute top-[1px] left-3 py-[0.3px] px-[7px] text-[10px] text-white bg-red-500 rounded-full"
             >
-              3
+              
             </div>
           </a>
         </li>
@@ -241,7 +242,17 @@
             <i class="fas fa-bars"></i>
           </button>
         </li>
+        {% else %}
+        <li>
+          <a
+            class="header-link p-2 rounded"
+            href="{% url 'login' %}"
+            >Login</a
+          >
+        </li>
+        {% endif %}
       </ul>
+      {% if user.is_authenticated %}
       {% if user.has_company %}
       <div class="hidden md:block">
         <div class="flex">
@@ -258,12 +269,23 @@
         <div class="flex">
           <div class="border-l h-[40px]"></div>
           <span class="ml-2 text-nowrap p-2 rounded">
+            {% if user.is_applicant %}
             <a class="header-link text-nowrap" href="{% url 'change_account_type' %}"
               >Become an Employer</a
             >
+            {% elif user.is_recruiter %}
+            <a class="header-link text-nowrap" href="{% url 'change_account_type' %}"
+              >Switch to Applicant Role</a
+            >
+            {% else %}
+            <a class="header-link text-nowrap" href="{% url 'change_account_type' %}"
+              >Switch Role</a
+            >
+            {% endif %}
           </span>
         </div>
       </div>
+      {% endif %}
       {% endif %}
     </nav>
     <div

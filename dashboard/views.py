@@ -73,9 +73,12 @@ from resume.models import UserProfile,UserLanguage
 import pycountry
 from job.models import Job
 from django.db.models import Avg
+from dashboard.decorators import resume_required
+
 
 
 @login_required(login_url='login')
+@resume_required
 def dashboard(request):
     try:
         resume = Resume.objects.get(user=request.user)
