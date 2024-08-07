@@ -3,7 +3,7 @@ from resume.models import Resume,Education,ResumeDoc,Experience
 from users.models import User
 from django.contrib.auth.decorators import login_required
 from users.views import login_user
-from job.models import Application
+from job.models import Application,calculate_skill_match
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -15,6 +15,7 @@ from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+
 
 @login_required
 def get_suggested_skills(request):
@@ -161,8 +162,16 @@ def dashboard(request):
     user_languages = UserLanguage.objects.filter(user_profile=user_profile)
     
     top_jobs = Job.objects.order_by('-id')[:5]
-    matching_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=10.0)
 
+    # Calculate matching jobs
+    matching_jobs = []
+    if user.is_authenticated:
+        user_resume_skills = resume.skills.values_list('name', flat=True)
+        for job in Job.objects.all():
+            job_skills = job.requirements.values_list('name', flat=True)
+            match_percentage, _ = calculate_skill_match(user_resume_skills, job_skills)
+            if match_percentage >= 10.0:  # Assuming the threshold is 10%
+                matching_jobs.append(job)
 
     context = {
         'contact_info': contact_info,
@@ -178,9 +187,9 @@ def dashboard(request):
         'profile_form': profile_form,  # Add profile form to context
         'user_profile': user_profile,
         'user_languages': user_languages,
-        'country_name':country_name,
-        'top_jobs':top_jobs,
-        'matching_jobs':matching_jobs,
+        'country_name': country_name,
+        'top_jobs': top_jobs,
+        'matching_jobs': matching_jobs,
     }
 
     return render(request, 'dashboard/dashboard.html', context)
