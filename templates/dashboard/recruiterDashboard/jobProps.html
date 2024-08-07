@@ -2,7 +2,7 @@
  {% extends 'resume/recruiterBase.html' %}
 {% load static %}
  {% block custom_css %}
-    
+        
   {% endblock %}
 {% block content %}
 
@@ -13,7 +13,7 @@
             <h2 class="p-1 text-[17px] font-bold text-gray-600">Job Types</h2>
             <div class="jopTypeWrap mx-auto flex flex-wrap gap-2">
                 <!-- Job Types Checkboxes -->
-                <label class="flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
+                <label class="circ flex items-center justify-center cursor-pointer border border-gray-400 text-gray-900 rounded-full px-4 py-2 flex-nowrap text-[19px]">
                     <input type="checkbox" name="jobType" value="fullTime" class="hidden job-type-checkbox">
                     <span class="custom-checkbox"></span>
                     Full Time
@@ -176,35 +176,55 @@
     
 </main>
 <script>
-    // JavaScript to handle checkbox selections
-    document.getElementById('jobTypeForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        var jobTypes = [];
-        document.querySelectorAll('.job-type-checkbox:checked').forEach(function(checkbox) {
-            jobTypes.push(checkbox.value);
-        });
-        document.getElementById('jobTypesField').value = jobTypes.join(',');
+   document.getElementById('jobTypeForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-        var experienceLevels = [];
-        document.querySelectorAll('.experience-level-checkbox:checked').forEach(function(checkbox) {
-            experienceLevels.push(checkbox.value);
-        });
-        document.getElementById('experienceLevelsField').value = experienceLevels.join(',');
-
-        var weeklyRanges = [];
-        document.querySelectorAll('.weekly-range-checkbox:checked').forEach(function(checkbox) {
-            weeklyRanges.push(checkbox.value);
-        });
-        document.getElementById('weeklyRangesField').value = weeklyRanges.join(',');
-
-        var shifts = [];
-        document.querySelectorAll('.shift-checkbox:checked').forEach(function(checkbox) {
-            shifts.push(checkbox.value);
-        });
-        document.getElementById('shiftsField').value = shifts.join(',');
-
-        this.submit();
+    var jobTypes = [];
+    document.querySelectorAll('.job-type-checkbox:checked').forEach(function(checkbox) {
+        jobTypes.push(checkbox.value);
     });
+    document.getElementById('jobTypesField').value = jobTypes.join(',');
+
+    var experienceLevels = [];
+    document.querySelectorAll('.experience-level-checkbox:checked').forEach(function(checkbox) {
+        experienceLevels.push(checkbox.value);
+    });
+    document.getElementById('experienceLevelsField').value = experienceLevels.join(',');
+
+    var weeklyRanges = [];
+    document.querySelectorAll('.weekly-range-checkbox:checked').forEach(function(checkbox) {
+        weeklyRanges.push(checkbox.value);
+    });
+    document.getElementById('weeklyRangesField').value = weeklyRanges.join(',');
+
+    var shifts = [];
+    document.querySelectorAll('.shift-checkbox:checked').forEach(function(checkbox) {
+        shifts.push(checkbox.value);
+    });
+    document.getElementById('shiftsField').value = shifts.join(',');
+
+    this.submit();
+});
+
+// Function to update checkbox color on change
+function updateCheckboxColor(checkbox) {
+    if (checkbox.checked) {
+        checkbox.parentElement.style.color = '#1e90ff';
+    } else {
+        checkbox.parentElement.style.color = '';
+    }
+}
+
+// Apply the updateCheckboxColor function to all relevant checkboxes
+document.querySelectorAll('.job-type-checkbox, .experience-level-checkbox, .weekly-range-checkbox, .shift-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        updateCheckboxColor(checkbox);
+    });
+
+    // Initial check in case the checkboxes are pre-checked
+    updateCheckboxColor(checkbox);
+});
+
 </script>
 
   >

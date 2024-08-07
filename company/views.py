@@ -31,7 +31,7 @@ def create_company(request):
     try:
         company = request.user.company
         messages.warning(request, 'Permission Denied! You have already created a company.')
-        return redirect('dashboard')
+        return redirect('switch_account')
     except Company.DoesNotExist:
         if request.method == 'POST':
             print("posttttttttttttttttttttttt")
