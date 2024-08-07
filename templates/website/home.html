@@ -6,78 +6,80 @@
 {% block content %}
   <main class="mx-auto mt-2 flex flex-col lg:flex-row" style="width: 95%; bg-[#1]" >
     <aside class="hidden xl:block lg:w-1/32 mr-5 bg-white shadow p-4 rounded-lg mb-6 lg:mb-0 h-full">
-      <div class="mb-4">
-        <div class="flex justify-between items-center">
-          <h2 class="font-bold text-lg mb-2">Filter</h2>
-          <p class="pointer" style="color: #1e90ff;">clear all</p>
+    <form method="GET" action="{% url 'home' %}">
+        <div class="mb-4">
+            <div class="flex justify-between items-center">
+                <h2 class="font-bold text-lg mb-2">Filter</h2>
+                <button type="submit" class="pointer" style="color: #1e90ff;">Apply Filters</button>
+            </div>
+            <div class="mb-2">
+                <label class="block text-gray-700">Salary: <span id="salaryValue">$3300</span></label>
+                <input type="range" min="300" max="5000" value="3300" class="w-full mt-1" id="salaryRange" name="salary_range" oninput="updateSalaryValue(this.value)" />
+                <div class="flex justify-between">
+                    <p>$300</p>
+                    <p>$5K</p>
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="block text-gray-700 font-bold">Job Type</label>
+                <div>
+                    <label class="block text-gray-600"><input type="checkbox" name="job_type" value="Urgent" class="mr-2" />Urgent</label>
+                    <label class="block text-gray-600"><input type="checkbox" name="job_type" value="Remote" class="mr-2" />Remote</label>
+                    <label class="block text-gray-600"><input type="checkbox" name="job_type" value="Full-Time" class="mr-2" />Full-Time</label>
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="block text-gray-700 font-bold">Experience Level</label>
+                <div>
+                    <div class="flex justify-between">
+                        <label class="block text-gray-600"><input type="checkbox" name="experience_levels" value="Entry Level" class="mr-2" />Entry Level</label>
+                        <p>325 jobs</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <label class="block text-gray-600"><input type="checkbox" name="experience_levels" value="Intermediate" class="mr-2" />Intermediate</label>
+                        <p>523 jobs</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <label class="block text-gray-600"><input type="checkbox" name="experience_levels" value="Expert" class="mr-2" />Expert</label>
+                        <p>200 Jobs</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="block text-gray-700 font-bold">Job Location</label>
+                <div>
+                    <label class="block text-gray-600"><input type="checkbox" name="job_location" value="On Site" class="mr-2" />On Site</label>
+                    <div class="relative">
+                        <input type="text" name="location_query" placeholder="Search by location" class="border bg-gray-300 w-full py-1 px-3 text-gray-700 rounded-lg focus:outline-none focus:border-blue-500" />
+                    </div>
+                    <label class="block text-gray-600"><input type="checkbox" name="job_location" value="Remote" class="mr-2" />Remote</label>
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="block text-gray-700 font-bold">Applicants</label>
+                <div>
+                    <div class="flex justify-between">
+                        <label class="block text-gray-600"><input type="checkbox" name="applicants" value="Less than 10" class="mr-2" />Less than 10</label>
+                        <p>200 jobs</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <label class="block text-gray-600"><input type="checkbox" name="applicants" value="10 to 50" class="mr-2" />10 to 50</label>
+                        <p>325 jobs</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <label class="block text-gray-600"><input type="checkbox" name="applicants" value="50 to 100" class="mr-2" />50 to 100</label>
+                        <p>50 jobs</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <label class="block text-gray-600"><input type="checkbox" name="applicants" value="More than 100" class="mr-2" />More than 100</label>
+                        <p>230 jobs</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mb-2">
-          <label class="block text-gray-700">Salary: <span id="salaryValue">$3300</span></label>
-          <input type="range" min="300" max="5000" value="3300" class="w-full mt-1" id="salaryRange" oninput="updateSalaryValue(this.value)" />
-          <div class="flex justify-between">
-            <p>$300</p>
-            <p>$5K</p>
-          </div>
-        </div>
-        <div class="mb-2">
-          <label class="block text-gray-700 font-bold">Job Type</label>
-          <div>
-            <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Urgent</label>
-            <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Remote</label>
-            <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Full-Time</label>
-          </div>
-        </div>
-        <div class="mb-2">
-          <label class="block text-gray-700 font-bold">Experience Level</label>
-          <div>
-            <div class="flex justify-between">
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Entry Level</label>
-              <p>325 jobs</p>
-            </div>
-            <div class="flex justify-between">
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Intermediate</label>
-              <p>523 jobs</p>
-            </div>
-            <div class="flex justify-between">
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Expert</label>
-              <p>200 Jobs</p>
-            </div>
-          </div>
-        </div>
-        <div class="mb-2">
-          <label class="block text-gray-700 font-bold">Job Location</label>
-          <div>
-            <label class="block text-gray-600"><input type="checkbox" class="mr-2" />On Site</label>
-            <div class="relative">
-              <input type="text" placeholder="Search by location" class="border bg-gray-300 w-full py-1 px-3 text-gray-700 rounded-lg focus:outline-none focus:border-blue-500" />
-            </div>
-            <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Remote</label>
-          </div>
-        </div>
-        <div class="mb-2">
-          <label class="block text-gray-700 font-bold">Applicants</label>
-          <div>
-            <div class="flex justify-between">
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />Less than 10</label>
-              <p>200 jobs</p>
-            </div>
-            <div class="flex justify-between">
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />10 to 50</label>
-              <p>325 jobs</p>
-            </div>
-            <div class="flex justify-between">
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />50 to 100</label>
-              <p>50 jobs</p>
-            </div>
-            <div class="flex justify-between">
-              <label class="block text-gray-600"><input type="checkbox" class="mr-2" />More than 100</label>
-              <p>230 jobs</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </aside>
-    <div class="lg:flex-1 flex flex-col lg:flex-row justify-between">
+    </form>
+</aside>
+<div class="lg:flex-1 flex flex-col lg:flex-row justify-between">
       <div class="lg:w-3/4 lg:mr-5">
         <div class="p-8 rounded-lg shadow mb-4 text-white" style="background-color:#1e90ff;">
           <h2 class="text-xl font-bold mb-2">Find your dream job here!</h2>
@@ -177,8 +179,9 @@
           <i class="fas fa-exclamation-circle"></i>
         </div>
         <div class="carousel space-x-2 xl:space-y-4 flex md:block overflow-x-scroll">
+         
           {% if matching_jobs %}
-            {% for job in matching_jobs %}
+          {% for job, match_percentage in matching_jobs %}
               <a href="{% url 'job:job_details' job_id=job.id %}">
                 <div class="bg-white p-3 rounded-lg min-w-[80%] md:min-w-full">
                   <div class="flex justify-between items-center cursor-pointer">

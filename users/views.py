@@ -9,26 +9,60 @@ from company.views import create_company
 from django.contrib.auth.decorators import login_required
 from job.models import Job,Application
 from .filters import OrderFilter
-from django.db.models import Q
+from django.db.models import Q,Count
+from job.models import calculate_skill_match 
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
 def index(request):
-    return render(request, 'website/index.html')
+    job_count = Job.objects.count()
+    context={
+        'job_count':job_count,
+    }
+    return render(request, 'website/index.html',context)
 
 from django.db.models import Avg
 def home(request):
-    jobs_list = Job.objects.all().order_by('-created_at')
-    matching_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=10.0)
-   
+    user = request.user
+    matching_jobs = []
+
+    if user.is_authenticated:
+        try:
+            applicant_resume = Resume.objects.get(user=user)
+            applicant_skills = set(applicant_resume.skills.all())
+        except Resume.DoesNotExist:
+            applicant_skills = set()
+
+        # Loop through jobs to calculate match percentage
+        for job in Job.objects.all():
+            job_skills = set(job.requirements.all())
+            match_percentage, _ = calculate_skill_match(applicant_skills, job_skills)
+
+            if match_percentage >= 10.0:  # Threshold of 10%
+                matching_jobs.append((job, match_percentage))
+
     # Get filter parameters from request
     salary_range = request.GET.get('salary_range')
     job_type = request.GET.getlist('job_type')
     experience_levels = request.GET.getlist('experience_levels')
     job_location = request.GET.get('job_location')
     search_query = request.GET.get('search_query')
+    location_query = request.GET.get('location_query')
+    applicants = request.GET.get('applicants')  # Get applicants filter value
+
+    if user.is_authenticated:
+        if hasattr(user, 'resume') and user.resume.skills.exists():
+            user_resume_skills = user.resume.skills.all()
+            query = Q()
+            for skill in user_resume_skills:
+                query |= Q(requirements=skill)
+            jobs_list = Job.objects.annotate(applicant_count=Count('application')).filter(query).distinct().order_by('-created_at')
+        else:
+            jobs_list = Job.objects.annotate(applicant_count=Count('application')).order_by('-created_at')
+    else:
+        jobs_list = Job.objects.annotate(applicant_count=Count('application')).order_by('-created_at')
 
     # Apply filters
     if salary_range:
@@ -41,10 +75,10 @@ def home(request):
         jobs_list = jobs_list.filter(experience_levels__in=experience_levels)
 
     if job_location:
-        if job_location == "onsite":
-            jobs_list = jobs_list.filter(job_location_type="Onsite")
-        elif job_location == "remote":
-            jobs_list = jobs_list.filter(job_location_type="Remote")
+        jobs_list = jobs_list.filter(job_location_type__in=job_location)
+
+    if location_query:
+        jobs_list = jobs_list.filter(location__icontains=location_query)
 
     if search_query:
         jobs_list = jobs_list.filter(
@@ -55,8 +89,19 @@ def home(request):
             Q(experience_levels__icontains=search_query)
         )
 
+    # Apply applicants filter
+    if applicants:
+        if applicants == 'Less than 10':
+            jobs_list = jobs_list.filter(applicant_count__lt=10)
+        elif applicants == '10 to 50':
+            jobs_list = jobs_list.filter(applicant_count__gte=10, applicant_count__lte=50)
+        elif applicants == '50 to 100':
+            jobs_list = jobs_list.filter(applicant_count__gte=50, applicant_count__lte=100)
+        elif applicants == 'More than 100':
+            jobs_list = jobs_list.filter(applicant_count__gt=100)
+
     # Pagination
-    paginator = Paginator(jobs_list, 7)  # Show 10 jobs per page
+    paginator = Paginator(jobs_list, 7)  # Show 7 jobs per page
     page = request.GET.get('page')
 
     try:
@@ -68,11 +113,9 @@ def home(request):
 
     context = {
         'jobs': jobs,
-        'matching_jobs':matching_jobs,
+        'matching_jobs': matching_jobs,
     }
     return render(request, 'website/home.html', context)
-
-
 
 # login a user
 def login_user(request):
@@ -195,3 +238,6 @@ def switch_account_type(request):
     else:
         messages.error(request, 'Invalid role switch request.')
         return redirect('home')
+
+
+

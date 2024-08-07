@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
     <title>Sign Up &VerticalLine; UmEmployed</title>
     <style>
+    
         @keyframes slideFadeIn {
             0% {
                 transform: translateX(-100%);
@@ -40,18 +41,18 @@
 
         .primary .alert {
             animation: slideFadeIn 5s ease, slideFadeOut 5s 5s ease;
-            background-color: #f0f9ff; /* Light blue background */
-            border: 1px solid #b3e5fc; /* Matching border color */
-            border-radius: 8px; /* Rounded corners */
-            color: #0277bd; /* Darker blue text */
-            padding: 15px; /* Padding inside the alert */
-            margin: 10px 0; /* Space between alerts */
-            font-family: Arial, sans-serif; /* Font style */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            position: relative; /* Required for close button positioning */
-            max-width: 600px; /* Max width for alerts */
-            margin-left: auto; /* Center horizontally */
-            margin-right: auto; /* Center horizontally */
+            background-color: #f0f9ff;
+            border: 1px solid #b3e5fc; 
+            border-radius: 8px;
+            color: #0277bd; 
+            padding: 15px; 
+            margin: 10px 0; 
+            font-family: Arial, sans-serif; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            position: relative; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
         }
 
         .primary .alert .close-btn {
@@ -143,20 +144,7 @@
                   type="text"
                 />
               </div>
-              <div class="country-wrapper sm:w-4/5 mx-auto wrapper mb-1">
-                <label for="country">Country</label><br />
-                <select
-                  class="w-full mb-2 border p-2.5 rounded-lg text-sm"
-                  name="country"
-                  id="country"
-                >
-                  <option value="" disabled>Choose Country</option>
-                  <option value="usa">United States</option>
-                  <option value="canada">Canada</option>
-                  <option value="germany">Germany</option>
-                  <option value="france">France</option>
-                </select>
-              </div>
+              
               <div class="password-wrapper sm:w-4/5 mx-auto wrapper">
                 <label for="password">Password</label><br />
                 <input
@@ -189,16 +177,12 @@
                 <div
                   class="google-signup wrapper mb-3 border p-2.5 sm:w-4/5 mx-auto rounded-lg"
                 >
-                  <a class="flex justify-center text-sm items-center gap-1" href="{% provider_login_url 'google' %}?next=/">
+                  <a class="flex justify-center items-center gap-1" href="{% url 'social:begin' 'google-oauth2' %}?next=/">
                     <div class="icon-wrapper bg-white rounded-full">
-                      <img
-                        class="icon"
-                        src="{% static 'img/icons/7123025_logo_google_g_icon.png' %}"
-                        alt="Google logo"
-                      />
+                      <img class="icon" src="{% static 'img/icons/7123025_logo_google_g_icon.png' %}" alt="Google logo" />
                     </div>
 
-                    <div class="font-bold">Sign up with Google</div>
+                    <div class="font-bold">Continue with Google</div>
                   </a>
                 </div>
                 <div
