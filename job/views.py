@@ -282,39 +282,53 @@ def apply_job(request, job_id):
     # Redirect the user to the answer job questions page
     return redirect('job:answer_job_questions', job_id=job_id)
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
+    logger.debug(f"Answer job questions view triggered for job_id: {job_id}")
+
+    # Fetch the job and user
     job = get_object_or_404(Job, id=job_id)
     user = request.user
-    skills = job.requirements.all()  # Assuming this gets required skills for the job
-
-    # Get or create an application specific to the user and job
+    skills = job.requirements.all()
+    
+    # Get or create an application instance
     application, created = Application.objects.get_or_create(user=user, job=job)
+    logger.debug(f"Application instance: {application}, created: {created}")
 
+    # Check if the quiz has already been completed
     if application.has_completed_quiz:
         messages.warning(request, "You have already completed the quiz for this job.")
         return redirect('job:job_application_success', job_id=job_id)
-
-    # Determine current skill based on application round_scores
+    
+    # Determine the remaining skills and current skill
     completed_skills = application.round_scores.keys()
     remaining_skills = [skill for skill in skills if str(skill.id) not in completed_skills]
+    logger.debug(f"Remaining skills: {remaining_skills}")
 
     if not remaining_skills:
-        # All skills completed
+        # All skills have been completed
         application.has_completed_quiz = True
         application.save()
         messages.success(request, "Congratulations! You have completed all rounds.")
         return redirect('job:job_application_success', job_id=job_id)
-
-    # Select the next skill to test on
+    
+    # Get the current skill to be answered
     current_skill = remaining_skills[0]
+    logger.debug(f"Current skill: {current_skill}")
 
     if request.method == 'POST':
+        # Process form submission
         answers = request.POST
+        logger.debug(f"POST data: {answers}")
+
         if answers:
             total_score = 0
+            # Query the questions for the current skill
             mcqs = SkillQuestion.objects.filter(skill=current_skill, entry_level=job.level)
+            logger.debug(f"MCQs for skill {current_skill}: {mcqs}")
 
             for mcq in mcqs:
                 answer = answers.get(f'question{mcq.id}')
@@ -323,25 +337,35 @@ def answer_job_questions(request, job_id):
                         applicant=user,
                         question=mcq,
                         answer=answer,
-                        job=job  # Ensure the answer is tied to the specific job
+                        job=job
                     )
                     applicant_answer.calculate_score()
                     total_score += applicant_answer.score
 
-            # Store the score for the current skill specific to the job
             application.round_scores[str(current_skill.id)] = total_score
-
-            # Save the application to update scores and percentages
             application.save()
 
+            logger.debug(f"Updated round_scores: {application.round_scores}")
+
             messages.success(request, f"Your answers for the skill '{current_skill.name}' have been recorded. Total score: {total_score}")
-            return redirect('evaluation_results')
+            return redirect('job:job_application_success', job_id=job_id)
         else:
             messages.error(request, "Please answer all questions.")
             return JsonResponse({'success': False, 'error': "Please answer all questions."})
-
     else:
+        # Render the quiz form
         mcqs = SkillQuestion.objects.filter(skill=current_skill, entry_level=job.level)
+        logger.debug(f"Current skill questions: {mcqs}")
+
+        # Check if there are questions to render
+        if not mcqs:
+            logger.error(f"No questions found for skill: {current_skill}")
+            messages.error(request, "No questions available for the current skill.")
+            return redirect('job:job_application_success', job_id=job_id)
+
+        # Print the questions to debug
+        for question in mcqs:
+            logger.debug(f"Question ID: {question.id}, Question: {question.question}, Options: {question.option_a}, {question.option_b}, {question.option_c}, {question.option_d}")
 
         context = {
             'job': job,
@@ -352,6 +376,7 @@ def answer_job_questions(request, job_id):
         }
 
         return render(request, 'job/rounds/round1.html', context)
+
 
 
 
