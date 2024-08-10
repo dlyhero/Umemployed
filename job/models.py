@@ -54,7 +54,7 @@ class Job(models.Model):
         return self.title
 
 class MCQ(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
     question = models.CharField(max_length=255)
     option_a = models.CharField(max_length=100)
     option_b = models.CharField(max_length=100)
@@ -67,7 +67,7 @@ class MCQ(models.Model):
         return self.question
     
 class SkillQuestion(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
     question = models.CharField(max_length=255)
     option_a = models.CharField(max_length=100)
     option_b = models.CharField(max_length=100)
@@ -82,7 +82,7 @@ class SkillQuestion(models.Model):
         return self.question
 
 class ApplicantAnswer(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
     applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     question = models.ForeignKey('SkillQuestion', on_delete=models.CASCADE)
     answer = models.CharField(max_length=255)
@@ -102,7 +102,7 @@ class ApplicantAnswer(models.Model):
 logger = logging.getLogger(__name__)
 
 class Application(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     job = models.ForeignKey('Job', on_delete=models.CASCADE)
     quiz_score = models.IntegerField(default=0)

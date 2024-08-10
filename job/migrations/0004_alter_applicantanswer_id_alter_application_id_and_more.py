@@ -14,26 +14,26 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='applicantanswer',
             name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
+            field=models.BigAutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='application',
             name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
+            field=models.BigAutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='job',
             name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
+            field=models.BigAutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='mcq',
             name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
+            field=models.BigAutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='skillquestion',
             name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
+            field=models.BigAutoField(primary_key=True, serialize=False),
         ),
     ]

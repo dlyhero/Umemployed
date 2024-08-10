@@ -57,7 +57,7 @@ class Experience(models.Model):
 
 
 class Resume(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     surname = models.CharField(max_length=100, null=True, blank=True)
@@ -81,7 +81,7 @@ class Resume(models.Model):
         
         
 class ResumeDoc(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.AutoField(primary_key=True) 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to='resumes/')
     extracted_text = models.TextField(blank=True)

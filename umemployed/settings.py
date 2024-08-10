@@ -115,6 +115,10 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+# }
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
