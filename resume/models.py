@@ -22,7 +22,7 @@ class SkillCategory(models.Model):
         return self.name
 
 class Skill(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skills', default='c6962387-ea32-4a53-8c5d-ec9a596d864b')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skills', default='1')
     name = models.CharField(max_length=100)
     categories = models.ManyToManyField(SkillCategory)  # Change ForeignKey to ManyToManyField
     is_extracted = models.BooleanField(default=False)  # Indicates whether the skill was extracted from a job description
@@ -57,7 +57,7 @@ class Experience(models.Model):
 
 
 class Resume(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     surname = models.CharField(max_length=100, null=True, blank=True)
@@ -69,7 +69,7 @@ class Resume(models.Model):
     description= models.TextField(max_length=500, default="I am a ...")
     profile_image = models.ImageField(upload_to="resume/images", blank=True, default="media/resume/images/PXL_20231104_141008232.MP.jpg")
     cv = models.FileField(upload_to='resume/cv', default="", blank=False, validators=[ext_validator, validate_file_mime_type])
-    category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, default='1', null=True)
+    category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE,null=True)
     skills = models.ManyToManyField(Skill)
     created_at = models.DateTimeField(auto_now_add=True)  # Add this line
     updated_at = models.DateTimeField(auto_now=True)
@@ -81,7 +81,7 @@ class Resume(models.Model):
         
         
 class ResumeDoc(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.AutoField(primary_key=True) 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to='resumes/')
     extracted_text = models.TextField(blank=True)

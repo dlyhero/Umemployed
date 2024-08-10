@@ -6,6 +6,9 @@ import uuid
 from resume.models import Resume
 from job.utils import calculate_skill_match
 from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Job(models.Model):
     BEGINNER = 'Beginner'
@@ -51,7 +54,7 @@ class Job(models.Model):
         return self.title
 
 class MCQ(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
     question = models.CharField(max_length=255)
     option_a = models.CharField(max_length=100)
     option_b = models.CharField(max_length=100)
@@ -64,7 +67,7 @@ class MCQ(models.Model):
         return self.question
     
 class SkillQuestion(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
     question = models.CharField(max_length=255)
     option_a = models.CharField(max_length=100)
     option_b = models.CharField(max_length=100)
@@ -73,65 +76,65 @@ class SkillQuestion(models.Model):
     correct_answer = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
     entry_level = models.CharField(max_length=100, blank=True, null=True)  # Assuming entry level is a string field
+    job = models.ForeignKey(Job, on_delete=models.CASCADE,null=True, related_name='skill_questions')
 
     def __str__(self):
         return self.question
 
 class ApplicantAnswer(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey(SkillQuestion, on_delete=models.CASCADE)
+    id = models.BigAutoField(primary_key=True)
+    applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    question = models.ForeignKey('SkillQuestion', on_delete=models.CASCADE)
     answer = models.CharField(max_length=255)
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
-    score = models.IntegerField(default=0)  # Add score field
-
-    def __str__(self):
-        return f"Answer by {self.applicant.username} for {self.question.question}"
+    job = models.ForeignKey('Job', on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)
+    application = models.ForeignKey('Application', on_delete=models.CASCADE, related_name='answers')
 
     def calculate_score(self):
-        # Ensure there's a correct_answer field in SkillQuestion
         if hasattr(self.question, 'correct_answer') and self.answer == self.question.correct_answer:
             self.score = 1
         else:
             self.score = 0
         self.save()
+
+
         
+logger = logging.getLogger(__name__)
+
 class Application(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     job = models.ForeignKey('Job', on_delete=models.CASCADE)
     quiz_score = models.IntegerField(default=0)
     matching_percentage = models.FloatField(default=0.0)
     overall_match_percentage = models.FloatField(default=0.0)
     has_completed_quiz = models.BooleanField(default=False)
-    round_scores = models.JSONField(default=dict)  # Store scores for each skill/round as a dictionary
-    total_scores = models.JSONField(default=dict)  # Store total score for each skill/round as a dictionary
+    round_scores = models.JSONField(default=dict)
+    total_scores = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        # Always update scores
+        logger.debug(f"Calling save method for Application")
         self.update_quiz_score()
         self.update_matching_percentage()
         self.update_total_scores()
         
-        if self.is_quiz_completed():
-            self.has_completed_quiz = True
-        else:
-            self.has_completed_quiz = False  # Ensure it's explicitly set to False if not completed
+        self.has_completed_quiz = self.is_quiz_completed()
         
-        
-        super().save(*args, **kwargs)  # Save the instance without recursion
+        logger.debug(f"Application saved with quiz_score: {self.quiz_score}, has_completed_quiz: {self.has_completed_quiz}")
+        super().save(*args, **kwargs)
 
     def is_quiz_completed(self):
-        # Check if all required rounds have been completed
-        required_skills = self.job.requirements.all()
-        completed_skills = set(self.round_scores.keys())
-        return set(required_skills.values_list('id', flat=True)) <= completed_skills
+        required_skills = set(self.job.requirements.values_list('id', flat=True))
+        completed_skills = set(int(skill_id) for skill_id in self.round_scores.keys())
+        logger.debug(f"Checking if quiz is completed")
+        return required_skills <= completed_skills
 
     def update_quiz_score(self):
-        # Calculate quiz_score from ApplicantAnswer
-        self.quiz_score = ApplicantAnswer.objects.filter(applicant=self.user, job=self.job, score=1).count()
+        total_correct_answers = ApplicantAnswer.objects.filter(application=self, score=1).count()
+        self.quiz_score = total_correct_answers
+        logger.debug(f"Updated quiz score: {self.quiz_score}")
 
     def update_matching_percentage(self):
         try:
@@ -142,23 +145,23 @@ class Application(models.Model):
 
             self.matching_percentage = match_percentage
             self.overall_match_percentage = (0.7 * match_percentage) + (0.3 * self.quiz_score)
+            logger.debug(f"Updated matching percentage: {self.matching_percentage}, overall match percentage: {self.overall_match_percentage}")
         except Resume.DoesNotExist:
             self.matching_percentage = 0.0
             self.overall_match_percentage = 0.0
 
     def update_total_scores(self):
-        # Update total_scores for each skill/round
-        self.total_scores = {}  # Reset total_scores before updating
+        self.total_scores = {}
         for skill_id in self.round_scores:
             answers = ApplicantAnswer.objects.filter(applicant=self.user, job=self.job, question__skill_id=skill_id)
             total_score = sum(answer.score for answer in answers)
             self.total_scores[skill_id] = total_score
+        logger.debug(f"Updated total scores: {self.total_scores}")
 
-
+    @staticmethod
     def calculate_skill_match(applicant_skills, job_skills):
-        if not job_skills:  # Check if job_skills is empty
-            return 0, []  # Return 0 match percentage and an empty list of missing skills
-
+        if not job_skills:
+            return 0, []
         common_skills = set(applicant_skills) & set(job_skills)
         match_percentage = (len(common_skills) / len(job_skills)) * 100
         missing_skills = list(set(job_skills) - common_skills)

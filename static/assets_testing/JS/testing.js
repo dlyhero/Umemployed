@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentSkill = "python"; // Default skill
     let questionSetIndex = 0;
     let timer;
-    let timeRemaining = 120; 
+    let timeRemaining = 12000; 
 
     const skillButtons = document.querySelectorAll(".skill-btn");
     const questionSection = document.getElementById("question-section");
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function resetTimer() {
         clearInterval(timer);
-        timeRemaining = 120; // Reset to 20 minutes
+        timeRemaining = 12000; // Reset to 20 minutes
         updateTimerDisplay();
         timer = setInterval(() => {
             timeRemaining--;

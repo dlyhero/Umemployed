@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='resume',
             name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
+            field=models.AutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='resumedoc',
             name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
+            field=models.AutoField(primary_key=True, serialize=False),
         ),
     ]

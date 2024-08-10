@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='skill',
             name='user',
-            field=models.ForeignKey(default='c6962387-ea32-4a53-8c5d-ec9a596d864b', on_delete=django.db.models.deletion.CASCADE, related_name='skills', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(default='1', on_delete=django.db.models.deletion.CASCADE, related_name='skills', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name='resume',
