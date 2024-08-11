@@ -527,6 +527,7 @@ def save_responses(request):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
+
     
 @login_required(login_url='/login')
 def job_application_success(request,job_id):

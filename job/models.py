@@ -207,19 +207,35 @@ class Application(models.Model):
 
     def create_completed_skills(self):
         completed_skills = self.round_scores.keys()
+        logger.debug(f"Attempting to create or update completed skills for skills: {completed_skills}")
+
         for skill_id in completed_skills:
-            skill = Skill.objects.get(id=skill_id)
-            completed_skill, created = CompletedSkills.objects.get_or_create(
-                user=self.user,
-                job=self.job,
-                skill=skill,
-                defaults={'is_completed': True}
-            )
-            if not created:
-                completed_skill.is_completed = True
-                completed_skill.completed_at = timezone.now()
-                completed_skill.save()
-            logger.debug(f"Completed skill created or updated for skill_id: {skill_id}")
+            try:
+                # Retrieve the Skill instance
+                skill = Skill.objects.get(id=skill_id)
+                logger.debug(f"Retrieved Skill with ID: {skill_id}")
+
+                # Create or update CompletedSkills
+                completed_skill, created = CompletedSkills.objects.get_or_create(
+                    user=self.user,
+                    job=self.job,
+                    skill=skill,
+                    defaults={'is_completed': True}
+                )
+
+                if created:
+                    logger.debug(f"Created new CompletedSkills for skill_id: {skill_id}")
+                else:
+                    completed_skill.is_completed = True
+                    completed_skill.completed_at = timezone.now()
+                    completed_skill.save()
+                    logger.debug(f"Updated CompletedSkills for skill_id: {skill_id}")
+
+            except Skill.DoesNotExist:
+                logger.error(f"Skill with ID {skill_id} does not exist.")
+            except Exception as e:
+                logger.error(f"Error processing skill_id {skill_id}: {str(e)}")
+
 
     @staticmethod
     def calculate_skill_match(applicant_skills, job_skills):
