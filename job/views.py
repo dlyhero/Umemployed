@@ -285,6 +285,8 @@ def apply_job(request, job_id):
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
+
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
     logger.debug(f"Answer job questions view triggered for job_id: {job_id}")
@@ -293,6 +295,10 @@ def answer_job_questions(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     user = request.user
     skills = job.requirements.all()
+    skill = job.requirements.all()
+    last_skill = skill.last()  # Get the last skill based on the current ordering
+    last_skill_id = last_skill.id if last_skill else None
+    print(last_skill_id,"last skill id################################################")
     
     # Get or create an application instance
     application, created = Application.objects.get_or_create(user=user, job=job)
@@ -306,6 +312,7 @@ def answer_job_questions(request, job_id):
     # Determine the remaining skills and current skill
     completed_skills = application.round_scores.keys()
     remaining_skills = [skill for skill in skills if str(skill.id) not in completed_skills]
+    remaining_skills_count = len(remaining_skills)
     logger.debug(f"Remaining skills: {remaining_skills}")
 
     if not remaining_skills:
@@ -388,6 +395,7 @@ def answer_job_questions(request, job_id):
             'current_skill': current_skill,
             'skills': skills,
             'job_id': job.id,
+            'last_skill_id':last_skill_id,
         }
 
         return render(request, 'job/rounds/round1.html', context)
