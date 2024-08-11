@@ -11,6 +11,33 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Job(models.Model):
+    """
+    Represents a job listing created by a user for a specific company.
+
+    Attributes:
+        user (ForeignKey): Reference to the user who created the job.
+        company (ForeignKey): Reference to the company where the job is offered.
+        title (CharField): Title of the job.
+        hire_number (IntegerField): Number of hires needed for the job.
+        job_location_type (CharField): The type of job location (remote, onsite, hybrid, internship).
+        location (CharField): The location of the job.
+        salary (PositiveBigIntegerField): Salary offered for the job.
+        requirements (ManyToManyField): Skills required for the job.
+        extracted_skills (ManyToManyField): Additional skills extracted from the job description.
+        ideal_candidate (TextField): Description of the ideal candidate for the job.
+        is_available (BooleanField): Whether the job is currently available.
+        description (TextField): Job description.
+        responsibilities (TextField): Responsibilities of the job.
+        benefits (TextField): Benefits offered with the job.
+        level (CharField): Experience level required for the job (Beginner, Mid, Expert).
+        category (ForeignKey): The category of skills related to the job.
+        job_type (CharField): The type of job (e.g., full-time, part-time).
+        experience_levels (CharField): Required experience levels.
+        weekly_ranges (CharField): Weekly working hours range.
+        shifts (CharField): Shifts offered for the job.
+        created_at (DateTimeField): The date and time when the job was created.
+        updated_at (DateTimeField): The date and time when the job was last updated.
+    """
     BEGINNER = 'Beginner'
     MID = 'Mid'
     EXPERT = 'Expert'
@@ -54,6 +81,7 @@ class Job(models.Model):
         return self.title
 
 class MCQ(models.Model):
+    """Model for Multiple Choice Questions."""
     id = models.BigAutoField(primary_key=True)
     question = models.CharField(max_length=255)
     option_a = models.CharField(max_length=100)
@@ -67,6 +95,7 @@ class MCQ(models.Model):
         return self.question
     
 class SkillQuestion(models.Model):
+    """Model for Skill Questions."""
     id = models.BigAutoField(primary_key=True)
     question = models.CharField(max_length=255)
     option_a = models.CharField(max_length=100)
@@ -82,6 +111,7 @@ class SkillQuestion(models.Model):
         return self.question
 
 class ApplicantAnswer(models.Model):
+    """Model for Applicant's answers."""
     id = models.BigAutoField(primary_key=True)
     applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     question = models.ForeignKey('SkillQuestion', on_delete=models.CASCADE)
@@ -102,6 +132,7 @@ class ApplicantAnswer(models.Model):
 logger = logging.getLogger(__name__)
 
 class Application(models.Model):
+    """Model for Application."""
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     job = models.ForeignKey('Job', on_delete=models.CASCADE)
@@ -115,20 +146,24 @@ class Application(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        logger.debug(f"Calling save method for Application")
+        logger.debug("Calling save method for Application")
         self.update_quiz_score()
         self.update_matching_percentage()
         self.update_total_scores()
         
         self.has_completed_quiz = self.is_quiz_completed()
         
+        # Check and create CompletedSkills if the quiz is completed
+        if self.has_completed_quiz:
+            self.create_completed_skills()
+
         logger.debug(f"Application saved with quiz_score: {self.quiz_score}, has_completed_quiz: {self.has_completed_quiz}")
         super().save(*args, **kwargs)
 
     def is_quiz_completed(self):
         required_skills = set(self.job.requirements.values_list('id', flat=True))
         completed_skills = set(int(skill_id) for skill_id in self.round_scores.keys())
-        logger.debug(f"Checking if quiz is completed")
+        logger.debug("Checking if quiz is completed")
         return required_skills <= completed_skills
 
     def update_quiz_score(self):
@@ -141,14 +176,26 @@ class Application(models.Model):
             applicant_resume = Resume.objects.get(user=self.user)
             applicant_skills = set(applicant_resume.skills.all())
             job_skills = set(self.job.requirements.all())
-            match_percentage, _ = calculate_skill_match(applicant_skills, job_skills)
+
+            match_percentage, _ = self.calculate_skill_match(applicant_skills, job_skills)
+
+            total_questions = SkillQuestion.objects.filter(skill__in=job_skills, entry_level=self.job.level).count()
+            user_total_score = ApplicantAnswer.objects.filter(
+                applicant=self.user, job=self.job, question__skill__in=job_skills
+            ).aggregate(total_score=models.Sum('score'))['total_score'] or 0
+
+            skill_based_score = (user_total_score / total_questions) * 30 if total_questions > 0 else 0
 
             self.matching_percentage = match_percentage
-            self.overall_match_percentage = (0.7 * match_percentage) + (0.3 * self.quiz_score)
+            self.overall_match_percentage = (0.7 * match_percentage) + skill_based_score
+
             logger.debug(f"Updated matching percentage: {self.matching_percentage}, overall match percentage: {self.overall_match_percentage}")
         except Resume.DoesNotExist:
             self.matching_percentage = 0.0
             self.overall_match_percentage = 0.0
+            logger.error(f"No resume found for user {self.user}")
+        except Exception as e:
+            logger.error(f"Error updating matching percentage: {e}")
 
     def update_total_scores(self):
         self.total_scores = {}
@@ -157,6 +204,38 @@ class Application(models.Model):
             total_score = sum(answer.score for answer in answers)
             self.total_scores[skill_id] = total_score
         logger.debug(f"Updated total scores: {self.total_scores}")
+
+    def create_completed_skills(self):
+        completed_skills = self.round_scores.keys()
+        logger.debug(f"Attempting to create or update completed skills for skills: {completed_skills}")
+
+        for skill_id in completed_skills:
+            try:
+                # Retrieve the Skill instance
+                skill = Skill.objects.get(id=skill_id)
+                logger.debug(f"Retrieved Skill with ID: {skill_id}")
+
+                # Create or update CompletedSkills
+                completed_skill, created = CompletedSkills.objects.get_or_create(
+                    user=self.user,
+                    job=self.job,
+                    skill=skill,
+                    defaults={'is_completed': True}
+                )
+
+                if created:
+                    logger.debug(f"Created new CompletedSkills for skill_id: {skill_id}")
+                else:
+                    completed_skill.is_completed = True
+                    completed_skill.completed_at = timezone.now()
+                    completed_skill.save()
+                    logger.debug(f"Updated CompletedSkills for skill_id: {skill_id}")
+
+            except Skill.DoesNotExist:
+                logger.error(f"Skill with ID {skill_id} does not exist.")
+            except Exception as e:
+                logger.error(f"Error processing skill_id {skill_id}: {str(e)}")
+
 
     @staticmethod
     def calculate_skill_match(applicant_skills, job_skills):

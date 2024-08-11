@@ -196,128 +196,166 @@
 
     <script>
     const jobId = "{{ job.id }}"; // Add job_id to JavaScript
-
     document.addEventListener("DOMContentLoaded", function() {
-        const skillButtons = document.querySelectorAll(".skill-btn");
-        const nextBtn = document.getElementById("next-btn");
-        const submitBtn = document.getElementById("submit-btn");
-        const completedSkillModal = document.getElementById("completedSkillModal");
-        const nextSkillBtn = document.getElementById("next-skill");
-        const closeModalBtn = document.getElementById("close-modal");
-        let currentSkillIndex = 0;
+    const skillButtons = document.querySelectorAll(".skill-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const submitBtn = document.getElementById("submit-btn");
+    const completedSkillModal = document.getElementById("completedSkillModal");
+    const nextSkillBtn = document.getElementById("next-skill");
+    const closeModalBtn = document.getElementById("close-modal");
+    let currentSkillIndex = 0;
 
-        skillButtons.forEach((button, index) => {
-            button.addEventListener("click", () => {
-                currentSkillIndex = index;
-                const skill = button.getAttribute("data-skill");
-                fetchQuestionsForSkill(skill);
-            });
+    // Retrieve the last skill ID and remaining skills count from the context
+    const lastSkillId = "{{ last_skill_id }}";
+    const remainingSkillsCount = parseInt("{{ remaining_skills_count }}", 10);
+
+    // Initialize button visibility based on remainingSkillsCount
+    updateButtonVisibility(remainingSkillsCount);
+
+    // Event listener for each skill button
+    skillButtons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+            currentSkillIndex = index;
+            const skill = button.getAttribute("data-skill");
+            fetchQuestionsForSkill(skill);
         });
+    });
 
-        function fetchQuestionsForSkill(skill) {
-            const url = `/job/get_questions_for_skill/${skill}/?job_id=${jobId}`;
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Questions fetched:', data);
-                    displayQuestions(data.questions);
-                    showNextOrSubmit(data.is_last_skill);
-                })
-                .catch(error => console.error('Error fetching questions:', error));
-        }
-
-        function displayQuestions(questions) {
-            const questionsContainer = document.getElementById("questions-container");
-            questionsContainer.innerHTML = questions.map(question => `
-                <fieldset class="mb-2">
-                    <legend class="font-semibold mb-2">${question.question}</legend>
-                    ${question.options.map((option, index) => `
-                        <label class="block mb-0">
-                            <input type="radio" name="question${question.id}" value="${String.fromCharCode(65 + index)}" class="mr-2">
-                            ${option}
-                        </label>
-                    `).join("")}
-                </fieldset>
-            `).join("");
-        }
-
-        function showNextOrSubmit(isLastSkill) {
-            if (isLastSkill) {
-                submitBtn.classList.remove("hidden");
-                nextBtn.classList.add("hidden");
-            } else {
-                nextBtn.classList.remove("hidden");
-            }
-        }
-
-        nextBtn.addEventListener("click", () => {
-            saveResponses(() => {
-                completedSkillModal.classList.remove("hidden");
-            });
-        });
-
-        nextSkillBtn.addEventListener("click", () => {
-            completedSkillModal.classList.add("hidden");
-            if (currentSkillIndex < skillButtons.length - 1) {
-                skillButtons[currentSkillIndex + 1].click();
-            }
-        });
-
-        closeModalBtn.addEventListener("click", () => {
-            completedSkillModal.classList.add("hidden");
-        });
-
-        submitBtn.addEventListener("click", () => {
-            saveResponses(() => {
-                window.location.href = '/job/complete'; // Redirect to completion page
-            });
-        });
-
-        function saveResponses(callback) {
-            const responses = [];
-            const responseInputs = document.querySelectorAll("input[type='radio']:checked");
-
-            responseInputs.forEach(input => {
-                responses.push({
-                    question_id: input.name.replace('question', ''),
-                    answer: input.value
-                });
-            });
-
-            const skillId = skillButtons[currentSkillIndex].getAttribute("data-skill");
-            const csrftoken = getCookie('csrftoken');
-            console.log('CSRF Token:', csrftoken); // Debugging
-
-            fetch('/job/save_responses/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({ skill_id: skillId, job_id: jobId, responses })
-            })
+    // Fetch questions for the selected skill
+    function fetchQuestionsForSkill(skill) {
+        const url = `/job/get_questions_for_skill/${skill}/?job_id=${jobId}`;
+        fetch(url)
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    console.log('Responses saved successfully');
-                    callback();
-                } else {
-                    console.error('Error saving responses:', data.error);
-                }
+                console.log('Questions fetched:', data);
+                displayQuestions(data.questions);
+                // Check if the current skill is the last skill
+                showNextOrSubmit(skill === lastSkillId);
             })
-            .catch(error => console.error('Error during saveResponses:', error));
-        }
+            .catch(error => console.error('Error fetching questions:', error));
+    }
 
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
-        }
+    // Display questions in the container
+    function displayQuestions(questions) {
+        const questionsContainer = document.getElementById("questions-container");
+        questionsContainer.innerHTML = questions.map(question => `
+            <fieldset class="mb-2">
+                <legend class="font-semibold mb-2">${question.question}</legend>
+                ${question.options.map((option, index) => `
+                    <label class="block mb-0">
+                        <input type="radio" name="question${question.id}" value="${String.fromCharCode(65 + index)}" class="mr-2">
+                        ${option}
+                    </label>
+                `).join("")}
+            </fieldset>
+        `).join("");
+    }
 
-        // Initialize the default questions and timer on page load
-        skillButtons[0].click();
+    // Update button visibility based on the remaining skills count
+    function updateButtonVisibility(count) {
+        if (count === 0) {
+            submitBtn.classList.remove("hidden");
+            nextBtn.classList.add("hidden");
+        } else {
+            nextBtn.classList.remove("hidden");
+            submitBtn.classList.add("hidden");
+        }
+    }
+
+    // Show 'Next' or 'Submit' button based on whether it is the last skill
+    function showNextOrSubmit(isLastSkill) {
+        console.log('isLastSkill:', isLastSkill); // Debugging
+        if (isLastSkill) {
+            // For the last skill, show 'Next' button initially
+            nextBtn.classList.remove("hidden");
+            submitBtn.classList.add("hidden");
+        } else {
+            // For other skills, update visibility based on remaining skills count
+            updateButtonVisibility(remainingSkillsCount);
+        }
+    }
+
+    // Handle 'Next' button click
+    nextBtn.addEventListener("click", () => {
+        saveResponses(() => {
+            if (skillButtons[currentSkillIndex].getAttribute("data-skill") === lastSkillId) {
+                // For the last skill, switch to 'Submit' button
+                updateButtonVisibility(0);
+            } else {
+                // For other skills, show the completed skill modal
+                completedSkillModal.classList.remove("hidden");
+            }
+        });
     });
+
+    // Handle 'Next Skill' button click in the modal
+    nextSkillBtn.addEventListener("click", () => {
+        completedSkillModal.classList.add("hidden");
+        if (currentSkillIndex < skillButtons.length - 1) {
+            skillButtons[currentSkillIndex + 1].click();
+        }
+    });
+
+    // Handle 'Close Modal' button click
+    closeModalBtn.addEventListener("click", () => {
+        completedSkillModal.classList.add("hidden");
+    });
+
+    // Handle 'Submit' button click
+    submitBtn.addEventListener("click", () => {
+        saveResponses(() => {
+            window.location.href = '/job/complete'; // Redirect to completion page
+        });
+    });
+
+    // Save responses and invoke callback
+    function saveResponses(callback) {
+        const responses = [];
+        const responseInputs = document.querySelectorAll("input[type='radio']:checked");
+
+        responseInputs.forEach(input => {
+            responses.push({
+                question_id: input.name.replace('question', ''),
+                answer: input.value
+            });
+        });
+
+        const skillId = skillButtons[currentSkillIndex].getAttribute("data-skill");
+        const csrftoken = getCookie('csrftoken');
+        console.log('CSRF Token:', csrftoken); // Debugging
+
+        fetch('/job/save_responses/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ skill_id: skillId, job_id: jobId, responses })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Responses saved successfully');
+                callback();
+            } else {
+                console.error('Error saving responses:', data.error);
+            }
+        })
+        .catch(error => console.error('Error during saveResponses:', error));
+    }
+
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
+    // Initialize the default questions and timer on page load
+    skillButtons[0].click();
+});
+
 </script>
 
 </body>
