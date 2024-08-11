@@ -326,24 +326,38 @@ def answer_job_questions(request, job_id):
 
         if answers:
             total_score = 0
-            # Query the questions for the current skill
             mcqs = SkillQuestion.objects.filter(skill=current_skill, entry_level=job.level)
             logger.debug(f"MCQs for skill {current_skill}: {mcqs}")
 
             for mcq in mcqs:
                 answer = answers.get(f'question{mcq.id}')
                 if answer:
-                    applicant_answer = ApplicantAnswer.objects.create(
+                    # Check if an ApplicantAnswer already exists
+                    if not ApplicantAnswer.objects.filter(
                         applicant=user,
                         question=mcq,
-                        answer=answer,
-                        job=job
-                    )
-                    applicant_answer.calculate_score()
-                    total_score += applicant_answer.score
+                        job=job,
+                        application=application
+                    ).exists():
+                        applicant_answer = ApplicantAnswer.objects.create(
+                            applicant=user,
+                            question=mcq,
+                            answer=answer,
+                            job=job,
+                            application=application
+                        )
+                        applicant_answer.calculate_score()
+                        total_score += applicant_answer.score
 
             application.round_scores[str(current_skill.id)] = total_score
             application.save()
+            # Update or create CompletedSkills entry
+            CompletedSkills.objects.update_or_create(
+                user=user,
+                job=job,
+                skill=current_skill,
+                defaults={'is_completed': True}
+            )
 
             logger.debug(f"Updated round_scores: {application.round_scores}")
 
@@ -352,6 +366,7 @@ def answer_job_questions(request, job_id):
         else:
             messages.error(request, "Please answer all questions.")
             return JsonResponse({'success': False, 'error': "Please answer all questions."})
+
     else:
         # Render the quiz form
         mcqs = SkillQuestion.objects.filter(skill=current_skill, entry_level=job.level)
@@ -376,6 +391,7 @@ def answer_job_questions(request, job_id):
         }
 
         return render(request, 'job/rounds/round1.html', context)
+
 
 
 
@@ -474,7 +490,8 @@ def save_responses(request):
                     applicant=request.user,
                     question=question,
                     answer=answer,
-                    job_id=job_id,
+                    job=job,
+                    application=current_application  # Set the application field
                 )
                 applicant_answer.calculate_score()
                 total_score += applicant_answer.score
@@ -482,14 +499,20 @@ def save_responses(request):
                 # Save the instance to the database
                 applicant_answer.save()
 
-            # Save or update CompletedSkills
-            CompletedSkills.objects.update_or_create(
-                user=request.user,
-                job_id=job_id,
-                skill_id=skill_id,
-                defaults={'is_completed': True}
-            )
-            
+            # Update the round_scores for the current skill
+            current_application.round_scores[str(skill_id)] = total_score
+            current_application.save()  # Save here to update the round_scores
+
+            # Recalculate the quiz score and other related fields
+            current_application.update_quiz_score()
+            current_application.update_matching_percentage()
+            current_application.update_total_scores()
+            current_application.save()  # Save the updated fields
+
+            # Check if the quiz is completed and update the flag
+            current_application.has_completed_quiz = current_application.is_quiz_completed()
+            current_application.save()
+
             return JsonResponse({'success': True, 'total_score': total_score})
 
         except ValueError as e:
@@ -503,6 +526,7 @@ def save_responses(request):
             return JsonResponse({'success': False, 'error': 'An unexpected error occurred'}, status=500)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
     
 @login_required(login_url='/login')
 def job_application_success(request,job_id):
