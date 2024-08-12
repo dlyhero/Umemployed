@@ -1,25 +1,54 @@
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth import get_user_model
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Message
+from .models import Conversation, ChatMessage
+
+User = get_user_model()
 
 @login_required
-def inbox(request):
-    user = request.user
-    messages = Message.objects.filter(recipient=user)
-    if user.is_recruiter:
-        return render(request, 'messaging/recruiter_inbox.html', {'messages': messages})
-    else:
-        return render(request, 'messaging/applicant_inbox.html', {'messages': messages})
+def inbox_view(request):
+    # Get existing chat rooms
+    rooms = Conversation.objects.filter(participant1=request.user) | Conversation.objects.filter(participant2=request.user)
+    
+    # Get all users except the current user
+    users = User.objects.exclude(id=request.user.id)
+    
+    if request.method == 'POST':
+        # Handle the creation of new chat rooms
+        selected_user_id = request.POST.get('selected_user')
+        if selected_user_id:
+            selected_user = User.objects.get(id=selected_user_id)
+            
+            # Check if a conversation already exists between the two users
+            conversation, created = Conversation.objects.get_or_create(
+                participant1=request.user,
+                participant2=selected_user
+            )
+            
+            if created:
+                # Redirect to the chat view if the conversation was created successfully
+                return redirect('messaging:chat', conversation_id=conversation.id)
+            else:
+                # If the conversation already exists, redirect to it
+                return redirect('messaging:chat', conversation_id=conversation.id)
+    
+    context = {
+        'rooms': rooms,
+        'users': users
+    }
+    return render(request, 'inbox.html', context)
+@login_required
+def chat_view(request, conversation_id):
+    conversation = get_object_or_404(Conversation, id=conversation_id)
+    messages = ChatMessage.objects.filter(conversation=conversation).order_by('timestamp')
+    return render(request, 'chat.html', {'conversation': conversation, 'messages': messages})
 
 @login_required
-def message_detail(request, message_id):
-    message = get_object_or_404(Message, id=message_id, recipient=request.user)
-    if request.user.is_recruiter:
-        return render(request, 'messaging/recruiter_message_detail.html', {'message': message})
-    else:
-        return render(request, 'messaging/applicant_message_detail.html', {'message': message})
-
-
-def user_inbox_detail(request):
-    return render(request,'messaging/applicant_inbox.html')
-
+def send_message(request, conversation_id):
+    conversation = get_object_or_404(Conversation, id=conversation_id)
+    if request.method == 'POST':
+        text = request.POST.get('text')
+        if text:
+            ChatMessage.objects.create(conversation=conversation, sender=request.user, text=text)
+        return redirect('messaging:chat', conversation_id=conversation_id)
+    return redirect('messaging:chat', conversation_id=conversation_id)

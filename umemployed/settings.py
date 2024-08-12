@@ -59,7 +59,20 @@ INSTALLED_APPS = [
     
     'messaging',
     'notifications',
+    
+    'channels',
+
 ]
+ASGI_APPLICATION = 'umemployed.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
@@ -108,16 +121,16 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 import os
 import dj_database_url    
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
+# DATABASES = {
+#     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+# }
 
 LOGGING = {
     'version': 1,

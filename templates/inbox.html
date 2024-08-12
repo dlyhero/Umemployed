@@ -1,0 +1,29 @@
+<h2>Your Chats</h2>
+<ul>
+    {% for room in rooms %}
+        <li>
+            <a href="{% url 'messaging:chat' room.id %}">
+                Chat with 
+                {% if room.participant2 == request.user %}
+                    {{ room.participant1 }}
+                {% else %}
+                    {{ room.participant2 }}
+                {% endif %}
+            </a>
+        </li>
+    {% empty %}
+        <li>No chat rooms available.</li>
+    {% endfor %}
+</ul>
+
+<h3>Start a New Chat</h3>
+<form method="post">
+    {% csrf_token %}
+    <select name="selected_user">
+        <option value="">Select a user</option>
+        {% for user in users %}
+            <option value="{{ user.id }}">{{ user.username }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Start Chat</button>
+</form>
