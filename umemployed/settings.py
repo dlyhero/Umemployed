@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'geopy',
     'onboarding',
     'django_filters',
-    'easyaudit',
+    # 'easyaudit',
     'asseessments',
     'social_features',
     
