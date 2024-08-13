@@ -67,7 +67,8 @@ def extract_technical_skills(job_title, job_description):
         # Call GPT-4 to generate technical skills based on job description
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=conversation
+            messages=conversation,
+            timeout=120  # Extended timeout to 120 seconds
         )
 
         # Parse the response

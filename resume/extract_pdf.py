@@ -124,7 +124,8 @@ def extract_technical_skills(request, extracted_text, job_title):
         # Call GPT-4 to generate technical skills based on resume data
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=conversation
+            messages=conversation,
+            timeout=120  # Extended timeout to 120 seconds
         )
 
         # Parse the response
@@ -139,6 +140,7 @@ def extract_technical_skills(request, extracted_text, job_title):
             # Access the extracted_skills attribute of the ResumeDoc instance associated with the current user
             resume_doc = ResumeDoc.objects.get(user=request.user)  # Assuming there's only one ResumeDoc per user
             resume_doc.extracted_skills.add(skill_obj)
+        
         # Save the skills to the database
         save_skills_to_database(job_title, technical_skills)
         print('Skills saved to database:', technical_skills)
@@ -148,6 +150,7 @@ def extract_technical_skills(request, extracted_text, job_title):
     except (json.JSONDecodeError, Exception) as e:
         logger.error("An error occurred while extracting technical skills: %s", e)
         return []
+
     
 
 def extract_resume_details(request, extracted_text):
@@ -173,7 +176,8 @@ def extract_resume_details(request, extracted_text):
 
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=conversation
+            messages=conversation,
+            timeout=120
         )
 
         response_content = response.choices[0].message.content

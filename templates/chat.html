@@ -1,0 +1,65 @@
+<h2>Chat with 
+    {% if conversation.participant2 == request.user %}
+        {{ conversation.participant1 }}
+    {% else %}
+        {{ conversation.participant2 }}
+    {% endif %}
+</h2>
+
+<div id="messages">
+    {% for message in messages %}
+        <div>
+            <strong>{{ message.sender }}:</strong> {{ message.text }}
+        </div>
+    {% endfor %}
+</div>
+
+<form id="chat-form" method="post" action="{% url 'messaging:send_message' conversation.id %}">
+    {% csrf_token %}
+    <textarea id="chat-message-input" name="text" placeholder="Type your message..."></textarea>
+    <button type="submit" id="chat-message-submit">Send</button>
+</form>
+
+<script>
+    const conversationId = "{{ conversation.id }}";
+    let chatSocket;
+
+    function connectWebSocket() {
+        chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + conversationId + '/');
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = `<strong>${data.sender}:</strong> ${data.message}`;
+            document.querySelector('#messages').appendChild(messageDiv);
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly. Reconnecting...');
+            setTimeout(connectWebSocket, 1000); // Retry connection after 1 second
+        };
+    }
+
+    connectWebSocket();
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // Enter key
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        e.preventDefault();
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value.trim();
+
+        if (message) {
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'sender': '{{ request.user.username }}'
+            }));
+            messageInputDom.value = '';
+        }
+    };
+</script>

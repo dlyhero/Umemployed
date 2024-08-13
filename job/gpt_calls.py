@@ -74,7 +74,8 @@ def get_skills_from_chatgpt(job_title):
         # Make a request to the ChatGPT API using the initialized client
         response = client.chat.completions.create(
             model="gpt-4-turbo-preview",
-            messages=conversation
+            messages=conversation,
+            timeout=120
         )
 
         content = response.choices[0].message.content

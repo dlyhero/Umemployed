@@ -53,13 +53,26 @@ INSTALLED_APPS = [
     'geopy',
     'onboarding',
     'django_filters',
-    'easyaudit',
+    # 'easyaudit',
     'asseessments',
     'social_features',
     
     'messaging',
     'notifications',
+    
+    'channels',
+
 ]
+ASGI_APPLICATION = 'umemployed.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'

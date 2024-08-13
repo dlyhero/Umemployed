@@ -132,7 +132,8 @@ def generate_mcqs_for_skill(skill_name):
     try:
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=conversation
+            messages=conversation,
+            timeout=120
         )
 
         mcqs_and_answers = response.choices[0].message.content
