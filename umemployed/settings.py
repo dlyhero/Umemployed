@@ -19,6 +19,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+import django_heroku
+import dj_database_url
 
 ALLOWED_HOSTS = ['*']
 
@@ -121,13 +123,6 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 import os
 import dj_database_url    
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 # }
@@ -291,3 +286,4 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+django_heroku.settings(locals())
