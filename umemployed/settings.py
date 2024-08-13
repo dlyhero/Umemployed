@@ -4,7 +4,7 @@ import os
 import geopy
 import dotenv
 dotenv.load_dotenv()
-
+import dj_database_url  
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,8 +19,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-import django_heroku
-import dj_database_url
 
 ALLOWED_HOSTS = ['*']
 
@@ -121,8 +119,14 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-import os
-import dj_database_url    
+  
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
 # DATABASES = {
 #     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 # }
@@ -142,12 +146,6 @@ LOGGING = {
 }
 
 
-# Use dj_database_url to parse DATABASE_URL environment variable
-# db_from_env = dj_database_url.config(conn_max_age=600)
-
-# DATABASES = {
-#     'default': db_from_env
-# }
 
 
 
@@ -285,5 +283,3 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
-
-django_heroku.settings(locals())

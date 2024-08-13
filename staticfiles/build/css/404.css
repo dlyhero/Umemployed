@@ -1,3 +1,4 @@
+
 .logo {
     width: 100px;
     height: 100px;
@@ -6,21 +7,14 @@
     background-size: cover;
     margin: 0 auto;
 }
-
 @keyframes blink {
-
-    0%,
-    50%,
-    100% {
+    0%, 50%, 100% {
         opacity: 1;
     }
-
-    25%,
-    75% {
+    25%, 75% {
         opacity: 0;
     }
 }
-
 .blinking {
     animation: blink 6s infinite;
 }

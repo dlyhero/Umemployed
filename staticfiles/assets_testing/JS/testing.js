@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentSkill = "python"; // Default skill
     let questionSetIndex = 0;
     let timer;
-    let timeRemaining = 120; // 20 minutes in seconds
+    let timeRemaining = 12000; 
 
     const skillButtons = document.querySelectorAll(".skill-btn");
     const questionSection = document.getElementById("question-section");
@@ -22,18 +22,16 @@ document.addEventListener("DOMContentLoaded", function () {
             questionSetIndex = 0;
             displayQuestions();
             nextBtn.classList.remove("hidden");
-            submitBtn.classList.add("hidden");
             resetTimer();
         });
     });
 
     nextBtn.addEventListener("click", () => {
         questionSetIndex++;
-        if (questionSetIndex < 3) {
+        if (questionSetIndex < 2) {
             displayQuestions();
         } else {
             nextBtn.classList.add("hidden");
-            submitBtn.classList.remove("hidden");
         }
     });
 
@@ -62,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function resetTimer() {
         clearInterval(timer);
-        timeRemaining = 120; // Reset to 20 minutes
+        timeRemaining = 12000; // Reset to 20 minutes
         updateTimerDisplay();
         timer = setInterval(() => {
             timeRemaining--;
@@ -85,6 +83,5 @@ document.addEventListener("DOMContentLoaded", function () {
         questionForm.submit();
     }
 
-    // displayQuestions(); // Display default skill questions on page load
     resetTimer(); // Start timer on page load
 });
