@@ -1,1 +1,1 @@
-web gunicorn umemployed.wsgi:application --log-file - 
+web: gunicorn umemployed.wsgi:application --log-file -
