@@ -132,10 +132,10 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd6i1ltsqgns6s',
-        'USER': 'u7v7567lb4cv3v',
-        'PASSWORD': 'pa5b0269bb80a7b8539744a189b01892c03ccbf806328c2faa2b8d39d408398f9',
-        'HOST': 'cd1goc44htrmfn.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
+        'NAME': 'd2mmc5c51ghegn',
+        'USER': 'u2m65eq7rc7j8s',
+        'PASSWORD': 'p8da3dda66094f61804cd2a38fc238f2cc1bab8f2433d1b09c704c436be42b6af',
+        'HOST': 'cat670aihdrkt1.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
         'PORT': '5432',      
     }
 }
