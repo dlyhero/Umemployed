@@ -322,7 +322,7 @@ OPENAI_API_KEY = config('OPENAI_API_KEY')
 SECRET_KEY = config('SECRET_KEY')
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
-DJANGO_ENV=config('production')
+DJANGO_ENV = config('DJANGO_ENV', default='development')
 
 django_heroku.settings(locals())
 
