@@ -11,6 +11,7 @@ from job.models import Job,Application
 from .filters import OrderFilter
 from django.db.models import Q,Count
 from job.models import calculate_skill_match 
+from allauth.account.utils import send_email_confirmation
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -135,7 +136,6 @@ def login_user(request):
 
 # views.py
 from django.contrib.auth import get_backends
-
 def register_applicant(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
@@ -149,6 +149,9 @@ def register_applicant(request):
             # Create Resume instance
             Resume.objects.create(user=user)
             
+            # Send email confirmation
+            send_email_confirmation(request, user)
+            
             # Log the user in with the specified backend
             backends = get_backends()
             for backend in backends:
@@ -157,10 +160,10 @@ def register_applicant(request):
                     break
             login(request, user, backend=backend_name)
             
-            messages.success(request, 'Your account has been created successfully and you are now logged in.')
+            messages.success(request, 'Your account has been created successfully. Please check your email to confirm your account.')
             
-            # Redirect to switch account
-            return redirect('switch_account')
+            # Redirect to switch account or any other desired page
+            return redirect('account_email_verification_sent')
         else:
             # Display form errors
             for field, errors in form.errors.items():
@@ -241,3 +244,41 @@ def switch_account_type(request):
 
 
 
+
+# view to request unverified users to verify emails
+from django.contrib.auth import get_user_model
+from allauth.account.models import EmailAddress
+from django.http import HttpResponse
+
+
+def send_verification_to_unverified_users(request):
+    User = get_user_model()
+    
+    for user in User.objects.filter(is_active=True):
+        email_address, created = EmailAddress.objects.get_or_create(user=user, email=user.email)
+        if not email_address.verified:
+            email_address.send_confirmation()
+            print(f"Email confirmation sent to {user.email}")
+    
+    return HttpResponse("Verification emails sent to unverified users.")
+
+from allauth.account.views import ConfirmEmailView
+from allauth.account.models import EmailConfirmationHMAC
+from django.shortcuts import redirect
+from django.contrib.auth import login
+
+class CustomConfirmEmailView(ConfirmEmailView):
+
+    def get(self, request, *args, **kwargs):
+        # Confirm the email
+        self.object = confirmation = self.get_object()
+
+        confirmation.confirm(request)
+
+        # Automatically log the user in
+        user = confirmation.email_address.user
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+        # Redirect to your desired page after login
+        return redirect('switch_account')  # Change to your desired URL name or path
+    

@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from users import views
 from django.contrib.auth import views as auth_views
+from users.views import CustomConfirmEmailView
 
 handler404 = 'users.views.handling_404'
 
@@ -35,6 +36,10 @@ urlpatterns = [
     
     path('messages/',include('messaging.urls')),
     path('notifications/',include('notifications.urls')),
+    
+    path('accounts/confirm-email/<str:key>/', CustomConfirmEmailView.as_view(), name='account_confirm_email'),
+
+
     
 ]
 

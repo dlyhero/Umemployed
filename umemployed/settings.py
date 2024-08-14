@@ -122,10 +122,21 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
   
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd6i1ltsqgns6s',
+        'USER': 'u7v7567lb4cv3v',
+        'PASSWORD': 'pa5b0269bb80a7b8539744a189b01892c03ccbf806328c2faa2b8d39d408398f9',
+        'HOST': 'cd1goc44htrmfn.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
+        'PORT': '5432',      
     }
 }
 
@@ -148,7 +159,15 @@ LOGGING = {
 }
 
 
+# Automatically send a confirmation email after signup
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # options: "none", "optional", "mandatory"
+ACCOUNT_EMAIL_REQUIRED = True
 
+# Only allow login if the email is verified
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  
+
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'switch_account'  # If user is logged in
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'switch_account' 
 
 
 
@@ -286,5 +305,12 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+from decouple import config
+
+OPENAI_API_KEY = config('OPENAI_API_KEY')
+SECRET_KEY = config('SECRET_KEY')
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
 
 django_heroku.settings(locals())
+
