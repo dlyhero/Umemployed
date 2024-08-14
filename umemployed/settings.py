@@ -24,6 +24,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://umemployed-web-63d4d135b077.herokuapp.com']
+
 SITE_ID = 2
 
 
