@@ -205,7 +205,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 ]
 
 # For local development
-SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/social-auth/complete/google-oauth2/'
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/social-auth/complete/google-oauth2/'
 
 # For production
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI_PROD = 'https://umemployed-web-63d4d135b077.herokuapp.com/social-auth/complete/google-oauth2/'
