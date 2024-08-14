@@ -202,7 +202,18 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
+# For local development
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/social-auth/complete/google-oauth2/'
+
+# For production
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI_PROD = 'https://umemployed-web-63d4d135b077.herokuapp.com/social-auth/complete/google-oauth2/'
+import os
+
+if os.getenv('DJANGO_ENV') == 'production':
+    SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI_PROD
+else:
+    SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/social-auth/complete/google-oauth2/'
+
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
@@ -311,6 +322,7 @@ OPENAI_API_KEY = config('OPENAI_API_KEY')
 SECRET_KEY = config('SECRET_KEY')
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+DJANGO_ENV=config('production')
 
 django_heroku.settings(locals())
 
