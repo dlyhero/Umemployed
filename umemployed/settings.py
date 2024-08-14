@@ -202,7 +202,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://umemployed-web-63d4d135b077.herokuapp.com']
+# CSRF_TRUSTED_ORIGINS = ['https://umemployed-web-63d4d135b077.herokuapp.com']
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/social-auth/complete/google-oauth2/'
 
