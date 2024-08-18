@@ -122,23 +122,23 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
   
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'd2mmc5c51ghegn',
-#         'USER': 'u2m65eq7rc7j8s',
-#         'PASSWORD': 'p8da3dda66094f61804cd2a38fc238f2cc1bab8f2433d1b09c704c436be42b6af',
-#         'HOST': 'cat670aihdrkt1.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
-#         'PORT': '5432',      
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd2mmc5c51ghegn',
+        'USER': 'u2m65eq7rc7j8s',
+        'PASSWORD': 'p8da3dda66094f61804cd2a38fc238f2cc1bab8f2433d1b09c704c436be42b6af',
+        'HOST': 'cat670aihdrkt1.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
+        'PORT': '5432',      
+    }
+}
 
 # DATABASES = {
 #     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
@@ -165,6 +165,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 # Only allow login if the email is verified
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+
 
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'switch_account'  # If user is logged in
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'switch_account' 

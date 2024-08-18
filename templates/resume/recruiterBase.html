@@ -102,15 +102,11 @@
         <a href="#" class="block py-2">Job Creation Option 2</a>
       </div>
     </div>
-    <div class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors relative">
+  
+     <a href="{% url 'update_company' company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors">
       <i class="fas fa-edit"></i>
-      <span class="ml-3 hidden">Update</span>
-      <!-- Dropdown -->
-      <div class="dropdown hidden absolute left-full top-0 mt-2 ml-2 bg-white text-gray-700 p-3.5 rounded shadow-lg">
-        <a href="#" class="block py-2">Profile</a>
-        <a href="#" class="block py-2">Update Option 2</a>
-      </div>
-    </div>
+      <span class="ml-3 hidden">Update Company</span>
+    </a>
 
     <a href="{% url 'view_my_jobs' company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors">
       <i class="fas fa-briefcase"></i>
@@ -187,6 +183,19 @@
               <div>Interviews</div>
             </div>
             <i class="fas fa-chevron-down w-6 ml-14"></i>
+          </a>
+        </div>
+        
+        <div>
+          <a
+            class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
+            href="{% url 'update_company' company.id %}"
+          >
+            <div class="img-wrap flex items-center gap-1">
+              <i class="fas fa-chart-bar w-6"></i>
+              <div>Update Company</div>
+            </div>
+            <i class="fas fa-chevron-down w-6 ml-16"></i>
           </a>
         </div>
         <div>
@@ -311,7 +320,7 @@
                   <div
                     class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                   >
-                    <a href="#" class="flex items-center gap-1">
+                    <a href="{% url 'update_company' company.id %}" class="flex items-center gap-1">
                       <i class="fas fa-cog fa-lg" aria-hidden="true"></i>
                       <span class="sr-only">Employer setting</span>
                       Employer setting
@@ -340,15 +349,7 @@
                   <div class="user-mail py-3 px-6 font-bold text-gray-700">
                     {{user.username}}
                   </div>
-                  <div
-                    class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
-                  >
-                    <a href="#" class="flex items-center gap-1">
-                      <i class="fas fa-user-cog fa-lg" aria-hidden="true"></i>
-                      <span class="sr-only">Account Settings</span>
-                      Account Settings
-                    </a>
-                  </div>
+                 
                   <div
                     class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                   >
@@ -418,13 +419,7 @@
                 >Contact us</a
               >
             </div>
-            <div
-              class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
-            >
-              <a class="flex justify-between items-center" href="#"
-                >Account Settings</a
-              >
-            </div>
+            
             <div
               class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
             >
@@ -449,7 +444,7 @@
       {% endblock %}
 
 
-<footer class="mt-20 md:mt-[52vh] py-4 md:py-8 bg-[#121212] text-white">
+<footer class="mt-20 md:mt-[60vh] py-4 md:py-8 bg-[#121212] text-white">
       <div class="container mx-auto px-4">
           <div class="flex flex-col md:flex-row justify-between items-center md:items-start">
               <div class="mb-6 md:mb-0 text-center md:text-left">

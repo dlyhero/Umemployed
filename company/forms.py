@@ -9,4 +9,4 @@ class UpdateCompanyForm(forms.ModelForm):
 class CreateCompanyForm(forms.ModelForm):
     class Meta:
         model = Company
-        fields = ['name', 'industry', 'location', 'country', 'description', 'logo']
+        fields = ['name', 'industry', 'contact_email', 'country', 'description', 'logo']
