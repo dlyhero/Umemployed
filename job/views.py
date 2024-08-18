@@ -542,10 +542,12 @@ def job_application_success(request,job_id):
     # Retrieve skill scores from session
     job = Job.objects.get(id=job_id)
     skill_scores = request.session.get('skill_scores', {})
-
+    application =   Application.objects.filter(job=job).first()
+    print(application.round_scores)
     context = {
         'skill_scores': skill_scores,
         'job':job, 
+        'application':application,
     }
     return render(request, 'job/application_success.html', context)
 

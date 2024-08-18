@@ -34,8 +34,8 @@ def create_company(request):
         return redirect('switch_account')
     except Company.DoesNotExist:
         if request.method == 'POST':
-            print("posttttttttttttttttttttttt")
-            form = CreateCompanyForm(request.POST)
+            print(request.POST)
+            form = CreateCompanyForm(request.POST, request.FILES)  # Make sure to add request.FILES
             if form.is_valid():
                 company = form.save(commit=False)
                 company.user = request.user
@@ -48,12 +48,14 @@ def create_company(request):
                 # Redirect to company_details with the newly created company's ID
                 return redirect('view_applications', company_id=company.id)  
             else:
+                print(form.errors)  # This will print out form errors to the console
                 messages.error(request, 'Error creating company.')
         else:
             form = CreateCompanyForm()
 
         context = {'form': form}
         return render(request, 'company/create_company.html', context)
+
 
 
 #update company

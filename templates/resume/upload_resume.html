@@ -2,9 +2,8 @@
 {% load static %}
 {% block custom_css %}
 <!-- Loader CSS -->
-
 <style>
-    .loader .logo img{
+    .loader .logo img {
         width: 150px;
         height: 150px;
         border-radius: 50%;
@@ -12,7 +11,6 @@
         margin: 0 auto;
     }
 
-  
     @keyframes blink {
         0%,
         50%,
@@ -28,6 +26,58 @@
 
     .blinking {
         animation: blink 6s infinite;
+    }
+
+    /* Styles for the drag-and-drop area */
+    #drop-area {
+        transition: background-color 0.3s ease;
+    }
+
+    #drop-area.dragover {
+        background-color: #1e90ff;
+    }
+
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        text-align: center;
+    }
+
+    .modal-button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .accept-btn {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .reject-btn {
+        background-color: #f44336;
+        color: white;
     }
 </style>
 {% endblock %}
@@ -51,31 +101,31 @@
     </div>
     <div class="h-fit md:h-[300px]">
       <!-- Loader HTML -->
-<div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-2 flex items-center justify-center z-50">
-    <div class="loader">
-        <div class="logo blinking">
-            <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
+      <div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-2 flex items-center justify-center z-50">
+        <div class="loader">
+            <div class="logo blinking">
+                <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
+            </div>
+            <br>
+            <span><p><b>Processing, this might take some seconds.</b></p><span>
         </div>
-        <br>
-        <span><p><b>Processing, this might take some seconds.</b></p><span>
-    </div>
-</div>
+      </div>
 
-<form id="upload-form" method="post" enctype="multipart/form-data" class="w-full h-full">
-    {% csrf_token %}
-    <label id="drop-area" for="input-file" class="w-full text-white h-full border flex flex-col justify-center items-center px-[20px] py-[10px] md:p-[30px] text-center bg-blue-500 rounded-xl">
-        <div id="file-view" class="w-full h-full rounded-xl md:border-2 md:border-dashed md:bg-blue-400 md:p-[20px]">
-            <img class="hidden md:block w-24 mt-6 mx-auto" src="{% static 'build/img/upload.svg' %}" alt="" />
-            <p>
-                Choose files to upload <br />
-                <span class="hidden md:block">or drag and drop here</span>
-            </p>
-            {{ form.file }}
-        </div>
-    </label>
-    <button type="submit" class="btn btn-primary mt-4">Upload</button>
-    <br>
-</form>
+      <form id="upload-form" method="post" enctype="multipart/form-data" class="w-full h-full">
+        {% csrf_token %}
+        <label id="drop-area" for="input-file" class="w-full text-white h-full border flex flex-col justify-center items-center px-[20px] py-[10px] md:p-[30px] text-center bg-blue-500 rounded-xl">
+            <div id="file-view" class="w-full h-full rounded-xl md:border-2 md:border-dashed md:bg-blue-400 md:p-[20px]">
+                <img class="hidden md:block w-24 mt-6 mx-auto" src="{% static 'build/img/upload.svg' %}" alt="" />
+                <p>
+                    Choose files to upload <br />
+                    <span class="hidden md:block">or drag and drop here</span>
+                </p>
+                <input id="input-file" type="file" name="file" class="hidden">
+            </div>
+        </label>
+        <button type="submit" class="btn btn-primary mt-4">Upload</button>
+        <br>
+      </form>
 
     </div>
   </section>
@@ -87,17 +137,140 @@
   </section>
 </main>
 
-<!-- JavaScript for handling form submission and loader -->
+<!-- Modal HTML for CV Preview -->
+<div id="cv-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-4/5 md:w-3/5 lg:w-2/5">
+        <h2 class="text-xl font-semibold mb-4">Preview CV</h2>
+        <div id="cv-preview" class="border p-4 h-[400px] overflow-auto mb-4">
+            <!-- PDF preview will be rendered here -->
+        </div>
+        <div class="flex justify-end">
+            <button id="accept-cv" class="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2">Accept</button>
+            <button id="reject-cv" class="bg-red-500 text-white px-4 py-2 rounded-lg">Choose Another</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- JavaScript for handling form submission, loader, and CV preview modal -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('upload-form');
     const loader = document.getElementById('loader');
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('input-file');
+    const modal = document.getElementById('cv-modal');
+    const acceptButton = document.getElementById('accept-cv');
+    const rejectButton = document.getElementById('reject-cv');
+    const cvPreview = document.getElementById('cv-preview');
 
     form.addEventListener('submit', function () {
         loader.classList.remove('hidden');
     });
+
+    // Prevent default behavior for drag events
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Highlight drop area on drag over
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.add('dragover'), false);
+    });
+
+    // Remove highlight on drag leave or drop
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.remove('dragover'), false);
+    });
+
+    // Handle file drop
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        handleFiles(files);
+    }
+
+    // Handle file selection via input
+    fileInput.addEventListener('change', function () {
+        handleFiles(fileInput.files);
+    });
+
+    function handleFiles(files) {
+        if (files.length > 0) {
+            const file = files[0];
+            previewFile(file); // Preview the file content
+            modal.classList.remove('hidden'); // Show the modal
+        }
+    }
+
+    // Preview the file content
+    function previewFile(file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const fileType = file.type;
+
+            if (fileType === 'application/pdf') {
+                // Use PDF.js to render the first page of the PDF
+                const pdfData = new Uint8Array(e.target.result);
+                pdfjsLib.getDocument({ data: pdfData }).promise.then(function(pdf) {
+                    pdf.getPage(1).then(function(page) {
+                        const scale = 1.5;
+                        const viewport = page.getViewport({ scale: scale });
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        cvPreview.innerHTML = ''; // Clear previous content
+                        cvPreview.appendChild(canvas);
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        page.render(renderContext);
+                    });
+                }).catch(function(error) {
+                    console.error('Error rendering PDF:', error);
+                    cvPreview.innerHTML = 'Error rendering PDF preview.';
+                });
+            } else if (fileType.startsWith('text/') || fileType === 'application/msword' || fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                // Preview text or Word document content
+                const textContent = e.target.result;
+                cvPreview.innerHTML = `<pre>${textContent}</pre>`;
+            } else {
+                cvPreview.innerHTML = 'Preview not available for this file type.';
+            }
+        };
+
+        if (file.type === 'application/pdf') {
+            reader.readAsArrayBuffer(file);
+        } else {
+            reader.readAsText(file);
+        }
+    }
+
+    // Accept file
+    acceptButton.addEventListener('click', function () {
+        modal.classList.add('hidden'); // Hide the modal
+    });
+
+    // Reject file and trigger file input
+    rejectButton.addEventListener('click', function () {
+        modal.classList.add('hidden'); // Hide the modal
+        fileInput.value = ''; // Clear the input
+        fileInput.click(); // Trigger file input dialog again
+    });
 });
 
 </script>
-
+<!-- Include PDF.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 {% endblock %}

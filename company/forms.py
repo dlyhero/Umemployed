@@ -9,4 +9,4 @@ class UpdateCompanyForm(forms.ModelForm):
 class CreateCompanyForm(forms.ModelForm):
     class Meta:
         model = Company
-        exclude = ('user', )
+        fields = ['name', 'industry', 'location', 'country', 'description', 'logo']

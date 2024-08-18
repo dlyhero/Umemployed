@@ -2,6 +2,7 @@ from django.db import models
 from users.models import User
 import uuid
 from django.contrib.auth import get_user_model
+from django_countries.fields import CountryField
 
 User = get_user_model()
 
@@ -14,16 +15,17 @@ class Company(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
     industry = models.CharField(max_length=50, null=True, blank=True)
     size = models.CharField(max_length=50, null=True, blank=True)
-    headquarters = models.CharField(max_length=100, null=True, blank=True)
+    location = models.CharField(max_length=100, null=True, blank=True)
     founded = models.PositiveIntegerField(null=True, blank=True)
     website_url = models.URLField(max_length=200, null=True, blank=True)
+    country = CountryField()
     
     # Contact Information
     contact_email = models.EmailField(null=True, blank=True)
     contact_phone = models.CharField(max_length=20, null=True, blank=True)
     
     # Description
-    about_us = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     mission_statement = models.TextField(null=True, blank=True)
     vision_statement = models.TextField(null=True, blank=True)
     
@@ -40,8 +42,9 @@ class Company(models.Model):
     
     # Job Openings
     job_openings = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name or ''
+        return self.name if self.name else "Unnamed Company"
+
