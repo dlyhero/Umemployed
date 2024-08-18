@@ -220,6 +220,12 @@
                             {{ user.email }}
                         </div>
                         <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
+                            <a href="{% url 'resume' %}" class="flex items-center gap-1">
+                                <img class="w-5" src="{% static 'build/img/setting-1-svgrepo-com.svg' %}" alt="setting-icon" />
+                                Resume
+                            </a>
+                        </div>
+                        <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
                             <a href="{% url 'update-resume' %}" class="flex items-center gap-1">
                                 <img class="w-5" src="{% static 'build/img/setting-1-svgrepo-com.svg' %}" alt="setting-icon" />
                                 Account Settings
