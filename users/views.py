@@ -24,7 +24,6 @@ def index(request):
     }
     return render(request, 'website/index.html',context)
 
-from django.db.models import Avg
 def home(request):
     user = request.user
     matching_jobs = []
@@ -36,7 +35,6 @@ def home(request):
         except Resume.DoesNotExist:
             applicant_skills = set()
 
-        # Loop through jobs to calculate match percentage
         for job in Job.objects.all():
             job_skills = set(job.requirements.all())
             match_percentage, _ = calculate_skill_match(applicant_skills, job_skills)

@@ -10,7 +10,10 @@
         <div class="mb-4">
             <div class="flex justify-between items-center">
                 <h2 class="font-bold text-lg mb-2">Filter</h2>
-                <button type="submit" class="pointer" style="color: #1e90ff;">Apply Filters</button>
+                <div>
+                    <button type="submit" class="pointer" style="color: #1e90ff;">Apply Filters</button>
+                    <a href="{% url 'home' %}" class="ml-4 text-red-600 pointer">Clear Filters</a>
+                </div>
             </div>
             <div class="mb-2">
                 <label class="block text-gray-700">Salary: <span id="salaryValue">$3300</span></label>
