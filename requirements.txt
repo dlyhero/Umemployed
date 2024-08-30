@@ -16,7 +16,6 @@ channels==4.1.0
 channels-redis==4.2.0
 chardet==4.0.0
 charset-normalizer==3.3.2
-cities_light
 click==8.1.7
 click-didyoumean==0.3.0
 click-plugins==1.1.1
@@ -33,6 +32,7 @@ Django==4.2.7
 django-allauth==0.58.1
 django-appconf==1.0.6
 django-autocomplete-light==3.9.7
+django-cities-light==3.10.1
 django-compressor==4.4
 django-countries==7.6.1
 django-crispy-forms==2.1
