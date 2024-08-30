@@ -46,7 +46,7 @@ def create_company(request):
                 request.user.save()
                 messages.success(request, 'Company created successfully.')
                 # Redirect to company_details with the newly created company's ID
-                return redirect('view_applications', company_id=company.id)  
+                return redirect('update_company', company_id=company.id)  
             else:
                 print(form.errors)  # This will print out form errors to the console
                 messages.error(request, 'Error creating company.')
