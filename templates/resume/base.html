@@ -253,13 +253,13 @@
         {% endif %}
       </ul>
       {% if user.is_authenticated %}
-      {% if user.has_company %}
+      {% if user.is_recruiter %}
       <div class="hidden md:block">
         <div class="flex">
           <div class="border-l h-[40px]"></div>
           <span class="ml-2 text-nowrap p-2 rounded">
             <a class="header-link text-nowrap" href="{% url 'change_account_type' %}"
-              >Switch to Employer</a
+              >Switch to Applicant</a
             >
           </span>
         </div>
@@ -273,10 +273,7 @@
             <a class="header-link text-nowrap" href="{% url 'change_account_type' %}"
               >Become an Employer</a
             >
-            {% elif user.is_recruiter %}
-            <a class="header-link text-nowrap" href="{% url 'change_account_type' %}"
-              >Switch to Applicant Role</a
-            >
+            
             {% else %}
             <a class="header-link text-nowrap" href="{% url 'change_account_type' %}"
               >Switch Role</a

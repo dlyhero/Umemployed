@@ -260,6 +260,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Accept file
     acceptButton.addEventListener('click', function () {
         modal.classList.add('hidden'); // Hide the modal
+        form.submit(); // Submit the form directly
+
     });
 
     // Reject file and trigger file input

@@ -36,7 +36,7 @@ def inbox_view(request):
         'rooms': rooms,
         'users': users
     }
-    return render(request, 'inbox.html', context)
+    return render(request, 'company/inbox.html', context)
 @login_required
 def chat_view(request, conversation_id):
     conversation = get_object_or_404(Conversation, id=conversation_id)
