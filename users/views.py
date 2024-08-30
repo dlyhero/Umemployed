@@ -27,6 +27,7 @@ def index(request):
 def home(request):
     user = request.user
     matching_jobs = []
+    non_matching_jobs = []
 
     if user.is_authenticated:
         try:
@@ -41,6 +42,11 @@ def home(request):
 
             if match_percentage >= 10.0:  # Threshold of 10%
                 matching_jobs.append((job, match_percentage))
+            else:
+                non_matching_jobs.append(job)
+    else:
+        # If user is not authenticated, display all jobs in non-matching jobs
+        non_matching_jobs = list(Job.objects.all())
 
     # Get filter parameters from request
     salary_range = request.GET.get('salary_range')
@@ -63,7 +69,7 @@ def home(request):
     else:
         jobs_list = Job.objects.annotate(applicant_count=Count('application')).order_by('-created_at')
 
-    # Apply filters
+    # Apply filters to jobs_list (already existing filtering logic)
     if salary_range:
         jobs_list = jobs_list.filter(salary__lte=salary_range)
 
@@ -99,8 +105,15 @@ def home(request):
         elif applicants == 'More than 100':
             jobs_list = jobs_list.filter(applicant_count__gt=100)
 
+    # Exclude matching jobs from jobs_list for non-matching section
+    if matching_jobs:
+        matching_jobs_ids = [job.id for job, _ in matching_jobs]
+        non_matching_jobs = jobs_list.exclude(id__in=matching_jobs_ids)
+    else:
+        non_matching_jobs = jobs_list
+
     # Pagination
-    paginator = Paginator(jobs_list, 7)  # Show 7 jobs per page
+    paginator = Paginator(non_matching_jobs, 7)  # Show 7 jobs per page
     page = request.GET.get('page')
 
     try:
@@ -112,7 +125,8 @@ def home(request):
 
     context = {
         'jobs': jobs,
-        'matching_jobs': matching_jobs,
+        'matching_jobs': matching_jobs,  # Matching jobs section
+        'non_matching_jobs': jobs,  # Non-matching jobs section
     }
     return render(request, 'website/home.html', context)
 
