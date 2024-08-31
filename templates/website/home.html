@@ -108,7 +108,8 @@
             <!-- Job Listings -->
             <div>
                 <div id="jobsContainer" class="w-full">
-                    {% for job in jobs %}
+                    {% if matching_jobs %}
+                    {% for job, match_percentage in matching_jobs %}    
                         <div class="bg-white p-4 rounded-lg shadow mb-4">
                             <!-- Job Header -->
                             <div class="flex justify-between">
@@ -183,6 +184,83 @@
                         </div>
                     {% endfor %}
                 </div>
+                    {% else %}
+                    {% for job in jobs %}    
+                        <div class="bg-white p-4 rounded-lg shadow mb-4">
+                            <!-- Job Header -->
+                            <div class="flex justify-between">
+                                <div class="flex items-center">
+                                    <img src="{% static 'build/logo/logo-black.png' %}" class="rounded-full w-12 h-12 object-cover" alt="Company Logo" />
+                                    <div class="flex flex-col">
+                                        <h3 class="text-lg font-bold ml-4">{{ job.title }}</h3>
+                                        <p class="ml-4">{{ job.company }}</p>
+                                    </div>
+                                    {% if job.is_urgent %}
+                                        <p class="hidden lg:block p-2 bg-green-400 text-white rounded-xl ml-4" style="font-size: 10px;">Urgent</p>
+                                    {% endif %}
+                                </div>
+                                <!-- Action Dropdown -->
+                                <div class="text-black relative">
+                                    <i class="fa fa-ellipsis-v cursor-pointer job-options"></i>
+                                    <div class="dropdown-ellipse hidden absolute right-0 mt-2 w-28 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                                        <ul class="py-1">
+                                            <li onclick="viewJobDetails({{ job.id }})" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                                <i class="fa fa-eye mr-2"></i> View 
+                                            </li>
+                                            <li onclick="shareJobPosting({{ job.id }})" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                                <i class="fa fa-share mr-2"></i> Share
+                                            </li>
+                                            <li onclick="saveJobPosting({{ job.id }})" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                                <i class="fa fa-bookmark mr-2"></i> Save
+                                            </li>
+                                            <li onclick="reportJobPosting({{ job.id }})" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                                <i class="fa fa-flag mr-2"></i> Report
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Job Details -->
+                            <div class="flex justify-between">
+                                <div class="lg:flex justify-between items-center w-1/2">
+                                    <div>
+                                        <i class="fa fa-clock"></i>{{ job.job_type }}
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-briefcase"></i> <span>{{ job.level }}</span>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-map-marker-alt"></i> <span>{{ job.location }}</span>
+                                    </div>
+                                </div>
+                                <p>{{ job.created_at|date:"M d, Y" }}</p>
+                            </div>
+                            
+                            <!-- Job Description -->
+                            <p class="w-9/10 mx-auto mt-4">{{ job.description|truncatewords:31 }}</p>
+                            <hr class="font-bold my-5" />
+                            
+                            <!-- Job Footer -->
+                            <div class="flex justify-between">
+                                <div class="w-full lg:w-1/2 flex justify-between items-center">
+                                    <div>
+                                        <i class="fa fa-dollar-sign"></i> <span class="mb-2 lg:font-semibold">${{ job.salary }}</span><span>/monthly</span>
+                                    </div>
+                                    {% with applications=job.application_set.all %}
+                                        <div>
+                                            <i class="fa fa-users"></i> <span class="font-semibold mr-2">{{ applications|length }}</span><span>Applied</span>
+                                        </div>
+                                    {% endwith %}
+                                </div>
+                                <a href="{% url 'job:job_details' job_id=job.id %}">
+                                    <button type="button" class="p-1 px-3 rounded-lg xl:p-2 xl:px-6 text-white xl:rounded-xl" style="background-color: #1e90ff;">Apply</button>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
             
             <!-- Pagination -->

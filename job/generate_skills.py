@@ -32,6 +32,9 @@ def generate_questions_view(request):
         entry_level = request.GET.get('entry_level')
         selected_skills = request.GET.get('selected_skills')
         selected_skill_names = selected_skills.split(',') if selected_skills else []
+        job_id = request.GET.get('job_id')  # Assuming job_id is passed in the query string
+
+        request.session['job_id'] = job_id  # Store job ID in session
 
         try:
             questions_per_skill = 3
@@ -56,7 +59,7 @@ def generate_questions_view(request):
                     }
                     serialized_questions.append(serialized_question)
 
-                return redirect('/')
+                return redirect('job:update_job')
             else:
                 return JsonResponse({"error": "Failed to generate questions"}, status=500)
 

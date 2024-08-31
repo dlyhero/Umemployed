@@ -24,31 +24,18 @@ def index(request):
     }
     return render(request, 'website/index.html',context)
 
+from django.db.models import Q, Count
+
 def home(request):
     user = request.user
     matching_jobs = []
     non_matching_jobs = []
 
-    if user.is_authenticated:
-        try:
-            applicant_resume = Resume.objects.get(user=user)
-            applicant_skills = set(applicant_resume.skills.all())
-        except Resume.DoesNotExist:
-            applicant_skills = set()
+    # Step 1: Retrieve all jobs
+    all_jobs = Job.objects.all()
+    print(f"DEBUG: All Jobs in System (Count: {all_jobs.count()}): {list(all_jobs)}")
 
-        for job in Job.objects.all():
-            job_skills = set(job.requirements.all())
-            match_percentage, _ = calculate_skill_match(applicant_skills, job_skills)
-
-            if match_percentage >= 10.0:  # Threshold of 10%
-                matching_jobs.append((job, match_percentage))
-            else:
-                non_matching_jobs.append(job)
-    else:
-        # If user is not authenticated, display all jobs in non-matching jobs
-        non_matching_jobs = list(Job.objects.all())
-
-    # Get filter parameters from request
+    # Apply filters to all jobs before splitting them into matching/non-matching
     salary_range = request.GET.get('salary_range')
     job_type = request.GET.getlist('job_type')
     experience_levels = request.GET.getlist('experience_levels')
@@ -57,36 +44,23 @@ def home(request):
     location_query = request.GET.get('location_query')
     applicants = request.GET.get('applicants')  # Get applicants filter value
 
-    if user.is_authenticated:
-        if hasattr(user, 'resume') and user.resume.skills.exists():
-            user_resume_skills = user.resume.skills.all()
-            query = Q()
-            for skill in user_resume_skills:
-                query |= Q(requirements=skill)
-            jobs_list = Job.objects.annotate(applicant_count=Count('application')).filter(query).distinct().order_by('-created_at')
-        else:
-            jobs_list = Job.objects.annotate(applicant_count=Count('application')).order_by('-created_at')
-    else:
-        jobs_list = Job.objects.annotate(applicant_count=Count('application')).order_by('-created_at')
-
-    # Apply filters to jobs_list (already existing filtering logic)
     if salary_range:
-        jobs_list = jobs_list.filter(salary__lte=salary_range)
+        all_jobs = all_jobs.filter(salary__lte=salary_range)
 
     if job_type:
-        jobs_list = jobs_list.filter(job_type__in=job_type)
+        all_jobs = all_jobs.filter(job_type__in=job_type)
 
     if experience_levels:
-        jobs_list = jobs_list.filter(experience_levels__in=experience_levels)
+        all_jobs = all_jobs.filter(experience_levels__in=experience_levels)
 
     if job_location:
-        jobs_list = jobs_list.filter(job_location_type__in=job_location)
+        all_jobs = all_jobs.filter(job_location_type__in=job_location)
 
     if location_query:
-        jobs_list = jobs_list.filter(location__icontains=location_query)
+        all_jobs = all_jobs.filter(location__icontains=location_query)
 
     if search_query:
-        jobs_list = jobs_list.filter(
+        all_jobs = all_jobs.filter(
             Q(title__icontains=search_query) |
             Q(company__name__icontains=search_query) |
             Q(location__icontains=search_query) |
@@ -94,23 +68,45 @@ def home(request):
             Q(experience_levels__icontains=search_query)
         )
 
-    # Apply applicants filter
     if applicants:
+        all_jobs = all_jobs.annotate(applicant_count=Count('application'))
         if applicants == 'Less than 10':
-            jobs_list = jobs_list.filter(applicant_count__lt=10)
+            all_jobs = all_jobs.filter(applicant_count__lt=10)
         elif applicants == '10 to 50':
-            jobs_list = jobs_list.filter(applicant_count__gte=10, applicant_count__lte=50)
+            all_jobs = all_jobs.filter(applicant_count__gte=10, applicant_count__lte=50)
         elif applicants == '50 to 100':
-            jobs_list = jobs_list.filter(applicant_count__gte=50, applicant_count__lte=100)
+            all_jobs = all_jobs.filter(applicant_count__gte=50, applicant_count__lte=100)
         elif applicants == 'More than 100':
-            jobs_list = jobs_list.filter(applicant_count__gt=100)
+            all_jobs = all_jobs.filter(applicant_count__gt=100)
 
-    # Exclude matching jobs from jobs_list for non-matching section
-    if matching_jobs:
-        matching_jobs_ids = [job.id for job, _ in matching_jobs]
-        non_matching_jobs = jobs_list.exclude(id__in=matching_jobs_ids)
+    print(f"DEBUG: Filtered Jobs (Count: {all_jobs.count()}): {list(all_jobs)}")
+
+    if user.is_authenticated:
+        try:
+            applicant_resume = Resume.objects.get(user=user)
+            applicant_skills = set(applicant_resume.skills.all())
+            print(f"DEBUG: Applicant Skills: {list(applicant_skills)}")
+        except Resume.DoesNotExist:
+            applicant_skills = set()
+            print("DEBUG: Applicant Resume does not exist. Applicant skills set to empty.")
+
+        for job in all_jobs:
+            job_skills = set(job.requirements.all())
+            match_percentage, _ = calculate_skill_match(applicant_skills, job_skills)
+
+            print(f"DEBUG: Job '{job.title}' (ID: {job.id}) - Match Percentage: {match_percentage}")
+
+            if match_percentage >= 10.0:  # Threshold of 10%
+                matching_jobs.append((job, match_percentage))
+            else:
+                non_matching_jobs.append(job)
+
+        print(f"DEBUG: Matching Jobs (Count: {len(matching_jobs)}): {matching_jobs}")
+        print(f"DEBUG: Non-Matching Jobs (Count: {len(non_matching_jobs)}): {non_matching_jobs}")
+
     else:
-        non_matching_jobs = jobs_list
+        # If user is not authenticated, all jobs are considered non-matching
+        non_matching_jobs = list(all_jobs)
 
     # Pagination
     paginator = Paginator(non_matching_jobs, 7)  # Show 7 jobs per page
@@ -129,6 +125,7 @@ def home(request):
         'non_matching_jobs': jobs,  # Non-matching jobs section
     }
     return render(request, 'website/home.html', context)
+
 
 # login a user
 def login_user(request):

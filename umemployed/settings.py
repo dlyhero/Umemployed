@@ -64,6 +64,9 @@ INSTALLED_APPS = [
     
     'channels',
     'cities_light',
+    
+    'ckeditor',
+    'ckeditor_uploader',
 
 ]
 ASGI_APPLICATION = 'umemployed.asgi.application'
@@ -296,6 +299,15 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # Update the path to an absolute path
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# CKEditor settings
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'width': '100%',
+        'height': 300,
+    },
+}
 # AUTHENTICATION_BACKENDS = (
     
 #     # Needed to login by username in Django admin, regardless of `allauth`

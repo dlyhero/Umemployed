@@ -1,6 +1,8 @@
 from django import forms
 from .models import Job, ApplicantAnswer, MCQ
 from resume.models import Skill, SkillCategory
+from ckeditor.widgets import CKEditorWidget
+
 
 class CreateJobForm(forms.ModelForm):
     class Meta:
@@ -10,13 +12,12 @@ class CreateJobForm(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=SkillCategory.objects.all())
 class JobDescriptionForm(forms.Form):
     """
-    Form for entering job description.
+    Form for entering job description with CKEditor.
 
     Attributes:
-        description (CharField): Textarea field for job description.
+        description (CharField): CKEditorWidget field for job description.
     """
-    description = forms.CharField(widget=forms.Textarea)
-    
+    description = forms.CharField(widget=CKEditorWidget())
 
 class JobTypeForm(forms.ModelForm):
     class Meta:
@@ -69,6 +70,24 @@ class SkillForm(forms.ModelForm):
         return cleaned_data
 
 
+class JobUpdateForm(forms.ModelForm):
+    ideal_candidate = CKEditorWidget()
+    description = CKEditorWidget()
+    responsibilities = CKEditorWidget()
+    benefits = CKEditorWidget()
+
+    class Meta:
+        model = Job
+        fields = [
+            'title', 'hire_number', 'job_location_type', 'location', 'salary', 
+            'requirements', 'extracted_skills', 'ideal_candidate', 'is_available',
+            'description', 'responsibilities', 'benefits', 'level', 'category', 
+            'job_type', 'experience_levels', 'weekly_ranges', 'shifts'
+        ]
+        widgets = {
+            'requirements': forms.CheckboxSelectMultiple,
+            'extracted_skills': forms.CheckboxSelectMultiple,
+        }
 
 class UpdateJobForm(forms.ModelForm):
     """
@@ -105,3 +124,4 @@ class ApplicantAnswerForm(forms.ModelForm):
             **kwargs: Arbitrary keyword arguments.
         """
         super().__init__(*args, **kwargs)
+

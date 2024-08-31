@@ -1,0 +1,216 @@
+{% extends 'resume/recruiterBase.html' %}
+{% load static %}
+{% block custom_css %}
+    <style>
+    .candidateList-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    @media (max-width: 1100px) {
+        .candidateList-wrap {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+    }
+    </style>
+{% endblock %}
+{% block content %}
+    <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto">
+        <form class="max-w-3xl mx-auto p-6" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h1 class="text-2xl font-bold mb-4 text-gray-800">Update Job</h1>
+
+            <!-- Job Information -->
+            <section>
+                <h2 class="text-xl font-semibold mb-2">Job Information</h2>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="title">Job Title</label>
+                    <input
+                        type="text"
+                        name="title"
+                        id="title"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                        placeholder="Job Title"
+                        value="{{ form.title.value }}"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="hire_number">Number of Hires</label>
+                    <input
+                        type="number"
+                        name="hire_number"
+                        id="hire_number"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                        placeholder="Number of Hires"
+                        value="{{ form.hire_number.value }}"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="job_location_type">Job Location Type</label>
+                    <select
+                        name="job_location_type"
+                        id="job_location_type"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                    >
+                        <option value="remote" {% if form.job_location_type.value == 'remote' %}selected{% endif %}>Remote</option>
+                        <option value="onsite" {% if form.job_location_type.value == 'onsite' %}selected{% endif %}>Onsite</option>
+                        <option value="hybrid" {% if form.job_location_type.value == 'hybrid' %}selected{% endif %}>Hybrid</option>
+                        <option value="internship" {% if form.job_location_type.value == 'internship' %}selected{% endif %}>Internship</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="location">Location</label>
+                    <input
+                        type="text"
+                        name="location"
+                        id="location"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                        placeholder="Job Location"
+                        value="{{ form.location.value }}"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="salary">Salary</label>
+                    <input
+                        type="number"
+                        name="salary"
+                        id="salary"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                        placeholder="Salary"
+                        value="{{ form.salary.value }}"
+                    />
+                </div>
+            </section>
+
+            <!-- Skills -->
+            <section>
+                <h2 class="text-xl font-semibold mb-2">Skills</h2>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="requirements">Required Skills</label>
+                    {{ form.requirements }}
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="extracted_skills">Extracted Skills</label>
+                    {{ form.extracted_skills }}
+                </div>
+            </section>
+
+            <!-- Job Details -->
+            <section>
+                <h2 class="text-xl font-semibold mb-2">Job Details</h2>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="ideal_candidate">Ideal Candidate</label>
+                    {{ form.ideal_candidate }}
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="description">Job Description</label>
+                    {{ form.description }}
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="responsibilities">Responsibilities</label>
+                    {{ form.responsibilities }}
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="benefits">Benefits</label>
+                    {{ form.benefits }}
+                </div>
+            </section>
+
+            <!-- Additional Information -->
+            <section>
+                <h2 class="text-xl font-semibold mb-2">Additional Information</h2>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="level">Experience Level</label>
+                    <select
+                        name="level"
+                        id="level"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                    >
+                        <option value="Beginner" {% if form.level.value == 'Beginner' %}selected{% endif %}>Beginner</option>
+                        <option value="Mid" {% if form.level.value == 'Mid' %}selected{% endif %}>Mid</option>
+                        <option value="Expert" {% if form.level.value == 'Expert' %}selected{% endif %}>Expert</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="category">Category</label>
+                    {{ form.category }}
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="job_type">Job Type</label>
+                    <input
+                        type="text"
+                        name="job_type"
+                        id="job_type"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                        placeholder="Job Type"
+                        value="{{ form.job_type.value }}"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="experience_levels">Experience Levels</label>
+                    <input
+                        type="text"
+                        name="experience_levels"
+                        id="experience_levels"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                        placeholder="Experience Levels"
+                        value="{{ form.experience_levels.value }}"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="weekly_ranges">Weekly Ranges</label>
+                    <input
+                        type="text"
+                        name="weekly_ranges"
+                        id="weekly_ranges"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                        placeholder="Weekly Ranges"
+                        value="{{ form.weekly_ranges.value }}"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="shifts">Shifts</label>
+                    <input
+                        type="text"
+                        name="shifts"
+                        id="shifts"
+                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                        placeholder="Shifts"
+                        value="{{ form.shifts.value }}"
+                    />
+                </div>
+            </section>
+
+            <div class="text-right">
+                <button
+                    type="submit"
+                    class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded"
+                >
+                    Update Job
+                </button>
+            </div>
+        </form>
+    </main>
+    
+    <script>
+    document.querySelector(".year").textContent = new Date().getFullYear();
+    const optionBtn = document.getElementById("option-btn");
+    const optionMenu = document.getElementById("option-menu");
+    const backdropMenu = document.getElementById("backdrop-menu");
+    const removeBtn = document.getElementById("remove-btn");
+    const sidebar = document.querySelector(".sidebar");
+    
+    optionBtn.addEventListener("click", () => {
+        optionMenu.classList.toggle("hidden");
+    });
+    
+    backdropMenu.addEventListener("click", () => {
+        optionMenu.classList.add("hidden");
+    });
+    
+    removeBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("sidebar-close");
+    });
+    </script>
+{% endblock %}
