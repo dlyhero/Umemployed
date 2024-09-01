@@ -12,7 +12,7 @@ dotenv.load_dotenv()
 api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 logger = logging.getLogger(__name__)
-
+from company.models import Company
 @csrf_exempt
 def generate_questions_view(request):
     """
@@ -32,6 +32,9 @@ def generate_questions_view(request):
         entry_level = request.GET.get('entry_level')
         selected_skills = request.GET.get('selected_skills')
         selected_skill_names = selected_skills.split(',') if selected_skills else []
+        job_id = request.GET.get('job_id')  # Assuming job_id is passed in the query string
+
+        request.session['job_id'] = job_id  # Store job ID in session
 
         try:
             questions_per_skill = 3
@@ -56,7 +59,13 @@ def generate_questions_view(request):
                     }
                     serialized_questions.append(serialized_question)
 
-                return redirect('/')
+                user_company = get_object_or_404(Company, user=request.user)
+
+                # Get the company_id
+                company_id = user_company.id
+
+                # Now redirect without having to pass company_id as a parameter
+                return redirect('view_my_jobs', company_id=company_id)
             else:
                 return JsonResponse({"error": "Failed to generate questions"}, status=500)
 

@@ -222,26 +222,45 @@ def select_skills(request):
 
 
 
+from .forms import JobUpdateForm
 
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+import logging
 
+@login_required
+def update_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    company = job.company
 
-    
-
-@login_required(login_url='/login')
-def update_job(request,pk):
-    job = Job.objects.get(pk=pk)
     if request.method == 'POST':
-        form = UpdateJobForm(request.POST, instance=job)
-        if form.valid():
+        form = JobUpdateForm(request.POST, instance=job)
+        if form.is_valid():
             form.save()
-            messages.info(request,"Job info has been Updated")
-            return redirect('dashboard')
-        else:
-            messages.warning(request,'Something went wrong ')
+            return redirect('view_my_jobs', company.id)
     else:
-        form = UpdateJobForm()
-        context = {'form':form}
-        return render(request, 'job/update_job.html',context)
+        form = JobUpdateForm(instance=job)
+
+    return render(request, 'job/update_job.html', {'form': form, 'job': job, 'company': company})
+
+
+
+# @login_required(login_url='/login')
+# def update_job(request,pk):
+#     job = Job.objects.get(pk=pk)
+#     if request.method == 'POST':
+#         form = UpdateJobForm(request.POST, instance=job)
+#         if form.valid():
+#             form.save()
+#             messages.info(request,"Job info has been Updated")
+#             return redirect('dashboard')
+#         else:
+#             messages.warning(request,'Something went wrong ')
+#     else:
+#         form = UpdateJobForm()
+#         context = {'form':form}
+#         return render(request, 'job/update_job.html',context)
     
 @login_required(login_url='login')
 def confirm_evaluation(request, job_id):

@@ -6,6 +6,8 @@ import uuid
 from resume.models import Resume
 from job.utils import calculate_skill_match
 from django.conf import settings
+from ckeditor.fields import RichTextField
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -61,11 +63,11 @@ class Job(models.Model):
     salary = models.PositiveBigIntegerField(default=35000)
     requirements = models.ManyToManyField(Skill, related_name='required_jobs')
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='extracted_jobs')
-    ideal_candidate = models.TextField()
+    ideal_candidate = RichTextField()
     is_available = models.BooleanField(default=False)
-    description = models.TextField(max_length=255, default='We are looking for ...')
-    responsibilities = models.TextField(max_length=255, default="You will be in charge of ...")
-    benefits = models.TextField(default="...")
+    description = RichTextField(max_length=1000, default='We are looking for ...')
+    responsibilities = RichTextField(max_length=1000, default="You will be in charge of ...")
+    benefits = RichTextField(default="...")
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default=BEGINNER)
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

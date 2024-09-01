@@ -67,7 +67,8 @@
           {% for job in jobs %}
           <div
             class="bg-white duration-300 border overflow-hidden rounded-md sm:rounded-lg"
-          >
+            >
+            <a href="{% url 'job:update_job' job.id %}">
             <div
               class="px-4 py-5 sm:px-6 flex justify-between items-center border-b"
             >
@@ -110,6 +111,7 @@
               </div>
             </div>
           </div>
+        </a>
           {% endfor %}
 
           <!-- Repeat the above block for each job listing -->
