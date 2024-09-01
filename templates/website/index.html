@@ -43,7 +43,7 @@
             advance your career.
           </p>
           <a
-            href="./addjob.html"
+            href="{% url 'dashboard' %}"
             class="inline-block px-8 py-3 bg-[#1e90ff] text-white font-semibold rounded-md transition-all duration-200 hover:bg-[#005b8c]"
           >
             Get Started
@@ -176,6 +176,8 @@
           class="flex gap-6 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory"
           id="jobCardsContainer"
         >
+        {% if recent_jobs %}
+        {% for job in recent_jobs %}
           <!-- Repeat the Job Cards multiple times as needed -->
           <div
             class="min-w-[100%] sm:min-w-[50%] lg:min-w-[22.99%] bg-white border rounded-lg p-6 snap-start"
@@ -187,153 +189,41 @@
                 alt="Company Logo"
               />
               <div>
-                <span class="text-sm text-gray-500">Full-time</span>
+                <span class="text-sm text-gray-500">{{job.job_type}}</span>
               </div>
             </div>
             <div class="mb-4">
               <h3 class="text-xl font-semibold text-gray-800">
-                Software Engineer
+                {{job.title}}
               </h3>
               <div class="flex items-center gap-2">
-                <span class="text-gray-600">Google</span>
-                <span class="text-sm text-gray-500">3d ago</span>
+                <span class="text-gray-600">{{job.company.name}}</span>
+                <span class="text-sm text-gray-500">{{job.created_at}}</span>
               </div>
             </div>
             <p
               class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
             >
-              <i class="fas fa-map-marker-alt mr-2"></i> Mountain View, CA
+              <i class="fas fa-map-marker-alt mr-2"></i> {{job.location}}
             </p>
             <p class="text-gray-800 mb-4 flex items-center">
-              $120,000 - $160,000 / year
+              ${{job.salary}} / year
             </p>
             <div class="mt-4">
+              <a href="{% url 'job:job_details' job.id %}">
               <button
                 class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full"
               >
                 Apply Now
               </button>
+            </a>
             </div>
           </div>
+          {% endfor %}
+          {% endif %}
 
           <!-- Job Card 2 -->
-          <div
-            class="min-w-[100%] sm:min-w-[50%] lg:min-w-[22.99%] bg-white border rounded-lg p-6 snap-start"
-          >
-            <div class="flex items-center justify-between mb-4">
-              <img
-                class="w-12 h-12 rounded-full mr-4"
-                src="{% static 'new_design/icons/8546719_apple_pay_icon.svg' %}"
-                alt="Company Logo"
-              />
-              <div>
-                <span class="text-sm text-gray-500">Part-time</span>
-              </div>
-            </div>
-            <div class="mb-4">
-              <h3 class="text-xl font-semibold text-gray-800">UX Designer</h3>
-              <div class="flex items-center gap-2">
-                <span class="text-gray-600">Apple</span>
-                <span class="text-sm text-gray-500">1w ago</span>
-              </div>
-            </div>
-            <p
-              class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
-            >
-              <i class="fas fa-map-marker-alt mr-2"></i> Cupertino, CA
-            </p>
-            <p class="text-gray-800 mb-4 flex items-center">
-              $80,000 - $100,000 / year
-            </p>
-            <div class="mt-4">
-              <button
-                class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full"
-              >
-                Apply Now
-              </button>
-            </div>
-          </div>
-
-          <!-- Job Card 3 -->
-          <div
-            class="min-w-[100%] sm:min-w-[50%] lg:min-w-[22.99%] bg-white border rounded-lg p-6 snap-start"
-          >
-            <div class="flex items-center justify-between mb-4">
-              <img
-                class="w-12 h-12 rounded-full mr-4"
-                src="{% static 'new_design/icons/294695_amazon_icon.svg' %}"
-                alt="Company Logo"
-              />
-              <div>
-                <span class="text-sm text-gray-500">Contract</span>
-              </div>
-            </div>
-            <div class="mb-4">
-              <h3 class="text-xl font-semibold text-gray-800">
-                Product Manager
-              </h3>
-              <div class="flex items-center gap-2">
-                <span class="text-gray-600">Amazon</span>
-                <span class="text-sm text-gray-500">5d ago</span>
-              </div>
-            </div>
-            <p
-              class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
-            >
-              <i class="fas fa-map-marker-alt mr-2"></i> Remote
-            </p>
-            <p class="text-gray-800 mb-4 flex items-center">
-              $90,000 - $120,000 / year
-            </p>
-            <div class="mt-4">
-              <button
-                class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full"
-              >
-                Apply Now
-              </button>
-            </div>
-          </div>
-
-          <!-- Job Card 4 -->
-          <div
-            class="min-w-[100%] sm:min-w-[50%] lg:min-w-[22.99%] bg-white border rounded-lg p-6 snap-start"
-          >
-            <div class="flex items-center justify-between mb-4">
-              <img
-                class="w-12 h-12 rounded-full mr-4"
-                src="{% static 'new_design/icons/294669_microsoft_icon.svg' %}"
-                alt="Company Logo"
-              />
-              <div>
-                <span class="text-sm text-gray-500">Internship</span>
-              </div>
-            </div>
-            <div class="mb-4">
-              <h3 class="text-xl font-semibold text-gray-800">
-                Marketing Intern
-              </h3>
-              <div class="flex gap-2 items-center">
-                <span class="text-gray-600">Microsoft</span>
-                <span class="text-sm text-gray-500">2w ago</span>
-              </div>
-            </div>
-            <p
-              class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
-            >
-              <i class="fas fa-map-marker-alt mr-2"></i> Redmond, WA
-            </p>
-            <p class="text-gray-800 mb-4 flex items-center">
-              $40,000 - $50,000 / year
-            </p>
-            <div class="mt-4">
-              <button
-                class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full"
-              >
-                Apply Now
-              </button>
-            </div>
-          </div>
-
+          
           <!-- Add more job cards as needed, following the same structure -->
         </div>
       </section>
@@ -357,7 +247,7 @@
               Complete your profile to unlock more features and Opportunities
             </p>
             <a
-              href="#"
+              href="{% url 'dashboard' %}"
               class="bg-[#1e90ff] text-white px-4 py-2 rounded-lg font-semibold"
               >Create Profile</a
             >
@@ -379,7 +269,7 @@
               you find top talent and streamline your hiring process.
             </p>
             <a
-              href="#"
+              href="{% url 'home' %}"
               class="bg-[#1e90ff] text-white px-4 py-2 rounded-lg font-semibold"
               >View More</a
             >
@@ -425,6 +315,8 @@
 
         <!-- Companies Grid -->
         <div class="grid gap-8 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
+          {% if featured_companies %}
+          {% for company in featured_companies %}
           <!-- Company 1 -->
           <div
             class="bg-white shadow-lg rounded-lg p-6 text-center transform hover:scale-105 transition-transform duration-300"
@@ -434,51 +326,18 @@
               src="{% static 'new_design/icons/294675_google_icon.svg' %}"
               alt="Google Logo"
             />
-            <h3 class="text-lg font-semibold text-gray-900">Google</h3>
-            <p class="text-sm text-gray-500">San Francisco, CA</p>
+            <h3 class="text-lg font-semibold text-gray-900">{{company.name}}</h3>
+            <p class="text-sm text-gray-500">{{company.industry}}</p>
             <a
-              href="#"
+              href="{% url 'home' %}"
               class="text-[#1e90ff] font-semibold hover:text-blue-500 mt-4 inline-block"
               >View Jobs</a
             >
           </div>
+          {% endfor %}
+          {% endif %}
 
-          <!-- Company 3 -->
-          <div
-            class="bg-white shadow-lg rounded-lg p-6 text-center transform hover:scale-105 transition-transform duration-300"
-          >
-            <img
-              class="w-20 h-20 mx-auto mb-4"
-              src="{% static 'new_design/icons/294695_amazon_icon.svg' %}"
-              alt="Amazon Logo"
-            />
-            <h3 class="text-lg font-semibold text-gray-900">Amazon</h3>
-            <p class="text-sm text-gray-500">Seattle, WA</p>
-            <a
-              href="#"
-              class="text-[#1e90ff] font-semibold hover:text-blue-500 mt-4 inline-block"
-              >View Jobs</a
-            >
-          </div>
-
-          <!-- Company 4 -->
-          <div
-            class="bg-white shadow-lg rounded-lg p-6 text-center transform hover:scale-105 transition-transform duration-300"
-          >
-            <img
-              class="w-20 h-20 mx-auto mb-4"
-              src="{% static 'new_design/icons/294669_microsoft_icon.svg' %}"
-              alt="Microsoft Logo"
-            />
-            <h3 class="text-lg font-semibold text-gray-900">Microsoft</h3>
-            <p class="text-sm text-gray-500">Redmond, WA</p>
-            <a
-              href="#"
-              class="text-[#1e90ff] font-semibold hover:text-blue-500 mt-4 inline-block"
-              >View Jobs</a
-            >
-          </div>
-        </div>
+         </div>
 
         <!-- Call to Action Button -->
         <div class="mt-8 text-center">
@@ -605,7 +464,7 @@
           >
             What are you waiting to Browse Jobs?
           </h2>
-          <a href="#" class="bg-[#1e90ff] text-white px-6 py-3 rounded-lg"
+          <a href="{% url 'home' %}" class="bg-[#1e90ff] text-white px-6 py-3 rounded-lg"
             >Browse Jobs</a
           >
         </div>

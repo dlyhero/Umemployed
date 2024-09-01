@@ -18,9 +18,15 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
 def index(request):
+    
+    recent_jobs = Job.objects.order_by('-created_at')[:10]
     job_count = Job.objects.count()
+    
+    featured_companies = Company.objects.all()
     context={
         'job_count':job_count,
+        'recent_jobs':recent_jobs,
+        'featured_companies':featured_companies
     }
     return render(request, 'website/index.html',context)
 
