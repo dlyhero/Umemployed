@@ -13,83 +13,42 @@
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .confirmation-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #333333;
-        text-align: center;
-        margin-bottom: 1rem;
-    }
-    .confirmation-text {
-        font-size: 1rem;
-        color: #555555;
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
-    .confirmation-link {
-        color: #007bff;
-        text-decoration: underline;
-    }
-    .confirmation-form {
-        display: flex;
-        justify-content: center;
-    }
-    .confirmation-button {
-        background-color: #007bff;
-        color: #ffffff;
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background-color 0.3s;
-    }
-    .confirmation-button:hover {
-        background-color: #0056b3;
-    }
-    .confirmation-button:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(38, 143, 255, 0.5);
-    }
   </style>
 {% endblock %}
 {% block head_title %}
     {% trans "Confirm Email Address" %}
 {% endblock head_title %}
 {% block content %}
-<main
-      class="mx-auto w-[98%] sm:w-[90%] max-w-[720px] p-12 mb-2 flex items-center justify-center "
-    >
-    <div class="confirmation-container">
-        <h1 class="confirmation-title">
-            {% trans "Confirm Email Address" %}
+<main class="mx-auto w-[98%] sm:w-[90%] max-w-[720px] p-12 mb-2 flex items-center justify-center">
+    <div class="confirmation-container bg-white p-8 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">
+            <i class="fas fa-envelope-check" style="color: #1e90ff;"></i> {% trans "Confirm Email Address" %}
         </h1>
         {% if confirmation %}
             {% user_display confirmation.email_address.user as user_display %}
             {% if can_confirm %}
-                <p class="confirmation-text">
-                    {% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}" class="confirmation-link">{{ email }}</a> is an email address for user {{ user_display }}.{% endblocktrans %}
+                <p class="text-gray-700 mb-6 text-center">
+                    <i class="fas fa-info-circle" style="color: #1e90ff;"></i> {% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}" class="text-blue-500 hover:underline">{{ email }}</a> is an email address for user {{ user_display }}.{% endblocktrans %}
                 </p>
                 {% url 'account_confirm_email' confirmation.key as action_url %}
-                <form method="post" action="{{ action_url }}" class="confirmation-form">
+                <form method="post" action="{{ action_url }}" class="flex justify-center">
                     {% csrf_token %}
-                    <button type="submit" class="confirmation-button">
-                        {% trans 'Confirm' %}
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center space-x-2">
+                        <i class="fas fa-check" style="color: #ffffff;"></i>
+                        <span>{% trans 'Confirm' %}</span>
                     </button>
                 </form>
             {% else %}
-                <p class="confirmation-text">
-                    {% blocktrans %}Unable to confirm {{ email }} because it is already confirmed by a different account.{% endblocktrans %}
+                <p class="text-gray-700 mb-6 text-center">
+                    <i class="fas fa-times-circle" style="color: #e53e3e;"></i> {% blocktrans %}Unable to confirm {{ email }} because it is already confirmed by a different account.{% endblocktrans %}
                 </p>
             {% endif %}
         {% else %}
             {% url 'account_email' as email_url %}
-            <p class="confirmation-text">
-                {% blocktrans %}This email confirmation link expired or is invalid. Please <a href="{{ email_url }}" class="confirmation-link">issue a new email confirmation request</a>.{% endblocktrans %}
+            <p class="text-gray-700 text-center">
+                <i class="fas fa-exclamation-triangle" style="color: #e53e3e;"></i> {% blocktrans %}This email confirmation link expired or is invalid. Please <a href="{{ email_url }}" class="text-blue-500 hover:underline">issue a new email confirmation request</a>.{% endblocktrans %}
             </p>
         {% endif %}
     </div>
 </main>
-<br><br><br><br><br><br><br><br><br><br><br><br>
 {% endblock %}
-      

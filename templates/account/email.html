@@ -4,74 +4,85 @@
     {% trans "Email Addresses" %}
 {% endblock head_title %}
 {% block content %}
-    {% element h1 %}
-        {% trans "Email Addresses" %}
-    {% endelement %}
-    {% if emailaddresses %}
-        <p>{% trans 'The following email addresses are associated with your account:' %}</p>
-        {% url 'account_email' as email_url %}
-        {% element form form=form action=email_url method="post" %}
-            {% slot body %}
-                {% csrf_token %}
-                {% for radio in emailaddress_radios %}
-                    {% with emailaddress=radio.emailaddress %}
-                        {% element field type="radio" checked=radio.checked name="email" value=emailaddress.email id=radio.id %}
-                            {% slot label %}
-                                {{ emailaddress.email }}
-                                {% if emailaddress.verified %}
-                                    {% element badge tags="success,email,verified" %}
-                                        {% translate "Verified" %}
-                                    {% endelement %}
-                                {% else %}
-                                    {% element badge tags="warning,email,unverified" %}
-                                        {% translate "Unverified" %}
-                                    {% endelement %}
-                                {% endif %}
-                                {% if emailaddress.primary %}
-                                    {% element badge tags="email,primary" %}
-                                        {% translate "Primary" %}
-                                    {% endelement %}
-                                {% endif %}
-                            {% endslot %}
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-envelope" style="color: #1e90ff;"></i> {% trans "Email Addresses" %}
+        </h1>
+        {% if emailaddresses %}
+            <p class="text-lg text-gray-700 mb-4">
+                <i class="fas fa-info-circle" style="color: #1e90ff;"></i> {% trans 'The following email addresses are associated with your account:' %}
+            </p>
+            {% url 'account_email' as email_url %}
+            {% element form form=form action=email_url method="post" %}
+                {% slot body %}
+                    {% csrf_token %}
+                    {% for radio in emailaddress_radios %}
+                        {% with emailaddress=radio.emailaddress %}
+                            <div class="flex items-center mb-4 p-4 border rounded-lg shadow-sm">
+                                {% element field type="radio" checked=radio.checked name="email" value=emailaddress.email id=radio.id %}
+                                <div class="ml-4 flex-1">
+                                    <label for="{{ radio.id }}" class="flex items-center text-gray-800">
+                                        <i class="fas fa-envelope" style="color: #1e90ff;"></i>
+                                        <span class="ml-2">{{ emailaddress.email }}</span>
+                                    </label>
+                                    {% if emailaddress.verified %}
+                                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full mt-1">
+                                            <i class="fas fa-check-circle" style="color: #28a745;"></i> {% translate "Verified" %}
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full mt-1">
+                                            <i class="fas fa-exclamation-circle" style="color: #ffc107;"></i> {% translate "Unverified" %}
+                                        </span>
+                                    {% endif %}
+                                    {% if emailaddress.primary %}
+                                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full mt-1">
+                                            <i class="fas fa-star" style="color: #1e90ff;"></i> {% translate "Primary" %}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+                {% endslot %}
+                {% slot actions %}
+                    <div class="flex space-x-4">
+                        {% element button type="submit" name="action_primary" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center space-x-2" %}
+                            <i class="fas fa-crown" style="color: #ffffff;"></i>
+                            <span>{% trans 'Make Primary' %}</span>
                         {% endelement %}
-                    {% endwith %}
-                {% endfor %}
-            {% endslot %}
-            {% slot actions %}
-                {% element button type="submit" name="action_primary" %}
-                    {% trans 'Make Primary' %}
-                {% endelement %}
-                {% element button tags="secondary" type="submit" name="action_send" %}
-                    {% trans 'Re-send Verification' %}
-                {% endelement %}
-                {% element button tags="danger,delete" type="submit" name="action_remove" %}
-                    {% trans 'Remove' %}
-                {% endelement %}
-            {% endslot %}
-        {% endelement %}
-    {% else %}
-        {% include "account/snippets/warn_no_email.html" %}
-    {% endif %}
-    {% if can_add_email %}
-        {% element h2 %}
-            {% trans "Add Email Address" %}
-        {% endelement %}
-        {% url 'account_email' as action_url %}
-        {% element form form=form method="post" action=action_url %}
-            Hoi bef bod
-            {% slot body %}
-                {% csrf_token %}
-                {% element fields form=form %}
-                {% endelement %}
-            {% endslot %}
-            befac
-            {% slot actions %}
-                {% element button name="action_add" type="submit" %}
-                    {% trans "Add Email" %}
-                {% endelement %}
-            {% endslot %}
-        {% endelement %}
-    {% endif %}
+                        {% element button tags="secondary" type="submit" name="action_send" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 flex items-center space-x-2" %}
+                            <i class="fas fa-envelope" style="color: #ffffff;"></i>
+                            <span>{% trans 'Re-send Verification' %}</span>
+                        {% endelement %}
+                        {% element button tags="danger,delete" type="submit" name="action_remove" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 flex items-center space-x-2" %}
+                            <i class="fas fa-trash-alt" style="color: #ffffff;"></i>
+                            <span>{% trans 'Remove' %}</span>
+                        {% endelement %}
+                    </div>
+                {% endslot %}
+            {% endelement %}
+        {% else %}
+            {% include "account/snippets/warn_no_email.html" %}
+        {% endif %}
+        {% if can_add_email %}
+            <h2 class="text-2xl font-semibold text-gray-800 mt-8 mb-4">
+                <i class="fas fa-plus" style="color: #1e90ff;"></i> {% trans "Add Email Address" %}
+            </h2>
+            {% url 'account_email' as action_url %}
+            {% element form form=form method="post" action=action_url %}
+                {% slot body %}
+                    {% csrf_token %}
+                    {% element fields form=form %}
+                {% endslot %}
+                {% slot actions %}
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center space-x-2">
+                        <i class="fas fa-plus-circle" style="color: #ffffff;"></i>
+                        <span>{% trans "Add Email" %}</span>
+                    </button>
+                {% endslot %}
+            {% endelement %}
+        {% endif %}
+    </div>
 {% endblock content %}
 {% block extra_body %}
     <script type="text/javascript">
