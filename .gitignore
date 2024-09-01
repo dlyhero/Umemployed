@@ -8,6 +8,13 @@ media
 # Backup files # 
 *.bak 
 
+tests/
+docs/
+*.md
+*.psd
+*.zip
+
+
 # If you are using PyCharm # 
 # User-specific stuff
 .idea/**/workspace.xml
