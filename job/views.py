@@ -224,19 +224,26 @@ def select_skills(request):
 
 from .forms import JobUpdateForm
 
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+import logging
+
 @login_required
 def update_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
-    
+    company = job.company
+
     if request.method == 'POST':
         form = JobUpdateForm(request.POST, instance=job)
         if form.is_valid():
             form.save()
-            return redirect('job_detail', job_id=job.id)
+            return redirect('view_my_jobs', company.id)
     else:
         form = JobUpdateForm(instance=job)
 
-    return render(request, 'job/update_job.html', {'form': form, 'job': job})
+    return render(request, 'job/update_job.html', {'form': form, 'job': job, 'company': company})
+
 
 
 # @login_required(login_url='/login')

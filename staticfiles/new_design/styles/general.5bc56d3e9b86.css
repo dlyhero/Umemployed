@@ -1,0 +1,23 @@
+.eb-garamond-rregular,
+h2 {
+  font-family: "EB Garamond";
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
+#mobileMenu {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease; /* Smooth sliding transition */
+}
+#mobileMenu.show {
+  transform: translateX(0); /* Slide in */
+}
+
+#jobCardsContainer::-webkit-scrollbar {
+  width: 1px;
+}
+
+#Testimonials-ctn::-webkit-scrollbar {
+  width: 1px;
+}

@@ -1,0 +1,13 @@
+.hero-bg {
+  background-image: url("/images/heroImage.jpg");
+  background-size: cover; /* Optional: Ensures the image covers the section */
+  background-position: center; /* Optional: Centers the image */
+  background-repeat: no-repeat; /* Optional: Prevents repeating the image */
+}
+
+#Testimonial {
+  background-image: url("/images/14731358_rm222batch4-mind-12.jpg");
+  background-size: cover; /* Optional: Ensures the image covers the section */
+  background-position: center; /* Optional: Centers the image */
+  background-repeat: no-repeat; /* Optional: Prevents repeating the image */
+}
