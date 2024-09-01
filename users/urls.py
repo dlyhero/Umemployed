@@ -17,6 +17,6 @@ urlpatterns = [
     path('verify',views.send_verification_to_unverified_users, name='send_verification_to_unverified_users'),
     path('account/email-verification-sent/', TemplateView.as_view(template_name='account/verification_sent.html'), name='account_email_verification_sent'),
 
-    
+    path('user_dashboard',views.user_dashboard, name='dashboard'),
 
 ]

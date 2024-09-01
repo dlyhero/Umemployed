@@ -257,7 +257,12 @@ def switch_account_type(request):
         messages.error(request, 'Invalid role switch request.')
         return redirect('home')
 
-
+def user_dashboard(request):
+    recommended_jobs = Job.objects.all()
+    context = {
+        'recommended_jobs':recommended_jobs,
+    }
+    return render(request, 'website/user_dashboard.html',context)
 
 
 # view to request unverified users to verify emails
