@@ -7,6 +7,7 @@ media
 
 # Backup files # 
 *.bak 
+db.sqlite3
 
 # If you are using PyCharm # 
 # User-specific stuff
@@ -103,7 +104,8 @@ env/
 venv/ 
 ENV/ 
 env.bak/ 
-venv.bak/ 
+venv.bak/
+myenv
 
 # mkdocs documentation 
 /site 
