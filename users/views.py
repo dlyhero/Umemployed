@@ -301,4 +301,26 @@ class CustomConfirmEmailView(ConfirmEmailView):
 
         # Redirect to your desired page after login
         return redirect('switch_account')  # Change to your desired URL name or path
+
+
+from django.core.mail import send_mail
+from django.conf import settings
     
+def resend_confirmation_email(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+            send_confirmation_email(user)
+            messages.success(request, 'Confirmation email sent successfully.')
+        except User.DoesNotExist:
+            messages.error(request, 'User with that email does not exist.')
+        return redirect('login')  # Replace 'your_login_url' with the actual URL of your login page
+
+    return render(request, 'resend_confirmation_email.html')  # Replace 'resend_confirmation_email.html' with the actual template name
+def send_confirmation_email(user):
+    subject = 'Confirm Your Email'
+    message = f'Please click the following link to confirm your email: {user.get_confirmation_link()}'
+    from_email = 'brandipearl123@gmail.com'  # Replace with your email address
+    recipient_list = [user.email]
+    send_mail(subject, message, from_email, recipient_list)

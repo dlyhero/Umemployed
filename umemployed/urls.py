@@ -40,6 +40,9 @@ urlpatterns = [
     path('accounts/confirm-email/<str:key>/', CustomConfirmEmailView.as_view(), name='account_confirm_email'),
     
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    
+    path('resend_confirmation_email/', views.resend_confirmation_email, name='resend_confirmation_email'),
+
 
 
     

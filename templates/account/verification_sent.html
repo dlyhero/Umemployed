@@ -11,28 +11,27 @@
 {% endblock %}
 
 {% block content %}
-    <main class="flex items-center justify-center min-h-screen bg-gray-100">
-        <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">
-                <i class="fas fa-envelope-open-text" style="color: #1e90ff;"></i> Email Verification Sent
-            </h1>
-            <p class="text-gray-600 mb-6 text-center">
-                Thank you for registering! A confirmation email has been sent to your email address.
-                Please check your inbox and click the verification link to activate your account.
-            </p>
-            <div class="text-center">
-                <p class="text-sm text-gray-600 mb-4">
-                    If you do not receive the email, you can request a new one by clicking the button below.
-                </p>
-                <!-- Resend Verification Email Form -->
-                {% comment %} <form method="post" action="{% url 'resend_confirmation_email' %}">
-    {% csrf_token %} {% endcomment %}
-    <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center space-x-2">
-        <i class="fas fa-envelope" style="color: #1e90ff;"></i>
-        <span>Resend Confirmation Email</span>
-    </button>
-{% comment %} </form> {% endcomment %}
-            </div>
-        </div>
-    </main>
+    <main class="flex py-16 items-center justify-center max-h-screen bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">
+        <i class="fas fa-envelope-open-text" style="color: #1e90ff;"></i> Email Verification Sent
+    </h1>
+    <p class="text-gray-600 mb-6 text-center">
+        Thank you for registering! A confirmation email has been sent to your email address.
+        Please check your inbox and click the verification link to activate your account.
+    </p>
+    <div class="text-center">
+        <p class="text-sm text-gray-600 mb-4">
+            If you do not receive the email, you can request a new one by clicking the button below.
+        </p>
+        <form method="post" action="{% url 'resend_confirmation_email' %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-blue-500 mx-auto text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center space-x-2">
+                <i class="fas fa-envelope" style="color: #1e90ff;"></i>
+                <span>Resend Confirmation Email</span>
+            </button>
+        </form>
+    </div>
+</div>
+</main>
 {% endblock %}

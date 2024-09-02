@@ -59,14 +59,14 @@ def update_user_skills(request):
                 current_user.resume.skills.add(skill)
 
             message = 'Skills updated successfully'
-            return redirect('dashboard')
+            return redirect('user_dashboard')
         except Exception as e:
             error_message = 'Failed to update skills'
             print(error_message, str(e))  # Debug statement
-            return redirect('dashboard')
+            return redirect('user_dashboard')
     
     print("Invalid request method or data.")  # Debug statement
-    return redirect('dashboard')
+    return redirect('user_dashboard')
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms import UserLanguageForm,UserProfileForm
@@ -152,12 +152,12 @@ def dashboard(request):
                 user_language = language_form.save(commit=False)
                 user_language.user_profile = user_profile
                 user_language.save()
-                return redirect('dashboard')
+                return redirect('user_dashboard')
         elif 'country' in request.POST:
             profile_form = UserProfileForm(request.POST, instance=user_profile)
             if profile_form.is_valid():
                 profile_form.save()
-                return redirect('dashboard')
+                return redirect('user_dashboard')
 
     user_languages = UserLanguage.objects.filter(user_profile=user_profile)
     
@@ -203,7 +203,7 @@ def save_job(request):
         print(f"Received job_id: {job_id}")
         if not job_id:
             print("No job_id provided in the POST request.")
-            return redirect('dashboard')
+            return redirect('user_dashboard')
         
         try:
             job_category = SkillCategory.objects.get(id=job_id)
@@ -211,14 +211,14 @@ def save_job(request):
             print(f"Job category found: {job_category.name}")
         except SkillCategory.DoesNotExist:
             print(f"SkillCategory with id {job_id} does not exist.")
-            return redirect('dashboard')
+            return redirect('user_dashboard')
         
         try:
             resume = Resume.objects.get(user=request.user)
             print(f"Resume found for user {request.user.email}: {resume}")
         except Resume.DoesNotExist:
             print("Resume does not exist for the current user.")
-            return redirect('dashboard')
+            return redirect('user_dashboard')
         
         # Update and save the resume with both job_title and category
         resume.job_title = job_title
@@ -226,7 +226,7 @@ def save_job(request):
         resume.save()
         print(f"Resume updated with new job_title: {job_title} and category: {job_category.name}")
     
-    return redirect('dashboard')
+    return redirect('user_dashboard')
 
 #This view is to delete a selected skill from the resume object
 @login_required(login_url='login')
@@ -273,7 +273,7 @@ def update_profile(request):
         form = UserProfileForm(request.POST, instance=user_profile)
         if form.is_valid():
             form.save()
-            return redirect('dashboard')  # Redirect to your desired view after saving
+            return redirect('user_dashboard')  # Redirect to your desired view after saving
     else:
         form = UserProfileForm(instance=user_profile)
 
@@ -308,7 +308,7 @@ def save_education(request):
                 form.instance.resume = None  # If you need to set a resume, handle it accordingly
 
             form.save()
-            return redirect('dashboard')
+            return redirect('user_dashboard')
 
         return JsonResponse({'success': False, 'errors': form.errors})
 
@@ -341,7 +341,7 @@ def save_experience(request):
                 experience = form.save(commit=False)
                 experience.user = request.user  # Assign the logged-in user
                 experience.save()
-                return redirect('dashboard')
+                return redirect('user_dashboard')
             else:
                 return JsonResponse({'error': 'User is not authenticated'}, status=403)
         else:

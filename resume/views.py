@@ -67,7 +67,7 @@ def update_resume(request):
             resume.save()
 
             messages.success(request, 'Resume updated successfully.')
-            return redirect('dashboard')
+            return redirect('user_dashboard')
         else:
             messages.error(request, f'Form is invalid. Errors: {form.errors}')
     else:

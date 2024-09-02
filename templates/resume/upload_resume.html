@@ -1,6 +1,8 @@
-{% extends 'resume/testbase.html' %}
+{% extends 'resume/base.html' %}
 {% load static %}
 {% block custom_css %}
+    <link rel="stylesheet" href="{% static 'build/css/profile.css' %}" />
+
 <!-- Loader CSS -->
 <style>
     .loader .logo img {
@@ -96,20 +98,20 @@
         <p class="mb-6 md:mb-4">
           Hi <span id="user-name" class="font-bold">User {{user.first_name}}>!</span>, Please finish sign-up process
         </p>
-        <a class="underline px-[20px] py-[10px] md:p-0 text-[#1e90ff] md:bg-transparent font-bold" href="">Skip upload to Job Post</a>
+        <a class="underline px-[20px] py-[10px] md:p-0 text-[#1e90ff] md:bg-transparent font-bold" href="{% url 'update-resume' %}">Skip upload to Job Post</a>
       </div>
     </div>
     <div class="h-fit md:h-[300px]">
       <!-- Loader HTML -->
-      <div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-2 flex items-center justify-center z-50">
-        <div class="loader">
-            <div class="logo blinking">
-                <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
+        <div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-2 flex items-center justify-center z-50">
+            <div class="loader">
+                <div class="logo blinking">
+                    <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
+                </div>
+                <br>
+                <span><p><b>Processing, this might take some seconds.</b></p><span>
             </div>
-            <br>
-            <span><p><b>Processing, this might take some seconds.</b></p><span>
         </div>
-      </div>
 
       <form id="upload-form" method="post" enctype="multipart/form-data" class="w-full h-full">
         {% csrf_token %}
@@ -164,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const rejectButton = document.getElementById('reject-cv');
     const cvPreview = document.getElementById('cv-preview');
 
+    // Trigger loader on form submission
     form.addEventListener('submit', function () {
         loader.classList.remove('hidden');
     });
@@ -194,7 +197,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function handleDrop(e) {
         const dt = e.dataTransfer;
         const files = dt.files;
-
         handleFiles(files);
     }
 
@@ -257,11 +259,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Accept file
+    // Accept file and trigger form submission with loader
     acceptButton.addEventListener('click', function () {
         modal.classList.add('hidden'); // Hide the modal
+        loader.classList.remove('hidden'); // Show the loader
         form.submit(); // Submit the form directly
-
     });
 
     // Reject file and trigger file input
@@ -275,4 +277,6 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <!-- Include PDF.js library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
