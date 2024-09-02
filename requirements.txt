@@ -29,6 +29,7 @@ distro==1.9.0
 dj-database-url==2.2.0
 dj-rest-auth==6.0.0
 Django==4.2.7
+django-admin-export==0.0.1
 django-allauth==0.58.1
 django-appconf==1.0.6
 django-autocomplete-light==3.9.7
@@ -48,6 +49,7 @@ django-widget-tweaks==1.5.0
 djangorestframework==3.15.2
 elastic-transport==8.12.0
 elasticsearch==2.4.1
+et-xmlfile==1.0.1
 exceptiongroup==1.2.0
 geographiclib==2.0
 geopy==2.4.0
@@ -69,6 +71,7 @@ msgpack==1.0.8
 numpy==1.26.4
 oauthlib==3.2.2
 openai==1.11.1
+openpyxl==3.1.0
 packaging==24.1
 Pillow==10.1.0
 progressbar2==4.4.2
