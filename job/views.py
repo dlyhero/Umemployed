@@ -61,6 +61,8 @@ logger = logging.getLogger(__name__)
 
 from django.http import JsonResponse
 import json
+from users.models import User
+from users.email_tasks import send_new_job_email
 
 @login_required(login_url='/login')
 def create_job(request):
@@ -86,6 +88,7 @@ def create_job(request):
         form = CreateJobForm()
 
     return render(request, 'dashboard/recruiterDashboard/addJob.html', {'form': form, 'company':company})
+
 
 from .forms import JobTypeForm
 
@@ -162,15 +165,10 @@ from django.shortcuts import get_object_or_404
 
 @login_required
 def select_skills(request):
-    company=request.user.company
-    print("Entered selects_skills view")
+    company = request.user.company
     if request.user.is_recruiter and request.user.has_company:
         selected_category_id = request.session.get('selected_category')
         selected_job_id = request.session.get('selected_job_id')
-        
-        # Debugging session variables
-        print(f"Selected Category ID: {selected_category_id}")
-        print(f"Selected Job ID: {selected_job_id}")
 
         if selected_category_id and selected_job_id:
             try:
@@ -193,9 +191,14 @@ def select_skills(request):
                         job_instance.level = form.cleaned_data['level']
                         job_instance.save()
 
+                        # Send new job email notification
+                        job_description = job_instance.description if job_instance.description else 'No description available.'
+                        job_link = request.build_absolute_uri(job_instance.get_absolute_url())
+                        send_new_job_email(request.user.email, request.user.get_full_name(), job_instance.title, job_link, job_description,company.name)
+
+                        # Redirect to the next phase (e.g., generate questions)
                         entry_level = form.cleaned_data['level']
                         selected_skill_names = [skill.name for skill in selected_extracted_skills]
-
                         redirect_url = f'/job/generate-questions/?job_title={job_instance.title}&entry_level={entry_level}&selected_skills={",".join(selected_skill_names)}'
                         return redirect(redirect_url)
                 else:
@@ -204,7 +207,7 @@ def select_skills(request):
                 return render(request, 'dashboard/recruiterDashboard/selectSkills.html', {
                     'form': form,
                     'extracted_skills': extracted_skills,
-                    'company':company,
+                    'company': company,
                 })
             except SkillCategory.DoesNotExist:
                 messages.error(request, "Selected category not found.")
@@ -218,7 +221,6 @@ def select_skills(request):
     else:
         messages.warning(request, "Permission Denied")
         return redirect('dashboard')
-
 
 
 

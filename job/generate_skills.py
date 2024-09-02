@@ -67,14 +67,14 @@ def generate_questions_view(request):
                 # Now redirect without having to pass company_id as a parameter
                 return redirect('view_my_jobs', company_id=company_id)
             else:
-                return JsonResponse({"error": "Failed to generate questions"}, status=500)
+                return redirect("test_404")
 
         except Exception as e:
             logging.error(f"An error occurred: {e}")
-            return JsonResponse({"error": "An error occurred"}, status=500)
+            return redirect("test_404")
 
     else:
-        return JsonResponse({"error": "Method not allowed"}, status=405)
+        return redirect("test_404")
 
 def generate_questions_for_skills(job_title, entry_level, skill_name, questions_per_skill):
     """

@@ -7,6 +7,8 @@ from resume.models import Resume
 from job.utils import calculate_skill_match
 from django.conf import settings
 from ckeditor.fields import RichTextField
+from django.urls import reverse
+
 
 import logging
 
@@ -78,7 +80,9 @@ class Job(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Add this line
     updated_at = models.DateTimeField(auto_now=True)
 
-
+    def get_absolute_url(self):
+        return reverse('job:job_details', args=[str(self.id)])
+    
     def __str__(self):
         return self.title
 

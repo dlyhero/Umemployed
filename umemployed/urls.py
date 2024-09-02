@@ -6,7 +6,7 @@ from users import views
 from django.contrib.auth import views as auth_views
 from users.views import CustomConfirmEmailView
 
-handler404 = 'users.views.handling_404'
+handler404 = 'users.views.custom_404_view'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,6 +42,8 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     
     path('resend_confirmation_email/', views.resend_confirmation_email, name='resend_confirmation_email'),
+    
+    path('error', views.trigger_404, name='test_404'),
 
 
 

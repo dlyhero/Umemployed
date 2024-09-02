@@ -324,3 +324,16 @@ def send_confirmation_email(user):
     from_email = 'brandipearl123@gmail.com'  # Replace with your email address
     recipient_list = [user.email]
     send_mail(subject, message, from_email, recipient_list)
+    
+def handling_404(request, exception):
+    return render(request, '404.html', status=404)
+
+#for other 404 
+def custom_404_view(request, exception=None):
+    return render(request, '404.html', status=404)
+
+from django.http import Http404
+from django.shortcuts import render
+
+def trigger_404(request):
+    return render(request, '404.html', status=500)

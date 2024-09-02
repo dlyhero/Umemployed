@@ -22,7 +22,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['umemployed-app-2679a22d36dd.herokuapp.com', '127.0.0.1']
 
 SITE_ID = 2
 
@@ -148,17 +148,26 @@ DATABASES = {
 #     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 # }
 
+ADMINS = [('Nyuydine Bill', 'billleynyuy@gmail.com')]
+MANAGERS = ADMINS
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'django_debug.log',
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
 
@@ -208,7 +217,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
-# CSRF_TRUSTED_ORIGINS = ['https://umemployed-web-63d4d135b077.herokuapp.com']
+CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-2679a22d36dd.herokuapp.com', 'http://127.0.0.1:8000']
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/social-auth/complete/google-oauth2/'
 
@@ -294,6 +303,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Update the path to an absolute path
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
 
 #media files
 MEDIA_URL = '/media/'

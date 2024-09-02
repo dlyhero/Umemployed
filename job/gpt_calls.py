@@ -1,3 +1,4 @@
+from django.shortcuts import render,redirect
 from django.http import JsonResponse
 from resume.models import Skill, SkillCategory
 import json
@@ -114,9 +115,6 @@ def execute_input(request):
         if skills is not None:
             save_skills_to_database(input_str, skills["skills"])
 
-        return JsonResponse({
-            "message": "Skills generated and stored successfully",
-            "skills": skills["skills"] if skills else []
-        })
+        return redirect("test_404")
     else:
-        return JsonResponse({"error": "Method not allowed"}, status=405)
+        return redirect("test_404")

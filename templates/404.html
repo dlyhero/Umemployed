@@ -18,7 +18,6 @@
         margin: 0 auto;
     }
 
-  
     @keyframes blink {
         0%,
         50%,
@@ -47,7 +46,14 @@
         <p class="text-2xl text-gray-600 mt-4">Oops! Page not found.</p>
         <p class="text-gray-600 mt-2">The page you are looking for does not exist or there might be a server failure.</p>
         <p>Please try again.</p>
-        <a href="/" class="mt-6 inline-block px-6 py-3 text-white bg-[#1e90ff] rounded hover:bg-blue-600">Go Back Home</a>
+        <button id="goBack" class="mt-6 inline-block px-6 py-3 text-white bg-[#1e90ff] rounded hover:bg-blue-600">Go Back</button>
+        <a href="/" class="mt-6 inline-block px-6 py-3 text-white bg-[#1e90ff] rounded hover:bg-green-600">Go Back Home</a>
     </div>
+
+    <script>
+        document.getElementById('goBack').addEventListener('click', function() {
+            window.history.back();
+        });
+    </script>
 </body>
 </html>
