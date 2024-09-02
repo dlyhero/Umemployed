@@ -1,363 +1,161 @@
+{% extends 'base.html' %}
 {% load static %}
 {% load socialaccount %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" src="{% static 'img/png/logo-color.png' %}" type="image/x-icon" />
-    <title>Sign In | UmEmployed</title>
-    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <style>
-        @keyframes slideFadeIn {
-            0% {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-            50% {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
+{% block title %}
+    <title>Login|UmEmployed</title>
+    {% endblock title %}
 
-        @keyframes slideFadeOut {
-            0% {
-                opacity: 1;
-            }
-            50% {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
+{% block custom_css %}
 
-        .primary .alert {
-            animation: slideFadeIn 5s ease, slideFadeOut 5s 5s ease;
-            background-color: #f0f9ff; /* Light blue background */
-            border: 1px solid #b3e5fc; /* Matching border color */
-            border-radius: 8px; /* Rounded corners */
-            color: #0277bd; /* Darker blue text */
-            padding: 15px; /* Padding inside the alert */
-            margin: 10px 0; /* Space between alerts */
-            font-family: Arial, sans-serif; /* Font style */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            position: relative; /* Required for close button positioning */
-            max-width: 600px; /* Max width for alerts */
-            margin-left: auto; /* Center horizontally */
-            margin-right: auto; /* Center horizontally */
-        }
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+{% endblock custom_css %}
+    {% block search_bar %}
+    {% endblock search_bar %}
 
-        .primary .alert .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            color: #0277bd;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
-  </head>
-  <body class="min-h-screen flex flex-col">
-    <header class="header mt-3 mb-8 md:mb-16 md:px-20 px-5 flex justify-between items-center">
-      <div class="logo-wrapper flex items-center">
-        <img class="w-7 md:w-10" id="ue-logo" src="{% static 'img/png/logo-color.png' %}" alt="ue logo" />
-        <div class="text-logo text-[18px] md:text-[24px]">UmEmployed</div>
+{% block content %}
+
+
+
+<!-- Main Content -->
+    <main class="container mx-auto flex items-center justify-center">
+      <div class="bg-white p-5 w-full max-w-lg">
+        <h2 class="text-2xl font-bold text-gray-800 text-center">
+          Welcome Back!
+        </h2>
+        <p class="text-gray-600 text-center mt-2">
+          Please log in to your account
+        </p>
+        <div class="flex justify-center mt-4 space-x-6">
+          <a href="{% url 'social:begin' 'google-oauth2' %}?next=/">
+          <button
+            class="bg-white border border-gray-300 text-gray-800 p-2 rounded-md flex items-center justify-center shadow hover:shadow-lg"
+            style="width: 50px; height: 50px"
+          >
+            <img
+              src="https://img.icons8.com/color/48/000000/google-logo.png"
+              alt="Google"
+              class="w-6 h-6"
+            />
+          </button>
+          </a>
+          <button
+            class="bg-gray-900 text-white p-2 rounded-md flex items-center justify-center shadow hover:shadow-lg"
+            style="width: 50px; height: 50px"
+          >
+            <img
+              src="https://img.icons8.com/ios-filled/50/ffffff/mac-os.png"
+              alt="Apple"
+              class="w-6 h-6"
+            />
+          </button>
+          <button
+            class="bg-blue-600 text-white p-2 rounded-md flex items-center justify-center shadow hover:shadow-lg"
+            style="width: 50px; height: 50px"
+          >
+            <img
+              src="https://img.icons8.com/ios-filled/50/ffffff/facebook-new.png"
+              alt="Facebook"
+              class="w-6 h-6"
+            />
+          </button>
+        </div>
+
+        <div class="flex items-center justify-center my-4">
+          <hr class="w-full border-gray-300" />
+          <span class="px-4 text-gray-500">or</span>
+          <hr class="w-full border-gray-300" />
+        </div>
+
+        <form method="POST">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label
+              class="block text-gray-700 text-sm font-bold mb-2"
+              for="email"
+              >Email</label
+            >
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              class="w-full px-3 py-2 border rounded focus:outline-none lg:focus:ring focus:ring-[#1e90ffaa] lg:focus:border-[#1e90ff]"
+              required
+            />
+          </div>
+
+          <div class="mb-4">
+            <label
+              class="block text-gray-700 text-sm font-bold mb-2"
+              for="password"
+              >Password</label
+            >
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              class="w-full px-3 py-2 border rounded focus:outline-none lg:focus:ring focus:ring-[#1e90ffaa] lg:focus:border-[#1e90ff]"
+              required
+            />
+          </div>
+
+          <div class="mb-4 flex items-center">
+            <input
+              type="checkbox"
+              class="form-checkbox h-5 w-5 text-blue-600"
+              id="remember_me"
+              name="remember_me"
+            />
+            <label for="remember_me" class="ml-2 text-gray-700">
+              Remember me
+            </label>
+          </div>
+          <button
+            type="submit"
+            class="w-full px-4 py-2 bg-[#1e90ff] font-semibold text-white rounded hover:bg-[#1e90fc] transition"
+          >
+            Log In
+          </button>
+        </form>
+
+        <p class="text-center text-gray-600 mt-4">
+          <a href="{% url 'reset_password' %}" class="text-[#1e90ff] hover:underline"
+            >Forgot your password?</a
+          >
+        </p>
+        <p class="text-center text-gray-600 mt-4">
+          Don't have an account?
+          <a href="{% url 'register-applicant' %}" class="text-[#1e90ff] hover:underline">Sign up</a>
+        </p>
       </div>
-      <a class="bg-[#1e90ff] px-2 py-1 rounded-full text-white" href="{% url 'register-applicant' %}">Sign Up</a>
-    </header>
-     <div class="primary">
-        {% for message in messages %}
-            <div class="alert alert-info" role="alert">
-                {{ message }}
-                <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
-            </div>
-        {% endfor %}
-    </div>
-    <main class="mx-auto flex flex-col justify-center overflow-hidden flex-grow">
-      <section class="md:px-24 px-9 py-2 mx-auto lg:flex justify-between items-center">
-        <div class="w-full lg:w-2/4 max-w-2xl md:mx-auto">
-          <h1 class="main-heading sm:text-2xl md:text-3xl lg:text-4xl mb-4 md:mb-10">
-            Welcome to <span class="blue">UmEmployed</span><br />
-            <span class="title mt-2 text-center md:tracking-widest text-gray-700">Breaking Barriers &VerticalLine; Building Careers</span>
-          </h1>
-          <div class="form-wrap w-full">
-            <form action="" id="sign-in-form" method="post">
-              {% csrf_token %}
-              <div class="email-wrapper">
-                <label for="email" class="mb-1">Email</label><br />
-                <input required class="input-field lg:w-4/5 w-full border rounded-lg mb-5" id="email" name="email" placeholder="jaden@company.com" type="text" />
-              </div>
-              <div class="password-wrapper">
-                <label for="password">Password</label><br />
-                <input required class="input-field lg:w-4/5 w-full mb-2 border rounded-lg" id="password" name="password" placeholder="........" type="password" />
-                <a class="forgot-link block hover:text-sky-500" href="{% url 'reset_password' %}">Forgot password?</a>
-              </div>
+      <!-- Google Sign-In Button -->
+        <div id="g_id_onload" 
+             data-client_id="38566500036-s92j092h19cnf0seht935oatlm9bb67a.apps.googleusercontent.com" 
+             data-context="signin" 
+             data-ux_mode="popup" 
+             data-login_uri="http://127.0.0.1:8000/accounts/google/login/callback/" 
+             data-auto_select="true" 
+             data-itp_support="true">
+        </div>
 
-              <div class="wrapper flex items-center my-8 w-full lg:w-4/5">
-                <hr class="flex-1" />
-                <div class="mx-2">or</div>
-                <hr class="flex-1" />
-              </div>
-              <div class="alt-signin">
-                <div class="google-signin wrapper border p-2.5 rounded-lg mb-5 lg:w-4/5">
-                  {% comment %} <a class="flex justify-center items-center gap-1" href="{% provider_login_url 'google' %}?next=/"> {% endcomment %}
-                  <a class="flex justify-center items-center gap-1" href="{% url 'social:begin' 'google-oauth2' %}?next=/">
-                    <div class="icon-wrapper bg-white rounded-full">
-                      <img class="icon" src="{% static 'img/icons/7123025_logo_google_g_icon.png' %}" alt="Google logo" />
-                    </div>
-
-                    <div class="font-bold">Login with Google</div>
-                  </a>
-                </div>
-                <div id="g_id_onload" 
-                data-client_id="38566500036-s92j092h19cnf0seht935oatlm9bb67a.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-login_uri="http://127.0.0.1:8000/accounts/google/login/callback/" data-auto_select="true" data-itp_support="true"></div>
-
-                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
-                <div class="google-signin wrapper border p-2.5 rounded-lg mb-5 lg:w-4/5">
-                  <a class="flex justify-center items-center gap-1" href="#">
-                    <div class="icon-wrapper bg-white rounded-full">
-                      <img class="icon" src="{% static 'img/icons/Apple_logo_black.svg.png' %}" alt="Apple logo" />
-                    </div>
-                    <div class="font-bold">Login with Apple</div>
-                  </a>
-                </div>
-              </div>
-
-              <div class="btn-wrapper my-8 lg:w-4/5">
-                <button class="submit-btn w-full rounded-lg font-bold" type="submit" id="signin-btn">Login</button>
-              </div>
-            </form>
-          </div>
-          <div class="signup-wrapper mt-2 p-1 lg:w-4/5">
-            <p class="text-center">
-              <span>New to UmEmployed?</span>
-              <a class="signup-link underline" href="{% url 'register-applicant' %}">Sign Up</a>
-            </p>
-          </div>
+        <div class="g_id_signin" 
+             data-type="standard" 
+             data-shape="rectangular" 
+             data-theme="outline" 
+             data-text="signin_with" 
+             data-size="large" 
+             data-logo_alignment="left">
         </div>
-        <img class="desc-img mt-10 w-full h-full lg:w-1/2 md:h-1/2 mx-auto" src="{% static 'img/pics/career.jpg' %}" />
-      </section>
-       <section
-        id="articles"
-        class="px-9 md:px-24 mx-auto py-20 lg:flex gap-32 bg-slate-100"
-      >
-        <div class="info lg:w-2/5 mb-5 lg:mb-0">
-          <h2 class="text-2xl md:text-3xl mb-4">
-            Industries-specific Insight and Strategies
-          </h2>
-          <div class="text-gray-600 text-xl md:text-2xl">
-            These guides provide industry-specific advice for professionals
-            shifting careers. from resume optimisation to interview success,
-            readers gain essential tips for navigating diverse industries with
-            confidence.
-          </div>
-        </div>
-        <div class="article-wrap lg:w-1/2">
-          <ul class="article-list gap-2">
-            <li
-              class="article border text-nowrap rounded-full text-center text-2xl"
-            >
-              <a class="text-nowrap" href="http#">Marketing</a>
-            </li>
-            <li
-              class="article border text-nowrap rounded-full text-center text-2xl"
-            >
-              <a class="text-nowrap" href="http#">Software Developement</a>
-            </li>
-            <li
-              class="article border text-nowrap rounded-full text-center text-2xl"
-            >
-              <a class="text-nowrap" href="http#">Publishing</a>
-            </li>
-            <li class="article border transition-all rounded-full text-center text-2xl">
-              <a class="" href="http#">Finance</a>
-            </li>
-            <li class="article border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Healthcare</a>
-            </li>
-            <li class="article border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Education</a>
-            </li>
-            <li class="article border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Hospitality</a>
-            </li>
-            <li class="article border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Manufacturing</a>
-            </li>
-            <li class="article border rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Agriculture</a>
-            </li>
-            <li class="article border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Retail</a>
-            </li>
-            <li class="article border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Media & Entertainment</a>
-            </li>
-            <li class="article border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Show more</a>
-            </li>
-          </ul>
-        </div>
-      </section>
-      <section id="job" class="px-9 md:px-24 mx-auto py-20 lg:flex gap-32">
-        <div class="info lg:w-2/5 mb-5 lg:mb-0">
-          <h2 class="text-2xl md:text-3xl mb-4">Current Job Openings</h2>
-        </div>
-        <div class="article-wrap lg:w-1/2">
-          <ul class="article-list gap-2">
-            <li
-              class="job border text-nowrap rounded-full text-center text-2xl"
-            >
-              <a class="text-nowrap" href="http#">Software Egineer</a>
-            </li>
-            <li
-              class="job border text-nowrap rounded-full text-center text-2xl"
-            >
-              <a class="text-nowrap" href="http#">Marketing Specialist</a>
-            </li>
-            <li
-              class="job border text-nowrap rounded-full text-center text-2xl"
-            >
-              <a class="text-nowrap" href="http#">Financial Analyst</a>
-            </li>
-            <li class="job border transition-all rounded-full text-center text-2xl">
-              <a class="" href="http#">Registerd Nurse</a>
-            </li>
-            <li class="job border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Teacher/Instructor</a>
-            </li>
-            <li class="job border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Education</a>
-            </li>
-            <li class="job border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#"
-                >Customer Service Representative</a
-              >
-            </li>
-            <li class="job border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Sales Associates</a>
-            </li>
-            <li class="job border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Operations Manager</a>
-            </li>
-            <li class="job border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#"
-                >Human Resources Coordinator</a
-              >
-            </li>
-            <li class="job border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Graphic Designer</a>
-            </li>
-            <li class="job border transition-all rounded-full text-center text-2xl">
-              <a class="text-nowrap" href="http#">Show more</a>
-            </li>
-          </ul>
-        </div>
-      </section>
-      <section
-        class="post-job px-9 md:px-24 mx-auto posts w-full py-20 lg:flex gap-32 items-center bg-gray-100"
-      >
-        <div class="lg:w-2/5 text-2xl md:text-3xl lg:text-4xl mb-4">
-          Post your jobs for millions of people to see
-        </div>
-        <a href="#" class="job-link border rounded-full">Post a job</a>
-      </section>
-      <section
-  class="call-to-action tracking-wider px-9 md:px-24 mx-auto posts w-full py-20 lg:flex gap-32 items-center bg-gray-100"
-  style="background-image: url('../../static/img/pics/jv.jpg'); background-size: cover; background-position: center;"
->
-  <div class="lg:w-2/5 text-2xl md:text-3xl lg:text-4xl mb-4">
-    Join on <span class="text-[#1e90ff] font-bold">UmEmployed</span> to get connected with friends
-  </div>
-  <a href="{% url 'register-applicant' %}" id="call-btn" class="border rounded-full">Join Now</a>
-</section>
-
-      <section
-        class="md:px-24 px-9 bg-black bg-opacity-5 whitspace-nowrap mx-auto h-fit comments  py-10 flex"
-      >
-        <div class="comment-wrapper flex items-center">
-          <div class="">
-            <div class="actual-comment w-full md:w-2/3">
-              <h4 class="title-comment text-2xl md:text-3xl mb-4">
-                Empowering Careers, Empowering Lives
-              </h4>
-              <div class="comment text-clip overflow-hidde text-xl md:text-2xl">
-                We believe that the right job has the power to transform lives.
-                Join us in empowering careers and making a positive impact on
-                individuals and communities.
-              </div>
-            </div>
-          </div>
-          <img
-            class="hidden md:block md:w-1/5 align-middle rounded-full ml-10"
-            src="{% static 'img/pics/barriers.jpg' %}"
-            alt=""
-          />
-        </div>
-      </section>
     </main>
 
-    <footer class="bg-white py-5 mt-auto px-2 md:px-6 mt-20">
-      <div class="flex justify-between sm:justify-around w-full px-[3px] md:px-3 md:px-5 gap-2 md:gap-5 flex-wrap">
-        <div class="text-start md:w-1/4">
-          <h3 class="text-lg font-bold mb-2">Company</h3>
-          <ul class="space-y-1">
-            <li>
-              <a href="./about.html" class="hover:text-[#1e90ff]">About Us</a>
-            </li>
-            <li>
-              <a href="./careers.html" class="hover:text-[#1e90ff]">Careers</a>
-            </li>
-            <li><a href="./blog.html" class="hover:text-[#1e90ff]">Blog</a></li>
-          </ul>
-        </div>
-        <div class="text-start md:w-1/4">
-          <h3 class="text-lg font-bold mb-2">Resources</h3>
-          <ul class="space-y-1">
-            <li>
-              <a href="./support.html" class="hover:text-[#1e90ff]">Support</a>
-            </li>
-            <li>
-              <a href="./privacy.html" class="hover:text-[#1e90ff]"
-                >Privacy Policy</a
-              >
-            </li>
-            <li>
-              <a href="./terms.html" class="hover:text-[#1e90ff]"
-                >Terms & Conditions</a
-              >
-            </li>
-          </ul>
-        </div>
-        <div class="justify-left md:w-1/4">
-          <h3 class="text-lg font-bold mb-2">Contact</h3>
-          <p class="mb-1">Email: um@umeployment.com</p>
-          <p>Phone: +1 (123) 456-7890</p>
-        </div>
-      </div>
-      <div class="text-center mt-5">
-        <p>&copy; 2024 <span class="font-bold text-[#1e90ff]">UmEployment</span>. All rights reserved.</p>
-      </div>
-    </footer>
-<script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const alerts = document.querySelectorAll('.primary .alert');
-            alerts.forEach(alert => {
-                setTimeout(() => {
-                    alert.style.display = 'none';
-                }, 10000); // 10 seconds
-            });
-        });
-    </script>
-  </body>
-</html>
+    
+
+
+
+
+{% block footer %}
+
+{% endblock footer %}
+
+{% endblock content %}
