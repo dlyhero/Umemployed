@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     
-    'admin_export',
 
 ]
 ASGI_APPLICATION = 'umemployed.asgi.application'
