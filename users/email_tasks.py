@@ -32,21 +32,19 @@ def send_welcome_email(user_email, user_name):
 
 # Similarly, define functions for other emails
 def send_login_email(user_email, user_name):
-    subject = 'Welcome Back'
+    subject = 'Welcome Back to UmEmployed'  # More descriptive subject line
     message = render_to_string('emails/welcome_back.html', {
-        'user': user_name,
-        'message': 'Welcome back! We missed you.'
+        'user': user_name
     })
-    thread = threading.Thread(target=send_email, args=(subject, message, 'your_email@example.com', [user_email]))
+    thread = threading.Thread(target=send_email, args=(subject, message, 'billleynyuy@gmail.com', [user_email]))
     thread.start()
 
 def send_logout_email(user_email, user_name):
-    subject = 'You Logged Out'
+    subject = 'See You Soon at UmEmployed, {{ user }}!'  # More engaging subject
     message = render_to_string('emails/logout.html', {
-        'user': user_name,
-        'message': 'You have successfully logged out.'
+        'user': user_name
     })
-    thread = threading.Thread(target=send_email, args=(subject, message, 'your_email@example.com', [user_email]))
+    thread = threading.Thread(target=send_email, args=(subject, message, 'billleynyuy@gmail.com', [user_email]))
     thread.start()
 
 def send_password_reset_email(user_email, user_name):
@@ -55,7 +53,7 @@ def send_password_reset_email(user_email, user_name):
         'user': user_name,
         'message': 'Your password has been reset successfully.'
     })
-    thread = threading.Thread(target=send_email, args=(subject, message, 'your_email@example.com', [user_email]))
+    thread = threading.Thread(target=send_email, args=(subject, message, 'billleynyuy@gmail.com', [user_email]))
     thread.start()
     
     
