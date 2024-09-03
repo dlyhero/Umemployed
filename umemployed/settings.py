@@ -21,8 +21,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-ALLOWED_HOSTS = ['umemployed-app-2679a22d36dd.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 SITE_ID = 2
 
@@ -137,10 +136,10 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd2mmc5c51ghegn',
-        'USER': 'u2m65eq7rc7j8s',
-        'PASSWORD': 'p8da3dda66094f61804cd2a38fc238f2cc1bab8f2433d1b09c704c436be42b6af',
-        'HOST': 'cat670aihdrkt1.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
+        'NAME': 'dblog2hj0aubg6',
+        'USER': 'uepklalomgtt30',
+        'PASSWORD': 'p3e6a79a42e739605c32617dd0d4433f6dfce03cbf66b49a2a6f7c436dec3b6b0',
+        'HOST': 'ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
         'PORT': '5432',      
     }
 }

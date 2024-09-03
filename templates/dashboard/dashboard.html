@@ -361,49 +361,53 @@
     </section>
     
     <section id="skills-sec" class="mb-10 bg-white p-2 rounded-lg">
-      <div class="flex justify-between items-center mb-2 p-2">
+    <div class="flex justify-between items-center mb-2 p-2">
         <h2 class="font-bold text-xl text-[#1e90ff]">Skills</h2>
         <button class="w-6" id="add-skill-btn">
-          <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
+            <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
         </button>
-      </div>
-      <div id="skill-modal" class="hidden fixed-x inset-0 flex flex-grow-1 justify-center items-center">
-        <div id="backdrop" class="absolute inset-0 bg-black opacity-50"></div>
-        <div class="border border-white bg-white rounded-lg relative w-11/12 md:w-3/4 lg:w-[48%]">
-          <div class="flex justify-between items-center border-b p-4 mb-4">
-            <p class="font-bold">Add skill</p>
-            <button id="skill-modal-btn"  class="text-2xl">&times;</button>
-          </div>
-          <div class="w-full p-4 mb-4">
-            <label for="input-skill">Skill</label><br />
-            <input class="border w-full mx-auto rounded p-1 focus:outline outline-1 outline-[#1e90ff]" type="text" id="input-skill" placeholder="Skill (ex: Reactjs)" />
-            <div id="feedback-message" class="feedback-msg italic text-red-500 hidden">Skill already exists</div>
-          </div>
-    
-    <div class="p-4 border rounded-lg mb-4 mx-4 bg-white">
-        <p class="mb-3 font-bold">Suggested skills</p>
-        <ul id="suggested-skills" class="suggested-skills gap-x-2">
-            {% for suggested_skill in suggested_skills %}
-            <li class="suggested-skill">
-                <input type="checkbox" class="custom-checkbox" id="skill-{{ suggested_skill.id }}" data-id="{{ suggested_skill.id }}" value="{{ suggested_skill.id }}" />
-                <label class="custom-label" for="skill-{{ suggested_skill.id }}">{{ suggested_skill.name }}</label>
-            </li>
-            {% endfor %}
-        </ul>
     </div>
-    <div class="p-4 flex justify-between border-t">
-        <div>
-            <form id="skills-form" method="post" action="{% url 'update_user_skills' %}">
-                {% csrf_token %}
-                <input type="hidden" name="selected_skills" id="selected-skills">
-                <button id="save-skill-btn" class="border bg-[#1e90ff] rounded-full text-white font-bold px-3 py-1" type="submit">Save</button>
-            </form>
+    <div id="skill-modal" class="fixed inset-0 flex justify-center items-center z-50 p-4 hidden">
+        <div id="backdrop" class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="relative bg-white rounded-lg w-full max-w-lg max-h-[90%] overflow-y-auto shadow-lg">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center border-b p-4">
+                <p class="font-bold text-lg">Add skill</p>
+                <button id="skill-modal-btn" class="text-2xl">&times;</button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-4">
+                <label for="input-skill" class="block font-medium mb-2">Skill</label>
+                <input class="border w-full rounded p-2 focus:outline outline-1 outline-[#1e90ff]" type="text" id="input-skill" placeholder="Skill (ex: Reactjs)" />
+                <div id="feedback-message" class="feedback-msg italic text-red-500 hidden mt-2">Skill already exists</div>
+            </div>
+
+            <!-- Suggested Skills -->
+            <div class="p-4 border rounded-lg mb-4 bg-gray-100">
+                <p class="mb-3 font-bold">Suggested skills</p>
+                <ul id="suggested-skills" class="suggested-skills gap-x-2">
+                {% for suggested_skill in suggested_skills %}
+                <li class="suggested-skill">
+                    <input type="checkbox" class="custom-checkbox" id="skill-{{ suggested_skill.id }}" data-id="{{ suggested_skill.id }}" value="{{ suggested_skill.id }}" />
+                    <label class="custom-label" for="skill-{{ suggested_skill.id }}">{{ suggested_skill.name }}</label>
+                </li>
+                {% endfor %}
+            </ul>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 flex justify-end border-t">
+                <form id="skills-form" method="post" action="{% url 'update_user_skills' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="selected_skills" id="selected-skills">
+                    <button id="save-skill-btn" class="bg-[#1e90ff] hover:bg-[#1c7ed6] rounded-full text-white font-bold px-4 py-2" type="submit">Save</button>
+                </form>
+            </div>
         </div>
-      </div>
-      
-      
-        </div>
-      </div>
+    </div>
+</section>
+
     
     
     <div id="skills-container" class="p-2">

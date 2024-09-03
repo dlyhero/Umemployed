@@ -152,7 +152,7 @@ function handleButtonClick(accountType) {
 }
 
 function handleEmployerDashboard() {
-    {% if user.has_company %}
+    {% if user.has_company and user_company %}
         var userCompanyId = "{{ user.company.id }}";
         if (userCompanyId) {
             window.location.href = "{% url 'view_applications' user.company.id %}";

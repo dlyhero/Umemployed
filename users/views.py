@@ -227,8 +227,11 @@ from django.urls import reverse  # Import reverse
 from resume.models import ResumeDoc
 @login_required
 def switch_account_type(request):
+    print("4$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     new_role = request.GET.get('new_role', None)
     user = request.user
+
+    print(f"Before switch: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
 
     if new_role == 'Job Seeker':
         if not ResumeDoc.objects.filter(user=user).exists():
@@ -238,6 +241,7 @@ def switch_account_type(request):
             user.is_applicant = True
             user.is_recruiter = False
             user.save()
+            print(f"Switched to Job Seeker: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
             messages.success(request, 'You have switched to a Job Seeker account.')
             return redirect('dashboard')
     elif new_role == 'Employer':
@@ -245,12 +249,14 @@ def switch_account_type(request):
             user.is_recruiter = True
             user.is_applicant = False
             user.save()
+            print(f"Switched to Employer without company: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
             messages.success(request, 'You have switched to a recruiter account.')
             return redirect(reverse('create_company'))
         else:
             user.is_recruiter = True
             user.is_applicant = False
             user.save()
+            print(f"Switched to Employer with company: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
             messages.success(request, 'You have switched to a recruiter account.')
             return redirect(reverse('view_applications', args=[user.company.id]))
     else:
