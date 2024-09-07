@@ -86,11 +86,11 @@
       </div>
     </div>
 
-    <a href="{% url 'view_my_jobs' user_company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors">
+    {% comment %} <a href="{% url 'view_my_jobs' user_company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors"> {% endcomment %}
       <i class="fas fa-briefcase"></i>
       <span class="ml-3 hidden">Jobs</span>
     </a>
-    <a href="{% url 'view_applications' user_company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors">
+    {% comment %} <a href="{% url 'view_applications' user_company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors"> {% endcomment %}
       <i class="fas fa-users"></i>
       <span class="ml-3 hidden">Candidates</span>
     </a>
@@ -98,7 +98,7 @@
       <i class="fas fa-calendar"></i>
       <span class="ml-3 hidden">Interviews</span>
     </div>
-    <a href="{% url 'company-details' user_company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors">
+    {% comment %} <a href="{% url 'company-details' user_company.id %}" class="aside-item flex items-center flex items-center p-3.5 mx-2 bg-gray-500 rounded hover:bg-gray-600 transition-colors"> {% endcomment %}
       <i class="fas fa-info-circle"></i>
       <span class="ml-3 hidden">About</span>
     </a>
@@ -134,19 +134,19 @@
           </a>
         </div>
         <div>
-          <a
+          {% comment %} <a
             class="aside-item flex items-center gap-1 p-2 text-white rounded mb-4 md:bg-slate-700 transition-colors cursor-pointer active"
             href="{% url 'view_my_jobs' user_company.id %}"
-          >
+          > {% endcomment %}
             <i class="fas fa-briefcase w-6"></i>
             <div>Jobs</div>
           </a>
         </div>
         <div>
-          <a
+          {% comment %} <a
             class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center gap-1 w-full md:bg-slate-700 transition-colors"
             href="{% url 'view_applications' user_company.id %}"
-          >
+          > {% endcomment %}
             <i class="fas fa-users w-6"></i>
             <div>Candidates</div>
           </a>
@@ -164,10 +164,10 @@
           </a>
         </div>
         <div>
-          <a
+          {% comment %} <a
             class="aside-item flex p-2 cursor-pointer text-white rounded mb-4 items-center w-full justify-between md:bg-slate-700 transition-colors"
             href="{% url 'company-details' user_company.id %}"
-          >
+          > {% endcomment %}
             <div class="img-wrap flex items-center gap-1">
               <i class="fas fa-chart-bar w-6"></i>
               <div>Analytics</div>
@@ -199,10 +199,10 @@
         <nav class="flex md:gap-x-4 items-center">
           <ul class="flex gap-x-2 md:gap-x-6 items-center">
             <li class="relative">
-              <a
+              {% comment %} <a
                 class="flex items-center gap-1 hover:bg-blue-50 transition-colors p-2 rounded"
                 href="{% url 'company_inbox' user_company.id %}"
-              >
+              > {% endcomment %}
                 <i class="fas fa-envelope message-icon text-[#1e90ff]"></i>
                 <span class="hidden md:block">Messages</span>
                 <div
@@ -302,11 +302,11 @@
                   <div
                     class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all"
                   >
-                    <a href="{% url 'view_my_jobs' user_company.id %}" class="flex items-center gap-1">
+                    {% comment %} <a href="{% url 'view_my_jobs' user_company.id %}" class="flex items-center gap-1">
                       <i class="fas f{% static 'building fa-lg" aria-hidden="true"></i>
                       <span class="sr-only">Company page</span>
                       Company page
-                    </a>
+                    </a> {% endcomment %}
                   </div>
 
                   <hr class="my-2" />
@@ -368,7 +368,7 @@
             <div
               class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"
             >
-              <a class="flex justify-between items-center" href="{% url 'company_inbox' user_company.id %}">Message</a>
+              {% comment %} <a class="flex justify-between items-center" href="{% url 'company_inbox' user_company.id %}">Message</a> {% endcomment %}
             </div>
             <div
               class="nav-item font-bold p-2 border-b hover:bg-blue-50 transition-colors"

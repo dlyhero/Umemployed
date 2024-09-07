@@ -62,7 +62,32 @@ class Job(models.Model):
         ('internship', 'Internship'),
     ])
     location = models.CharField(max_length=100)
+    
+    # Define choices for job types
+    FULL_TIME = 'full_time'
+    PART_TIME = 'part_time'
+    CONTRACT = 'contract'
+    TEMPORARY = 'temporary'
+    INTERNSHIP = 'internship'
+    FREELANCE = 'freelance'
+
+    JOB_TYPE_CHOICES = [
+        (FULL_TIME, 'Full-Time'),
+        (PART_TIME, 'Part-Time'),
+        (CONTRACT, 'Contract'),
+        (TEMPORARY, 'Temporary'),
+        (INTERNSHIP, 'Internship'),
+        (FREELANCE, 'Freelance'),
+    ]
+    SALARY_RANGES = [
+        ('30000-50000', '$30,000 - $50,000'),
+        ('50001-70000', '$50,001 - $70,000'),
+        ('70001-100000', '$70,001 - $100,000'),
+        ('100001-150000', '$100,001 - $150,000'),
+        ('150001+', '$150,001 and above'),
+    ]
     salary = models.PositiveBigIntegerField(default=35000)
+    salary_range = models.CharField(max_length=20, choices=SALARY_RANGES, default='30000-50000')  # Predefined salary ranges
     requirements = models.ManyToManyField(Skill, related_name='required_jobs')
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='extracted_jobs')
     ideal_candidate = RichTextField()
@@ -73,7 +98,7 @@ class Job(models.Model):
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default=BEGINNER)
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    job_type = models.CharField(max_length=255, blank=True)
+    job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES, blank=True, verbose_name='Job Type')
     experience_levels = models.CharField(max_length=255, blank=True)
     weekly_ranges = models.CharField(max_length=255, blank=True)
     shifts = models.CharField(max_length=255, blank=True)

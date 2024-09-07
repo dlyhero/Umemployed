@@ -134,6 +134,8 @@ def home(request):
 
 
 # login a user
+from django.http import HttpResponseRedirect
+
 def login_user(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -142,12 +144,17 @@ def login_user(request):
         user = authenticate(request, username=email, password=password)
         if user is not None and user.is_active:
             login(request, user)
-            return redirect('/')  # Update this to the appropriate URL
+            # Redirect to the 'next' URL if provided, otherwise to the home page
+            next_url = request.POST.get('next') or request.GET.get('next') or '/'
+            return HttpResponseRedirect(next_url)
         else:
             messages.warning(request, 'Email or password incorrect')
-            return render(request, 'users/login.html')
+            return render(request, 'users/login.html', {'next': request.POST.get('next') or request.GET.get('next')})
     else:
-        return render(request, 'users/login.html')
+        # Pass 'next' parameter to the login template for use in the form
+        next_url = request.GET.get('next', '/')
+        return render(request, 'users/login.html', {'next': next_url})
+
 
 # views.py
 from django.contrib.auth import get_backends
@@ -262,7 +269,7 @@ def switch_account_type(request):
     else:
         messages.error(request, 'Invalid role switch request.')
         return redirect('home')
-
+@login_required
 def user_dashboard(request):
     recommended_jobs = Job.objects.all()
     context = {

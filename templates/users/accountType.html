@@ -1,31 +1,109 @@
-{% extends 'resume/base.html' %}
-{% block custom_css %}
-  {% load static %}
-{% endblock %}
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+{% block title %}
+<title>SignUp|UmEmployed</title>
+{% endblock title %}
+
+
+{% block search_bar %}
+
+{% endblock search_bar %}
+
 {% block content %}
-    <main
-      class="mx-auto w-[98%] sm:w-[90%] max-w-[720px] p-12 mb-2 flex items-center justify-center "
+
+<main
+      class="container flex-1 flex flex-col justify-center max-w-6xl mx-auto mt-6 mb-6 p-3 rounded-lg"
     >
+      <!-- Heading -->
+      <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">
+        Choose Your Account Type
+      </h2>
+
+      <!-- Current Account Type Notification -->
       <div
-        class="sm:bg-white p-12  text-center w-full sm:shadow-xl rounded-lg"
+        id="currentAccountTypeContainer"
+        class="p-4 border shadow-lg bg-blue-50 rounded-lg mb-5 text-center border-l-4 border-l-blue-400 shadow-sm"
       >
-        <h1 class="text-3xl font-bold mb-4">Welcome to <span class="text-[#1e90ff]">UmEmployed</span></h1>
-        <p class="text-gray-600 mb-8">Please select your role:</p>
-        <div class="flex flex-wrap justify-center gap-4">
-          <a
-            href="{% url 'upload' %}"
-            class="bg-black text-white py-3 px-6 rounded-lg hover:bg-gray-600 w-full sm:w-auto text-center font-bold"
-            >I am a Job seeker</a
-          >
-          <a
-            href="{% url 'create_company' %}"
-            class="bg-[#1e90ff] text-white py-3 px-6 rounded-lg hover:bg-blue-600 w-full sm:w-auto text-center font-bold"
-            >I am a Recruiter</a
-          >
+        <h2
+          id="currentAccountType"
+          class="text-xl font-semibold text-[#1e90ff]"
+        >
+          Select your account to get started.
+        </h2>
+      </div>
+
+      <!-- Instructions -->
+      <div class="text-center mb-7">
+        <p class="text-base text-gray-600">
+          Choose the type of account that best suits your needs. Whether you're
+          looking for a job or seeking to hire talent, select the account type
+          below to proceed.
+        </p>
+      </div>
+
+      <hr class="mb-5" />
+
+      <!-- Account Type Options -->
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- Job Seeker Card -->
+        <a href="{% url 'upload' %}">
+        <div
+          class="flex-1 p-8 bg-white border border-gray-200 rounded-lg cursor-pointer flex flex-col items-center"
+        >
+          <div class="text-[#1e90ff] mb-4">
+            <i class="fas fa-search fa-2x"></i>
+          </div>
+          <div class="text-center">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Job Seeker</h2>
+            <p class="text-base text-gray-600">
+              Create your profile, search for jobs, and apply to positions that
+              match your skills.
+            </p>
+          </div>
         </div>
-        <br>
-        <h1>Already have an account?</h1> <a style="color: #1e90ff;" href="{% url 'login' %}">Login</a>
+        </a>
+
+        <!-- Employer Card -->
+        <a href="{% url 'create_company' %}">
+        <div
+          class="flex-1 p-8 bg-white border border-gray-200 rounded-lg cursor-pointer flex flex-col items-center"
+        >
+          <div class="text-[#1e90ff] mb-4">
+            <i class="fas fa-briefcase fa-2x"></i>
+          </div>
+          <div class="text-center">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Employer</h2>
+            <p class="text-base text-gray-600">
+              Post job openings, review applications, and find top talent for
+              your company.
+            </p>
+          </div>
+        </div>
+        </a>
       </div>
     </main>
+    {% block footer %}{% endblock %}
+    <!-- Footer -->
+    <footer class="text-gray-900 py-4">
+      <div
+        class="container mx-auto px-4 flex justify-between items-center max-w-4xl"
+      >
+        <!-- Footer Left (Links) -->
+        <div class="text-sm">
+          <a href="#" class="hover:text-white transition-colors mr-4"
+            >About Us</a
+          >
+          <a href="#" class="hover:text-white transition-colors mr-4"
+            >Privacy Policy</a
+          >
+          <a href="#" class="hover:text-white transition-colors">Contact</a>
+        </div>
+
+        <!-- Footer Right (Copyright) -->
+        <div class="text-sm">&copy; 2024 UmEmployed. All Rights Reserved.</div>
+      </div>
+    </footer>
     
-    {% endblock %}
+    
+{% endblock %}

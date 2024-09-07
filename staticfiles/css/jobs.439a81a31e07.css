@@ -1,0 +1,10 @@
+body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+#main-content,
+#sidebar {
+    height: calc(100vh - 105px);
+}

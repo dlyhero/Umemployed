@@ -104,26 +104,30 @@
 
 
         {% block search_bar %}
-        <div
-        class="search-wrapper max-w-xl hidden lg:flex flex-1 max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none"
-        >
-          <input
-            class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
-            type="text"
-            name="search"
-            id="search"
-            placeholder="Search jobs, companies, or keywords"
-          />
-          <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
-          <div class="button-wrap">
-            <button
-              class="text-white bg-[#1e90ff] font-semibold rounded-full py-2 px-4"
+            <div
+                class="search-wrapper max-w-xl hidden lg:flex flex-1 max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none"
             >
-              Search
-            </button>
-          </div>
-        </div>
+                <form method="get" action="{% url 'home' %}" class="flex flex-1">
+                    <input
+                        class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
+                        type="text"
+                        name="search_query"
+                        id="search"
+                        placeholder="Search jobs, companies, or keywords"
+                    />
+                    <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
+                    <div class="button-wrap">
+                        <button
+                            type="submit"
+                            class="text-white bg-[#1e90ff] font-semibold rounded-full py-2 px-4"
+                        >
+                            Search
+                        </button>
+                    </div>
+                </form>
+            </div>
         {% endblock search_bar %}
+
       </div>
 
 

@@ -664,6 +664,54 @@ def job_details(request,job_id):
     
     return render(request, "job/job_details.html",context)
 
+#for jobs listing 
+from django.http import JsonResponse
+from django.core.serializers import serialize
+from .models import Job, Company
+from django.db.models import Avg
+
+def job_listing_details(request, job_id):
+    try:
+        job = Job.objects.get(id=job_id)
+        similar_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=5.0)
+        company = Company.objects.get(job=job)
+
+        # Serialize the job and similar_jobs queryset to JSON
+        job_data = {
+            'id': job.id,
+            'title': job.title,
+            'description': job.description,
+            'job_location_type': job.job_location_type,
+            'location': job.location,
+            'salary': job.salary,
+            'salary_range':job.salary_range,
+            'job_type': job.job_type,
+            'created_at': job.created_at.strftime('%Y-%m-%d'),  # Format date for better readability
+            'company': {
+                'name': company.name,
+                'location': company.location,
+                'logo': company.logo.url if company.logo else None,  # Add company logo if available
+            },
+        }
+
+        similar_jobs_data = list(similar_jobs.values('id', 'title', 'description'))  # Adjust fields as needed
+
+        response_data = {
+            'job': job_data,
+            'similar_jobs': similar_jobs_data,
+        }
+
+        return JsonResponse(response_data)
+
+    except Job.DoesNotExist:
+        return JsonResponse({'error': 'Job not found'}, status=404)
+    except Company.DoesNotExist:
+        return JsonResponse({'error': 'Company not found'}, status=404)
+
+    
+    
+    
+
 def success_page(request):
     return render(request, "job/compiler/success.html")
 

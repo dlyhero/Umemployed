@@ -11,47 +11,6 @@
 <link rel="stylesheet" href="{% static 'css/general.css' %}" />
 
 
-<style>
- /* Sidebar styling */
-#sidebar {
-    display: none; /* Hidden by default */
-}
-
-/* Show sidebar on large screens */
-@media (min-width: 1024px) {
-    #sidebar {
-        display: block;
-    }
-}
-
-/* Loading animation styling */
-.loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.loading .dot {
-    width: 10px;
-    height: 10px;
-    margin: 0 5px;
-    border-radius: 50%;
-    background-color: #1e90ff;
-    animation: dotPulse 1.5s infinite ease-in-out;
-}
-
-@keyframes dotPulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.5);
-    }
-}
-
-</style>
-
-
 {% endblock %}
 {% block content %}
 
@@ -60,15 +19,9 @@
       <div class="bg-white h-full flex flex-col lg:flex-row py-2 lg:py-0">
         <!-- Sidebar -->
         <aside
-          id="sidebar" 
+          id="sidebar"
           class="lg:w-1/4 overflow-y-auto lg:block hidden lg:py-4"
         >
-
-        <div id="loading" class="loading hidden">
-          <div class="dot"></div>
-          <div class="dot"></div>
-          <div class="dot"></div>
-        </div>
           <!-- Content will be dynamically inserted here -->
         </aside>
 
@@ -227,7 +180,7 @@
                     alt="Company Logo"
                   />
                   <div>
-                    <span class="text-sm text-gray-500">{{job.job_type}}</span>
+                    <span class="text-sm text-gray-500">{{job.type}}</span>
                   </div>
                 </div>
                 <div class="mb-4">
@@ -268,7 +221,7 @@
                     alt="Company Logo"
                   />
                   <div>
-                    <span class="text-sm text-gray-500">{{job.job_type}}</span>
+                    <span class="text-sm text-gray-500">{{job.type}}</span>
                   </div>
                 </div>
                 <div class="mb-4">
@@ -360,224 +313,79 @@
           </footer>
         </div>
       </div>
-      
     </main>
 
     
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const sidebar = document.getElementById("sidebar");
-    const loading = document.getElementById("loading");
-
-    // Function to fetch job details from the backend
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Define a function to fetch job details from the backend
     async function fetchJobDetails(jobId) {
-        if (!jobId) {
-            console.error('Invalid jobId:', jobId);
-            return null;
-        }
+  if (!jobId) {
+    console.error('Invalid jobId:', jobId);
+    return null;
+  }
 
-        const url = `/job/job-details/${jobId}/`;
-        console.log('Fetching job details from URL:', url);
+  const url = `/job/job-details/${jobId}/`;
+  console.log('Fetching URL:', url);
 
-        // Show loading animation
-        loading.classList.remove('hidden');
-
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Job details fetched:', data);
-            return data;
-        } catch (error) {
-            console.error('Error fetching job details:', error);
-            return null;
-        } finally {
-            // Hide loading animation after fetch is complete
-            loading.classList.add('hidden');
-        }
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    // Function to display job details in the sidebar
+    const data = await response.json();
+    console.log('Job details fetched:', data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching job details:', error);
+    return null;
+  }
+}
+
+
     function displayJobDetails(data) {
-        if (!data || !data.job) {
-            console.error('Invalid data received for job details:', data);
-            return;
-        }
+  if (!data || !data.job) {
+    console.error('Invalid data:', data);
+    return;
+  }
 
-        const job = data.job;
-        const company = data.company || {}; // Handle missing company data
+  const job = data.job;
+  const company = data.company;
+  const similarJobs = data.similar_jobs;
 
-        console.log('Displaying job details for:', job.title);
+  // Example: Display job details in HTML
+  document.getElementById('job-title').textContent = job.title;
+  document.getElementById('job-description').textContent = job.description;
+  document.getElementById('company-name').textContent = company.name;
 
-        // Dynamically create the job details URL
-        const jobDetailsUrl = `/job/details/${job.id}/`;
+  // Handle similar jobs if needed
+  console.log('Similar jobs:', similarJobs);
+}
 
-        // Clear the sidebar and display job details
-        sidebar.innerHTML = `
-            <div class="job-card bg-white p-6 cursor-pointer">
-                <div class="flex items-center justify-between mb-4">
-                    <img
-                        class="w-12 h-12 rounded-full"
-                        src="${company.logo || '{% static 'new_design/icons/8546719_apple_pay_icon.svg' %}'}"
-                        alt="${job.company.name || 'Company Logo'}"
-                    />
-                    <div><span class="text-sm text-gray-500">${job.job_type || 'N/A'}</span></div>
-                </div>
-                <div class="mb-4">
-                    <h3 class="text-xl font-semibold text-gray-800">${job.title || 'Job Title'}</h3>
-                    <div class="flex items-center gap-2">
-                        <span class="text-gray-600">${job.company.name || 'Company Name'}</span>
-                        <span class="text-sm text-gray-500">${job.created_at || 'Date Posted'}</span>
-                    </div>
-                </div>
-            <p class="my-4">
-              ${job.description ? job.description.split(' ').slice(0, 50).join(' ') + '...' : 'No description available.'}
-            </p>                
-            <p class="text-[#1e90ff] mt-4 font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center">
-                <i class="fas fa-map-marker-alt mr-2"></i> ${job.location || 'Location'}
-            </p>
-            <p class="text-gray-800 mb-4 flex items-center">
-                $(${job.salary_range || 'Salary not specified'})
-            </p>
-            <a href="${jobDetailsUrl}">
-            <button
-                class="text-white bg-[#1e90ff] font-semibold rounded-full py-2 px-4 w-full apply-btn"
-                data-job="${job.id}"
-            >
-                Apply
-            </button>
-        </a>
-        </div>
-    `;
-        console.log('Job details rendered in the sidebar.');
-    }
+    // Function to add event listeners to buttons
+    function addEventListenersToButtons() {
+      const viewDetailsButtons = document.querySelectorAll(".view-details-btn");
+      console.log("Buttons found:", viewDetailsButtons.length); // Debugging line
 
-    // Function to add event listeners to the "View Details" buttons
-      function addEventListenersToButtons() {
-          const viewDetailsButtons = document.querySelectorAll(".view-details-btn");
-          console.log("View Details buttons found:", viewDetailsButtons.length);
-          const sidebar = document.getElementById("sidebar");
-
-          viewDetailsButtons.forEach((button) => {
-              button.addEventListener("click", async function () {
-                  const jobId = this.getAttribute("data-job");
-                  console.log("View Details button clicked. Job ID is:", jobId);
-
-                  // Define the URL for job details
-                  const jobDetailsUrl = `/job/details/${jobId}/`; // Adjust URL pattern if needed
-
-                  // Check if the sidebar is visible
-                  const isSidebarVisible = sidebar && window.getComputedStyle(sidebar).display !== 'none';
-
-                  if (!isSidebarVisible) {
-                      // If sidebar is not visible, redirect to job details page
-                      window.location.href = jobDetailsUrl;
-                  } else {
-                      // If sidebar is visible, fetch job details and display in sidebar
-                      const jobDetails = await fetchJobDetails(jobId);
-                      if (jobDetails) {
-                          displayJobDetails(jobDetails); // Switch the sidebar content to job details
-                      }
-                  }
-              });
-          });
-      }
-
-
-
-    // Function to display the filter menu
-    function displayFilterMenu() {
-        console.log("Displaying filter menu.");
-
-        sidebar.innerHTML = `
-            <div id="filterMenu" class="max-w-5xl mx-auto p-6 bg-white rounded-lg">
-                <h2 class="text-xl font-semibold mb-4">Filter Jobs</h2>
-                <form class="flex flex-col gap-6">
-                    <div class="col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Keyword</label>
-                        <input type="text" placeholder="Search by title, skills..." class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
-                    </div>
-                    <hr>
-                    <div class="col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                        <input type="text" placeholder="Enter location" class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
-                    </div>
-                    <hr>
-                    <div class="col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
-                        <select class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
-                            <option value="">Select job type</option>
-                            <option value="full-time">Full-Time</option>
-                            <option value="part-time">Part-Time</option>
-                            <option value="freelance">Freelance</option>
-                        </select>
-                    </div>
-                    <hr>
-                    <div class="col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Salary Range</label>
-                        <input type="range" class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
-                        <div class="flex items-center justify-between">
-                            <p>Min: $100</p>
-                            <p>Max $100000</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
-                        <select class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
-                            <option value="">Select experience level</option>
-                            <option value="junior">Junior</option>
-                            <option value="mid">Mid</option>
-                            <option value="senior">Senior</option>
-                        </select>
-                    </div>
-                    <div class="col-span-1 flex items-center">
-                        <input type="checkbox" id="remote" class="mr-2 text-blue-500 focus:ring-blue-300">
-                        <label for="remote" class="text-sm text-gray-700">Remote Only</label>
-                    </div>
-                    <hr>
-                    <div class="col-span-1 flex items-center gap-4">
-                        <div class="flex-1">
-                            <button type="submit" class="w-full p-3 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition">Apply Filters</button>
-                        </div>
-                        <div class="flex-1">
-                            <button type="button" id="clearFilters" class="w-full p-3 bg-gray-300 text-gray-700 font-semibold rounded-full hover:bg-gray-400 transition">Clear Filters</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        `;
-
-        addEventListenersToButtons(); // Reapply event listeners after rendering filter menu
-    }
-
-    // Initial setup for the page
-    function setupInitialView() {
-        console.log("Setting up the initial view.");
-        displayFilterMenu(); // Show filter by default
-        addEventListenersToButtons(); // Add listeners to "View Details" buttons
-    }
-
-    // Display Filter Menu on Button Click
-    const filterButton = document.getElementById("filterButton");
-    if (filterButton) {
-        filterButton.addEventListener("click", function () {
-            console.log("Filter button clicked.");
-            displayFilterMenu(); // Redisplay filter menu when the filter button is clicked
+      viewDetailsButtons.forEach((button) => {
+        button.addEventListener("click", async function () {
+          const jobId = this.getAttribute("data-job");
+          console.log("Job ID is:", jobId); // Debugging line
+          const jobDetails = await fetchJobDetails(jobId);
+          if (jobDetails) {
+            displayJobDetails(jobDetails);
+          } else {
+            console.log("No job details found for ID:", jobId); // Debugging line
+          }
         });
+      });
     }
 
     // Initial setup
-    setupInitialView(); // Show filter menu by default and set up buttons
-});
-
+    addEventListenersToButtons();
+  });
 </script>
-
-
-
 
 <br />
 {% block footer %}
