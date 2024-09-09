@@ -117,7 +117,7 @@ def job_type_view(request):
 def enter_job_description(request):
     user = request.user
     company = user.company
-    
+
     if request.method == 'POST':
         form = JobDescriptionForm(request.POST)
         if form.is_valid():
@@ -128,17 +128,27 @@ def enter_job_description(request):
 
             job = get_object_or_404(Job, id=job_id)
             description = form.cleaned_data['description']
+            responsibilities = form.cleaned_data['responsibilities']
+            ideal_candidate = form.cleaned_data['ideal_candidate']
             
-            # Check if the description is at least 50 words long
-            if len(description.split()) < 5:
-                messages.error(request, "The job description must be at least 50 words long.")
+            # Check if the description is at least 20 words long
+            if len(description.split()) < 20:
+                messages.error(request, "The job description must be at least 20 words long.")
                 return redirect('job:enter_job_description')
 
+            # Update the job fields
             job.description = description
+            job.responsibilities = responsibilities
+            job.ideal_candidate = ideal_candidate
             job.save()
 
-            # Call the function to extract technical skills
-            extracted_skills = extract_technical_skills(job.title, job.description)
+            # Combine the job title with the description, responsibilities, and ideal_candidate
+            combined_text = (
+                (description or '') +
+                (responsibilities or '') +
+                (ideal_candidate or '')
+            )
+            extracted_skills = extract_technical_skills(job.title, combined_text)
             print('Extracted skills:', extracted_skills)
 
             # Add extracted skills to the job
@@ -150,7 +160,7 @@ def enter_job_description(request):
             request.session['selected_job_id'] = job.id
             request.session['selected_category'] = job.category.id  # Assuming job has a category field
 
-            # Redirect to selects_skills view
+            # Redirect to select_skills view
             print("Redirecting to select_skills")
             return redirect('job:select_skills')
         else:
@@ -682,7 +692,7 @@ def job_listing_details(request, job_id):
             'title': job.title,
             'description': job.description,
             'job_location_type': job.job_location_type,
-            'location': job.location,
+            'location': str(job.location) if job.location else None, 
             'salary': job.salary,
             'salary_range':job.salary_range,
             'job_type': job.job_type,

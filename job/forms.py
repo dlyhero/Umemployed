@@ -7,17 +7,28 @@ from ckeditor.widgets import CKEditorWidget
 class CreateJobForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ['title', 'hire_number', 'job_type', 'location', 'salary', 'category']
+        fields = ['title', 'hire_number','job_location_type', 'job_type', 'location', 'salary_range', 'category']  # Removed 'responsibilities' and 'ideal_candidate'
 
     category = forms.ModelChoiceField(queryset=SkillCategory.objects.all())
+    widgets = {
+        'location': forms.Select(attrs={
+            'class': 'border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]',
+            'id': 'job-location',
+        })
+    }
+
 class JobDescriptionForm(forms.Form):
     """
-    Form for entering job description with CKEditor.
+    Form for entering job description, responsibilities, and ideal candidate details with CKEditor.
 
     Attributes:
         description (CharField): CKEditorWidget field for job description.
+        responsibilities (CharField): CKEditorWidget field for job responsibilities.
+        ideal_candidate (CharField): CKEditorWidget field for ideal candidate description.
     """
     description = forms.CharField(widget=CKEditorWidget())
+    responsibilities = forms.CharField(widget=CKEditorWidget())
+    ideal_candidate = forms.CharField(widget=CKEditorWidget())
 
 class JobTypeForm(forms.ModelForm):
     class Meta:

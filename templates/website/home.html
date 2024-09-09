@@ -264,7 +264,7 @@
                 <div class="flex items-center justify-between mb-4">
                   <img
                     class="w-12 h-12 rounded-full"
-                    src="{% static 'new_design/icons/8546719_apple_pay_icon.svg' %}"
+                    src="{{ job.company.logo.url }}"
                     alt="Company Logo"
                   />
                   <div>
@@ -414,6 +414,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Dynamically create the job details URL
         const jobDetailsUrl = `/job/details/${job.id}/`;
+        var companyLogoUrl = "{{ job.company.logo.url|default:'' }}";
+        var fallbackLogoUrl = "{% static 'new_design/icons/8546719_apple_pay_icon.svg' %}";
 
         // Clear the sidebar and display job details
         sidebar.innerHTML = `
@@ -421,7 +423,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="flex items-center justify-between mb-4">
                     <img
                         class="w-12 h-12 rounded-full"
-                        src="${company.logo || '{% static 'new_design/icons/8546719_apple_pay_icon.svg' %}'}"
+                        src="${companyLogoUrl || fallbackLogoUrl}"
                         alt="${job.company.name || 'Company Logo'}"
                     />
                     <div><span class="text-sm text-gray-500">${job.job_type || 'N/A'}</span></div>

@@ -47,25 +47,44 @@
 </div>
 
 <!-- Add Job Form -->
+<!-- Add Job Form -->
 <form id="addJob" class="w-full md:w-[65%] mx-auto" method="post" action="{% url 'job:enter_job_description' %}">
     {% csrf_token %}
     <h1 class="text-3xl font-bold text-gray-800 my-5">Add a job</h1>
-    <div class="flex flex-col gap-2">
-        <div class="input-wrap mb-8">
-            <label for="job-description" class="text-[17px] font-[500] text-gray-800">Job Description</label><br />
-            <textarea class="border resize-none border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-                rows="5" placeholder="Provide a detailed description of the job role and responsibilities"
-                name="description" id="job-description" required>{{ form.description.value }}</textarea>
-        </div>
-        <hr class="my-14 border-gray-500" />
-        <div class="btn-wrap text-end">
-            <button type="submit" class="inline-block px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                Next
-                <span class="text-[20px]">&RightArrow;</span>
-            </button>
-        </div>
+    
+    <!-- Job Description Field -->
+    <div class="input-wrap mb-8">
+        <label for="job-description" class="text-[17px] font-[500] text-gray-800">Job Description</label><br />
+        <textarea class="border resize-none border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                  rows="5" placeholder="Provide a detailed description of the job role and responsibilities"
+                  name="description" id="job-description" required>{{ form.description.value|default_if_none:"" }}</textarea>
+    </div>
+    
+    <!-- Responsibilities Field -->
+    <hr class="my-14 border-gray-500" />
+    <div class="input-wrap mb-8">
+        <label for="responsibilities" class="text-[17px] font-[500] text-gray-800">Responsibilities</label><br />
+        <textarea class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]" 
+                  placeholder="You'll be in charge of ..." name="responsibilities" id="responsibilities" 
+                  rows="4" required>{{ form.responsibilities.value|default_if_none:"" }}</textarea>
+    </div>
+    
+    <!-- Ideal Candidate/Qualifications Field -->
+    <div class="input-wrap mb-8">
+        <label for="ideal_candidate" class="text-[17px] font-[500] text-gray-800">Qualifications</label><br />
+        <textarea class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]" 
+                  placeholder="Enter the required Qualifications" name="ideal_candidate" id="ideal_candidate" 
+                  rows="4" required>{{ form.ideal_candidate.value|default_if_none:"" }}</textarea>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="btn-wrap text-end">
+        <button type="submit" class="inline-block px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            Next <span class="text-[20px]">&RightArrow;</span>
+        </button>
     </div>
 </form>
+
 
 </main>
 

@@ -8,6 +8,8 @@ from job.utils import calculate_skill_match
 from django.conf import settings
 from ckeditor.fields import RichTextField
 from django.urls import reverse
+from django_countries.fields import CountryField
+
 
 
 import logging
@@ -61,23 +63,23 @@ class Job(models.Model):
         ('hybrid', 'Hybrid'),
         ('internship', 'Internship'),
     ])
-    location = models.CharField(max_length=100)
+    location = CountryField(blank_label='(Select Country)', null=True)
     
     # Define choices for job types
-    FULL_TIME = 'full_time'
-    PART_TIME = 'part_time'
-    CONTRACT = 'contract'
-    TEMPORARY = 'temporary'
-    INTERNSHIP = 'internship'
-    FREELANCE = 'freelance'
+    FULL_TIME = 'Full_time'
+    PART_TIME = 'Part_time'
+    CONTRACT = 'Contract'
+    TEMPORARY = 'Temporary'
+    INTERNSHIP = 'Internship'
+    FREELANCE = 'Freelance'
 
     JOB_TYPE_CHOICES = [
-        (FULL_TIME, 'Full-Time'),
-        (PART_TIME, 'Part-Time'),
-        (CONTRACT, 'Contract'),
-        (TEMPORARY, 'Temporary'),
-        (INTERNSHIP, 'Internship'),
-        (FREELANCE, 'Freelance'),
+        ('Full_time', 'Full-Time'),
+        ('Part_time', 'Part-Time'),
+        ('Contract', 'Contract'),
+        ('Temporary', 'Temporary'),
+        ('Internship', 'Internship'),
+        ('Freelance', 'Freelance'),
     ]
     SALARY_RANGES = [
         ('30000-50000', '$30,000 - $50,000'),
@@ -92,7 +94,7 @@ class Job(models.Model):
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='extracted_jobs')
     ideal_candidate = RichTextField()
     is_available = models.BooleanField(default=False)
-    description = RichTextField(max_length=1000, default='We are looking for ...')
+    description = RichTextField(max_length=2000, default='We are looking for ...')
     responsibilities = RichTextField(max_length=1000, default="You will be in charge of ...")
     benefits = RichTextField(default="...")
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default=BEGINNER)

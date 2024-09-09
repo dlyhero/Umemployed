@@ -1,143 +1,205 @@
 
 {% extends 'resume/base.html' %}
 {% load static %}
-{% block search_bar %}
-    {% endblock search_bar %}
+
 {% block custom_css %}
+<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
 
 {% endblock %}
 {% block content %}
 
-  <body class="bg-gray-100 text-sm">
-    <!-- Main Content -->
-    <div class="container mx-auto py-8 px-4 flex flex-col lg:flex-row">
-      <!-- Job Details Section -->
-      <main class="flex-1 lg:mr-8">
-        <!-- Job Title Section -->
-        <section class="sm:bg-white p-6 sm:rounded-lg sm:border border-gray-300 mb-6 fade-in visible">
-          <h1 class="text-2xl font-bold text-gray-800">
-            <i class="fas fa-code"></i> {{job.title}}
-          </h1>
-          <p class="text-lg text-gray-600">
-            at <span class="font-semibold">{{job.company}}</span>
-          </p>
-          <p class="text-gray-500">
-            <i class="fas fa-map-marker-alt"></i> {{job.location}} &middot;
-            <i class="fas fa-calendar-alt"></i> since {{job.created_at}}
-          </p>
-        </section>
 
-        <!-- Job Summary -->
-        <section class="sm:bg-white p-6 sm:rounded-lg sm:border border-gray-300 mb-6 fade-in visible">
+<!-- Job Details and Sidebar Layout -->
+    <main class="container mx-auto flex flex-col lg:flex-row gap-6 my-2">
+      <!-- Job Details Card -->
+      <div class="lg:w-2/3 w-full border-r bg-white p-4 h-fit">
+        <div
+          class="search-wrapper flex lg:hidden max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none"
+        >
+          <input
+            class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
+            type="text"
+            name="search"
+            id="search"
+            placeholder="Search jobs, companies, or keywords"
+          />
+          <div class="border-l border-gray-300 mx-2 hidden sm:block"></div>
+          <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
+          <div class="button-wrap">
+            <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Job Details Card as described earlier -->
+        <div class="bg-white p-2 snap-start">
+          <!-- Header with Comp4ny Logo and Job Type -->
+          <div class="flex items-center justify-between mb-4">
+            <img
+              class="w-20 h-20 rounded-full mr-4"
+              src="{{ job.company.logo.url }}"
+              alt="{{job.company.name}} Logo"
+            />
+            <div><span class="text-sm text-gray-500">{{job.job_type}}</span></div>
+          </div>
+
+          <!-- Job Title, Company, and Post Time -->
           <div class="mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">{{job.title}}</h3>
+            <div class="flex items-center gap-2">
+              <h1 class="text-gray-600">{{job.company.name}}</h1>
+              <span class="text-sm text-gray-500">{{job.created_at}}</span>
+            </div>
+          </div>
+
+          <!-- Job Location -->
+          <p
+            class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
+          >
+            <i class="fas fa-map-marker-alt mr-2"></i> {{job.location}}
+          </p>
+
+          <!-- Salary Range -->
+          <p class="text-gray-800 mb-4 flex items-center">
+            $({{job.salary_range}}) / year
+          </p>
+
+          <hr class="my-5" />
+
+          <!-- Job Description -->
+          <div class="mb-4">
+            <h1 class="font-semibold text-gray-700 mb-2">Job Description:</h1>
             <p class="text-gray-600">
-              <i class="fas fa-briefcase"></i> {{job.job_type}}
+              {{job.description|safe}}
             </p>
+          </div>
+          <!-- Job responsibilities -->
+          <div class="mb-4">
+            <h1 class="font-semibold text-gray-700 mb-2">Key Responsibilities:</h1>
             <p class="text-gray-600">
-              <i class="fas fa-dollar-sign"></i> {{job.salary}}
+              {{job.responsibilities|safe}}
             </p>
+          </div>
+          <!-- Job Qualfication -->
+          <div class="mb-4">
+            <h1 class="font-semibold text-gray-700 mb-2">Qualfications:</h1>
             <p class="text-gray-600">
-              <i class="fas fa-hourglass-end"></i> {{job.created_at}}
-            </p>
-            <p class="text-gray-600 mt-2">
-              <i class="fas fa-globe"></i> {{job.job_type}}
+              {{job.ideal_candidate|safe}}
             </p>
           </div>
 
-                    <!-- Job Description -->
-          <h2 class="text-xl font-bold text-gray-800 mb-4">
-              <i class="fas fa-file-alt text-[18px] text-[#1e90ff]"></i> Job Description
-          </h2>
-          <div class="text-gray-700 mb-6">
-              {{ job.description|safe }}
-          </div>
-
-          <!-- Requirements -->
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">
-            <i class="fas fa-check text-[18px] text-[#1e90ff]"></i> Requirements
-          </h2>
-          <ul class="list-disc list-inside text-gray-700">
-            {% for skill in job.requirements.all %}
-            <li>{{ skill.name }}</li>
+          <!-- Required Skills -->
+          <div class="mb-4">
+            <h1 class="font-semibold text-gray-700 mb-2">Required Skills:</h1>
+            <ul class="text-gray-600 list-disc list-inside">
+              {% for skill in job.requirements.all %}
+              <li>{{ skill.name }}</li>
               {% endfor %}
-          </ul>
-
-          <!-- Company Information -->
-          <div class="sm:bg-white my-4">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">
-              <i class="fas fa-building text-[#1e90ff]"></i> About the Company
-            </h2>
-            <p class="text-gray-700">
-              {{ company.about_us }}
-            </p>
+            </ul>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex justify-end space-x-4 mt-8">
-            <a href="{% url 'job:confirm_evaluation' job.id %}"
-              class="bg-[#1e99ff] text-white px-4 py-2 rounded-lg text-center"
+          <hr class="my-5" />
+
+          <!-- Apply Button -->
+          <div class="mt-4 flex justify-end">
+            <a href="{% url 'job:confirm_evaluation' job.id %}">
+            <button
+              class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400"
             >
-              <i class="fas fa-paper-plane"></i> Apply <span class="hidden sm:inline-block text-nowrap">Now</span>
+              Apply Now
+            </button>
             </a>
-            <button
-              class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg "
-            >
-              <i class="fas fa-bookmark"></i> Save <span class="hidden sm:inline-block text-nowrap">Job</span>
-            </button>
-            <button
-              class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg "
-            >
-              <i class="fas fa-share-alt"></i> Share
-            </button>
           </div>
-        </section>
-      </main>
+        </div>
+      </div>
 
-      <!-- Aside Section -->
-      <aside class="w-full lg:w-1/3">
-        <!-- Map -->
-        <section class="sm:bg-white p-1 rounded-lg sm:border border-gray-300 mb-6 fade-in visible">
+      <!-- Sidebar with Map and Other Job Cards -->
+      <div class="lg:w-1/3 bg-white w-full flex flex-col gap-2">
+        <!-- Map Section -->
+        <div class="bg-white p-2 rounded-lg">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3021.1234523452!2d-73.9352423!3d40.7306102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259af18c23b8b%3A0xa5e1f3b3!2sDouala%2C%20Cameroon!5e0!3m2!1sen!2sus!4v1616098005129!5m2!1sen!2sus"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.291299043575!2d-122.03250378432978!3d37.322998879842295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fb5c496db0df7%3A0x4a7f7af8e89b8948!2sApple%20Park!5e0!3m2!1sen!2sus!4v1664359674143!5m2!1sen!2sus"
             width="100%"
-            height="250"
+            height="200"
+            border-radius="30"
+            frameborder="0"
             style="border: 0"
             allowfullscreen=""
-            loading="lazy"
-          ></iframe>
-        </section>
+            aria-hidden="false"
+            tabindex="0"
+          >
+          </iframe>
+        </div>
 
-        <!-- Similar Jobs -->
-        <section class="sm:bg-white p-4 rounded-lg  sm:border border-gray-300 mb-6 fade-in visible">
-          <h2 class="text-xl font-bold text-gray-800 mb-4">
-            <i class="fas fa-suitcase"></i> Similar Jobs
-          </h2>
-          <div class="space-y-4">
+        <hr class="mx-2 my-2" />
+        <!-- Other Jobs Section -->
+        <div class="bg-white p-4">
+          <h4 class="font-semibold text-gray-700 mb-4">Other Jobs</h4>
+
             {% if similar_jobs %}
             {% for job in similar_jobs %}
-            <a
-              class="bg-gray-50 p-4 rounded-lg block hover:bg-slate-100"
-              href="{% url 'job:job_details' job.id %}">
-              <h3 class="text-lg font-bold text-gray-800">
-                <i class="fas fa-laptop-code"></i> {{ job.title }}
-              </h3>
-              <p class="text-gray-600 ml-6">{{job.company}} &middot; {{job.location}}</p>
-              <button class="px-4 text-[#1e90ff] py-2 mt-2 rounded-lg">
-                <i class="fas fa-info-circle"></i> View More
-              </button>
-            </a>
-            {% endfor %}
-             {% else %}
-        <p>No similar jobs found.</p>
-        {% endif %}
-            <!-- Additional similar job cards... -->
-          </div>
-        </section>
-      </aside>
-    </div>
+          <!-- Job Card -->
+          <!-- Job Cards Scrollable Container -->
+          <div
+            class="flex gap-6 overflow-x-auto mx-auto scroll-smooth snap-x snap-mandatory"
+            id="jobCardsContainer"
+          >
+            <!-- Job Card 1 -->
+            <div
+              class="min-w-[90%] sm:min-w-[40%] md:min-w-[50%] lg:min-w-[75%] bg-white border rounded-lg p-6 snap-start"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <img
+                  class="w-12 h-12 rounded-full mr-4"
+                  src="{% static 'new_design/icons/294675_google_icon.svg' %}"
+                  alt="Company Logo"
+                />
+                <div>
+                  <span class="text-sm text-gray-500">{{job.job_type}}</span>
+                </div>
+              </div>
+              <div class="mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">
+                  {{job.title}}
+                </h3>
+                <div class="flex items-center gap-2">
+                  <span class="text-gray-600">{{job.company}}</span>
+                  <span class="text-sm text-gray-500">{{job.created_at}}</span>
+                </div>
+              </div>
+              <p
+                class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
+              >
+                <i class="fas fa-map-marker-alt mr-2"></i> {{job.location}}
+              </p>
+              <p class="text-gray-800 mb-4 flex items-center">
+                $({{job.salary_range}}) / year
+              </p>
+              <div class="mt-4">
+                <a href="{% url 'job:confirm_evaluation' job.id %}">
+                <button
+                  class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full"
+                >
+                  Apply Now
+                </button>
+                </a>
+              </div>
+            </div>
+            <!-- Job Card 2 -->
+            
 
-    
-  </body>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No similar jobs found</p>
+            {% endif %}
+        </div>
+      </div>
+    </main>
+  
 {% endblock %}
 
 

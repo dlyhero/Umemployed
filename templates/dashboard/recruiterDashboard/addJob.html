@@ -33,19 +33,33 @@
             </select>
         </div>
         <div class="input-wrap mb-8">
-            <label for="salary" class="text-[17px] font-[500] text-gray-800">Salary</label><br />
-            <input class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-                type="text" placeholder="ex($50,000 - $70,000)" name="salary" id="salary" required />
+            <label for="salary_range" class="text-[17px] font-[500] text-gray-800">Salary Range</label><br />
+            <select class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]" 
+                    name="salary_range" 
+                    id="salary_range" 
+                    required>
+                <option value="30000-50000">$30,000 - $50,000</option>
+                <option value="50001-70000">$50,001 - $70,000</option>
+                <option value="70001-100000">$70,001 - $100,000</option>
+                <option value="100001-150000">$100,001 - $150,000</option>
+                <option value="150001+">$150,001 and above</option>
+            </select>
         </div>
-        <div class="input-wrap mb-8">
+
+       
+         <div class="input-wrap mb-8">
             <label for="job-location" class="text-[17px] font-[500] text-gray-800">Job Location</label><br />
-            <input class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-                type="text" placeholder="ex(New York, USA)" name="location" id="job-location" required />
+            <div class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                    name="location" id="job-location" required>
+                {{ form.location }}
+            </div>
         </div>
+
+        <!-- Job Location Type -->
         <div class="input-wrap mb-8">
-            <label for="job-type" class="text-[17px] font-[500] text-gray-800">Job location type</label><br />
+            <label for="job-location-type" class="text-[17px] font-[500] text-gray-800">Job Location Type</label><br />
             <select class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
-                name="job_type" id="job-type" required>
+                    name="job_location_type" id="job-location-type" required>
                 <option value="" selected>Choose an option</option>
                 <option value="remote">Remote</option>
                 <option value="onsite">Onsite</option>
@@ -53,6 +67,25 @@
                 <option value="internship">Internship</option>
             </select>
         </div>
+
+        <!-- Job Type -->
+        <div class="input-wrap mb-8">
+            <label for="job-type" class="text-[17px] font-[500] text-gray-800">Job Type</label><br />
+            <select class="border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]"
+                    name="job_type" id="job-type" required>
+                <option value="" selected>Choose an option</option>
+                <option value="Full_time">Full-Time</option>
+                <option value="Part_time">Part-Time</option>
+                <option value="Contract">Contract</option>
+                <option value="Temporary">Temporary</option>
+                <option value="Internship">Internship</option>
+                <option value="Freelance">Freelance</option>
+            </select>
+        </div>
+
+
+
+        
         <div class="input-wrap mb-8">
            <label for="id_category">Category:</label>
 <select name="category" id="id_category">
