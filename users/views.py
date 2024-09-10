@@ -216,7 +216,6 @@ def register_recruiter(request):
 @login_required(login_url='/')
 def logout_user(request):
     logout(request)
-    messages.info(request, 'Your session has ended')
     return redirect('home')  # Update the target name to match the appropriate URL name
 
 def switch_account(request):

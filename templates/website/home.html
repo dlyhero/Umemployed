@@ -82,9 +82,9 @@
         >
           <section class="container mb-8">
             <div
-              class="search-wrapper mt-4 lg:hidden flex flex-1 bg-white px-2 py-2 border rounded-full shadow sm:shadow-none"
+              class="search-wrapper max-w-xl lg:hidden flex flex-1 mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none"
             >
-            <form method="get" action="{% url 'home' %}">
+            <form method="get" action="{% url 'home' %}" class="flex flex-1">
               <input
                 class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
                 type="text"
