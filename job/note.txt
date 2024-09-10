@@ -73,7 +73,7 @@ def generate_mcqs_for_skill(skill_name):
     try:
         # Make a request to the ChatGPT API using the initialized client
         response = client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-4o-mini-preview",
             messages=conversation
         )
 

@@ -47,7 +47,7 @@ def save_skills_to_database(job_title, skills):
 
 def extract_technical_skills(job_title, job_description):
     """
-    Extract technical skills from a job description using gpt-4-turbo-preview.
+    Extract technical skills from a job description using GPT-4.
 
     Args:
         job_title (str): The title of the job.
@@ -64,9 +64,9 @@ def extract_technical_skills(job_title, job_description):
     ]
 
     try:
-        # Call gpt-4-turbo-preview to generate technical skills based on job description
+        # Call GPT-4 to generate technical skills based on job description
         response = client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-4",
             messages=conversation,
             timeout=120  # Extended timeout to 120 seconds
         )

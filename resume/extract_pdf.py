@@ -19,7 +19,7 @@ from datetime import datetime,date
 from django.contrib import messages
 
 dotenv.load_dotenv()
-api_key ="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"
+api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 logger = logging.getLogger(__name__)
 
@@ -111,7 +111,7 @@ def extract_text(request, file_path):
 
 def extract_technical_skills(request, extracted_text, job_title):
     """
-    Extracts technical skills from extracted text using gpt-4-turbo-preview and saves them to the database.
+    Extracts technical skills from extracted text using GPT-4 and saves them to the database.
     """
     conversation = [
         {
@@ -121,9 +121,9 @@ def extract_technical_skills(request, extracted_text, job_title):
     ]
 
     try:
-        # Call gpt-4-turbo-preview to generate technical skills based on resume data
+        # Call GPT-4 to generate technical skills based on resume data
         response = client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-4",
             messages=conversation,
             timeout=120  # Extended timeout to 120 seconds
         )
@@ -175,7 +175,7 @@ def extract_resume_details(request, extracted_text):
         ]
 
         response = client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-4",
             messages=conversation,
             timeout=120
         )
