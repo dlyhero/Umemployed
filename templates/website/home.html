@@ -236,7 +236,7 @@
                   </h3>
                   <div class="flex items-center gap-2">
                     <span class="text-gray-600">{{job.company.name}}</span>
-                    <span class="text-sm text-gray-500">{{job.created_at}}</span>
+                    <span class="text-sm text-gray-500">{{ job.created_at|timesince }} ago</span>
                   </div>
                 </div>
                 <p
@@ -272,12 +272,12 @@
                   </div>
                 </div>
                 <div class="mb-4">
-                  <h3 class="text-xl font-semibold text-gray-800">
+                  <h3 class="text-xl font-semibold text-gray-800 truncate">
                     {{job.title}}
                   </h3>
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 truncate">
                     <span class="text-gray-600">{{job.company.name}}</span>
-                    <span class="text-sm text-gray-500">{{job.created_at}}</span>
+                    <span class="text-gray-500 " style="font-size: 16px;">{{ job.created_at|timesince }} ago</span>
                   </div>
                 </div>
                 <p
@@ -315,10 +315,7 @@
             </a>
             {% endif %}
 
-            <!-- "1 out of X" Pagination Text -->
-            <div id="pagination-info" class="text-gray-700 text-sm">
-                Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
-            </div>
+           
 
             <!-- Next Button with Icon -->
             {% if jobs.has_next %}
@@ -326,6 +323,10 @@
                 class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center">
                 Next <i class="fas fa-chevron-right ml-2"></i>
             </a>
+             <!-- "1 out of X" Pagination Text -->
+            <div id="pagination-info" class="text-gray-700 text-sm">
+                Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
+            </div>
             <a href="?page={{ jobs.paginator.num_pages }}" 
                 class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center">
                 Last <i class="fas fa-angle-double-right ml-2"></i>

@@ -115,7 +115,7 @@ def home(request):
         non_matching_jobs = list(all_jobs)
 
     # Pagination
-    paginator = Paginator(non_matching_jobs, 7)  # Show 7 jobs per page
+    paginator = Paginator(non_matching_jobs, 6)  # Show 7 jobs per page
     page = request.GET.get('page')
 
     try:

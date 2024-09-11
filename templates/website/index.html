@@ -193,12 +193,15 @@
               </div>
             </div>
             <div class="mb-4">
-              <h3 class="text-xl font-semibold text-gray-800">
-                {{job.title}}
+              <h3 class="text-xl font-semibold text-gray-800 truncate">
+                {{ job.title }}
               </h3>
-              <div class="flex items-center gap-2">
+
+              <div class="flex items-center gap-2 truncate">
                 <span class="text-gray-600">{{job.company.name}}</span>
-                <span class="text-sm text-gray-500">{{job.created_at}}</span>
+                <span class="text-gray-500 " style="font-size: 16px;">{{ job.created_at|timesince }} ago</span>
+
+
               </div>
             </div>
             <p
