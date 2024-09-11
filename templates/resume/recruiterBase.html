@@ -636,5 +636,8 @@ setupBackdropMenu();
     </script>
     <script type="module" src="{% static 'build/scripts/addjob.js' %}"></script>
     {% comment %} <script src="{% static 'build/scripts/dashboard.js' %}"></script> {% endcomment %}
+
+    {% block extra_js %}
+    {% endblock %}
   </body>
 </html>

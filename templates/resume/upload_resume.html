@@ -93,17 +93,17 @@
 <main class="w-[93%] mx-auto flex-grow">
   <section class="hero px-4 mx-auto">
     <div class="font-bold tracking-wider mb-10">
-      <span class="text-blue-400 text-2xl md:text-3xl font-bold">Welcome</span>
-      <span class="user-name text-xl">User {{user.username}}!</span>
+      <span class="text-blue-400 text-2xl md:text-3xl font-bold">Hello</span>
+      <span class="user-name text-2xl"> {{user.first_name}}!</span>
     </div>
   </section>
   <section class="h-fit drop-section gap-x-20 gap-y-5 mb-10">
     <div class="md:border-2 md:shadow-xl md:bg-slate-50 border-[#1e90ff] rounded-xl h-fit md:h-[300px] flex flex-col items-center justify-center">
       <div class="text-center md:p-[30px]">
         <p class="mb-6 md:mb-4">
-          Hi <span id="user-name" class="font-bold">User {{user.first_name}}>!</span>, Please finish sign-up process
+           <span id="user-name" class="font-bold"> {{user.first_name}}!!</span>, Please finish sign-up process
         </p>
-        <a class="underline px-[20px] py-[10px] md:p-0 text-[#1e90ff] md:bg-transparent font-bold" href="{% url 'update-resume' %}">Skip upload to Job Post</a>
+        <a class="underline px-[20px] py-[10px] md:p-0 text-[#1e90ff] md:bg-transparent font-bold" href="{% url 'update-resume' %}">Skip upload and enter details manually</a>
       </div>
     </div>
     <div class="h-fit md:h-[300px]">
@@ -119,20 +119,24 @@
         </div>
 
       <form id="upload-form" method="post" enctype="multipart/form-data" class="w-full h-full">
-        {% csrf_token %}
-        <label id="drop-area" for="input-file" class="w-full text-white h-full border flex flex-col justify-center items-center px-[20px] py-[10px] md:p-[30px] text-center bg-blue-500 rounded-xl">
-            <div id="file-view" class="w-full h-full rounded-xl md:border-2 md:border-dashed md:bg-blue-400 md:p-[20px]">
-                <img class="hidden md:block w-24 mt-6 mx-auto" src="{% static 'build/img/upload.svg' %}" alt="" />
-                <p>
-                    Choose files to upload <br />
-                    <span class="hidden md:block">or drag and drop here</span>
-                </p>
-                <input id="input-file" type="file" name="file" class="hidden">
-            </div>
-        </label>
-        <button type="submit" class="btn btn-primary mt-4">Upload</button>
-        <br>
-      </form>
+            {% csrf_token %}
+            <label id="drop-area" for="input-file" class="w-full text-white h-full border flex flex-col justify-center items-center px-[20px] py-[10px] md:p-[30px] text-center bg-blue-500 rounded-xl">
+                <div id="file-view" class="w-full h-full rounded-xl md:border-2 md:border-dashed md:bg-blue-400 md:p-[20px]">
+                    <img class="hidden md:block w-24 mt-6 mx-auto" src="{% static 'build/img/upload.svg' %}" alt="" />
+                    <p>
+                        Choose files to upload <br />
+                        <span class="hidden md:block">or drag and drop here</span>
+                    </p>
+                    <input id="input-file" type="file" name="file" class="hidden">
+                </div>
+            </label>
+            <p id="file-name" class="mt-2 text-white text-center"></p> <!-- Filename Display -->
+            <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-4 transition-all">
+                Upload
+            </button>
+            <br>
+        </form>
+
 
     </div>
   </section>
@@ -279,6 +283,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+</script>
+<script>
+document.getElementById('input-file').addEventListener('change', function(event) {
+    var fileName = event.target.files.length > 0 ? event.target.files[0].name : 'No file chosen';
+    document.getElementById('file-name').textContent = fileName;
+});
 </script>
 <!-- Include PDF.js library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>

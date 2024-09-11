@@ -30,6 +30,10 @@ class JobDescriptionForm(forms.Form):
     responsibilities = forms.CharField(widget=CKEditorWidget())
     ideal_candidate = forms.CharField(widget=CKEditorWidget())
 
+    class Meta:
+        model = Job
+        fields = ['description', 'responsibilities', 'ideal_candidate']
+
 class JobTypeForm(forms.ModelForm):
     class Meta:
         model = Job
