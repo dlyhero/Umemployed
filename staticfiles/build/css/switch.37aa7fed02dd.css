@@ -1,0 +1,10 @@
+<main class="mx-auto w-[98%] sm:w-[90%] max-w-[650px] mb-2 flex items-center justify-center h-[80vh]">
+    <div class="sm:bg-white p-12 sm:rounded-lg sm:shadow-lg text-center w-full">
+        <h1 class="text-2xl font-bold mb-4">Welcome</h1>
+        <p class="text-gray-600 mb-8">Please select your role:</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="{% url 'feature-not-implemented' %}" class="bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-600 w-full sm:w-auto text-center">I am an Employee</a>
+            <a href="{% url 'feature-not-implemented' %}" class="bg-[#1e90ff] text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full sm:w-auto text-center">I am a Recruiter</a>
+        </div>
+    </div>
+  </main>
