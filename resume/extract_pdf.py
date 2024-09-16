@@ -55,57 +55,90 @@ def upload_resume(request):
         form = ResumeForm()
     return render(request, 'resume/upload_resume.html', {'form': form})
 
+def clean_text(text):
+    """Remove invalid characters from the extracted text."""
+    if text:
+        return text.replace('\x00', '')  # Remove null characters
+    return text
+
+
+import pdfplumber
+import io
+import boto3
+from django.http import HttpResponse
+from django.conf import settings
+from django.shortcuts import redirect
+from django.contrib import messages
+
 def extract_text(request, file_path):
     """
-    Extracts text from a PDF resume file and saves it to the database.
+    Extracts text from a PDF resume file stored in S3 and saves it to the database.
     """
-    # Creating a pdf reader object 
-    job_title = None
-    reader = PdfReader(file_path) 
+    s3_client = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME
+    )
 
-    # Creating a page object 
-    page = reader.pages[0] 
-    extracted_text = page.extract_text()
-    
-    # Extract details from the resume text using ChatGPT
-    extracted_details = extract_resume_details(request, extracted_text)
-    
+    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+    key = file_path.replace('https://', '').replace(settings.AWS_S3_CUSTOM_DOMAIN + '/', '')
 
-    # Print the extracted details for debugging
-    print("Extracted Details:", extracted_details)
-    parse_and_save_details(extracted_details, request.user)
-
+    print(f"Trying to access file with key: {key}")
 
     try:
-        resume = Resume.objects.get(user=request.user)
-        job_title = resume.job_title
-        print("Job title found:", job_title)
-    except Resume.DoesNotExist:
-        print("Resume not found for extracted text:", extracted_text)
-        messages.warning(request, "This failed please try again!")
+        response = s3_client.get_object(Bucket=bucket_name, Key=key)
+        file_stream = response['Body'].read()
 
-    # Save the extracted text to the database
-    try:
-        print("Searching for ResumeDoc with file path:", file_path)
-        resume_doc = ResumeDoc.objects.get(user=request.user)
-        print("ResumeDoc found:", resume_doc)
-        resume_doc.extracted_text = extracted_text
-        resume_doc.save()
-        print("Extracted text saved to ResumeDoc")
+        # Use pdfplumber for text extraction
+        try:
+            with pdfplumber.open(io.BytesIO(file_stream)) as pdf:
+                if pdf.pages:
+                    page = pdf.pages[0]
+                    extracted_text = page.extract_text() or ""
+                    extracted_text = clean_text(extracted_text)  # Clean the extracted text
+                else:
+                    extracted_text = ""
+        except Exception as e:
+            print(f"Error reading PDF with pdfplumber: {e}")
+            extracted_text = "Unable to extract text"
 
-        # Process and save the extracted details to the database or perform other necessary actions
-        # For example, you can save the extracted details to appropriate database models based on your models
+        # Process extracted text
+        extracted_details = extract_resume_details(request, extracted_text)
+        print("Extracted Details:", extracted_details)
+        parse_and_save_details(extracted_details, request.user)
 
-        # Redirect to the appropriate view
-        extract_technical_skills(request, extracted_text, job_title)
-        return redirect(views.update_resume)
+        # Attempt to get the associated Resume
+        try:
+            resume = Resume.objects.get(user=request.user)
+            job_title = resume.job_title
+            print("Job title found:", job_title)
+        except Resume.DoesNotExist:
+            job_title = None
+            print("Resume not found for extracted text:", extracted_text)
+            messages.warning(request, "This failed please try again!")
 
+        # Save the extracted text to the ResumeDoc
+        try:
+            print("Searching for ResumeDoc with file path:", key)
+            resume_doc = ResumeDoc.objects.get(user=request.user)
+            print("ResumeDoc found:", resume_doc)
+            resume_doc.extracted_text = extracted_text
+            resume_doc.save()
+            print("Extracted text saved to ResumeDoc")
 
-    except ResumeDoc.DoesNotExist:
-        print("ResumeDoc not found for file path:", file_path)
-        extract_technical_skills(request, extracted_text, job_title)
-        return HttpResponse("Error: ResumeDoc not found")
-    return redirect(views.update_resume)
+            extract_technical_skills(request, extracted_text, job_title)
+            return redirect('update-resume')
+
+        except ResumeDoc.DoesNotExist:
+            print("ResumeDoc not found for file path:", key)
+            extract_technical_skills(request, extracted_text, job_title)
+            return HttpResponse("Error: ResumeDoc not found")
+
+    except Exception as e:
+        print("Error during file extraction:", str(e))
+        messages.error(request, "An error occurred while processing the resume. Please try again.")
+        return HttpResponse("Error: Could not process the file", status=500)
 
 
 

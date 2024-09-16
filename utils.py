@@ -1,30 +1,21 @@
-from django.core.management import setup_environ
-from django.conf import settings
+import boto3
 import os
+from botocore.exceptions import NoCredentialsError, ClientError
 
-# Set up Django environment
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "umemployed.settings")
-setup_environ(settings)
+s3 = boto3.client(
+    's3',
+    aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+    region_name='eu-north-1'
+)
 
-import json
-from resume.models import Skill, SkillCategory
+bucket_name = 'umemployed'
+s3_key = 'resumes/ParthBhatt_Resume.pdf'
 
-def import_skills_data():
-    with open('skills_data.json') as file:
-        skills_data = json.load(file)
-
-        for skill_data in skills_data:
-            skill = Skill.objects.create(name=skill_data['bapi'])
-
-            # Assuming skill categories are stored as a list of strings
-            for key, value in skill_data.items():
-                if value and key != 'bapi':
-                    category, _ = SkillCategory.objects.get_or_create(name=value)
-                    skill.categories.add(category)
-
-            skill.save()
-
-    print("Skills data imported successfully.")
-
-if __name__ == "__main__":
-    import_skills_data()
+try:
+    response = s3.head_object(Bucket=bucket_name, Key=s3_key)
+    print("File exists:", response)
+except ClientError as e:
+    print("Error:", e)
+except NoCredentialsError:
+    print("Credentials not available")
