@@ -138,13 +138,13 @@
             // <div id="clockbox1" class="clockbox module">
             //     <h2>Choose a time</h2>
             //     <ul class="timelist">
-            //         <li><a href="#">Now</a></li>
-            //         <li><a href="#">Midnight</a></li>
-            //         <li><a href="#">6 a.m.</a></li>
-            //         <li><a href="#">Noon</a></li>
-            //         <li><a href="#">6 p.m.</a></li>
+            //         <li><a href="{% url 'feature-not-implemented' %}">Now</a></li>
+            //         <li><a href="{% url 'feature-not-implemented' %}">Midnight</a></li>
+            //         <li><a href="{% url 'feature-not-implemented' %}">6 a.m.</a></li>
+            //         <li><a href="{% url 'feature-not-implemented' %}">Noon</a></li>
+            //         <li><a href="{% url 'feature-not-implemented' %}">6 p.m.</a></li>
             //     </ul>
-            //     <p class="calendar-cancel"><a href="#">Cancel</a></p>
+            //     <p class="calendar-cancel"><a href="{% url 'feature-not-implemented' %}">Cancel</a></p>
             // </div>
 
             const clock_box = document.createElement('div');
@@ -265,16 +265,16 @@
             //
             // <div id="calendarbox3" class="calendarbox module">
             //     <h2>
-            //           <a href="#" class="link-previous">&lsaquo;</a>
-            //           <a href="#" class="link-next">&rsaquo;</a> February 2003
+            //           <a href="{% url 'feature-not-implemented' %}" class="link-previous">&lsaquo;</a>
+            //           <a href="{% url 'feature-not-implemented' %}" class="link-next">&rsaquo;</a> February 2003
             //     </h2>
             //     <div class="calendar" id="calendarin3">
             //         <!-- (cal) -->
             //     </div>
             //     <div class="calendar-shortcuts">
-            //          <a href="#">Yesterday</a> | <a href="#">Today</a> | <a href="#">Tomorrow</a>
+            //          <a href="{% url 'feature-not-implemented' %}">Yesterday</a> | <a href="{% url 'feature-not-implemented' %}">Today</a> | <a href="{% url 'feature-not-implemented' %}">Tomorrow</a>
             //     </div>
-            //     <p class="calendar-cancel"><a href="#">Cancel</a></p>
+            //     <p class="calendar-cancel"><a href="{% url 'feature-not-implemented' %}">Cancel</a></p>
             // </div>
             const cal_box = document.createElement('div');
             cal_box.style.display = 'none';

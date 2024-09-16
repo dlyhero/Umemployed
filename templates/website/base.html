@@ -131,7 +131,7 @@
           <a
             id="messages-link"
             class="header-link flex items-center gap-1 p-2 rounded"
-            href="#"
+            href="{% url 'feature-not-implemented' %}"
           >
             <i
               id="messages-icon"
@@ -145,7 +145,7 @@
           <a
             id="notifications-link"
             class="header-link flex items-center gap-1 p-2 rounded"
-            href="#"
+            href="{% url 'feature-not-implemented' %}"
           >
             <i id="notifications-icon" class="fas fa-bell text-xl icon"></i>
             <span class="hidden md:block">Notifications</span>
@@ -168,7 +168,7 @@
                 </button>
                 <div id="dropdown-menu" class="dropdown-menu">
                     <div class="py-3 px-6 rounded-t text-gray-700 hover:bg-gray-100 transition-all">
-                            <a href="#" class="flex items-center gap-1">
+                            <a href="{% url 'feature-not-implemented' %}" class="flex items-center gap-1">
                                 <img class="w-5" src="{% static 'build/img/user.svg' %}" alt="user-icon" />
                                 {{ user.username }}
                             </a>
@@ -188,19 +188,19 @@
                             </a>
                         </div>
                         <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
-                            <a href="#" class="flex items-center gap-1">
+                            <a href="{% url 'feature-not-implemented' %}" class="flex items-center gap-1">
                                 <img class="w-5" src="{% static 'build/img/billing-svgrepo-com.svg' %}" alt="billing-icon" />
                                 Billing and invoices
                             </a>
                         </div>
                         <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
-                            <a href="#" class="flex items-center gap-1">
+                            <a href="{% url 'feature-not-implemented' %}" class="flex items-center gap-1">
                                 <img class="w-5" src="{% static 'build/img/setting-1-svgrepo-com.svg' %}" alt="setting-icon" />
                                 Employer setting
                             </a>
                         </div>
                         <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
-                            <a href="#" class="flex items-center gap-1">
+                            <a href="{% url 'feature-not-implemented' %}" class="flex items-center gap-1">
                                 <img class="w-5" src="{% static 'build/img/contact-details-filled-svgrepo-com.svg' %}" alt="contact icon" />
                                 Contact us
                             </a>
@@ -260,15 +260,17 @@
     </div>
 
 
+
       {% block content %}
 
 
       {% endblock %}
 
 
+
     <footer class="text-center mb-10 px-2">
       &copy;2024 <span class="text-[#1e90ff] font-bold">UmEmployed</span> -
-      <span class="underline"><a href="#">Cookies</a>, <a href="#">Privacy</a>, and <a href="#">Terms</a></span>
+      <span class="underline"><a href="{% url 'feature-not-implemented' %}">Cookies</a>, <a href="{% url 'feature-not-implemented' %}">Privacy</a>, and <a href="{% url 'feature-not-implemented' %}">Terms</a></span>
     </footer>
     
 
@@ -329,6 +331,7 @@
         });
     </script>
 
+    
 </body>
 
 </html>

@@ -666,10 +666,12 @@ def job_details(request,job_id):
     job = Job.objects.get(id=job_id)
     similar_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=5.0)
     company = Company.objects.get(job=job)
+    all_jobs = Job.objects.all()
     context = {
         'job':job,
         'similar_jobs':similar_jobs,
-        'company':company
+        'company':company,
+        'all_jobs':all_jobs
     }
     
     return render(request, "job/job_details.html",context)

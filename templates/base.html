@@ -22,6 +22,7 @@
       href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Nerko+One&family=Pirata+One&display=swap"
       rel="stylesheet"
     />
+    
     <link
       href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
       rel="stylesheet"
@@ -236,7 +237,7 @@
                   <i class="fas fa-plus-circle"></i> Post a job
                 </a>
                 <a
-                  href="#"
+                  href="{% url 'feature-not-implemented' %}"
                   class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
                 >
                   <i class="fas fa-envelope"></i> Contact Us
@@ -464,21 +465,24 @@
             © 2024 UmEmployed. All rights reserved.
           </p>
           <div class="flex space-x-4">
-            <a href="#" class="text-[#1e90ff] hover:tex-[#1e90ff]">
+            <a href="{% url 'feature-not-implemented' %}" class="text-[#1e90ff] hover:tex-[#1e90ff]">
               <i class="fab fa-facebook-f"></i>
             </a>
-            <a href="#" class="text-[#1e90ff] hover:tex-[#1e90ff]">
+            <a href="{% url 'feature-not-implemented' %}" class="text-[#1e90ff] hover:tex-[#1e90ff]">
               <i class="fab fa-twitter"></i>
             </a>
-            <a href="#" class="text-[#1e90ff] hover:tex-[#1e90ff]">
+            <a href="{% url 'feature-not-implemented' %}" class="text-[#1e90ff] hover:tex-[#1e90ff]">
               <i class="fab fa-linkedin-in"></i>
             </a>
-            <a href="#" class="text-[#1e90ff] hover:tex-[#1e90ff]">
+            <a href="{% url 'feature-not-implemented' %}" class="text-[#1e90ff] hover:tex-[#1e90ff]">
               <i class="fab fa-instagram"></i>
             </a>
           </div>
         </div>
       </div>
+
+
+
     </footer>
     <!-- Sidebar -->
     <div
@@ -554,13 +558,13 @@
           <i class="fas fa-briefcase"></i> Browse Jobs
         </a>
         <a
-          href="#"
+          href="{% url 'feature-not-implemented' %}"
           class="menu-item flex items-center gap-2 font-semibold p-2 border-b"
         >
           <i class="fas f </ul>a-plus-circle"></i> Post a Job
         </a>
         <a
-          href="#"
+          href="{% url 'feature-not-implemented' %}"
           class="menu-item flex items-center gap-2 font-semibold p-2 border-b"
         >
           <i class="fas fa-envelope"></i> Contact Us
@@ -588,6 +592,7 @@
 
     
     {% endblock footer %}
+
 
     <script>
       let currentSlide = 0;
@@ -694,6 +699,7 @@
         }, 20000); // 10 seconds
     });
 });
+
 
     </script>
     <script src="{% static 'new_design/scripts/jobCards.js' %}"></script>

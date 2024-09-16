@@ -351,3 +351,9 @@ from django.shortcuts import render
 
 def trigger_404(request):
     return render(request, '404.html', status=500)
+
+def career_resources(request):
+    return render(request, 'website/carreer_resources.html')
+
+def feature_not_implemented(request):
+    return render(request, 'modal.html') 

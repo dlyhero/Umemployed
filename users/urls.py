@@ -18,5 +18,9 @@ urlpatterns = [
     path('account/email-verification-sent/', TemplateView.as_view(template_name='account/verification_sent.html'), name='account_email_verification_sent'),
 
     path('user_dashboard',views.user_dashboard, name='dashboard'),
+    
+    path('career-resources', views.career_resources, name='career_resources'),
+    path('feature-not-implemented/', views.feature_not_implemented, name='feature-not-implemented'),
+
 
 ]
