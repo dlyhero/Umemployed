@@ -19,171 +19,172 @@
 {% block content %}
     <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto">
       <form class="max-w-3xl mx-auto p-6" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <h1 class="text-2xl font-bold mb-4 text-gray-800">Create Company</h1>
+    {% csrf_token %}
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Create Company</h1>
 
-            <!-- Company Information -->
-            <section>
-                <h2 class="text-xl font-semibold mb-2">Company Information</h2>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="name">Company Name</label>
-                    <input
-                        type="text"
-                        name="name"
-                        id="name"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        placeholder="Company Name"
-                        value="{{ company.name }}"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="industry">Industry</label>
-                    <select
-                        name="industry"
-                        id="industry"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                    >
-                        <option value="Technology" {% if company.industry == 'Technology' %}selected{% endif %}>Technology</option>
-                        <option value="Healthcare" {% if company.industry == 'Healthcare' %}selected{% endif %}>Healthcare</option>
-                        <option value="Finance" {% if company.industry == 'Finance' %}selected{% endif %}>Finance</option>
-                        <option value="Education" {% if company.industry == 'Education' %}selected{% endif %}>Education</option>
-                        <!-- Add more industries as needed -->
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="website">Website</label>
-                    <input
-                        type="url"
-                        name="website"
-                        id="website"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        placeholder="https://example.com"
-                        value="{{ company.website }}"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="company_size">Company Size</label>
-                    <input
-                        type="text"
-                        name="company_size"
-                        id="company_size"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        placeholder="Number of Employees"
-                        value="{{ company.company_size }}"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="logo">Company Logo</label>
-                    <input
-                        type="file"
-                        name="logo"
-                        id="logo"
-                        class="mt-1 block w-full text-sm text-gray-700"
-                        accept="image/*"
-                    />
-                </div>
-            </section>
+    <!-- Company Information -->
+    <section>
+        <h2 class="text-xl font-semibold mb-2">Company Information</h2>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="name">Company Name</label>
+            <input
+                type="text"
+                name="name"
+                id="name"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                placeholder="Company Name"
+                value="{{ company.name }}"
+            />
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="industry">Industry</label>
+            <select
+                name="industry"
+                id="industry"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+            >
+                <option value="Technology" {% if company.industry == 'Technology' %}selected{% endif %}>Technology</option>
+                <option value="Healthcare" {% if company.industry == 'Healthcare' %}selected{% endif %}>Healthcare</option>
+                <option value="Finance" {% if company.industry == 'Finance' %}selected{% endif %}>Finance</option>
+                <option value="Education" {% if company.industry == 'Education' %}selected{% endif %}>Education</option>
+                <!-- Add more industries as needed -->
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="website">Website</label>
+            <input
+                type="url"
+                name="website"
+                id="website"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                placeholder="https://example.com"
+                value="{{ company.website }}"
+            />
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="company_size">Company Size</label>
+            <input
+                type="text"
+                name="company_size"
+                id="company_size"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                placeholder="Number of Employees"
+                value="{{ company.company_size }}"
+            />
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="logo">Company Logo</label>
+            <input
+                type="file"
+                name="logo"
+                id="logo"
+                class="mt-1 block w-full text-sm text-gray-700"
+                accept="image/*"
+            />
+        </div>
+    </section>
 
-            <!-- Social Links -->
-            <section>
-                <h2 class="text-xl font-semibold mb-2">Social Links</h2>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="linkedin">LinkedIn</label>
-                    <input
-                        type="url"
-                        name="linkedin"
-                        id="linkedin"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        placeholder="https://linkedin.com/company/yourcompany"
-                        value="{{ company.linkedin }}"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="facebook">Facebook</label>
-                    <input
-                        type="url"
-                        name="facebook"
-                        id="facebook"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        placeholder="https://facebook.com/yourcompany"
-                        value="{{ company.facebook }}"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="twitter">Twitter</label>
-                    <input
-                        type="url"
-                        name="twitter"
-                        id="twitter"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        placeholder="https://twitter.com/yourcompany"
-                        value="{{ company.twitter }}"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="instagram">Instagram</label>
-                    <input
-                        type="url"
-                        name="instagram"
-                        id="instagram"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        placeholder="https://instagram.com/yourcompany"
-                        value="{{ company.instagram }}"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="youtube">YouTube</label>
-                    <input
-                        type="url"
-                        name="youtube"
-                        id="youtube"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        placeholder="https://youtube.com/yourcompany"
-                        value="{{ company.youtube }}"
-                    />
-                </div>
-            </section>
+    <!-- Social Links -->
+    <section>
+        <h2 class="text-xl font-semibold mb-2">Social Links</h2>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="linkedin">LinkedIn</label>
+            <input
+                type="url"
+                name="linkedin"
+                id="linkedin"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                placeholder="https://linkedin.com/company/yourcompany"
+                value="{{ company.linkedin }}"
+            />
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="facebook">Facebook</label>
+            <input
+                type="url"
+                name="facebook"
+                id="facebook"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                placeholder="https://facebook.com/yourcompany"
+                value="{{ company.facebook }}"
+            />
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="twitter">Twitter</label>
+            <input
+                type="url"
+                name="twitter"
+                id="twitter"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                placeholder="https://twitter.com/yourcompany"
+                value="{{ company.twitter }}"
+            />
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="instagram">Instagram</label>
+            <input
+                type="url"
+                name="instagram"
+                id="instagram"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                placeholder="https://instagram.com/yourcompany"
+                value="{{ company.instagram }}"
+            />
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="youtube">YouTube</label>
+            <input
+                type="url"
+                name="youtube"
+                id="youtube"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                placeholder="https://youtube.com/yourcompany"
+                value="{{ company.youtube }}"
+            />
+        </div>
+    </section>
 
-            <!-- Location -->
-            <section>
-                <h2 class="text-xl font-semibold mb-2">Location</h2>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="location">Location</label>
-                    <input
-                        type="text"
-                        name="location"
-                        id="location"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        placeholder="Company Location"
-                        value="{{ company.location }}"
-                    />
-                </div>
-            </section>
+    <!-- Location -->
+    <section>
+        <h2 class="text-xl font-semibold mb-2">Location</h2>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="location">Location</label>
+            <input
+                type="text"
+                name="location"
+                id="location"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                placeholder="Company Location"
+                value="{{ company.location }}"
+            />
+        </div>
+    </section>
 
-            <!-- About Us -->
-            <section>
-                <h2 class="text-xl font-semibold mb-2">About Us</h2>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700" for="about_us">About Us</label>
-                    <textarea
-                        name="about_us"
-                        id="about_us"
-                        class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
-                        rows="5"
-                        placeholder="Tell us about your company"
-                    >{{ company.about_us }}</textarea>
-                </div>
-            </section>
+    <!-- About Us -->
+    <section>
+        <h2 class="text-xl font-semibold mb-2">About Us</h2>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700" for="about_us">About Us</label>
+            <textarea
+                name="about_us"
+                id="about_us"
+                class="mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md"
+                rows="5"
+                placeholder="Tell us about your company"
+            >{{ company.about_us }}</textarea>
+        </div>
+    </section>
 
-            <div class="text-right">
-                <button
-                    type="submit"
-                    class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded"
-                >
-                    Update Company
-                </button>
-            </div>
-        </form>
+    <div class="text-right">
+        <button
+            type="submit"
+            class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded"
+        >
+            Update Company
+        </button>
+    </div>
+</form>
+
     </main>
     
     <script>

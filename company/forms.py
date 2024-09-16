@@ -4,11 +4,25 @@ from django_countries.widgets import CountrySelectWidget
 from django_countries.fields import CountryField
 from cities_light.models import City
 
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
 
 class UpdateCompanyForm(forms.ModelForm):
     class Meta:
         model = Company
-        exclude = ('user', )
+        fields = '__all__'
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 5}),
+            'mission_statement': forms.Textarea(attrs={'rows': 3}),
+            'vision_statement': forms.Textarea(attrs={'rows': 3}),
+            'job_openings': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Mark social fields as optional
+        for field_name in ['linkedin', 'facebook', 'twitter', 'instagram', 'video_introduction']:
+            self.fields[field_name].required = False
 
 class CreateCompanyForm(forms.ModelForm):
     class Meta:

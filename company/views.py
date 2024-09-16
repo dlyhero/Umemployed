@@ -66,7 +66,7 @@ def update_company(request, company_id):
 
     if request.user.is_recruiter:
         if request.method == 'POST':
-            form = UpdateCompanyForm(request.POST, instance=company)
+            form = UpdateCompanyForm(request.POST, request.FILES, instance=company)  # Handle file uploads
             if form.is_valid():
                 form.save()
                 request.user.has_company = True
@@ -77,12 +77,13 @@ def update_company(request, company_id):
                 messages.warning(request, 'Something went wrong with the form submission.')
         else:
             form = UpdateCompanyForm(instance=company)
-        
+
         context = {'form': form, 'company': company}
         return render(request, 'company/update_company.html', context)
     else:
         messages.warning(request, "Permission Denied")
         return redirect('home')
+
 
 # @login_required(login_url='login')
 # def company_details(request, pk):
