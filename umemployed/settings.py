@@ -4,6 +4,7 @@ import os
 import geopy
 import dotenv
 dotenv.load_dotenv()
+from decouple import config
 import dj_database_url  
 import django_heroku
 
@@ -29,6 +30,7 @@ SITE_ID = 3
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -284,10 +286,13 @@ USE_I18N = True
 USE_TZ = True
 
 # AWS S3 settings
-AWS_ACCESS_KEY_ID = 'AKIA2OMNX4LRZOIEFJZV'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'umemployed'
-AWS_S3_REGION_NAME = 'eu-north-1' 
+from decouple import config
+
+# AWS S3 settings from .env
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
 # Other optional settings
 AWS_S3_FILE_OVERWRITE = False  # Prevent overwriting files with the same name
@@ -346,7 +351,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-from decouple import config
 
 OPENAI_API_KEY = config('OPENAI_API_KEY')
 SECRET_KEY = config('SECRET_KEY')

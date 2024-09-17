@@ -6,7 +6,11 @@ from users import views
 from django.contrib.auth import views as auth_views
 from users.views import CustomConfirmEmailView
 
+from users.views import custom_404_view, custom_500_view
+
+# Define custom error handlers
 handler404 = 'users.views.custom_404_view'
+handler500 = 'users.views.custom_500_view'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,7 +47,6 @@ urlpatterns = [
     
     path('resend_confirmation_email/', views.resend_confirmation_email, name='resend_confirmation_email'),
     
-    path('error', views.trigger_404, name='test_404'),
 
 
 

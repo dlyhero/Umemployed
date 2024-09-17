@@ -339,18 +339,13 @@ def send_confirmation_email(user):
     recipient_list = [user.email]
     send_mail(subject, message, from_email, recipient_list)
     
-def handling_404(request, exception):
+# Custom 404 error page
+def custom_404_view(request, exception):
     return render(request, '404.html', status=404)
 
-#for other 404 
-def custom_404_view(request, exception=None):
-    return render(request, '404.html', status=404)
-
-from django.http import Http404
-from django.shortcuts import render
-
-def trigger_404(request):
-    return render(request, '404.html', status=500)
+# Custom 500 error page
+def custom_500_view(request):
+    return render(request, '500.html', status=500)
 
 def career_resources(request):
     return render(request, 'website/carreer_resources.html')
