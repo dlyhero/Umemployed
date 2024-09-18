@@ -1,33 +1,34 @@
-import json
+# notifications/consumers.py
+
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .models import Notification
+import json
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.user = self.scope["user"]
-        if self.user.is_authenticated:
-            self.room_name = f"user_{self.user.id}"
-            self.room_group_name = f"notifications_{self.user.id}"
-            
-            await self.channel_layer.group_add(
-                self.room_group_name,
-                self.channel_name
-            )
-            await self.accept()
-        else:
-            await self.close()
+        # This is where you define the channel group to which this WebSocket will belong
+        self.user_id = self.scope['user'].id
+        self.group_name = f'notifications_{self.user_id}'
 
-    async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.room_group_name,
+        # Join the WebSocket group
+        await self.channel_layer.group_add(
+            self.group_name,
             self.channel_name
         )
 
-    async def receive(self, text_data):
-        pass  # Handle messages if needed
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Leave the WebSocket group
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
 
     async def send_notification(self, event):
+        # Send the notification to WebSocket
         notification = event['notification']
         await self.send(text_data=json.dumps({
-            'notification': notification
+            'type': 'notification',
+            'message': notification['message'],
+            'notification_type': notification['notification_type']
         }))
