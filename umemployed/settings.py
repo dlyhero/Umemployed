@@ -73,11 +73,15 @@ INSTALLED_APPS = [
 ]
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
+import os
+
+# Redis configuration from Heroku
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/1')
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            'hosts': [os.getenv('REDIS_URL')],
         },
     },
 }
