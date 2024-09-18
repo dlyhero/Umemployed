@@ -1,6 +1,12 @@
  {% extends 'resume/base.html' %}
 {% load static %}
  {% block custom_css %}
+     <script src="https://cdn.tailwindcss.com"></script>
+
+ <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     
   {% endblock %}
 {% block content %}
@@ -37,7 +43,7 @@
             <div class="icon mr-4 mb-2 sm:mb-0">
           <!-- Map model notification types to correct icons -->
           {% if notification.notification_type == 'JOB_APPLICATION' %}
-            <i class="fas fa-briefcase text-blue-600"></i> <!-- Job Application Icon -->
+            <i class="fas fa-briefcase"></i> <!-- Job Application Icon -->
           {% elif notification.notification_type == 'NEW_JOB_POSTED' %}
             <i class="fas fa-clipboard-list text-green-600"></i> <!-- New Job Posted Icon -->
           {% elif notification.notification_type == 'ENDORSEMENT' %}
@@ -55,18 +61,19 @@
           {% elif notification.notification_type == 'PROFILE_UPDATED' %}
             <i class="fas fa-user-edit text-blue-600"></i> <!-- Profile Updated Icon -->
           {% else %}
-            <i class="fas fa-bell text-gray-600"></i> <!-- Default Icon -->
+            <i class="fas fa-bell "></i> <!-- Default Icon -->
           {% endif %}
         </div>
             <div class="notification-content">
               <p class="title text-lg font-semibold">
-                {{ notification.title }}
+                {{ notification.notification_type }}
               </p>
               <p class="message text-sm text-gray-600">
                 {{ notification.message }}
               </p>
             </div>
           </div>
+          <a href="{% url 'notifications:mark_notification_as_read' notification.id %}">Mark as read</a>
           <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
             >{{ notification.timestamp|timesince }} ago</span
           >
@@ -95,23 +102,39 @@
     </main>
   </body>
   <script>
+    // Ensure the WebSocket URL includes the userId and uses secure protocol
     const userId = {{ user.id }};
-    const ws = new WebSocket(`ws://${window.location.host}/ws/notifications/`);
+    const wsUrl = `ws://${window.location.host}/ws/notifications/`;
+    
+    // Create a new WebSocket connection
+    const ws = new WebSocket(wsUrl);
 
+    // Handle incoming messages
     ws.onmessage = function(e) {
         const data = JSON.parse(e.data);
         const notification = data.notification;
         // Update the UI with the new notification
         console.log('New notification:', notification);
-        // You can append the notification to a list, show an alert, etc.
+        // Example of updating the UI: append notification to a list
+        const notificationsList = document.getElementById('notifications-list');
+        if (notificationsList) {
+            const li = document.createElement('li');
+            li.textContent = notification.message;
+            notificationsList.appendChild(li);
+        }
     };
 
+    // Handle WebSocket connection close
     ws.onclose = function(e) {
-        console.error('Chat socket closed unexpectedly');
+        console.error('WebSocket connection closed unexpectedly');
     };
 
-    // Handle sending messages if needed
+    // Handle WebSocket errors
+    ws.onerror = function(e) {
+        console.error('WebSocket error:', e);
+    };
 </script>
+
   <script type="module" src="{% static 'build/scripts/addjob.js' %}"></script>
   <script src="{% static 'build/scripts/dashboard.js' %}"></script>
   <script src="{% static 'build/scripts/messages.js' %}"></script>
