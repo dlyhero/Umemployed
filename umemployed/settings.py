@@ -74,22 +74,28 @@ INSTALLED_APPS = [
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
 import os
+import redis
+REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
+# Create a Redis connection using the URL
+redis_client = redis.from_url(REDIS_URL, ssl=True, ssl_cert_reqs=None)
 
-# settings.py
 
-REDIS_URL = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
 
+# Caching setup using Redis
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': REDIS_URL,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'PASSWORD': os.getenv('REDIS_PASSWORD'),
-            'SSL': True,  # Ensure SSL is enabled
-        }
+            'CONNECTION_POOL_CLASS_KWARGS': {
+                'ssl_cert_reqs': None,  # This allows self-signed certificates
+            },
+        },
     }
 }
+
+
 
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
