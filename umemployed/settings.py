@@ -76,7 +76,7 @@ ASGI_APPLICATION = 'umemployed.asgi.application'
 import os
 
 # Redis configuration from Heroku
-REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/1')
+REDIS_URL ="rediss://:p2ae106d8d68c62b36a40bcd26d5e854e78a219c54664828c1987db33f8cfe2c6@ec2-52-3-162-250.compute-1.amazonaws.com:23350"
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
