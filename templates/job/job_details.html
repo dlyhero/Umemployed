@@ -59,7 +59,7 @@
           <p
             class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
           >
-            <i class="fas fa-map-marker-alt mr-2"></i> {{job.location}}
+            <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
           </p>
 
           <!-- Salary Range -->
@@ -173,7 +173,7 @@
               <p
                 class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
               >
-                <i class="fas fa-map-marker-alt mr-2"></i> {{job.location}}
+                <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
               </p>
               <p class="text-gray-800 mb-4 flex items-center">
                 $({{job.salary_range}}) / year

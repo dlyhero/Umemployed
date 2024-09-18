@@ -242,7 +242,7 @@
                 <p
                   class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
                 >
-                  <i class="fas fa-map-marker-alt mr-2"></i> {{job.location}}
+                  <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
                 </p>
                 <button
                   class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"
@@ -283,7 +283,7 @@
                 <p
                   class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
                 >
-                  <i class="fas fa-map-marker-alt mr-2"></i> {{job.location}}
+                  <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
                 </p>
                 <button
                   class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"
@@ -440,7 +440,7 @@ document.addEventListener("DOMContentLoaded", function () {
               ${job.description ? job.description.split(' ').slice(0, 50).join(' ') + '...' : 'No description available.'}
             </p>                
             <p class="text-[#1e90ff] mt-4 font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center">
-                <i class="fas fa-map-marker-alt mr-2"></i> ${job.location || 'Location'}
+                <i class="fas fa-map-marker-alt mr-2"></i> ${job.location.name || 'Location'}
             </p>
             <p class="text-gray-800 mb-4 flex items-center">
                 $(${job.salary_range || 'Salary not specified'})

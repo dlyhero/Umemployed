@@ -2,9 +2,15 @@
 {% load static %}
 {% block search_bar %}
 {% endblock search_bar %}
-{% block custom_css %}
+ {% block custom_css %}
+     <script src="https://cdn.tailwindcss.com"></script>
 
-{% endblock %}
+ <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    
+  {% endblock %}
 {% block content %}
 <div class="h-[90vh]  flex flex-col justify-around">
       <main class="w-full">
