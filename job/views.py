@@ -172,6 +172,8 @@ def enter_job_description(request):
 
 
 from django.shortcuts import get_object_or_404
+from notifications.utils import notify_user
+
 
 @login_required
 def select_skills(request):
@@ -204,7 +206,16 @@ def select_skills(request):
                         # Send new job email notification
                         job_description = job_instance.description if job_instance.description else 'No description available.'
                         job_link = request.build_absolute_uri(job_instance.get_absolute_url())
-                        send_new_job_email(request.user.email, request.user.get_full_name(), job_instance.title, job_link, job_description,company.name)
+                        send_new_job_email(request.user.email, request.user.get_full_name(), job_instance.title, job_link, job_description, company.name)
+
+                        # Notify all users about the new job
+                        message = f"A new job has been posted: {job_instance.title}. Check it out!"
+                        notification_type = 'new_job_posted'
+                        
+                        # Fetch all users
+                        users = User.objects.all()
+                        for u in users:
+                            notify_user(u, message, notification_type)
 
                         # Redirect to the next phase (e.g., generate questions)
                         entry_level = form.cleaned_data['level']
@@ -258,21 +269,6 @@ def update_job(request, job_id):
 
 
 
-# @login_required(login_url='/login')
-# def update_job(request,pk):
-#     job = Job.objects.get(pk=pk)
-#     if request.method == 'POST':
-#         form = UpdateJobForm(request.POST, instance=job)
-#         if form.valid():
-#             form.save()
-#             messages.info(request,"Job info has been Updated")
-#             return redirect('dashboard')
-#         else:
-#             messages.warning(request,'Something went wrong ')
-#     else:
-#         form = UpdateJobForm()
-#         context = {'form':form}
-#         return render(request, 'job/update_job.html',context)
     
 @login_required(login_url='login')
 def confirm_evaluation(request, job_id):
@@ -569,16 +565,35 @@ def save_responses(request):
 
     
 @login_required(login_url='/login')
-def job_application_success(request,job_id):
+def job_application_success(request, job_id):
+    # Retrieve the job object
+    try:
+        job = Job.objects.get(id=job_id)
+    except Job.DoesNotExist:
+        messages.error(request, "Job not found.")
+        return redirect('job:job_list')  # Adjust this as needed
+
     # Retrieve skill scores from session
-    job = Job.objects.get(id=job_id)
     skill_scores = request.session.get('skill_scores', {})
-    application =   Application.objects.filter(job=job).first()
-    print(application.round_scores)
+
+    # Retrieve the application object
+    application = Application.objects.filter(job=job).first()
+
+    # Notify the job poster (recruiter) about the new application
+    if job.user:  # Assuming job.user is the recruiter
+        recruiter = job.user
+        recruiter_message = f"A new application has been received for the job: {job.title}."
+        notify_user(recruiter, recruiter_message, 'job_application')
+
+    # Notify the applicant about the application status
+    applicant = request.user  # Assuming the current user is the applicant
+    applicant_message = f"Your application for the job '{job.title}' has been received. Please wait for further updates."
+    notify_user(applicant, applicant_message, 'application_received')
+
     context = {
         'skill_scores': skill_scores,
-        'job':job, 
-        'application':application,
+        'job': job,
+        'application': application,
     }
     return render(request, 'job/application_success.html', context)
 

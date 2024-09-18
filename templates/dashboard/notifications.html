@@ -28,202 +28,52 @@
 
       <!-- Notifications List -->
       <div id="notification-list">
+        {% for notification in notifications %}
         <!-- Notification Items -->
         <div
           class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
         >
           <div class="flex items-start sm:items-center">
-            <div class="icon text-blue-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-briefcase"></i>
-            </div>
+            <div class="icon mr-4 mb-2 sm:mb-0">
+          <!-- Map model notification types to correct icons -->
+          {% if notification.notification_type == 'JOB_APPLICATION' %}
+            <i class="fas fa-briefcase text-blue-600"></i> <!-- Job Application Icon -->
+          {% elif notification.notification_type == 'NEW_JOB_POSTED' %}
+            <i class="fas fa-clipboard-list text-green-600"></i> <!-- New Job Posted Icon -->
+          {% elif notification.notification_type == 'ENDORSEMENT' %}
+            <i class="fas fa-thumbs-up text-indigo-600"></i> <!-- Endorsement Icon -->
+          {% elif notification.notification_type == 'INTERVIEW_SCHEDULED' %}
+            <i class="fas fa-calendar-check text-purple-600"></i> <!-- Interview Scheduled Icon -->
+          {% elif notification.notification_type == 'ACCOUNT_ALERT' %}
+            <i class="fas fa-exclamation-triangle text-red-600"></i> <!-- Account Alert Icon -->
+          {% elif notification.notification_type == 'UPCOMING_EVENT' %}
+            <i class="fas fa-calendar-alt text-yellow-600"></i> <!-- Upcoming Event Icon -->
+          {% elif notification.notification_type == 'NEW_MESSAGE' %}
+            <i class="fas fa-envelope text-teal-600"></i> <!-- New Message Icon -->
+          {% elif notification.notification_type == 'SPECIAL_OFFER' %}
+            <i class="fas fa-gift text-orange-600"></i> <!-- Special Offer Icon -->
+          {% elif notification.notification_type == 'PROFILE_UPDATED' %}
+            <i class="fas fa-user-edit text-blue-600"></i> <!-- Profile Updated Icon -->
+          {% else %}
+            <i class="fas fa-bell text-gray-600"></i> <!-- Default Icon -->
+          {% endif %}
+        </div>
             <div class="notification-content">
               <p class="title text-lg font-semibold">
-                Job Application Received
+                {{ notification.title }}
               </p>
               <p class="message text-sm text-gray-600">
-                You have received a new job application for the Software
-                Engineer position.
+                {{ notification.message }}
               </p>
             </div>
           </div>
           <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
-            >2 hours ago</span
+            >{{ notification.timestamp|timesince }} ago</span
           >
         </div>
+        {% endfor %}
 
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
-        >
-          <div class="flex items-start sm:items-center">
-            <div class="icon text-purple-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-bell"></i>
-            </div>
-            <div class="notification-content">
-              <p class="title text-lg font-semibold">New Job Posted</p>
-              <p class="message text-sm text-gray-600">
-                A new job matching your profile has been posted: Frontend
-                Developer.
-              </p>
-            </div>
-          </div>
-          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
-            >1 week ago</span
-          >
         </div>
-
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
-        >
-          <div class="flex items-start sm:items-center">
-            <div class="icon text-indigo-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-thumbs-up"></i>
-            </div>
-            <div class="notification-content">
-              <p class="title text-lg font-semibold">Endorsement Received</p>
-              <p class="message text-sm text-gray-600">
-                Alice Johnson has endorsed you for your JavaScript skills.
-              </p>
-            </div>
-          </div>
-          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
-            >2 weeks ago</span
-          >
-        </div>
-
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
-        >
-          <div class="flex items-start sm:items-center">
-            <div class="icon text-pink-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-calendar-check"></i>
-            </div>
-            <div class="notification-content">
-              <p class="title text-lg font-semibold">Interview Scheduled</p>
-              <p class="message text-sm text-gray-600">
-                Your interview with ABC Corp has been scheduled for July 25,
-                2024.
-              </p>
-            </div>
-          </div>
-          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
-            >3 weeks ago</span
-          >
-        </div>
-
-        <!-- Additional Notifications -->
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
-        >
-          <div class="flex items-start sm:items-center">
-            <div class="icon text-green-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-star"></i>
-            </div>
-            <div class="notification-content">
-              <p class="title text-lg font-semibold">New Skill Endorsement</p>
-              <p class="message text-sm text-gray-600">
-                John Doe has endorsed you for your React skills.
-              </p>
-            </div>
-          </div>
-          <span class="time text-xs text-gray-500 mt-2 sm:mt-0">1 day ago</span>
-        </div>
-
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
-        >
-          <div class="flex items-start sm:items-center">
-            <div class="icon text-red-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="notification-content">
-              <p class="title text-lg font-semibold">Account Security Alert</p>
-              <p class="message text-sm text-gray-600">
-                There was a recent login attempt from an unrecognized device.
-              </p>
-            </div>
-          </div>
-          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
-            >3 days ago</span
-          >
-        </div>
-
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
-        >
-          <div class="flex items-start sm:items-center">
-            <div class="icon text-yellow-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-calendar-alt"></i>
-            </div>
-            <div class="notification-content">
-              <p class="title text-lg font-semibold">Upcoming Event Reminder</p>
-              <p class="message text-sm text-gray-600">
-                Don't forget the Networking Event on July 30, 2024.
-              </p>
-            </div>
-          </div>
-          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
-            >5 days ago</span
-          >
-        </div>
-
-        <!-- More Example Notifications -->
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
-        >
-          <div class="flex items-start sm:items-center">
-            <div class="icon text-teal-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-envelope"></i>
-            </div>
-            <div class="notification-content">
-              <p class="title text-lg font-semibold">New Message Received</p>
-              <p class="message text-sm text-gray-600">
-                You have received a new message from Jane Doe.
-              </p>
-            </div>
-          </div>
-          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
-            >2 days ago</span
-          >
-        </div>
-
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
-        >
-          <div class="flex items-start sm:items-center">
-            <div class="icon text-orange-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-gift"></i>
-            </div>
-            <div class="notification-content">
-              <p class="title text-lg font-semibold">Special Offer</p>
-              <p class="message text-sm text-gray-600">
-                A special offer is available for premium users. Check it out!
-              </p>
-            </div>
-          </div>
-          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
-            >1 week ago</span
-          >
-        </div>
-
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer"
-        >
-          <div class="flex items-start sm:items-center">
-            <div class="icon text-cyan-600 mr-4 mb-2 sm:mb-0">
-              <i class="fas fa-sync"></i>
-            </div>
-            <div class="notification-content">
-              <p class="title text-lg font-semibold">Profile Updated</p>
-              <p class="message text-sm text-gray-600">
-                Your profile has been successfully updated.
-              </p>
-            </div>
-          </div>
-          <span class="time text-xs text-gray-500 mt-2 sm:mt-0"
-            >4 weeks ago</span
-          >
-        </div>
-      </div>
 
       <!-- Archived Notifications Section -->
       <section class="mt-6">
@@ -244,6 +94,24 @@
       </section>
     </main>
   </body>
+  <script>
+    const userId = {{ user.id }};
+    const ws = new WebSocket(`ws://${window.location.host}/ws/notifications/`);
+
+    ws.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const notification = data.notification;
+        // Update the UI with the new notification
+        console.log('New notification:', notification);
+        // You can append the notification to a list, show an alert, etc.
+    };
+
+    ws.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    // Handle sending messages if needed
+</script>
   <script type="module" src="{% static 'build/scripts/addjob.js' %}"></script>
   <script src="{% static 'build/scripts/dashboard.js' %}"></script>
   <script src="{% static 'build/scripts/messages.js' %}"></script>

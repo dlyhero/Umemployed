@@ -21,13 +21,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import ContactInfoForm
 from .models import ContactInfo
+from notifications.utils import notify_user
 
 from django.contrib import messages
 
 @login_required
 def update_resume(request):
     api_url = "http://localhost:8000/job/execute_input/"
-    
+
     try:
         contact_info = ContactInfo.objects.get(user=request.user)
     except ContactInfo.DoesNotExist:
@@ -59,12 +60,18 @@ def update_resume(request):
                 if response.status_code == 200:
                     job_title = other_job_title  # Use the job title entered by the user
                     resume.job_title = job_title
-            user=request.user
+            
+            user = request.user
             user.is_applicant = True
             user.has_resume = True
             user.save()
+            
             # Save the updated resume
             resume.save()
+
+            # Notify the user that their resume has been updated
+            notification_message = 'Your resume has been successfully updated.'
+            notify_user(user, notification_message, 'resume_update')
 
             messages.success(request, 'Resume updated successfully.')
             return redirect('user_dashboard')
@@ -74,8 +81,6 @@ def update_resume(request):
         form = ContactInfoForm(instance=contact_info)
 
     return render(request, 'resume/update_resume.html', {'form': form, 'api_url': api_url})
-
-
 def select_category(request):
     """
     Allows applicants to select a category for their skills.

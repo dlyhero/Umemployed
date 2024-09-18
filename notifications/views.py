@@ -11,5 +11,15 @@ def notifications(request):
     else:
         return render(request, 'notifications/applicant_notifications.html', {'notifications': notifications})
 
+
 def user_notifications(request):
-    return render(request, 'dashboard/notifications.html')
+    notifications = request.user.notification_set.filter(is_read=False)
+    return render(request, 'dashboard/notifications.html', {'notifications': notifications})
+
+from django.shortcuts import redirect, get_object_or_404
+
+def mark_notification_as_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.is_read = True
+    notification.save()
+    return redirect('user_notifications')

@@ -269,8 +269,10 @@ def switch_account_type(request):
         messages.error(request, 'Invalid role switch request.')
         return redirect('home')
     
+from notifications.utils import notify_user
 @login_required
 def user_dashboard(request):
+    notify_user(request.user, "Testing 123", notification_type="Application Submitted")
     # Fetch only the first 3 jobs
     recommended_jobs = Job.objects.all()[:5]
     context = {
