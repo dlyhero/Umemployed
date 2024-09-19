@@ -114,7 +114,7 @@ def extract_text(request, file_path):
             job_title = resume.job_title
             print("Job title found:", job_title)
         except Resume.DoesNotExist:
-            job_title = None
+            job_title = "Others"
             print("Resume not found for extracted text:", extracted_text)
             messages.warning(request, "This failed please try again!")
 
