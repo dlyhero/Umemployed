@@ -182,7 +182,6 @@ def register_applicant(request):
                     break
             login(request, user, backend=backend_name)
             
-            messages.success(request, 'Your account has been created successfully. Please check your email to confirm your account.')
             
             # Redirect to switch account or any other desired page
             return redirect('account_email_verification_sent')
@@ -272,7 +271,7 @@ def switch_account_type(request):
 from notifications.utils import notify_user
 @login_required
 def user_dashboard(request):
-    notify_user(request.user, "Testing 123", notification_type="Application Submitted")
+    notify_user(request.user, "Testing when dashboard was clicked", notification_type="Endorsement Received")
     # Fetch only the first 3 jobs
     recommended_jobs = Job.objects.all()[:5]
     context = {
