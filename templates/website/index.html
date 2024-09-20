@@ -212,6 +212,9 @@
             <p class="text-gray-800 mb-4 flex items-center">
               ${{job.salary_range}} / year
             </p>
+             {% if job.id in applied_job_ids %}
+            <span style="color: green;">(Already Applied)</span>
+            {% else %}
             <div class="mt-4">
               <a href="{% url 'job:job_details' job.id %}">
               <button
@@ -221,6 +224,7 @@
               </button>
             </a>
             </div>
+            {% endif %}
           </div>
           {% endfor %}
           {% endif %}

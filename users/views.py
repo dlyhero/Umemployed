@@ -18,17 +18,24 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
 def index(request):
-    
+    user = request.user
     recent_jobs = Job.objects.order_by('-created_at')[:10]
     job_count = Job.objects.count()
-    
+
+    # Get the IDs of jobs the user has applied for
+    applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
+
     featured_companies = Company.objects.all()
-    context={
-        'job_count':job_count,
-        'recent_jobs':recent_jobs,
-        'featured_companies':featured_companies
+
+    context = {
+        'job_count': job_count,
+        'recent_jobs': recent_jobs,
+        'featured_companies': featured_companies,
+        'applied_job_ids': applied_job_ids  # List of applied job IDs
     }
-    return render(request, 'website/index.html',context)
+
+    return render(request, 'website/index.html', context)
+
 
 from django.db.models import Q, Count
 
@@ -39,7 +46,10 @@ def home(request):
 
     # Step 1: Retrieve all jobs
     all_jobs = Job.objects.all()
-    print(f"DEBUG: All Jobs in System (Count: {all_jobs.count()}): {list(all_jobs)}")
+     # Create a dictionary where the key is the job, and the value is whether the user has applied
+    applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
+
+        
 
     # Apply filters to all jobs before splitting them into matching/non-matching
     salary_range = request.GET.get('salary_range')
@@ -127,8 +137,9 @@ def home(request):
 
     context = {
         'jobs': jobs,
-        'matching_jobs': matching_jobs,  # Matching jobs section
-        'non_matching_jobs': jobs,  # Non-matching jobs section
+        'matching_jobs': matching_jobs,  
+        'non_matching_jobs': jobs,  
+        'applied_job_ids': applied_job_ids  # List of applied job IDs
     }
     return render(request, 'website/home.html', context)
 
@@ -271,11 +282,15 @@ def switch_account_type(request):
 from notifications.utils import notify_user
 @login_required
 def user_dashboard(request):
+    user = request.user
     notify_user(request.user, "Testing when dashboard was clicked", notification_type="Endorsement Received")
     # Fetch only the first 3 jobs
     recommended_jobs = Job.objects.all()[:5]
+    applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
+
     context = {
         'recommended_jobs': recommended_jobs,
+        'applied_job_ids':applied_job_ids,
     }
     return render(request, 'website/user_dashboard.html', context)
 

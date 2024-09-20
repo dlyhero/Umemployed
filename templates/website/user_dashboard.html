@@ -204,11 +204,14 @@
               <p
                 class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
               >
-                <i class="fas fa-map-marker-alt mr-2"></i> {{job.location}}
+                <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
               </p>
               <p class="text-gray-800 mb-4 flex items-center">
                 ${{job.salary}} / year
               </p>
+              {% if job.id in applied_job_ids %}
+                <span style="color: green;">(Already Applied)</span>
+                {% else %}
               <div class="mt-4">
                 <a href="{% url 'job:job_details' job.id %}">
                 <button
@@ -218,6 +221,7 @@
                 </button>
             </a>
               </div>
+              {% endif %}
             </div>
             {% endfor %}
             {% endif %}

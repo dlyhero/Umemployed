@@ -678,15 +678,19 @@ from django.db.models import Avg
 from company.models import Company
 
 def job_details(request,job_id):
+    user = request.user
     job = Job.objects.get(id=job_id)
     similar_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=5.0)
     company = Company.objects.get(job=job)
     all_jobs = Job.objects.all()
+    applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
+
     context = {
         'job':job,
         'similar_jobs':similar_jobs,
         'company':company,
-        'all_jobs':all_jobs
+        'all_jobs':all_jobs,
+        'applied_job_ids':applied_job_ids,
     }
     
     return render(request, "job/job_details.html",context)
