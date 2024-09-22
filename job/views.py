@@ -683,7 +683,12 @@ def job_details(request,job_id):
     similar_jobs = Job.objects.annotate(max_matching_percentage=Avg('application__overall_match_percentage')).filter(max_matching_percentage__gte=5.0)
     company = Company.objects.get(job=job)
     all_jobs = Job.objects.all()
-    applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
+    # Initialize the applied job IDs list
+    applied_job_ids = []
+
+    # Check if the user is authenticated before querying applications
+    if request.user.is_authenticated:
+        applied_job_ids = Application.objects.filter(user=request.user).values_list('job_id', flat=True)
 
     context = {
         'job':job,
