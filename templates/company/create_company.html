@@ -3,150 +3,143 @@
 {% endblock search_bar %}
 {% load static %}
 {% block content %}
-  <main class="px-1 md:px-3 lg:px-4 w-full flex mt-[3%] justify-center">
-    <div class="md:bg-white rounded-lg sm:border w-full max-w-7xl mx-auto p-4 space-x-4 animate-fadeIn flex flex-col md:flex-row">
-      <!-- Form Section - appears first on mobile -->
-<div class="w-full md:w-2/3 md:pr-6 order-1 md:order-1 mb-10 sm:mb-0">
-  <h1 class="text-3xl font-bold mb-6 text-gray-800">Create Your Company</h1>
-  <form id="companyForm" class="space-y-4" method="POST" enctype="multipart/form-data" action="{% url 'create_company' %}">
-    {% csrf_token %}
-    <div class="flex flex-wrap -mx-3 mb-6">
-      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-        <label for="name" class="block text-sm font-medium text-gray-700">Company Name</label>
-        <div class="relative mt-2">
-          <input type="text" id="name" name="name" required class="bg-transparent block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-          <i class="fas fa-building absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400"></i>
+
+<!-- Main Container -->
+<main class="container rounded-lg mx-auto p-6 grid lg:grid-cols-2 gap-14">
+    <div>
+        <img src="{% static 'new_design/icons/company.jpg' %}" alt="">
+        <div class="text-center mb-4">
+            <h2 class="text-2xl font-bold">Before we get started...</h2>
+            <p>We need to know a little about your company.</p>
         </div>
-      </div>
-      <div class="w-full md:w-1/2 px-3">
-        <label for="industry" class="block text-sm font-medium text-gray-700">Industry</label>
-        <div class="relative mt-2">
-          <select id="industry" name="industry" required class="bg-transparent block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none">
-            <option value="">Select Industry</option>
-            <option value="Technology">Technology</option>
-            <option value="Healthcare">Healthcare</option>
-            <option value="Finance">Finance</option>
-            <option value="Education">Education</option>
-            <!-- Add more industries as needed -->
-          </select>
-          <i class="fas fa-chevron-down absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-        </div>
-      </div>
+        <form id="companyForm" method="POST" enctype="multipart/form-data" action="{% url 'create_company' %}">
+            {% csrf_token %}
+            <!-- Page Identity Section -->
+            <section class="mb-8">
+                <h2 class="text-xl font-medium text-gray-700 mb-4">Page Identity</h2>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="companyName" class="block text-gray-800 mb-2">Company Name</label>
+                        <input type="text" id="companyName" name="name" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter company name">
+                    </div>
+                    <div class="md:mt-6">
+                        <label for="companyLogo" class="block text-gray-800 mb-2">Company Logo</label>
+                        <div class="relative">
+                            <input type="file" id="companyLogo" name="logo" class="hidden" required>
+                            <label for="companyLogo" class="cursor-pointer bg-blue-100 text-[#1e90ff] px-4 py-2 rounded-full font-semibold hover:bg-[#1a78d6] transition-colors">
+                                Choose File
+                            </label>
+                            <span id="file-chosen" class="ml-3 text-gray-800">No file chosen</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-5">
+
+            <!-- Company Details Section -->
+            <section class="mb-8">
+                <h2 class="text-xl font-medium text-gray-700 mb-4">Company Details</h2>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="industry" class="block text-gray-800 mb-2">Category</label>
+                        <select id="industry" name="industry" required class="w-full p-3 border border-gray-300 rounded-md">
+                            <option value="">Select Industry</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="specialty" class="block text-gray-800 mb-2">Specialty</label>
+                        <select id="specialty" name="specialty" required class="w-full p-3 border border-gray-300 rounded-md">
+                            <option value="">Select Specialty</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="companySize" class="block text-gray-800 mb-2">Company Size</label>
+                        <select id="companySize" name="size" required class="w-full p-3 border border-gray-300 rounded-md">
+                            <option value="">Select Company Size</option>
+                            <option value="1-10">1-10 employees</option>
+                            <option value="11-50">11-50 employees</option>
+                            <option value="51-200">51-200 employees</option>
+                            <option value="201-500">201-500 employees</option>
+                            <option value="501-1000">501-1000 employees</option>
+                            <option value="1001-5000">1001-5000 employees</option>
+                            <option value="5001-10000">5001-10000 employees</option>
+                            <option value="10001+">10001+ employees</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-5">
+
+            <!-- Profile Details Section -->
+            <section class="mb-8">
+                <h2 class="text-xl font-medium text-gray-700 mb-4">Profile Details</h2>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="contactPerson" class="block text-gray-800 mb-2">Contact Person</label>
+                        <input type="text" id="contactPerson" name="contact_person" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter contact person's name">
+                    </div>
+                    <div>
+                        <label for="contactEmail" class="block text-gray-800 mb-2">Contact Email</label>
+                        <input type="email" id="contactEmail" name="contact_email" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter contact email">
+                    </div>
+                </div>
+            </section>
     </div>
 
-    <div class="flex flex-wrap -mx-3 mb-6">
-      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-        <label for="contact_email" class="block text-sm font-medium text-gray-700">Company Email</label>
-        <div class="relative mt-2">
-          <input type="email" id="contact_email" name="contact_email" required class="bg-transparent block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-        </div>
-      </div>
+    <div class="lg:mt-16">
+        <!-- Continuation of Profile Details Section -->
+        <section class="mb-8">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                    <label for="contactPhone" class="block text-gray-800 mb-2">Contact Phone</label>
+                    <input type="tel" id="contactPhone" name="contact_phone" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter contact phone number">
+                </div>
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+                    <div class="relative mt-2">
+                        {{ form.country }}
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      <div class="w-full md:w-1/2 px-3">
-        <label for="contact_phone" class="block text-sm font-medium text-gray-700">Contact Phone</label>
-        <div class="relative mt-2">
-          <input type="text" id="contact_phone" name="contact_phone" required class="bg-transparent block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <hr class="my-5">
+
+        <!-- Page Overview Section -->
+        <section class="mb-8">
+            <h2 class="text-xl font-medium text-gray-700 mb-4">Page Overview</h2>
+            <div class="bg-gray-50 p-4 border border-gray-200 rounded-md">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Summary:</h3>
+                <p class="text-gray-800">Fill in all the required fields to create a new company profile. Ensure all details are accurate and up-to-date. Once completed, click 'Save' to create the company profile or 'Cancel' to discard the changes.</p>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Buttons -->
+        <div class="mt-8 flex justify-end">
+            <button type="submit" class="bg-[#1e90ff] text-white px-4 py-2 font-semibold w-[30%] rounded-full">Save</button>
         </div>
-      </div>
+        </form>
     </div>
+</main>
 
-    <div class="flex flex-wrap -mx-3 mb-6">
-      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-        <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
-        <div class="relative mt-2">
-          {{ form.country }}
-        </div>
-      </div>
+<script>
+    const fileInput = document.getElementById('companyLogo');
+    const fileChosen = document.getElementById('file-chosen');
 
-      <div class="w-full md:w-1/2 px-3">
-        <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-        <div class="relative mt-2">
-          {{ form.location }}
-        </div>
-      </div>
-    </div>
-
-    <div class="flex flex-wrap -mx-3 mb-6">
-      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-  <label for="size" class="block text-sm font-medium text-gray-700">Company Size</label>
-  <div class="relative mt-2">
-    <select id="size" name="size" required class="bg-transparent block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none">
-      <option value="">Select Size</option>
-      <option value="1-10">1-10 employees</option>
-      <option value="11-50">11-50 employees</option>
-      <option value="51-200">51-200 employees</option>
-      <option value="201-500">201-500 employees</option>
-      <option value="501-1000">501-1000 employees</option>
-      <option value="1001-5000">1001-5000 employees</option>
-      <option value="5001-10000">5001-10000 employees</option>
-      <option value="10001+">10001+ employees</option>
-    </select>
-    <i class="fas fa-chevron-down absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-  </div>
-</div>
-
-      <div class="w-full px-3">
-        <label for="mission_statement" class="block text-sm font-medium text-gray-700">Mission Statement</label>
-        <div class="relative mt-2">
-          <textarea id="mission_statement" name="mission_statement" rows="3" required class="bg-transparent block resize-none w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
-          <i class="fas fa-align-left absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400"></i>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex flex-wrap -mx-3 mb-6">
-      <div class="w-full px-3">
-        <label for="description" class="block text-sm font-medium text-gray-700">Company Description</label>
-        <div class="relative mt-2">
-          <textarea id="description" name="description" rows="3" required class="bg-transparent block resize-none w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
-          <i class="fas fa-align-left absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400"></i>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex flex-wrap -mx-3 mb-6">
-      <div class="w-full px-3">
-        <label for="logo" class="block text-sm font-medium text-gray-700">Company Logo</label>
-        <div class="relative mt-2">
-          <input type="file" id="logo" name="logo" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-[#1e90ff] hover:file:bg-blue-100" />
-        </div>
-      </div>
-    </div>
-
-    <div class="flex justify-end">
-      <button type="submit" class="py-2 px-4 bg-[#1e90ff] text-white font-semibold rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Create Company</button>
-    </div>
-  </form>
-</div>
-
-      <!-- Description and Image Section -->
-      <div class="md:w-1/3 mr:pl-6 flex flex-col justify-between order-2 md:order-2 mb-6 md:mb-0">
-        <div>
-          <h2 class="text-2xl font-bold mb-4 text-gray-800">Why Create a Company?</h2>
-          <p class="text-gray-600 mb-4">Creating a company profile on UmEmployed offers numerous benefits:</p>
-          <ul class="space-y-2 text-gray-600">
-            <li class="flex items-center">
-              <i class="fas fa-eye text-[#1e90ff] mr-2"></i> Increase your visibility to potential employees.
-            </li>
-            <li class="flex items-center">
-              <i class="fas fa-tasks text-[#1e90ff] mr-2"></i> Easily manage job postings and applications.
-            </li>
-            <li class="flex items-center">
-              <i class="fas fa-chart-line text-[#1e90ff] mr-2"></i> Track the performance of your job postings.
-            </li>
-            <li class="flex items-center">
-              <i class="fas fa-users text-[#1e90ff] mr-2"></i> Build your company's reputation.
-            </li>
-            <li class="flex items-center">
-              <i class="fas fa-briefcase text-[#1e90ff] mr-2"></i> Access a larger pool of qualified candidates.
-            </li>
-          </ul>
-        </div>
-        <div>
-          <img src="{% static 'img/logo/logo-black.png' %}" alt="Benefits of Creating a Company" class="w-full h-48 object-cover rounded-md shadow-md mt-6 md:mt-0" />
-        </div>
-      </div>
-    </div>
-  </main>
-  <script></script>
+    fileInput.addEventListener('change', function(){
+        fileChosen.textContent = this.files.length > 0 ? this.files[0].name : 'No file chosen';
+    });
+</script>
 {% endblock %}

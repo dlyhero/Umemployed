@@ -23,7 +23,10 @@ def index(request):
     job_count = Job.objects.count()
 
     # Get the IDs of jobs the user has applied for
-    applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
+    # If user is authenticated, get their applied jobs
+    applied_job_ids = []
+    if request.user.is_authenticated:
+        applied_job_ids = Application.objects.filter(user=request.user).values_list('job_id', flat=True)
 
     featured_companies = Company.objects.all()
 
