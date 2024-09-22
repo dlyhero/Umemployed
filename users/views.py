@@ -54,8 +54,11 @@ def home(request):
     all_jobs = Job.objects.all()
 
     # Create a dictionary where the key is the job, and the value is whether the user has applied
-    applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
-
+    if request.user.is_authenticated:
+        applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
+    else:
+    # Handle unauthenticated users (e.g., redirect or set applied_job_ids to an empty list)
+        applied_job_ids = []
     # Apply filters to all jobs before splitting them into matching/non-matching
     salary_range = request.GET.get('salary_range')
     job_type = request.GET.getlist('job_type')
