@@ -740,9 +740,76 @@ def job_listing_details(request, job_id):
         return JsonResponse({'error': 'Company not found'}, status=404)
 
     
+ 
+def user_applied_jobs(request):
+    user = request.user
+    # Query all jobs that the user has applied for
+    applied_jobs = Job.objects.filter(application__user=user)
+
+    context = {
+        'applied_jobs': applied_jobs,
+    }
+
+    return render(request, 'job/applied_jobs.html', context)   
+def withdraw_application(request, job_id):
+    user = request.user
+    job = get_object_or_404(Job, id=job_id)
     
+    # Find the application for the user and job
+    application = Application.objects.filter(user=user, job=job).first()
+    
+    if application:
+        # If the application exists, delete it
+        application.delete()
+        message = "Your application has been withdrawn."
+    else:
+        message = "You haven't applied for this job."
+    
+    # You can redirect to the applied jobs page or some other page after withdrawal
+    return redirect('job:applied_jobs')  # or change this to the URL you want to redirect to
     
 
+from .models import SavedJob
+def save_job(request, job_id):
+    if request.method == "POST" and request.is_ajax():
+        user = request.user
+        job = get_object_or_404(Job, id=job_id)
+        
+        # Check if the job is already saved
+        saved_job, created = SavedJob.objects.get_or_create(user=user, job=job)
+        
+        if created:
+            return JsonResponse({"status": "success", "message": "Job saved successfully.", "action": "saved"})
+        else:
+            return JsonResponse({"status": "error", "message": "You have already saved this job."})
+    return JsonResponse({"status": "error", "message": "Invalid request."})
+
+
+def remove_saved_job(request, job_id):
+    if request.method == "POST" and request.is_ajax():
+        user = request.user
+        job = get_object_or_404(Job, id=job_id)
+        
+        saved_job = SavedJob.objects.filter(user=user, job=job).first()
+        
+        if saved_job:
+            saved_job.delete()
+            return JsonResponse({"status": "success", "message": "Job removed from saved jobs.", "action": "removed"})
+        else:
+            return JsonResponse({"status": "error", "message": "This job is not in your saved jobs."})
+    return JsonResponse({"status": "error", "message": "Invalid request."})
+
+def saved_jobs_view(request):
+    user = request.user
+    
+    # Get the saved jobs for the logged-in user
+    saved_jobs = Job.objects.filter(savedjob__user=user)
+
+    context = {
+        'saved_jobs': saved_jobs,
+    }
+
+    return render(request, 'website/saved_jobs.html', context)
 def success_page(request):
     return render(request, "job/compiler/success.html")
 

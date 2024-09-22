@@ -171,68 +171,67 @@
           </button>
         </div>
 
-        <!-- Job Cards Scrollable Container -->
-        <div
-          class="flex gap-6 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory"
-          id="jobCardsContainer"
-        >
-        {% if recent_jobs %}
-        {% for job in recent_jobs %}
-          <!-- Repeat the Job Cards multiple times as needed -->
-          <div
-            class="min-w-[100%] sm:min-w-[50%] lg:min-w-[22.99%] bg-white border rounded-lg p-6 snap-start"
-          >
-            <div class="flex items-center justify-between mb-4">
-              <img
-                class="w-12 h-12 rounded-full mr-4"
-                src="{{job.company.logo.url}}"
-                alt="Company Logo"
-              />
-              <div>
-                <span class="text-sm text-gray-500">{{job.job_type}}</span>
-              </div>
-            </div>
-            <div class="mb-4">
-              <h3 class="text-xl font-semibold text-gray-800 truncate">
-                {{ job.title }}
-              </h3>
-
-              <div class="flex items-center gap-2 truncate">
-                <span class="text-gray-600">{{job.company.name}}</span>
-                <span class="text-gray-500 " style="font-size: 16px;">{{ job.created_at|timesince }} ago</span>
-
-
-              </div>
-            </div>
-            <p
-              class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
-            >
-              <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
-            </p>
-            <p class="text-gray-800 mb-4 flex items-center">
-              ${{job.salary_range}} / year
-            </p>
-             {% if job.id in applied_job_ids %}
-            <span style="color: green;">(Already Applied)</span>
-            {% else %}
-            <div class="mt-4">
-              <a href="{% url 'job:job_details' job.id %}">
-              <button
-                class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full"
-              >
-                Apply Now
-              </button>
-            </a>
-            </div>
-            {% endif %}
-          </div>
-          {% endfor %}
-          {% endif %}
-
-          <!-- Job Card 2 -->
-          
-          <!-- Add more job cards as needed, following the same structure -->
+       <!-- Job Cards Scrollable Container -->
+<div class="flex gap-6 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory" id="jobCardsContainer">
+  {% if recent_jobs %}
+    {% for job in recent_jobs %}
+    <!-- Repeat the Job Cards multiple times as needed -->
+    <div class="min-w-[100%] sm:min-w-[50%] lg:min-w-[22.99%] bg-white border rounded-lg p-6 snap-start">
+      <div class="flex items-center justify-between mb-4">
+        <img class="w-12 h-12 rounded-full mr-4" src="{{job.company.logo.url}}" alt="Company Logo" />
+        <div>
+          <span class="text-sm text-gray-500">{{job.job_type}}</span>
         </div>
+      </div>
+      
+      <div class="mb-4">
+        <h3 class="text-xl font-semibold text-gray-800 truncate">{{ job.title }}</h3>
+        <div class="flex items-center gap-2 truncate">
+          <span class="text-gray-600">{{job.company.name}}</span>
+          <span class="text-gray-500" style="font-size: 16px;">{{ job.created_at|timesince }} ago</span>
+        </div>
+      </div>
+      
+      <p class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center">
+        <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
+      </p>
+      
+      <p class="text-gray-800 mb-4 flex items-center">
+        ${{job.salary_range}} / year
+      </p>
+
+      <!-- Bookmark Icon -->
+      <div class="flex items-center justify-between">
+        {% if job.id in saved_jobs %}
+        <!-- Show filled bookmark if job is saved -->
+        <a class="bookmark-job" data-job-id="{{ job.id }}">
+          <i class="fas fa-bookmark text-[#1e90ff] text-xl"></i>
+        </a>
+        {% else %}
+        <!-- Show empty bookmark if job is not saved -->
+        <a class="bookmark-job" data-job-id="{{ job.id }}">
+          <i class="far fa-bookmark text-gray-500 text-xl hover:text-[#1e90ff]"></i>
+        </a>
+        {% endif %}
+        
+        <!-- Apply Now Button or Already Applied -->
+        {% if job.id in applied_job_ids %}
+        <span style="color: green;">(Already Applied)</span>
+        {% else %}
+        <div class="mt-4">
+          <a href="{% url 'job:job_details' job.id %}">
+            <button class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full">
+              Apply Now
+            </button>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
       </section>
 
       <section class="container mx-auto bg-hray-100 sm:bg-white pb-2">
@@ -477,4 +476,42 @@
         </div>
       </section>
     </main>
+
+    <script>
+$(document).ready(function() {
+    // Handle bookmark job click
+    $('.bookmark-job').on('click', function(e) {
+        e.preventDefault();  // Prevent the default anchor tag behavior (adding #)
+        
+        const jobId = $(this).data('job-id');
+        const bookmarkIcon = $(this).find('i');  // Get the icon element
+        
+        console.log("Bookmarking job with ID:", jobId);  // Debugging output
+
+        $.ajax({
+            url: '/job/save-job/' + jobId + '/',
+            type: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',  // Ensure you send the CSRF token
+            },
+            success: function(response) {
+                console.log(response);  // Log the server response
+                // Toggle bookmark icon on success
+                if (response.status === 'saved') {
+                    bookmarkIcon.removeClass('far fa-bookmark text-gray-500').addClass('fas fa-bookmark text-[#1e90ff]');
+                } else if (response.status === 'removed') {
+                    bookmarkIcon.removeClass('fas fa-bookmark text-[#1e90ff]').addClass('far fa-bookmark text-gray-500');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);  // Log the error
+                alert('An error occurred while saving the job.');
+            }
+        });
+    });
+});
+
+    </script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     {% endblock %}

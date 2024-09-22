@@ -10,20 +10,19 @@
 
 {% endblock %}
 {% block content %}
- <!-- Main Content -->
+<!-- Main Content -->
     <main class="container mx-auto max-w-6xl p-4 lg:p-0 mb-10">
         <section>
-            <!-- Professional Tab List -->
             <ul class="flex justify-start space-x-6 bg-white rounded-lg border-b p-[8px] border-gray-200">
                 <li>
                     <a href="{% url 'job:saved_jobs' %}" target="_self"
-                        class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-[#1e90ff] transition-all duration-300">
-                        <span class="air3-tab-btn-text">All Saved Jobs</span>
+                        class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-transparent hover:border-[#1e90ff] transition-all duration-300">
+                        <span class="air3-tab-btn-text">Saved Jobs</span>
                     </a>
                 </li>
                 <li>
                     <a href="{% url 'job:applied_jobs' %}" target="_self"
-                        class="text-gray-500 font-medium py-2 px-6 rounded-full border-b-4 border-transparent hover:border-[#1e90ff] transition-all duration-300">
+                        class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-[#1e90ff] transition-all duration-300">
                         <span class="air3-tab-btn-text">Applied Jobs</span>
                     </a>
                 </li>
@@ -55,7 +54,7 @@
             <div role="group" class="container mx-auto mb-6 md:mb-0">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="mb-4 md:mb-0 w-full sm:w-fit">
-                        <h2 class="text-2xl font-bold mb-2 md:text-3xl">Saved Jobs</h2>
+                        <h2 class="text-2xl font-bold mb-2 md:text-3xl">Applied Jobs</h2>
                     </div>
                 </div>
             </div>
@@ -66,24 +65,13 @@
                 <div class="flex items-center gap-2 bg-white">
                     <form name="titleFilterForm" class="w-[55%]">
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-5 h-5 text-gray-500">
-                                    <path vector-effect="non-scaling-stroke" stroke="currentColor"
-                                          stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                          d="M10.688 18.377a7.688 7.688 0 100-15.377 7.688 7.688 0 000 15.377zm5.428-2.261L21 21"></path>
-                                </svg>
-                            </span>
-                            <input id="input-icon-btn" type="search" placeholder="Search saved jobs"
+                            <input id="input-icon-btn" type="search" placeholder="Search applied jobs"
                                    class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300">
                         </div>
                     </form>
                     <button id="desktop-filter-btn" type="button"
                             class="flex items-center text-[#1e90ff] gap-2 px-4 py-2 rounded-lg"
                             onclick="toggleFilterSection()">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6">
-                            <path vector-effect="non-scaling-stroke" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                  d="M9.57 10a3.5 3.5 0 100-7 3.5 3.5 0 000 7zm3.5-3.5H21m-18 0h3.07M14.43 21a3.5 3.5 0 100-7 3.5 3.5 0 000 7zm-3.5-3.5H3m18 0h-3.07"></path>
-                        </svg>
                         Filters
                     </button>
                 </div>
@@ -94,70 +82,70 @@
     
         <section id="job-section">
             <div class="job-list md:p-6 lg:p-2">
-              {% if saved_jobs %}
-              {% for job in saved_jobs %}
-                <!-- Saved job item -->
+                {% if applied_jobs %}
+                    {% for job in applied_jobs %}
+                <!-- Applied Job Item 1 -->
                 <div class="job border-b py-4 relative">
                     <div class="flex flex-col md:flex-row justify-between items-start">
                         <div class="flex-1">
                             <h4 class="text-xl font-bold mb-1">
-                                <a href="#" class="text-gray-800 hover:text-[#1e90ff] transition">
-                                    {{ job.title }}
+                                <a href="{% url 'job:job_details' job.id %}" class="text-gray-800 hover:text-[#1e90ff] transition">
+                                    {{job.title}}
                                 </a>
                             </h4>
-                            <p class="text-sm text-gray-500">Saved {{job.created_at}}</p>
+                            <p class="text-sm text-gray-500">{{job.created_at}} </p>
+                            <p class="text-sm text-gray-600">Company: {{job.company.name}} | Type: {{job.job_type}}</p>
                             <div class="text-sm text-gray-600 mt-1">
-                                <span class="font-medium text-green-600">{{job.job_type}}</span> - <span>{{job.job_location_type}}</span>
+                                <span class="font-medium">Application Status:</span>
+                                <span class="font-medium text-green-600">In Review</span>
                             </div>
                         </div>
-                        <div class="flex justify-end items-start mt-2 md:mt-0 relative w-full sm:w-fit space-x-4 items-center">
-                            <!-- Apply Now button aligned to the right -->
-                            <a href="{% url 'job:job_details' job.id %}" class="border border-dotted border-[#1e90ff] text-[#1e90ff] px-4 py-2 rounded-full">
-                                Apply Now
-                            </a>
-                            <button class="text-[#1e90ff] focus:outline-none">
-                                <i class="fas fa-bookmark"></i> <!-- Saved Job Icon -->
-                            </button>
-    
+                        <div class="flex justify-end items-start mt-2 md:mt-0 relative w-full sm:w-fit space-x-4">
+                            {% comment %} <button class="text-red-500 text-xs px-2 py-1 focus:outline-none">
+                                <i class="fas fa-trash-alt" style="font-size: 1.25rem;"></i>
+                            </button> {% endcomment %}
                         </div>
                     </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <div class="flex items">
-                    <p class="text-gray-500">No saved jobs found.</p>
+                    <div class="flex flex-row justify-end items-center mt-4 space-x-4">
+                        <a href="{% url 'job:job_details' job.id %}">
+                        <button class="text-[#1e90ff] text-xs px-2 py-1 rounded-full border border-dotted border-[#1e90ff]">View Details</button>
+                        </a>
+                    <form action="{% url 'job:withdraw_application' job.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+
+                        <button type="submit" class="text-[#1e90ff] text-xs px-2 py-1 rounded-full border border-dotted border-[#1e90ff]">Withdraw Application</button>
+                    </form>
                     </div>
-                {% endif %}
-                
-            </div>
+                </div>
+            {% endfor %}
+            {% else %}
+                <div class="flex justify-center items-center h-32">
+                    <p class="text-gray-600">No applied jobs found.</p>
+                </div>
+            {% endif %}
+               
     
             <!-- Pagination Controls -->
             <div class="pagination flex justify-center items-center mt-6 space-x-2">
                 <button id="prev-page"
                         class="pagination-btn flex items-center px-4 py-2 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
                         disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 mr-2">
-                        <path vector-effect="non-scaling-stroke" stroke="currentColor" stroke-linecap="round"
-                              stroke-linejoin="round" stroke-width="1.5" d="M15 6l-6 6 6 6"></path>
-                    </svg>
                     Previous
                 </button>
     
                 <span class="text-gray-600">Page <span id="current-page">1</span> of <span
-                        id="total-pages">5</span></span>
+                        id="total-pages">1</span></span>
     
                 <button id="next-page"
                         class="pagination-btn flex items-center px-4 py-2 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300">
                     Next
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 ml-2">
-                        <path vector-effect="non-scaling-stroke" stroke="currentColor" stroke-linecap="round"
-                              stroke-linejoin="round" stroke-width="1.5" d="M9 6l6 6-6 6"></path>
-                    </svg>
                 </button>
             </div>
         </section>
-    
     </main>
+    
+    
+    
     
     
 
@@ -185,6 +173,5 @@
             }
         }
     </script>
-
 
 {% endblock %}

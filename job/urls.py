@@ -49,4 +49,12 @@ urlpatterns = [
     path('generate-questions/', generate_skills.generate_questions_view, name='generate_questions'),
     path('extract-technical-skills/', job_description_algorithm.extract_technical_skills_endpoint, name='extract_technical_skills'),
 
+    path('applied-jobs/', views.user_applied_jobs, name='applied_jobs'),
+    path('withdraw-application/<int:job_id>/', views.withdraw_application, name='withdraw_application'),
+    path('save-job/<int:job_id>/', views.save_job, name='save_job'),
+    path('remove-saved-job/<int:job_id>/', views.remove_saved_job, name='remove_saved_job'),
+    path('saved-jobs/', views.saved_jobs_view, name='saved_jobs'),
+ 
+    
+
 ]

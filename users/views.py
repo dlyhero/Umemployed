@@ -39,6 +39,9 @@ def index(request):
 
 from django.db.models import Q, Count
 
+
+from django.db.models import Q
+
 def home(request):
     user = request.user
     matching_jobs = []
@@ -46,35 +49,43 @@ def home(request):
 
     # Step 1: Retrieve all jobs
     all_jobs = Job.objects.all()
-     # Create a dictionary where the key is the job, and the value is whether the user has applied
-    applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
 
-        
+    # Create a dictionary where the key is the job, and the value is whether the user has applied
+    applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
 
     # Apply filters to all jobs before splitting them into matching/non-matching
     salary_range = request.GET.get('salary_range')
     job_type = request.GET.getlist('job_type')
     experience_levels = request.GET.getlist('experience_levels')
-    job_location = request.GET.get('job_location')
-    search_query = request.GET.get('search_query')
     location_query = request.GET.get('location_query')
+    search_query = request.GET.get('search_query')
+    remote = request.GET.get('remote')  # Get the 'Remote Only' checkbox value
     applicants = request.GET.get('applicants')  # Get applicants filter value
 
+    print(f"DEBUG: Initial Jobs (Count: {all_jobs.count()})")
+
+    # Apply filters one by one, but allow partial matches
+    # Apply salary range filter (relaxed to allow partial ranges)
     if salary_range:
-        all_jobs = all_jobs.filter(salary__lte=salary_range)
+        all_jobs = all_jobs.filter(salary_range__icontains=salary_range)
+        print(f"DEBUG: After Salary Filter (Count: {all_jobs.count()})")
 
+    # Apply job type filter if job_type is not empty (allow partial match)
     if job_type:
-        all_jobs = all_jobs.filter(job_type__in=job_type)
+        all_jobs = all_jobs.filter(Q(job_type__icontains=job_type) | Q(job_type__isnull=True))
+        print(f"DEBUG: After Job Type Filter (Count: {all_jobs.count()})")
 
+    # Apply experience level filter if experience_levels is not empty (allow partial match)
     if experience_levels:
-        all_jobs = all_jobs.filter(experience_levels__in=experience_levels)
+        all_jobs = all_jobs.filter(Q(experience_levels__icontains=experience_levels) | Q(experience_levels__isnull=True))
+        print(f"DEBUG: After Experience Levels Filter (Count: {all_jobs.count()})")
 
-    if job_location:
-        all_jobs = all_jobs.filter(job_location_type__in=job_location)
-
+    # Apply location filter (partial match)
     if location_query:
         all_jobs = all_jobs.filter(location__icontains=location_query)
+        print(f"DEBUG: After Location Filter (Count: {all_jobs.count()})")
 
+    # Apply search query (keyword) filter (relaxed for partial matches)
     if search_query:
         all_jobs = all_jobs.filter(
             Q(title__icontains=search_query) |
@@ -83,7 +94,14 @@ def home(request):
             Q(job_type__icontains=search_query) |
             Q(experience_levels__icontains=search_query)
         )
+        print(f"DEBUG: After Search Query Filter (Count: {all_jobs.count()})")
 
+    # Apply "Remote Only" filter
+    if remote:
+        all_jobs = all_jobs.filter(job_location_type__icontains='remote')
+        print(f"DEBUG: After Remote Only Filter (Count: {all_jobs.count()})")
+
+    # Apply applicants filter
     if applicants:
         all_jobs = all_jobs.annotate(applicant_count=Count('application'))
         if applicants == 'Less than 10':
@@ -94,38 +112,35 @@ def home(request):
             all_jobs = all_jobs.filter(applicant_count__gte=50, applicant_count__lte=100)
         elif applicants == 'More than 100':
             all_jobs = all_jobs.filter(applicant_count__gt=100)
+        print(f"DEBUG: After Applicants Filter (Count: {all_jobs.count()})")
 
-    print(f"DEBUG: Filtered Jobs (Count: {all_jobs.count()}): {list(all_jobs)}")
-
+    # If the user is authenticated, apply skill matching logic
     if user.is_authenticated:
         try:
             applicant_resume = Resume.objects.get(user=user)
             applicant_skills = set(applicant_resume.skills.all())
-            print(f"DEBUG: Applicant Skills: {list(applicant_skills)}")
         except Resume.DoesNotExist:
             applicant_skills = set()
             print("DEBUG: Applicant Resume does not exist. Applicant skills set to empty.")
 
+        # Loop through jobs and calculate match percentage
         for job in all_jobs:
             job_skills = set(job.requirements.all())
             match_percentage, _ = calculate_skill_match(applicant_skills, job_skills)
 
-            print(f"DEBUG: Job '{job.title}' (ID: {job.id}) - Match Percentage: {match_percentage}")
 
             if match_percentage >= 10.0:  # Threshold of 10%
                 matching_jobs.append((job, match_percentage))
             else:
                 non_matching_jobs.append(job)
 
-        print(f"DEBUG: Matching Jobs (Count: {len(matching_jobs)}): {matching_jobs}")
-        print(f"DEBUG: Non-Matching Jobs (Count: {len(non_matching_jobs)}): {non_matching_jobs}")
-
+        
     else:
-        # If user is not authenticated, all jobs are considered non-matching
+        # If the user is not authenticated, all jobs are considered non-matching
         non_matching_jobs = list(all_jobs)
 
     # Pagination
-    paginator = Paginator(non_matching_jobs, 6)  # Show 7 jobs per page
+    paginator = Paginator(non_matching_jobs, 6)  # Show 6 jobs per page
     page = request.GET.get('page')
 
     try:
@@ -138,10 +153,11 @@ def home(request):
     context = {
         'jobs': jobs,
         'matching_jobs': matching_jobs,  
-        'non_matching_jobs': jobs,  
+        'non_matching_jobs': jobs,  # Use paginated jobs in the template
         'applied_job_ids': applied_job_ids  # List of applied job IDs
     }
     return render(request, 'website/home.html', context)
+
 
 
 # login a user
