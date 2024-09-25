@@ -638,11 +638,18 @@ def delete_saved_job(request, saved_job_id):
     """
     Delete a saved job.
     """
-    saved_job = get_object_or_404(SavedJob, pk=saved_job_id, user=request.user)
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
+        saved_job = get_object_or_404(SavedJob, pk=saved_job_id, user=request.user)
+
+        # Delete the saved job
         saved_job.delete()
-        return redirect('view_saved_jobs')
-    return render(request, 'job/delete_saved_job.html', {'saved_job': saved_job})
+
+        messages.success(request, "Saved job removed successfully.")
+        return redirect('job:view_saved_jobs')
+
+    # If the request is not POST or user not authenticated
+    messages.error(request, "Failed to remove saved job.")
+    return redirect('job:view_saved_jobs')
 
 
 
@@ -775,8 +782,11 @@ def withdraw_application(request, job_id):
     
 
 from .models import SavedJob
+from django.views.decorators.http import require_POST
+
+@require_POST  # Ensures that the view only accepts POST requests
 def save_job(request, job_id):
-    if request.method == "POST" and request.is_ajax():
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         user = request.user
         job = get_object_or_404(Job, id=job_id)
         
@@ -786,8 +796,11 @@ def save_job(request, job_id):
         if created:
             return JsonResponse({"status": "success", "message": "Job saved successfully.", "action": "saved"})
         else:
-            return JsonResponse({"status": "error", "message": "You have already saved this job."})
-    return JsonResponse({"status": "error", "message": "Invalid request."})
+            saved_job.delete()  # Optionally, remove the saved job if it was already saved
+            return JsonResponse({"status": "success", "message": "Job removed successfully.", "action": "removed"})
+    
+    # If not an AJAX request
+    return JsonResponse({"status": "error", "message": "Invalid request."}, status=400)
 
 
 def remove_saved_job(request, job_id):
@@ -804,17 +817,40 @@ def remove_saved_job(request, job_id):
             return JsonResponse({"status": "error", "message": "This job is not in your saved jobs."})
     return JsonResponse({"status": "error", "message": "Invalid request."})
 
+from django.http import HttpResponse
+
 def saved_jobs_view(request):
     user = request.user
-    
+
+    # Check if the user is authenticated
+    if not user.is_authenticated:
+        print("User is not authenticated")
+        return HttpResponse("You need to be logged in to view saved jobs.")
+
     # Get the saved jobs for the logged-in user
     saved_jobs = Job.objects.filter(savedjob__user=user)
+
+    # Debug: Print the count of saved jobs
+    print(f"Saved jobs count for user {user.username}: {saved_jobs.count()}")
+
+    # Debug: Print each saved job title
+    for job in saved_jobs:
+        print(f"Saved Job: {job.title}")
+
+    # If no saved jobs, add an extra debug
+    if not saved_jobs.exists():
+        print("No saved jobs found for the user.")
 
     context = {
         'saved_jobs': saved_jobs,
     }
 
-    return render(request, 'website/saved_jobs.html', context)
+    # Debug: Print the context being sent to the template
+    print("Context data: ", context)
+
+    return render(request, 'job/saved_jobs.html', context)
+
+
 def success_page(request):
     return render(request, "job/compiler/success.html")
 

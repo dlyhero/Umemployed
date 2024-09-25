@@ -143,10 +143,10 @@
         <div class="bg-white p-4">
           <h4 class="font-semibold text-gray-700 mb-4">Other Jobs</h4>
 
-            {% if similar_jobs %}
-            {% for job in similar_jobs %}
           <!-- Job Card -->
           <!-- Job Cards Scrollable Container -->
+          {% if similar_jobs %}
+          {% for job in similar_jobs %}
           <div
             class="flex gap-6 overflow-x-auto mx-auto scroll-smooth snap-x snap-mandatory"
             id="jobCardsContainer"
@@ -182,31 +182,32 @@
               <p class="text-gray-800 mb-4 flex items-center">
                 $({{job.salary_range}}) / year
               </p>
-              {% if job.id in applied_job_ids %}
+              <div class="mt-4">
+                {% if job.id in applied_job_ids %}
                 <span style="color: green;">(Already Applied)</span>
                 {% else %}
-              <div class="mt-4">
-                <a href="{% url 'job:confirm_evaluation' job.id %}">
+                 <a href="{% url 'job:confirm_evaluation' job.id %}">
                 <button
                   class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full"
                 >
                   Apply Now
                 </button>
                 </a>
+                {% endif %}
               </div>
-              {% endif %}
+              </div>
             </div>
             <!-- Job Card 2 -->
-            
-
-            </div>
             {% endfor %}
             {% else %}
             <p>No similar jobs found</p>
             {% endif %}
+          </div>
         </div>
       </div>
     </main>
+
+         
   
 {% endblock %}
 

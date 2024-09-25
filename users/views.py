@@ -17,6 +17,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
+from job.models import SavedJob
 def index(request):
     user = request.user
     recent_jobs = Job.objects.order_by('-created_at')[:10]
@@ -28,13 +29,18 @@ def index(request):
     if request.user.is_authenticated:
         applied_job_ids = Application.objects.filter(user=request.user).values_list('job_id', flat=True)
 
+        saved_job_ids = SavedJob.objects.filter(user=request.user).values_list('job_id', flat=True)
+    else:
+        saved_job_ids = []
+
     featured_companies = Company.objects.all()
 
     context = {
         'job_count': job_count,
         'recent_jobs': recent_jobs,
         'featured_companies': featured_companies,
-        'applied_job_ids': applied_job_ids  # List of applied job IDs
+        'applied_job_ids': applied_job_ids ,
+        'saved_jobs': saved_job_ids
     }
 
     return render(request, 'website/index.html', context)
@@ -59,8 +65,12 @@ def home(request):
     # If the user is authenticated, retrieve applied job IDs
     if user.is_authenticated:
         applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
+        saved_job_ids = SavedJob.objects.filter(user=request.user).values_list('job_id', flat=True)
+
     else:
         applied_job_ids = []
+        saved_job_ids = []
+
 
     # Get filtering parameters from the GET request
     salary_range = request.GET.get('salary_range')
@@ -170,7 +180,9 @@ def home(request):
         'jobs': jobs,
         'matching_jobs': matching_jobs,
         'applied_job_ids': applied_job_ids,
-        'query_string': query_string,  # Pass the query string to the template
+        'query_string': query_string,  
+        'saved_jobs': saved_job_ids,
+
     }
     return render(request, 'website/home.html', context)
 
@@ -275,7 +287,6 @@ from django.urls import reverse  # Import reverse
 from resume.models import ResumeDoc
 @login_required
 def switch_account_type(request):
-    print("4$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     new_role = request.GET.get('new_role', None)
     user = request.user
 
@@ -306,7 +317,7 @@ def switch_account_type(request):
             user.save()
             print(f"Switched to Employer with company: is_applicant={user.is_applicant}, is_recruiter={user.is_recruiter}")
             messages.success(request, 'You have switched to a recruiter account.')
-            return redirect(reverse('view_applications', args=[user.company.id]))
+            return redirect(reverse('company_dashboard', args=[user.company.id]))
     else:
         messages.error(request, 'Invalid role switch request.')
         return redirect('home')

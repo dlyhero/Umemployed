@@ -1,12 +1,23 @@
 
- {% extends 'resume/recruiterBase.html' %}
+ {% extends 'resume/base.html' %}
 {% load static %}
  {% block custom_css %}
-        
-  {% endblock %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    input[type="checkbox"]:checked + label {
+        background-color: #1e90ff;
+        color: white;
+    }
+</style>
+{% endblock %}
+{% block title %}
+
+{% endblock %}
 {% block content %}
 
-  <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[100%] mx-auto">
+  <main class="flex-grow px-2 md:px-3 w-[98%] lg:w-[90%] mx-auto">
     <form id="jobTypeForm" class="w-full md:w-[70%] mx-auto" method="post" action="{% url 'job:job_type_view' %}">
         {% csrf_token %}
         <div class="jobtype-wrap">
@@ -227,7 +238,7 @@ document.querySelectorAll('.job-type-checkbox, .experience-level-checkbox, .week
 
 </script>
 
-  >
+  
   <script type="module" src="{% static 'build/scripts/jobdetails.js' %}"></script>
   <script type="module" src="{% static 'build/scripts/dashboard.js' %}"></script>
 {% endblock %}

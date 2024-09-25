@@ -75,6 +75,7 @@ import pycountry
 from job.models import Job
 from django.db.models import Avg
 from dashboard.decorators import resume_required
+from django.contrib import messages
 
 
 
@@ -109,7 +110,7 @@ def dashboard(request):
             resume_doc = ResumeDoc.objects.get(user=request.user)
             extracted_skills = resume_doc.extracted_skills.all()  # Access as queryset
 
-            # Iterate through the queryset and add skills to the resume
+            # Add extracted skills to the resume
             for skill in extracted_skills:
                 resume.skills.add(skill)
             
@@ -136,31 +137,46 @@ def dashboard(request):
 
     jobs = SkillCategory.objects.all()
     
+    # UserProfile and language handling
     try:
         user_profile = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
         user_profile = UserProfile.objects.create(user=request.user)
+
     # Get full country name for display
-    country_name = contact_info.country.name if contact_info.country else None
+    country_name = str(contact_info.country) if contact_info.country else None
+
+    # Forms for language and profile updates
     language_form = UserLanguageForm()
     profile_form = UserProfileForm(instance=user_profile)
 
     if request.method == 'POST':
+        print(request.POST)
         if 'language' in request.POST:
+            # Handle language form submission
             language_form = UserLanguageForm(request.POST)
             if language_form.is_valid():
                 user_language = language_form.save(commit=False)
                 user_language.user_profile = user_profile
                 user_language.save()
                 return redirect('user_dashboard')
+            else:
+                messages.error(request, f"Language form errors: {language_form.errors}")
+        
         elif 'country' in request.POST:
+            # Handle profile form submission
             profile_form = UserProfileForm(request.POST, instance=user_profile)
             if profile_form.is_valid():
                 profile_form.save()
+                messages.success(request, "Profile updated successfully.")
                 return redirect('user_dashboard')
+            else:
+                messages.error(request, f"Profile form errors: {profile_form.errors}")
 
+    # Get the user's languages
     user_languages = UserLanguage.objects.filter(user_profile=user_profile)
     
+    # Display top 5 jobs
     top_jobs = Job.objects.order_by('-id')[:5]
 
     # Calculate matching jobs
@@ -170,21 +186,22 @@ def dashboard(request):
         for job in Job.objects.all():
             job_skills = job.requirements.values_list('name', flat=True)
             match_percentage, _ = calculate_skill_match(user_resume_skills, job_skills)
-            if match_percentage >= 10.0:  # Assuming the threshold is 10%
+            if match_percentage >= 10.0:  # Assuming a threshold of 10%
                 matching_jobs.append(job)
 
+    # Context to be passed to the template
     context = {
         'contact_info': contact_info,
         'user': user,
-        'skills': skills_paginated,  # Use paginated skills
+        'skills': skills_paginated,  # Paginated skills
         'work_experiences': work_experiences,
         'educations': educations,
         'applications': applications,
         'suggested_skills_json': suggested_skills_json,
         'jobs': jobs,
         'resume': resume,
-        'language_form': language_form,  # Add language form to context
-        'profile_form': profile_form,  # Add profile form to context
+        'language_form': language_form,  # Language form
+        'profile_form': profile_form,    # Profile form (for country update)
         'user_profile': user_profile,
         'user_languages': user_languages,
         'country_name': country_name,
@@ -193,6 +210,7 @@ def dashboard(request):
     }
 
     return render(request, 'dashboard/dashboard.html', context)
+
 
 from django.shortcuts import get_object_or_404
 

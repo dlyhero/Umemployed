@@ -11,6 +11,9 @@ urlpatterns = [
     path('jobs/<int:company_id>/', views.view_my_jobs, name='view_my_jobs'),
     path('inbox/<int:company_id>/',views.company_inbox, name='company_inbox'),
     path('notifications/<int:company_id>/',views.company_notifications, name='company_notifications'),
-    
+    path('dashboard/<int:company_id>/', views.company_dashboard, name="company_dashboard"),
+    path('applications/<int:application_id>/details/', views.application_details, name='application_details'),
+    path('company/<int:company_id>/job/<int:job_id>/applications/', views.job_applications_view, name='job_applications'),
+
 
 ]

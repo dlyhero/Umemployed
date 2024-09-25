@@ -1,9 +1,12 @@
 
- {% extends 'resume/recruiterBase.html' %}
+ {% extends 'resume/base.html' %}
 {% load static %}
- {% block custom_css %}
-        <link rel="stylesheet" href="{% static 'build/css/skills.css' %}">
-<!-- Loader CSS -->
+{% block custom_css %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{% static 'build/css/skills.css' %}">
+
+  <!-- Loader CSS -->
 
 <style>
     .loader .logo img{
@@ -32,7 +35,7 @@
         animation: blink 6s infinite;
     }
 </style>
-  {% endblock %}
+{% endblock %}
 {% block content %}
    <!-- selectSkills.html -->
 <main class="flex-grow w-full px-2 md:px-3 lg:w-[100%] mx-auto">
@@ -50,7 +53,7 @@
 <!-- Select Skills Form -->
 <form id="select-skills-form" class="p-8 w-full max-w-4xl text-center mx-auto" method="POST">
     {% csrf_token %}
-    <h1 class="text-2xl font-bold mb-4">Select Skills</h1>
+    <h1 class="text-2xl font-bold mb-4">Select skills that suit the role and we will get the questions ready!</h1>
 
     <!-- Render extracted_skills checkboxes -->
     <ul id="skills-list" class="skills-list flex flex-wrap gap-2 justify-center">
@@ -74,6 +77,7 @@
 </form>
 
 </main>
+<br><br><br><br><br><br><br>
 
 
 <!-- JavaScript for handling form submission and loader -->

@@ -1,0 +1,260 @@
+
+{% extends 'resume/base.html' %}
+{% load static %}
+{% block title %}
+
+<title>Dashboard|UmEmployed</title>
+    {% endblock title %}
+
+{% block custom_css %}
+<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+        <script src="https://cdn.tailwindcss.com"></script> 
+        
+    <style>
+      .sidebar-item {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .sidebar-item.visible {
+        opacity: 1;
+        transform: translateY(0);
+        }
+
+        #tips::-webkit-scrollbar{width: 1px;}
+
+    </style>
+
+{% endblock %}
+{% block content %}
+<!-- Main Content -->
+<div class="flex relative flex-col lg:flex-row container mx-auto py-6 space-y-6 lg:space-y-0 lg:space-x-4">
+  <!-- Left Sidebar -->
+  <aside class="bg-white sticky left-0 right-0 w-full lg:w-[25%] h-fit order-2 lg:order-1">
+    <nav class="grid grid-cols-2 md:grid-cols-1 gap-4 p-4">
+      <a href="{% url 'update_company' company.id %}" class="flex items-center rounded-lg sidebar-item border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <img src="{% static 'new_design/icons/dashboard_12177174.png' %}" class="w-7 h-7 mr-3" alt="">
+        <span class="text-gray-700 font-semibold">Dashboard Overview</span>
+      </a>
+      <a href="{% url 'view_applications' company.id %}" class="flex items-center rounded-lg sidebar-item border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <img src="{% static 'new_design/icons/choosing_6426904.png' %}" class="w-7 h-7 mr-3" alt="">
+        <span class="text-gray-700 font-semibold">Manage Candidates</span>
+      </a>
+      <a href="{% url 'view_my_jobs' company.id %}" class="flex items-center rounded-lg sidebar-item border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <img src="{% static 'new_design/icons/briefcase_10595826.png' %}" class="w-7 h-7 mr-3" alt="">
+        <span class="text-gray-700 font-semibold">Job Postings</span>
+      </a>
+      <a href="{% url 'view_applications' company.id %}" class="flex items-center rounded-lg sidebar-item border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <img src="{% static 'new_design/icons/curriculum_2083317.png' %}" class="w-7 h-7 mr-3" alt="">
+        <span class="text-gray-700 font-semibold">Applications</span>
+      </a>
+      <a href="{% url 'company-details' company.id %}" class="flex items-center rounded-lg sidebar-item border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-chart-line text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold">Analytics</span>
+      </a>
+      <a href="{% url 'update_company' company.id %}" class="flex items-center rounded-lg sidebar-item border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <img src="{% static 'new_design/icons/settings_3524636.png' %}" class="w-7 h-7 mr-3" alt="">
+        <span class="text-gray-700 font-semibold">Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Dashboard Area -->
+  <main class="flex-1 lg:w-[70%] space-y-6 lg:space-y-0 order-1 lg:order-2 rounded-lg p-2">
+    <!-- Tips Cards Section -->
+    <!-- Search Bar for Mobile -->
+    <section id="search-ctn-mobile" class="mb-8 lg:hidden">
+      <div class="search-wrapper flex max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none">
+        <input class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis" type="text" name="search" id="search" placeholder="Search candidates, job postings, or keywords" />
+        <div class="border-l border-gray-300 mx-2 hidden sm:block"></div>
+        <div class="button-wrap">
+          <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+      <!-- Welcome Banner -->
+      <section class="px-6 pb-6">
+        <div>
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Hello, {{company.name}}!</h2>
+          <p class="mt-2">Here's your personalized employer dashboard to manage candidates and job postings.</p>
+        </div>
+      </section>
+  
+
+    <section id="tips" class="w-full px-2 mx-auto overflow-x-auto whitespace-nowrap">
+      <div class="inline-block rounded-lg p-4 mr-4 border shadow-lg relative w-96 truncate text-wrap">
+        <button class="absolute top-2 right-2 text-red-500 hover:text-red-700" onclick="removeTip(this)">✖</button>
+        <h3 class="font-semibold">Tip 1</h3>
+        <p>Optimize your job postings for better visibility. Use relevant keywords and attractive job titles to catch candidates' attention.</p>
+      </div>
+      
+      <div class="inline-block rounded-lg p-4 mr-4 border shadow-lg relative w-96 truncate text-wrap">
+        <button class="absolute top-2 right-2 text-red-500 hover:text-red-700" onclick="removeTip(this)">✖</button>
+        <h3 class="font-semibold">Tip 2</h3>
+        <p>Engage with candidates promptly to increase interest. Quick responses show that you value their applications.</p>
+      </div>
+      
+      <div class="inline-block rounded-lg p-4 mr-4 border shadow-lg relative w-96 truncate text-wrap">
+        <button class="absolute top-2 right-2 text-red-500 hover:text-red-700" onclick="removeTip(this)">✖</button>
+        <h3 class="font-semibold">Tip 3</h3>
+        <p>Use clear and concise job descriptions. Avoid jargon and be direct about what you're looking for in candidates.</p>
+      </div>
+      
+      <div class="inline-block rounded-lg p-4 mr-4 border shadow-lg relative w-96 truncate text-wrap">
+        <button class="absolute top-2 right-2 text-red-500 hover:text-red-700" onclick="removeTip(this)">✖</button>
+        <h3 class="font-semibold">Tip 4</h3>
+        <p>Provide feedback to candidates after interviews. Constructive feedback helps them improve and builds goodwill.</p>
+      </div>
+      <!-- Add more tips as needed -->
+    </section>
+    
+
+  
+    <!-- Job Postings Overview -->
+    <section class="bg-white p-6">
+      <h2 class="font-semibold mb-4 text-xl md:text-2xl">Add a new Job</h2>
+      <p class="text-gray-600">Manage your job postings and view applications.</p>
+      <div class="mt-4">
+        <a href="{% url 'job:create-job' %}">
+        <button class="border border-[#1e90ff] text-[#1e90ff] font-bold py-2 px-4 rounded-full hover:bg-blue-100">
+          Post a job
+        </button>
+    </a>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- Candidates Overview -->
+    <section class="bg-white p-6">
+      <h2 class="font-semibold mb-4 text-xl md:text-2xl">Candidate Applications</h2>
+      <p class="text-gray-600">Review applications submitted by candidates for your job postings.</p>
+      <div class="mt-4">
+        <a href="{% url 'view_applications' company.id %}">
+        <button class="border border-[#1e90ff] text-[#1e90ff]  font-bold py-2 px-4 rounded-full hover:bg-blue-100">
+          View Applications
+        </button>
+        </a>
+      </div>
+    </section>
+      
+    <hr class="mt-9">
+
+    <!-- Recent Job Listings Section -->
+    <section class="containermx-auto py-12 mt-2 lg:px-6">
+      <!-- Section Header -->
+      <div class="mb-4">
+        <h2 class="text-2xl font-semibold ">Recent Job Listings</h2>
+        <p class="text-gray-600 text-xl">
+          Find the best jobs tailored to your skills and preferences.
+        </p>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="hidden lg:flex justify-end gap-4 lg:mr-10 items-center mb-4">
+        <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300" id="scrollLeft">
+          <i class="fas fa-chevron-left text-gray-600"></i>
+        </button>
+        <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300" id="scrollRight">
+          <i class="fas fa-chevron-right text-gray-600"></i>
+        </button>
+      </div>
+
+      <!-- Job Cards Scrollable Container -->
+      <div class="flex gap-6 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory"
+        id="jobCardsContainer">
+        <!-- Repeat the Job Cards multiple times as needed -->
+        {% if jobs %}
+        {% for job in jobs %}
+        <div class="min-w-[100%] sm:min-w-[50%] lg:min-w-[25%] bg-white border rounded-lg p-6 snap-start">
+          <div class="flex items-center justify-between mb-4">
+            <img class="w-12 h-12 rounded-full mr-4" src="{{job.company.logo.url}}" alt="Company Logo" />
+            <div class="relative flex items-center gap-4">
+              <span class="text-sm text-gray-500">{{job.job_type}}</span>
+              <!-- Vertical Ellipsis Icon -->
+              <button class="focus:outline-none" onclick="toggleDropdown(event)">
+                <i class="fas fa-ellipsis-v cursor-pointer text-[#1e90ff] hover:text-gray-800"></i>
+              </button>
+              <!-- Dropdown Menu (Smaller) -->
+              <div class="absolute right-0 top-5 mt-2 w-32 bg-white border rounded-lg  hidden dropdown-menu">
+                <ul class="text-sm text-gray-700">
+                  <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center">
+                    <i class="fas fa-share mr-2 text-[#1e90ff]"></i> Share
+                  </li>
+                  <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center">
+                    <i class="fas fa-bookmark mr-2 text-[#1e90ff]"></i> Save Job
+                  </li>
+                  <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center">
+                    <i class="fas fa-flag mr-2 text-red-500"></i> Report Job
+                  </li>
+                  <li class="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center">
+                    <i class="fas fa-envelope mr-2 text-[#1e90ff]"></i> Email Job
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <h3 class="text-xl font-semibold text-gray-800 w-26 truncate overflow-ellipsis ">
+              {{job.title}}
+            </h3>
+            <div class="flex items-center gap-2">
+              <span class="text-gray-600">Posted by you</span>
+              <span class="text-sm text-gray-500">{{job.created_at}}</span>
+            </div>
+          </div>
+          <p
+            class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center">
+            <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
+          </p>
+          <p class="text-gray-500 mb-4 flex items-center test-md">
+            <i class="fas fa-users mr-2"></i> 12 Applicants
+          </p>
+          <div class="mt-4">
+            <button class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full">
+              Manage Job
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <li>No jobs Created.</li>
+        {% endif %}
+        </ul>
+        <!-- Add more job cards as needed, following the same structure -->
+      </div>
+    </section>
+
+   
+
+  
+  </main>
+</div>
+<script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const items = document.querySelectorAll('.sidebar-item');
+        items.forEach((item, index) => {
+          setTimeout(() => {
+            item.classList.add('visible');
+          }, index * 300); // 300ms delay between each item
+        });
+      });
+
+      function removeTip(button) {
+    // Get the parent card element
+    const card = button.parentElement;
+    // Remove the card from the DOM
+    card.remove();
+  }
+    </script>
+
+
+{% endblock %}
+

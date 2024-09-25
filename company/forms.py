@@ -6,23 +6,76 @@ from cities_light.models import City
 
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
+from ckeditor.widgets import CKEditorWidget
+
+
+from django import forms
+from django_countries.fields import CountryField  # Make sure to import CountryField
+from .models import Company  # Adjust the import based on your structure
 
 class UpdateCompanyForm(forms.ModelForm):
+    country = CountryField().formfield()  # Include this if using CountryField
+
     class Meta:
         model = Company
-        fields = '__all__'
+        fields = [
+            'name', 'industry', 'size', 'location', 
+            'founded', 'website_url', 'contact_email', 
+            'contact_phone', 'linkedin', 
+            'video_introduction', 'country', 'description', 
+            'mission_statement'
+        ]
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 5}),
-            'mission_statement': forms.Textarea(attrs={'rows': 3}),
-            'vision_statement': forms.Textarea(attrs={'rows': 3}),
-            'job_openings': forms.Textarea(attrs={'rows': 3}),
+            'founded': forms.NumberInput(attrs={'placeholder': 'e.g. 2024', 'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md'}),
+            'description': CKEditorWidget(attrs={
+                'class': 'mt-1 border bg-transparent border-gray-400 block w-[150%] w-full p-2 outline-1 outline-[#1e90ff] rounded-md'
+            }),
+            'mission_statement': CKEditorWidget(attrs={
+                'class': 'mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md'
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md',
+                'placeholder': 'Company Name'
+            }),
+            'industry': forms.Select(attrs={'class': 'w-full p-2 border border-gray-300 rounded-md'}),
+            'size': forms.Select(attrs={'class': 'w-full p-2 border border-gray-300 rounded-md'}),
+            'location': forms.TextInput(attrs={
+                'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md',
+                'placeholder': 'Company Location'
+            }),
+            'website_url': forms.URLInput(attrs={
+                'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md',
+                'placeholder': 'https://www.example.com'
+            }),
+            'contact_email': forms.EmailInput(attrs={
+                'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md',
+                'placeholder': 'Contact Email'
+            }),
+            'contact_phone': forms.TextInput(attrs={
+                'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md',
+                'placeholder': 'Contact Phone'
+            }),
+            'linkedin': forms.URLInput(attrs={
+                'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md',
+                'placeholder': 'LinkedIn Profile'
+            }),
+            'video_introduction': forms.URLInput(attrs={
+                'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md',
+                'placeholder': 'Video URL'
+            }),
+            'country': forms.Select(attrs={
+                'class': 'w-full border border-gray-300 rounded-lg p-2 text-gray-700 bg-transparent focus:ring-1 focus:ring-blue-500',
+            }),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Mark social fields as optional
-        for field_name in ['linkedin', 'facebook', 'twitter', 'instagram', 'video_introduction']:
-            self.fields[field_name].required = False
+        for field_name in ['linkedin', 'video_introduction']:
+            if field_name in self.fields:  # Check if the field exists
+                self.fields[field_name].required = False
+
+
 
 class CreateCompanyForm(forms.ModelForm):
     class Meta:

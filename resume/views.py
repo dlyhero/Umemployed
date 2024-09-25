@@ -35,52 +35,87 @@ def update_resume(request):
         contact_info = None
 
     try:
+        # Try to get the existing resume for the user
         resume = Resume.objects.get(user=request.user)
     except Resume.DoesNotExist:
-        resume = Resume(user=request.user)  # Create a new Resume object if not exists
-        resume.save()
+        # Initialize the Resume object with default or placeholder values
+        resume = Resume(user=request.user, job_title="Default Title")  # Use a default job title or other defaults
+        resume.save()  # Save it with basic fields
 
     if request.method == "POST":
         form = ContactInfoForm(request.POST, request.FILES, instance=contact_info)
         
         if form.is_valid():
+            # Save or update ContactInfo
             contact_info = form.save(commit=False)
             contact_info.user = request.user
             contact_info.save()
 
-            # Update the Resume model fields based on job selection
+            # Update corresponding Resume fields from ContactInfo
+            resume.first_name = contact_info.name.split()[0] if contact_info.name else resume.first_name  # Assuming first_name is the first part of the full name
+            resume.surname = " ".join(contact_info.name.split()[1:]) if contact_info.name else resume.surname  # Assuming surname is the rest of the name
+            resume.phone = contact_info.phone
+            resume.country = contact_info.country.name if contact_info.country else resume.country  # CountryField is different from CharField, use .name for its value
+
+            # Handle the job title update logic
             job_title_id = request.POST.get("job_title")
             other_job_title = request.POST.get("other_job_title")
-            
+
             if job_title_id:
-                job_title = SkillCategory.objects.get(id=job_title_id).name  # Get job title name from ID
-                resume.job_title = job_title
+                try:
+                    job_title = SkillCategory.objects.get(id=job_title_id).name
+                    resume.job_title = job_title  # Update job title with selected option
+                except SkillCategory.DoesNotExist:
+                    messages.error(request, "Selected job title does not exist.")
             elif other_job_title:
                 response = requests.get(f"{api_url}?input_str={other_job_title}")
                 if response.status_code == 200:
-                    job_title = other_job_title  # Use the job title entered by the user
-                    resume.job_title = job_title
-            
+                    resume.job_title = other_job_title  # Set the job title to what the user typed
+
+            # Save the updated resume with all relevant fields
+            resume.save()
+
+            # Update user profile flags
             user = request.user
             user.is_applicant = True
             user.has_resume = True
             user.save()
-            
-            # Save the updated resume
-            resume.save()
 
             # Notify the user that their resume has been updated
             notification_message = 'Your resume has been successfully updated.'
             notify_user(user, notification_message, 'resume_update')
 
             messages.success(request, 'Resume updated successfully.')
-            return redirect('user_dashboard')
+            return redirect('update_resume')
         else:
             messages.error(request, f'Form is invalid. Errors: {form.errors}')
     else:
         form = ContactInfoForm(instance=contact_info)
 
     return render(request, 'resume/update_resume.html', {'form': form, 'api_url': api_url})
+
+
+@login_required
+def update_resume_view(request):
+    try:
+        resume = Resume.objects.get(user=request.user)  # Fetch the resume of the logged-in user
+    except Resume.DoesNotExist:
+        resume = Resume(user=request.user)  # Create a new resume if it does not exist
+
+    if request.method == "POST":
+        form = UpdateResumeForm(request.POST, request.FILES, instance=resume)
+        
+        if form.is_valid():
+            form.save()  # Save the updated resume
+            messages.success(request, 'Resume updated successfully.')
+            return redirect('user_dashboard')  # Redirect to user dashboard or a success page
+        else:
+            messages.error(request, 'Error updating resume. Please correct the errors below.')
+    else:
+        form = UpdateResumeForm(instance=resume)  # Pre-populate the form with the resume data
+
+    return render(request, 'resume/update_resume2.html', {'form': form})
+
 def select_category(request):
     """
     Allows applicants to select a category for their skills.

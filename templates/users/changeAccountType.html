@@ -1,5 +1,9 @@
 {% extends 'resume/base.html' %}
 {% load static %}
+{% block title %}
+
+<title>Roles|UmEmployed</title>
+    {% endblock title %}
 {% block search_bar %}
     {% endblock search_bar %}
 {% block custom_css %}
@@ -156,7 +160,7 @@ function handleEmployerDashboard() {
     {% if user.has_company and user_company %}
         var userCompanyId = "{{ user.company.id }}";
         if (userCompanyId) {
-            window.location.href = "{% url 'view_applications' user.company.id %}";
+            window.location.href = "{% url 'company_dashboard' user.company.id %}";
         } else {
             alert("Company ID is missing.");
             window.location.href = "{% url 'create_company' %}";

@@ -1,0 +1,420 @@
+
+ {% extends 'resume/base.html' %}
+{% load static %}
+{% block title %}
+<title>Proposals|UmEmployed</title>
+{% endblock %}
+{% block custom_css %}
+<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+        <script src="https://cdn.tailwindcss.com"></script> 
+        
+
+
+{% endblock %}
+{% block content %}
+
+  
+   <main class="container max-w-6xl mx-auto p-2 md:p-4 rounded-lg flex flex-col items-center ">
+
+    <section class="w-full container max-w-6xl p-2">
+      <!-- Professional Tab List -->
+      <ul class="flex flex-wrap justify-start space-x-2 bg-white rounded-lg border-b p-[4.5px] border-gray-200">
+        <li>
+          <a href="#" onclick="showTab('candidates')"
+            class="text-gray-800 font-medium py-1 px-4 md:px-6 rounded-full border-b-4 border-[#1e90ff] transition-all duration-300">
+            <span class="air3-tab-btn-text">Candidates</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" onclick="showTab('shortlist')"
+            class="text-gray-600 hover:text-gray-800 py-1 px-4 md:px-6 rounded-full border-b-4 border-transparent hover:border-gray-300 transition-all duration-300">
+            <span class="air3-tab-btn-text">Shortlist</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" onclick="showTab('archived')"
+            class="text-gray-600 hover:text-gray-800 py-1 px-4 md:px-6 rounded-full border-b-4 border-transparent hover:border-gray-300 transition-all duration-300">
+            <span class="air3-tab-btn-text">Archived</span>
+          </a>
+        </li>
+      </ul>
+
+    </section>
+
+
+    <section class=" w-full container max-w-6xl mt-7">
+      <div class="mb-4 ">
+        <div class="flex items-center gap-1 bg-white w-full">
+          <form name="titleFilterForm" class="w-[70%] md:w-[55%]">
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-5 h-5 text-gray-500">
+                  <path vector-effect="non-scaling-stroke" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="1.5"
+                    d="M10.688 18.377a7.688 7.688 0 100-15.377 7.688 7.688 0 000 15.377zm5.428-2.261L21 21">
+                  </path>
+                </svg>
+              </span>
+              <input id="input-icon-btn" type="search" placeholder="Search Candidates"
+                class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300">
+            </div>
+          </form>
+          <button id="desktop-filter-btn" type="button"
+            class="flex items-center  text-[#1e90ff] gap-2 px-4 py-2 rounded-lg " onclick="toggleFilterSection()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6">
+              <path vector-effect="non-scaling-stroke" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="1.5"
+                d="M9.57 10a3.5 3.5 0 100-7 3.5 3.5 0 000 7zm3.5-3.5H21m-18 0h3.07M14.43 21a3.5 3.5 0 100-7 3.5 3.5 0 000 7zm-3.5-3.5H3m18 0h-3.07">
+              </path>
+            </svg>
+            Filters
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="cards rounded-lg text-sm  border container max-w-6xl">
+      <div class="candidates-wrap  flex flex-col">
+        {% if applications %}
+        {% for application in applications %}
+        <div id="card" data-application-id="{{ application.id }}" class="hover:bg-gray-100 px-3 py-4 overflow-x-auto Whitespace-nowrap border-b">
+          <div class="md:flex Whitespace-nowrap container max-w-6xl">
+            <!-- Added whitespace-nowrap for horizontal scrolling -->
+            <div class="flex md:flex-col mr-5 md:w-[50%]">
+              <div>
+                <div class="flex gap-x-4 flex-noshrink">
+                  <div class="relative mr-2">
+                    <img
+                      src="{{ application.user.resume.profile_image.url }}"
+                      alt="{{ application.user.first_name }}" class="w-16 h-16 rounded-full" />
+                    <span
+                      class="absolute bottom-[32px]  right-0 bg-green-400 rounded-full w-4 h-4 border-2 border-white"></span>
+                  </div>
+                  <div class="flex-1 flex flex-col gap-1">
+                    <span class="text-lg font-semibold">{{application.user.first_name}} {{ application.user.last_name}}</span>
+                    <div class="text-gray-500">{{ application.user.location }}</div>
+                    <div class="text-gray-600  line-clamp-2 text-wrap">{{application.user.resume.job_title}}</div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-center items-start space-x-2 md:mt-4">
+                <button class="bg-gray-300 text-gray-700 rounded-full p-2" onclick="archiveCandidate()">
+                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2}
+                      d="M5 15h3v2.5c0 1.17.64 2.2 1.62 2.73A4.992 4.992 0 0012 21v-3.5l2.905-3.08A3 3 0 0016 12V4a1 1 0 00-.999-1H6.265a.997.997 0 00-.998.75l-2.206 8.76a2.003 2.003 0 001.08 2.298c.277.131.58.197.886.193z" />
+                  </svg>
+                </button>
+                <button class="bg-gray-300 text-gray-700 rounded-full p-2" onclick="shortlistCandidate()">
+                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2}
+                      d="M19 9h-3.23V6.54A3.88 3.88 0 0012 3v3.61L9.09 9.69A3 3 0 008 12v8a1 1 0 001 1h8.76a1 1 0 001-.75l2.21-8.76A1.999 1.999 0 0019 9z" />
+                  </svg>
+                </button>
+                <a href="{% url 'messaging:inbox' %}">
+                <button
+                  class="hidden md:block border border-[#1e90ff] font-semibold text-[#1e90ff]  rounded-full px-4 py-2"
+                  >Message</button>
+                </a>
+                <button class="hidden md:block bg-[#1e90ff] font-semibold text-white rounded-full px-4 py-2 text-nowrap"
+                  onclick="viewDetails()">View
+                  Details</button>
+              </div>
+            </div>
+
+            <div class="md:flex md:justify-evenly gap-4 md:w-[80%]">
+              <!-- Added padding to the container max-w-6xl -->
+              <div class="space-y-4 w-[250px]"> <!-- Added space-y-4 for vertical spacing -->
+                <div class="flex justify-between md:flex-col">
+                  <span class="text-lg font-semibold">Resume match: {{ application.matching_percentage }}% </span>
+                  <span class="text-gray-600">Quiz Score: {{ application.quiz_score }}</span>
+                </div>
+                
+              </div>
+              <div class="space-y-4"> <!-- Added space-y-4 for vertical spacing -->
+                <div class="text-base font-semibold">About Candidate:</div>
+                <div class="text-gray-700 line-clamp-2 w-[300px] text-wrap">
+                  {{ application.user.resume.description|truncatewords:15 }}...
+                </div>
+
+              </div>
+              <div> <!-- Added padding for better spacing -->
+                <div class="text-base font-semibold">Qualifications:</div>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  {% if application.user.skills_list|length > 3 %}
+                        {% for skill in application.user.skills_list|slice:":3" %}
+                            <span class="bg-blue-100 text-[#1e90ff] rounded-full px-3 py-1 text-sm text-nowrap">{{ skill }}</span>
+                        {% endfor %}
+                        <span class="bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm text-nowrap">...and {{ application.user.skills_list|length|add:"-5" }} more</span>
+                    {% else %}
+                        {% for skill in application.user.skills_list %}
+                            <span class="bg-blue-100 text-[#1e90ff] rounded-full px-3 py-1 text-sm text-nowrap">{{ skill }}</span>
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+              </div>
+              <div class="w-full lg:hidden flex mt-2 gap-2">
+                <button
+                  class="md:hidden flex-1 border border-[#1e90ff] font-semibold text-[#1e90ff] rounded-full px-4 py-2"
+                  onclick="messageCandidate()">Message</button>
+                <button class="md:hidden flex-1 bg-[#1e90ff] font-semibold text-white rounded-full px-4 py-2"
+                  onclick="viewDetails()">View Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="flex justify-center items-center h-[200px]">
+          <p class="text-gray-500">No candidates found.</p>
+          </div>
+        {% endif %}
+       
+      </div>
+      </div>
+      </div>
+    </section>
+
+
+  </main>
+
+
+<!-- Modal -->
+<div id="detailsModal" class="fixed top-0 z-[200] right-0 left-0 bottom-0 inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+  <div class="bg-white absolute top-0 bottom-0 right-0 left-0 lg:relative lg:rounded-lg w-full md:max-w-3xl md:h-auto overflow-auto lg:max-h-[80vh] p-6">
+    <!-- Modal Header -->
+    <div class="flex justify-between items-center border-b pb-3">
+      <h2 class="text-2xl font-semibold">Candidate Details</h2>
+      <button class="text-gray-500 hover:text-gray-700" onclick="closeModal()">
+        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Candidate Info Section -->
+    <div class="mt-4">
+      <div class="flex items-center gap-4">
+        <img id="candidateProfileImage" src="" alt="Profile Image" class="w-16 h-16 rounded-full">
+        <div>
+          <span id="candidateName" class="text-lg font-semibold">Loading...</span>
+          <div id="candidateLocation" class="text-gray-500">Location</div>
+          <div id="candidateJobTitle" class="text-gray-600">Loading job title...</div>
+        </div>
+      </div>
+    </div>
+    
+   <!-- View Resume Button -->
+    <div class="my-4">
+    <a id="candidateResumeLink" 
+       class="text-[#1e90ff] underline" 
+       target="_blank" 
+       title="View Resume">
+       <i class="fas fa-eye"></i> View Resume
+    </a>
+</div>
+
+
+    <!-- Cover Letter -->
+    <div class="mt-6">
+      <h3 class="font-semibold text-base">Candidate Heading:</h3>
+      <p id="candidateCoverLetter" class="text-gray-700">Loading heading ...</p>
+    </div>
+
+    <!-- Skills & Qualifications -->
+    <div class="mt-6">
+      <h3 class="font-semibold text-base"><i class="fas fa-check-circle"></i> Skills & Qualifications:</h3>
+      <div id="candidateSkills" class="flex flex-wrap gap-2 mt-2">
+        <!-- Skills will be dynamically injected here -->
+      </div>
+    </div>
+
+    <!-- Contacts Section -->
+    <div class="mt-6">
+      <h3 class="font-semibold text-base">Contacts:</h3>
+      <div id="candidateContacts" class="mt-2">
+        <!-- Contacts will be dynamically injected here -->
+      </div>
+    </div>
+
+    <!-- Experiences Section -->
+    <div class="mt-6">
+      <h3 class="font-semibold text-base">Experiences:</h3>
+      <div id="candidateExperiences" class="mt-2">
+        <!-- Experiences will be dynamically injected here -->
+      </div>
+    </div>
+
+    <!-- Languages Section -->
+    <div class="mt-6">
+      <h3 class="font-semibold text-base">Languages:</h3>
+      <div id="candidateLanguages" class="mt-2">
+        <!-- Languages will be dynamically injected here -->
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="mt-6 text-right">
+      <button class="bg-[#1e90ff] text-white rounded px-4 py-2" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[onclick="viewDetails()"]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const applicationId = this.closest('[id="card"]').getAttribute('data-application-id');
+            console.log('Application ID:', applicationId); // Debug application ID
+
+            fetch(`/company/applications/${applicationId}/details/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => {
+                console.log('Response status:', response.status); // Debug status code
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received Data:', data); // Debug received data
+
+                // Render data in the modal
+                document.querySelector('#detailsModal h2').textContent = `Candidate Details: ${data.first_name} ${data.surname}`;
+                document.querySelector('#candidateProfileImage').src = data.profile_image || 'default_image_url.jpg';
+                document.querySelector('#candidateLocation').textContent = data.country || 'Location not specified';
+                document.querySelector('#candidateJobTitle').textContent = data.job_title || 'Job title not specified';
+                document.querySelector('#candidateName').textContent = `${data.first_name} ${data.surname}`;
+                document.querySelector('#candidateCoverLetter').textContent = data.description || 'No Candidate About provided';
+
+                // Render skills
+                const skillsContainer = document.querySelector('#candidateSkills');
+                skillsContainer.innerHTML = ''; // Clear previous skills
+                console.log('Skills:', data.skills); // Debug skills
+                if (data.skills.length > 0) {
+                    data.skills.forEach(skill => {
+                        const skillElement = document.createElement('span');
+                        skillElement.className = 'bg-blue-100 text-[#1e90ff] rounded-full px-3 py-1 text-sm';
+                        skillElement.textContent = skill;
+                        skillsContainer.appendChild(skillElement);
+                    });
+                } else {
+                    skillsContainer.innerHTML = '<span>No skills listed.</span>';
+                }
+
+                // Render contacts
+                const contactsContainer = document.querySelector('#candidateContacts');
+                contactsContainer.innerHTML = ''; // Clear previous contacts
+                console.log('Contacts:', data.contacts); // Debug contacts
+                if (data.contacts && data.contacts.length > 0) {
+                    data.contacts.forEach(contact => {
+                        const contactElement = document.createElement('div');
+                        contactElement.textContent = contact; // Assuming contact is a string
+                        contactsContainer.appendChild(contactElement);
+                    });
+                } else {
+                    contactsContainer.innerHTML = '<span>No contacts listed.</span>';
+                }
+
+                // Render experiences
+                const experiencesContainer = document.querySelector('#candidateExperiences');
+                experiencesContainer.innerHTML = ''; // Clear previous experiences
+                console.log('Experiences:', data.work_experiences); // Debug experiences
+                if (data.work_experiences && data.work_experiences.length > 0) {
+                    data.work_experiences.forEach(exp => {
+                        const expElement = document.createElement('div');
+                        expElement.textContent = `${exp.role} at ${exp.company_name} (${exp.start_date} - ${exp.end_date})`; // Customize as needed
+                        experiencesContainer.appendChild(expElement);
+                    });
+                } else {
+                    experiencesContainer.innerHTML = '<span>No experiences listed.</span>';
+                }
+
+                // Render languages
+                const languagesContainer = document.querySelector('#candidateLanguages');
+                languagesContainer.innerHTML = ''; // Clear previous languages
+                console.log('Languages:', data.languages); // Debug languages
+                if (data.languages && data.languages.length > 0) {
+                    data.languages.forEach(language => {
+                        const langElement = document.createElement('span');
+                        langElement.className = 'bg-blue-100 text-[#1e90ff] rounded-full px-3 py-1 text-sm';
+                        langElement.textContent = language.language__name; // Set language name
+                        languagesContainer.appendChild(langElement);
+                    });
+                } else {
+                    languagesContainer.innerHTML = '<span>No languages listed.</span>';
+                }
+              // Set the resume link
+                const resumeLink = document.querySelector('#candidateResumeLink');
+                resumeLink.href = data.resume_pdf; // Set the href to the resume PDF URL
+                console.log('Resume URL:', data.resume_pdf);
+
+                // Show the modal
+                document.querySelector('#detailsModal').classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Error fetching application details:', error);
+            });
+        });
+    });
+});
+
+// Function to close modal
+function closeModal() {
+    document.querySelector('#detailsModal').classList.add('hidden');
+}
+</script>
+
+
+   <script>
+    // Function to toggle dropdown visibility and arrow direction
+    function toggleDropdown(dropdownId, arrowId) {
+      const dropdown = document.getElementById(dropdownId);
+      const arrow = document.getElementById(arrowId);
+
+      dropdown.classList.toggle('hidden');
+
+      // Change arrow direction
+      if (arrow.innerHTML === '▼') {
+        arrow.innerHTML = '&#9650;'; // Up arrow
+      } else {
+        arrow.innerHTML = '&#9660;'; // Down arrow
+      }
+    }
+  </script>
+
+  <script>
+    function archiveCandidate() {
+      alert("Candidate has been archived.");
+    }
+
+    function shortlistCandidate() {
+      alert("Candidate has been shortlisted.");
+    }
+
+    function messageCandidate() {
+      alert("Opening message window for candidate...");
+    }
+
+    function viewDetails() {
+      document.getElementById("detailsModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("detailsModal").classList.add("hidden");
+    }
+  </script>
+<br><br><br><br>
+{% endblock %}

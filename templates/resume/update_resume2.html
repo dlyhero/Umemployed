@@ -1,0 +1,203 @@
+{% extends "resume/base.html" %}
+{% load static %}
+{% block search_bar %}
+{% endblock search_bar %}
+{% load custom_filters %}
+{% block custom_css %}
+<!-- Loader CSS -->
+<style>
+    .loader .logo img{
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-size: cover;
+        margin: 0 auto;
+    }
+
+    @keyframes blink {
+        0%,
+        50%,
+        100% {
+            opacity: 1;
+        }
+
+        25%,
+        75% {
+            opacity: 0;
+        }
+    }
+
+    .blinking {
+        animation: blink 6s infinite;
+    }
+
+    /* Form Styling */
+    form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .form-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-item label {
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .form-item input, .form-item textarea {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .form-item.full-width {
+        grid-column: span 2;
+    }
+    
+    .submit-button {
+        grid-column: span 2;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+</style>
+
+<link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{% static 'build/css/sidebar_recriuter.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+/>
+<link rel="stylesheet" href="{% static 'build/css/header.css' %}" />
+{% endblock %}
+
+{% block content %}
+<main class="p-4 md:p-6 lg:p-8 max-w-8xl mx-auto">
+  <section class="flex flex-col lg:flex-row gap-6 lg:justify-center">
+    <!-- Profile Edit Form -->
+    <div class="bg-white sm:bg-white sm:border border-gray-300 rounded-lg sm:shadow-md lg:ml-20 p-6" style="flex: 0 0 60%">
+      <h2 class="text-[#1e90ff] font-semibold text-lg mb-4">
+        Edit Profile
+      </h2>
+
+      <!-- Illustrative Image -->
+      <div class="mb-6 text-center">
+        <img
+          src="{% static 'build/pics/20769939_Sandy_Med-02_Single-03.jpg' %}"
+          class="h-[60vh] w-full"
+          alt="edit"
+        />
+      </div>
+
+      <!-- Form -->
+      <form method="post" enctype="multipart/form-data" id="contact-info-form">
+        {% csrf_token %}
+        <div class="form-item">
+          <label for="{{ form.first_name.id_for_label }}">First Name</label>
+          {{ form.first_name|add_class:"border rounded-lg px-3 py-2" }}
+        </div>
+
+        <div class="form-item">
+          <label for="{{ form.surname.id_for_label }}">Surname</label>
+          {{ form.surname|add_class:"border rounded-lg px-3 py-2" }}
+        </div>
+
+        <div class="form-item">
+          <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth</label>
+          {{ form.date_of_birth|add_class:"border rounded-lg px-3 py-2" }}
+        </div>
+
+        <div class="form-item">
+          <label for="{{ form.phone.id_for_label }}">Phone</label>
+          {{ form.phone|add_class:"border rounded-lg px-3 py-2" }}
+        </div>
+
+        <div class="form-item">
+          <label for="{{ form.state.id_for_label }}">State</label>
+          {{ form.state|add_class:"border rounded-lg px-3 py-2" }}
+        </div>
+
+        <div class="form-item">
+          <label for="{{ form.country.id_for_label }}">Country</label>
+          {{ form.country|add_class:"border rounded-lg px-3 py-2" }}
+        </div>
+
+        <div class="form-item full-width">
+          <label for="{{ form.job_title.id_for_label }}">Job Title</label>
+          {{ form.job_title|add_class:"border rounded-lg px-3 py-2" }}
+        </div>
+
+        <div class="form-item full-width">
+          <label for="{{ form.description.id_for_label }}">Description</label>
+          {{ form.description|add_class:"border rounded-lg px-3 py-2" }}
+        </div>
+
+        <div class="form-item full-width">
+          <label for="{{ form.profile_image.id_for_label }}">Profile Image</label>
+          {{ form.profile_image|add_class:"border rounded-lg px-3 py-2" }}
+        </div>
+
+        <div class="submit-button">
+          <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Additional Features Section -->
+    <div class="flex-1 space-y-6" style="flex: 0 0 20%">
+      <!-- Job Opportunities and other sections unchanged -->
+    </div>
+  </section>
+</main>
+
+<!-- Loader -->
+<div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50">
+  <div class="loader">
+    <div class="logo blinking">
+      <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
+    </div>
+    <br><br>
+    <span><p>Processing, this might take some seconds.</p><span>
+  </div>
+</div>
+
+<!-- Form Submission Script -->
+<script>
+document.getElementById('contact-info-form').addEventListener('submit', function(event) {
+    var otherJobTitle = document.getElementById('other-job-title').value;
+    if (otherJobTitle) {
+        event.preventDefault();
+        document.getElementById('loader').classList.remove('hidden');
+        fetch(`{{ api_url }}?input_str=${otherJobTitle}`)
+            .then(response => {
+                document.getElementById('loader').classList.add('hidden');
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then(data => {
+                alert(`The job title "${otherJobTitle}" has been added. Please select it from the list and click save.`);
+                location.reload();
+            })
+            .catch(error => {
+                document.getElementById('loader').classList.add('hidden');
+                alert('There was a problem with the request.');
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+});
+</script>
+
+<script src="{% static 'build/scripts/header.js' %}"></script>
+<script src="{% static 'build/scripts/sidebar_recruiter.js' %}"></script>
+{% endblock %}

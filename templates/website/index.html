@@ -3,6 +3,9 @@
 {% block title %}
     <title>Find Your Dream Job with UmEmployed</title>
     {% endblock title %}
+{% block custom_css %}
+  <meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
 {% block content %}
 
     <main>
@@ -202,17 +205,19 @@
 
       <!-- Bookmark Icon -->
       <div class="flex items-center justify-between">
-        {% if job.id in saved_jobs %}
-        <!-- Show filled bookmark if job is saved -->
-        <a class="bookmark-job" data-job-id="{{ job.id }}">
-          <i class="fas fa-bookmark text-[#1e90ff] text-xl"></i>
-        </a>
-        {% else %}
-        <!-- Show empty bookmark if job is not saved -->
-        <a class="bookmark-job" data-job-id="{{ job.id }}">
-          <i class="far fa-bookmark text-gray-500 text-xl hover:text-[#1e90ff]"></i>
-        </a>
-        {% endif %}
+         {% if job.id in saved_jobs %}
+          <!-- Show filled bookmark if the job is saved -->
+          <a class="bookmark-job" data-job-id="{{ job.id }}">
+              <i class="fas fa-bookmark text-[#1e90ff] text-xl"></i>  <!-- Filled Bookmark Icon -->
+          </a>
+          {% else %}
+          <!-- Show empty bookmark if the job is not saved -->
+          <a class="bookmark-job" data-job-id="{{ job.id }}">
+              <i class="far fa-bookmark text-gray-500 text-xl hover:text-[#1e90ff]"></i>  <!-- Empty Bookmark Icon -->
+          </a>
+          {% endif %}
+
+
         
         <!-- Apply Now Button or Already Applied -->
         {% if job.id in applied_job_ids %}
@@ -476,42 +481,46 @@
         </div>
       </section>
     </main>
+    <!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include the CSRF token in a meta tag -->
+<meta name="csrf-token" content="{{ csrf_token }}">
 
     <script>
-$(document).ready(function() {
-    // Handle bookmark job click
-    $('.bookmark-job').on('click', function(e) {
-        e.preventDefault();  // Prevent the default anchor tag behavior (adding #)
-        
-        const jobId = $(this).data('job-id');
-        const bookmarkIcon = $(this).find('i');  // Get the icon element
-        
-        console.log("Bookmarking job with ID:", jobId);  // Debugging output
+$(document).on('click', '.bookmark-job', function(e) {
+    e.preventDefault();  // Prevent the default action of the anchor tag
+    const jobId = $(this).data('job-id');
+    const bookmarkIcon = $(this).find('i');  // Find the icon inside the clicked element
 
-        $.ajax({
-            url: '/job/save-job/' + jobId + '/',
-            type: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',  // Ensure you send the CSRF token
-            },
-            success: function(response) {
-                console.log(response);  // Log the server response
-                // Toggle bookmark icon on success
-                if (response.status === 'saved') {
-                    bookmarkIcon.removeClass('far fa-bookmark text-gray-500').addClass('fas fa-bookmark text-[#1e90ff]');
-                } else if (response.status === 'removed') {
-                    bookmarkIcon.removeClass('fas fa-bookmark text-[#1e90ff]').addClass('far fa-bookmark text-gray-500');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', status, error);  // Log the error
-                alert('An error occurred while saving the job.');
+    console.log("Attempting to bookmark job ID:", jobId);  // Debugging output
+
+    $.ajax({
+        url: '/job/save-job/' + jobId + '/',
+        type: 'POST',
+        headers: {
+            'X-CSRFToken': $('meta[name="csrf-token"]').attr('content'),  // Use the CSRF token from meta tag
+        },
+        success: function(response) {
+            console.log(response);  // Log the response
+
+            // Toggle bookmark icon based on the action
+            if (response.action === 'saved') {
+                bookmarkIcon.removeClass('far fa-bookmark text-gray-500').addClass('fas fa-bookmark text-[#1e90ff]');
+            } else if (response.action === 'removed') {
+                bookmarkIcon.removeClass('fas fa-bookmark text-[#1e90ff]').addClass('far fa-bookmark text-gray-500');
             }
-        });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error occurred:', status, error);  // Log the error
+            alert('An error occurred while saving or removing the job.');
+        }
     });
 });
 
-    </script> 
+</script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 
     {% endblock %}
