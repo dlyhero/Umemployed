@@ -20,13 +20,13 @@
             <!-- Professional Tab List -->
             <ul class="flex justify-start space-x-6 bg-white rounded-lg border-b p-[8px] border-gray-200">
                 <li>
-                    <a href="{% url 'feature-not-implemented' %}" target="_self"
+                    <a href="{% url 'view_my_jobs' company.id %}" target="_self"
                         class=" text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-[#1e90ff] transition-all duration-300">
                         <span class="air3-tab-btn-text">All job posts</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/nx/wm/client/contracts"
+                    <a href="{% url 'feature-not-implemented' %}"
                         class=" text-gray-600 hover:text-gray-800 py-2 px-6 rounded-full border-b-4 border-transparent hover:border-gray-300 transition-all duration-300">
                         <span class="air3-tab-btn-text">All contracts</span>
                     </a>
