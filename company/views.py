@@ -14,6 +14,15 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from job.models import Job, Application
 from resume.models import Resume
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .forms import UpdateCompanyForm
+from .models import Company
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 @login_required(login_url='login')
@@ -58,16 +67,7 @@ def create_company(request):
 
 
 
-#update companyimport logging
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .forms import UpdateCompanyForm
-from .models import Company
-import logging
 
-# Configure logging
-logger = logging.getLogger(__name__)
 
 @login_required(login_url='login')
 @company_belongs_to_user
@@ -128,12 +128,6 @@ def company_dashboard(request, company_id):
 
     return render(request, 'company/dashboard.html', context)
 
-
-# @login_required(login_url='login')
-# def company_details(request, pk):
-#     company = get_object_or_404(Company, pk=pk)
-#     context = {'company': company}
-#     return render(request, 'company/index.html', context)
 
 @login_required(login_url='login')
 @company_belongs_to_user

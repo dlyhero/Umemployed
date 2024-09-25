@@ -206,8 +206,18 @@ def select_skills(request):
                         # Send new job email notification
                         job_description = job_instance.description if job_instance.description else 'No description available.'
                         job_link = request.build_absolute_uri(job_instance.get_absolute_url())
-                        send_new_job_email(request.user.email, request.user.get_full_name(), job_instance.title, job_link, job_description, company.name)
-
+                        # Send new job email to all users
+                        
+                        users = User.objects.all()
+                        for user in users:
+                            send_new_job_email(
+                                user.email, 
+                                user.get_full_name(), 
+                                job_instance.title, 
+                                job_link, 
+                                job_description, 
+                                company.name
+                            )
                         # Notify all users about the new job
                         message = f"A new job has been posted: {job_instance.title}. Check it out!"
                         notification_type = 'new_job_posted'

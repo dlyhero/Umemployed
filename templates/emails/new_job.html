@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>New Job Opportunity</title>
+    <title>UmEmployed: New Job Opportunity</title>
     <style>
         /* Reset some default styles */
         body {
@@ -63,7 +63,7 @@
             <p>We're excited to inform you about a new job posting that may align with your interests.</p>
             <p><strong>Job Title:</strong> {{ job_title }}</p>
             <p><strong>Company:</strong> {{ company }}</p>
-            <p><strong>Description:</strong> {{ job_description|truncatechars:40 }}</p>
+            <p><strong>Description:</strong> {{ job_description|truncatechars:60 }}</p>
             <p>To learn more and apply, please click the button below:</p>
             <p><a class="button" href="{{ job_link }}">View Job Details</a></p>
         </div>
