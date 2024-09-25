@@ -20,7 +20,7 @@
             <!-- Professional Tab List -->
             <ul class="flex justify-start space-x-6 bg-white rounded-lg border-b p-[8px] border-gray-200">
                 <li>
-                    <a href="#" target="_self"
+                    <a href="{% url 'feature-not-implemented' %}" target="_self"
                         class=" text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-[#1e90ff] transition-all duration-300">
                         <span class="air3-tab-btn-text">All job posts</span>
                     </a>
@@ -192,7 +192,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start">
                     <div class="flex-1">
                         <h4 class="text-xl font-bold mb-1">
-                            <a href="#" class="text-gray-800 hover:text-[#1e90ff] transition">
+                            <a href="{% url 'feature-not-implemented' %}" class="text-gray-800 hover:text-[#1e90ff] transition">
                                 {{job.title }}
                             </a>
                         </h4>
@@ -209,9 +209,9 @@
                         <div class="modal hidden absolute right-0 mt-8 w-48 bg-white border border-gray-200 shadow-md rounded-lg z-10">
                             <ul>
                                 <li class="px-4 py-2 hover:bg-gray-100"><a href="{% url 'job_applications' company.id job.id %}">View Proposal</a></li>
-                                <li class="px-4 py-2 hover:bg-gray-100"><a href="#">Invite Freelancer</a></li>
-                                <li class="px-4 py-2 hover:bg-gray-100"><a href="#">Edit Posting</a></li>
-                                <li class="px-4 py-2 hover:bg-gray-100"><a href="#">Delete Posting</a></li>
+                                <li class="px-4 py-2 hover:bg-gray-100"><a href="{% url 'feature-not-implemented' %}">Invite Freelancer</a></li>
+                                <li class="px-4 py-2 hover:bg-gray-100"><a href="{% url 'feature-not-implemented' %}">Edit Posting</a></li>
+                                <li class="px-4 py-2 hover:bg-gray-100"><a href="{% url 'feature-not-implemented' %}">Delete Posting</a></li>
                             </ul>
                         </div>
                     </div>
@@ -329,7 +329,7 @@ function rnderJobs(page) {
                 <div class="flex flex-col md:flex-row justify-between items-start">
                     <div class="flex-1">
                         <h4 class="text-xl font-bold mb-1">
-                            <a href="#" class="text-gray-800 hover:text-[#1e90ff] transition">
+                            <a href="{% url 'feature-not-implemented' %}" class="text-gray-800 hover:text-[#1e90ff] transition">
                                 ${job.title}
                             </a>
                         </h4>
@@ -345,10 +345,10 @@ function rnderJobs(page) {
                         <!-- Modal for 3-dot menu -->
                         <div class="modal hidden absolute right-0 mt-8 w-48 bg-white border border-gray-200 shadow-md rounded-lg z-10">
                             <ul>
-                                <li class="px-4 py-2 hover:bg-gray-100"><a href="#">View Proposal</a></li>
-                                <li class="px-4 py-2 hover:bg-gray-100"><a href="#">Invite Freelancer</a></li>
-                                <li class="px-4 py-2 hover:bg-gray-100"><a href="#">Edit Posting</a></li>
-                                <li class="px-4 py-2 hover:bg-gray-100"><a href="#">Delete Posting</a></li>
+                                <li class="px-4 py-2 hover:bg-gray-100"><a href="{% url 'feature-not-implemented' %}">View Proposal</a></li>
+                                <li class="px-4 py-2 hover:bg-gray-100"><a href="{% url 'feature-not-implemented' %}">Invite Freelancer</a></li>
+                                <li class="px-4 py-2 hover:bg-gray-100"><a href="{% url 'feature-not-implemented' %}">Edit Posting</a></li>
+                                <li class="px-4 py-2 hover:bg-gray-100"><a href="{% url 'feature-not-implemented' %}">Delete Posting</a></li>
                             </ul>
                         </div>
                     </div>
@@ -369,7 +369,7 @@ function rnderJobs(page) {
                             <span class="text-gray-500">Hired</span>
                         </div>
                     </div>
-                    <a href="#" class="border border-dotted border-[#1e90ff] text-[#1e90ff] px-4 py-2 rounded-full mt-4 md:mt-0">
+                    <a href="{% url 'feature-not-implemented' %}" class="border border-dotted border-[#1e90ff] text-[#1e90ff] px-4 py-2 rounded-full mt-4 md:mt-0">
                         View Proposals
                     </a>
                 </div>

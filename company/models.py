@@ -40,8 +40,7 @@ class Company(models.Model):
     ]
 
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="company")
     # Basic Information
     name = models.CharField(max_length=100, null=True, blank=True)
     industry = models.CharField(max_length=50, choices=INDUSTRY_CHOICES, null=True, blank=True)
