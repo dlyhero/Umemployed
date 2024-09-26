@@ -603,8 +603,12 @@ def job_application_success(request, job_id):
         recruiter_message = f"A new application has been received for the job: {job.title}."
         notify_user(recruiter, recruiter_message, 'job_application')
 
+        # Construct the job link with company and job IDs
+        job_link = request.build_absolute_uri(
+            reverse('job:job_applications', args=[job.company.id, job.id])
+        )
+
         # Send an email to the recruiter about the new application
-        job_link = request.build_absolute_uri(reverse('job:job_detail', args=[job.id]))  # Adjust the URL as needed
         send_application_email(recruiter.email, request.user.get_full_name(), job.title, job_link)
 
     # Notify the applicant about the application status
