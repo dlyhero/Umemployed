@@ -605,7 +605,7 @@ def job_application_success(request, job_id):
 
         # Construct the job link with company and job IDs
         job_link = request.build_absolute_uri(
-            reverse('job:job_applications', args=[job.company.id, job.id])
+            reverse('job_applications', args=[job.company.id, job.id])
         )
 
         # Send an email to the recruiter about the new application
