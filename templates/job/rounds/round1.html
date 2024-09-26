@@ -115,14 +115,34 @@
     #skill-sidebar::-Webkit-scrollbar, #question-section::-webkit-scrollbar{
         width: 1px;
     }
+    /* For web cam */
+    #camera-box {
+      width: 300px;
+      height: 200px;
+      border: 2px solid #ccc;
+      display: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
    
 </style>
 {% endblock %}
 
 {% block content %}
+
 <body class="text-sm" data-job="{{ job.id }}" style>
+    
     <main class="flex flex-col p-6 bg-white sm:bg-transparent">
-        <div class="main-container w-full max-w-7xl mx-auto bg-white rounded-lg p-2 sm:p-8 sm:border border-gray-300 flex flex-col">
+        
+    <div class="main-camera-container flex flex-col sm:flex-row justify-between items-start">
+        <div class="main-container w-full max-w-7xl mr-0 mx-auto bg-white rounded-lg p-2 sm:p-8 sm:border border-gray-300 flex flex-col">
+            
             <!-- Header Section -->
             <header id="header" class="header-main flex items-center p-4 rounded-lg mb-6 relative bg-blue-100 border-l-4 border-blue-500">
                 <div class="left-bar"></div>
@@ -134,6 +154,7 @@
                     </div>
                 </div>
             </header>
+            
 
             <!-- Content Section -->
             <div class="flex flex-col sm:flex-row gap-6 flex-1 overflow-hidden">
@@ -148,6 +169,7 @@
                         {% endfor %}
                     </div>
                 </div>
+                
 
                 <!-- Main Content for Questions -->
                 <div class="w-full sm:w-3/4 flex flex-col overflow-hidden">
@@ -181,6 +203,10 @@
                 </div>
             </div>
         </div>
+        <!-- Camera box beside the main-container -->
+        <div id="camera-box" class="w-32 h-24 border border-gray-300 rounded-lg ml-6 hidden">
+        <video id="camera-stream" autoplay></video>
+        </div>
 
         <!-- Modal Structure -->
         <div id="completedSkillModal" class="fixed inset-0 z-50 flex items-center justify-center hidden" style="margin:  35%;">
@@ -199,7 +225,9 @@
         </div>
             </div>
         </div>
+    </div>
     </main>
+    
     <script src="{% static 'assets_testing/JS/testing.js' %}"></script>
 
     <script>
@@ -364,6 +392,53 @@
     skillButtons[0].click();
 });
 
+</script>
+<script>
+  // Function to start the camera feed
+  function startCamera() {
+    const video = document.getElementById('camera-stream');
+    const cameraBox = document.getElementById('camera-box');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function(stream) {
+        video.srcObject = stream;
+        cameraBox.style.display = 'block'; // Show the camera box
+      })
+      .catch(function(err) {
+        console.error("Error accessing camera: ", err);
+        alert("Unable to access the camera. Please check your permissions.");
+      });
+  }
+
+  // Function to check camera permissions
+  function checkCameraPermission() {
+    // Check if permissions API is supported
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: 'camera' })
+        .then(function(permissionStatus) {
+          if (permissionStatus.state === 'granted') {
+            startCamera();
+          } else if (permissionStatus.state === 'denied') {
+            alert("Camera permission denied. Please reset permissions in your browser settings.");
+          } else {
+            // If permission is 'prompt' or unknown, request the camera
+            startCamera();
+          }
+        })
+        .catch(function(error) {
+          console.error("Permission query error: ", error);
+          startCamera(); // Fallback to starting the camera even if query fails
+        });
+    } else {
+      // If permissions API is not supported, just try starting the camera
+      startCamera();
+    }
+  }
+
+  // Start the camera or check permission when the page loads
+  window.onload = function() {
+    checkCameraPermission();
+  };
 </script>
 
 </body>
