@@ -13,11 +13,15 @@ from django.db.models import Q,Count
 from job.models import calculate_skill_match 
 from allauth.account.utils import send_email_confirmation
 
+from allauth.account.views import ConfirmEmailView
+from allauth.account.models import EmailConfirmationHMAC
+from django.contrib.auth import login
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from job.models import SavedJob
+from urllib.parse import urlencode
 
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
-from job.models import SavedJob
 def index(request):
     user = request.user
     recent_jobs = Job.objects.order_by('-created_at')[:10]
@@ -45,14 +49,6 @@ def index(request):
 
     return render(request, 'website/index.html', context)
 
-
-from django.db.models import Q, Count
-
-
-from urllib.parse import urlencode
-
-from django.db.models import Q, Count
-from urllib.parse import urlencode
 
 def home(request):
     user = request.user
@@ -270,7 +266,7 @@ def register_recruiter(request):
 @login_required(login_url='/')
 def logout_user(request):
     logout(request)
-    return redirect('home')  # Update the target name to match the appropriate URL name
+    return redirect('index')  # Update the target name to match the appropriate URL name
 
 def switch_account(request):
     return render(request,'users/accountType.html')
@@ -355,10 +351,6 @@ def send_verification_to_unverified_users(request):
     
     return HttpResponse("Verification emails sent to unverified users.")
 
-from allauth.account.views import ConfirmEmailView
-from allauth.account.models import EmailConfirmationHMAC
-from django.shortcuts import redirect
-from django.contrib.auth import login
 
 class CustomConfirmEmailView(ConfirmEmailView):
 

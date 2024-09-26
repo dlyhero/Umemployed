@@ -352,3 +352,6 @@ def company_notifications(request,company_id):
         return HttpResponse("You are not authorized to view this page.")
 
     return render(request, 'company/notifications.html',{'company':company})
+
+def company_info(request):
+    return render(request, 'company/company_info.html')

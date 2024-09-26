@@ -62,7 +62,7 @@ logger = logging.getLogger(__name__)
 from django.http import JsonResponse
 import json
 from users.models import User
-from users.email_tasks import send_new_job_email
+from users.email_tasks import send_new_job_email,send_application_email
 
 @login_required(login_url='/login')
 def create_job(request):
@@ -586,14 +586,26 @@ def job_application_success(request, job_id):
     # Retrieve skill scores from session
     skill_scores = request.session.get('skill_scores', {})
 
-    # Retrieve the application object
-    application = Application.objects.filter(job=job).first()
+    # Create or update the application object
+    application, created = Application.objects.update_or_create(
+        user=request.user,
+        job=job,
+        defaults={
+            'quiz_score': request.session.get('quiz_score', 0),  # Assuming quiz_score is stored in session
+            'matching_percentage': request.session.get('matching_percentage', 0.0),  # Assuming matching percentage is stored in session
+            'overall_match_percentage': request.session.get('overall_match_percentage', 0.0),  # Assuming overall matching percentage is stored in session
+        }
+    )
 
     # Notify the job poster (recruiter) about the new application
     if job.user:  # Assuming job.user is the recruiter
         recruiter = job.user
         recruiter_message = f"A new application has been received for the job: {job.title}."
         notify_user(recruiter, recruiter_message, 'job_application')
+
+        # Send an email to the recruiter about the new application
+        job_link = request.build_absolute_uri(reverse('job:job_detail', args=[job.id]))  # Adjust the URL as needed
+        send_application_email(recruiter.email, request.user.get_full_name(), job.title, job_link)
 
     # Notify the applicant about the application status
     applicant = request.user  # Assuming the current user is the applicant

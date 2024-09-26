@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <p>Hello,</p>
+    <p>{{ applicant_name }} has applied for the job <strong>{{ job_title }}</strong>.</p>
+    <p>You can view the job details <a href="{{ job_link }}">here</a>.</p>
+    <p>Best Regards,<br>Your Application System</p>
+    
+    <div class="footer">
+        <p>&copy; {{ current_year }} UmEmployed. All rights reserved.</p>
+    </div>
+</body>
+</html>
