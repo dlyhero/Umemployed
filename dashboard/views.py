@@ -144,7 +144,7 @@ def dashboard(request):
         user_profile = UserProfile.objects.create(user=request.user)
 
     # Get full country name for display
-    country_name = str(contact_info.country) if contact_info.country else None
+    country_name = str(contact_info.country.name) if contact_info.country else None
 
     # Forms for language and profile updates
     language_form = UserLanguageForm()
