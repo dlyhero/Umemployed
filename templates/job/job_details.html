@@ -7,6 +7,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
 
 {% endblock %}
 {% block content %}
@@ -120,91 +122,90 @@
         </div>
       </div>
 
-      <!-- Sidebar with Map and Other Job Cards -->
-      <div class="lg:w-1/3 bg-white w-full flex flex-col gap-2">
-        <!-- Map Section -->
-        <div class="bg-white p-2 rounded-lg">
-          <iframe
+<!-- Sidebar with Map and Other Job Cards -->
+<div class="lg:w-1/3 bg-white w-full flex flex-col gap-2">
+    <!-- Map Section -->
+    <div class="bg-white p-2 rounded-lg">
+        <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.291299043575!2d-122.03250378432978!3d37.322998879842295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fb5c496db0df7%3A0x4a7f7af8e89b8948!2sApple%20Park!5e0!3m2!1sen!2sus!4v1664359674143!5m2!1sen!2sus"
-            width="100%"
-            height="200"
-            border-radius="30"
-            frameborder="0"
-            style="border: 0"
-            allowfullscreen=""
-            aria-hidden="false"
-            tabindex="0"
+            width="100%" height="200" frameborder="0" style="border: 0" allowfullscreen=""
+            aria-hidden="false" tabindex="0">
+        </iframe>
+    </div>
+
+    <hr class="mx-2 my-2" />
+    <!-- Other Jobs Section -->
+    <div class="bg-white p-4">
+        <div class="flex justify-between items-center">
+            <h4 class="font-semibold text-gray-700 mb-4">Other Jobs</h4>
+            <!-- Navigation Buttons -->
+        <div
+          class="hidden lg:flex justify-end gap-4 lg:mr-10 items-center mb-4"
+        >
+          <button
+            class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300"
+            id="scrollLeft"
           >
-          </iframe>
+            <i class="fas fa-chevron-left text-gray-600"></i>
+          </button>
+          <button
+            class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300"
+            id="scrollRight"
+          >
+            <i class="fas fa-chevron-right text-gray-600"></i>
+          </button>
+        </div>
         </div>
 
-        <hr class="mx-2 my-2" />
-        <!-- Other Jobs Section -->
-        <div class="bg-white p-4">
-          <h4 class="font-semibold text-gray-700 mb-4">Other Jobs</h4>
-
-          <!-- Job Card -->
-          <!-- Job Cards Scrollable Container -->
-          {% if similar_jobs %}
-          {% for job in similar_jobs %}
-          <div
-            class="flex gap-6 overflow-x-auto mx-auto scroll-smooth snap-x snap-mandatory"
-            id="jobCardsContainer"
-          >
-            <!-- Job Card 1 -->
-            <div
-              class="min-w-[90%] sm:min-w-[40%] md:min-w-[50%] lg:min-w-[75%] bg-white border rounded-lg p-6 snap-start"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <img
-                  class="w-12 h-12 rounded-full mr-4"
-                  src="{% static 'new_design/icons/294675_google_icon.svg' %}"
-                  alt="Company Logo"
-                />
-                <div>
-                  <span class="text-sm text-gray-500">{{job.job_type}}</span>
+        <!-- Job Cards Scrollable Container -->
+        <div class="flex flex-row gap-6 overflow-x-auto mx-auto scroll-smooth snap-x snap-mandatory"
+             id="jobCardsContainer">
+            {% if similar_jobs %}
+            {% for job in similar_jobs %}
+            <!-- Job Card -->
+            <div class="min-w-[80%] sm:min-w-[80%] md:min-w-[60%] lg:min-w-[70%] bg-white border rounded-lg p-4 snap-start">
+                <div class="flex items-center justify-between mb-2">
+                    <img class="w-12 h-12 rounded-full mr-4"
+                         src="{{job.company.logo.url}}" alt="Company Logo" />
+                    <div>
+                        <span class="text-sm text-gray-500">{{job.job_type}}</span>
+                    </div>
                 </div>
-              </div>
-              <div class="mb-4">
-                <h3 class="text-xl font-semibold text-gray-800">
-                  {{job.title}}
-                </h3>
-                <div class="flex items-center gap-2">
-                  <span class="text-gray-600">{{job.company}}</span>
-                  <span class="text-sm text-gray-500">{{job.created_at}}</span>
+                <div class="mb-2">
+                    <h3 class="text-lg font-semibold text-gray-800">{{job.title}}</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-600">{{job.company}}</span>
+                        <span class="text-sm text-gray-500">{{job.created_at}}</span>
+                    </div>
                 </div>
-              </div>
-              <p
-                class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
-              >
-                <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
-              </p>
-              <p class="text-gray-800 mb-4 flex items-center">
-                $({{job.salary_range}}) / year
-              </p>
-              <div class="mt-4">
-                {% if job.id in applied_job_ids %}
-                <span style="color: green;">(Already Applied)</span>
-                {% else %}
-                 <a href="{% url 'job:confirm_evaluation' job.id %}">
-                <button
-                  class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full"
-                >
-                  Apply Now
-                </button>
-                </a>
-                {% endif %}
-              </div>
-              </div>
+                <p class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-2 flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
+                </p>
+                <p class="text-gray-800 mb-2 flex items-center">
+                    $({{job.salary_range}}) / year
+                </p>
+                <div class="mt-2">
+                    {% if job.id in applied_job_ids %}
+                    <span style="color: green;">(Already Applied)</span>
+                    {% else %}
+                    <a href="{% url 'job:confirm_evaluation' job.id %}">
+                        <button
+                            class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full">
+                            Apply Now
+                        </button>
+                    </a>
+                    {% endif %}
+                </div>
             </div>
-            <!-- Job Card 2 -->
             {% endfor %}
             {% else %}
             <p>No similar jobs found</p>
             {% endif %}
-          </div>
         </div>
-      </div>
+    </div>
+</div>
+
+
     </main>
 
          
