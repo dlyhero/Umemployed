@@ -6,10 +6,35 @@
   <script src="https://cdn.tailwindcss.com"></script>
   
   <style>
-    input[type="checkbox"]:checked + label {
-        background-color: #1e90ff;
-        color: white;
-    }
+   /* Hide the checkbox */
+input[type="checkbox"] {
+    display: none;
+}
+
+/* Style the default label (circle) */
+.circ {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Make the label round */
+    padding: 1rem;
+    border: 2px solid #ccc; /* Default border for the circle */
+    background-color: white; /* Default background color for the circle */
+    color: #000; /* Default text color */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+/* Change circle's background and text color when the checkbox is checked */
+input[type="checkbox"]:checked + .circ {
+    background-color: #1e90ff; /* Fill the circle with blue */
+    color: white; /* Change text color to white */
+}
+
+/* Change the text color when checkbox is checked */
+input[type="checkbox"]:checked + .circ .label-text {
+    color: white; /* Ensure the text turns white when checked */
+}
+
 </style>
 {% endblock %}
 {% block title %}
@@ -183,6 +208,7 @@
             </button>
         </div>
     </form>
+    <br>
 
     
 </main>
@@ -217,24 +243,29 @@
     this.submit();
 });
 
-// Function to update checkbox color on change
+// Function to update checkbox styles on change
 function updateCheckboxColor(checkbox) {
+    const parentElement = checkbox.parentElement; 
+    
     if (checkbox.checked) {
-        checkbox.parentElement.style.color = '#1e90ff';
+        parentElement.style.backgroundColor = '#1e90ff'; 
+        parentElement.style.color = '#ffffff';           
     } else {
-        checkbox.parentElement.style.color = '';
+        parentElement.style.backgroundColor = '';        
+        parentElement.style.color = '';                 
     }
 }
 
 // Apply the updateCheckboxColor function to all relevant checkboxes
 document.querySelectorAll('.job-type-checkbox, .experience-level-checkbox, .weekly-range-checkbox, .shift-checkbox').forEach(function(checkbox) {
     checkbox.addEventListener('change', function() {
-        updateCheckboxColor(checkbox);
+        updateCheckboxColor(checkbox); // Update on checkbox change
     });
 
     // Initial check in case the checkboxes are pre-checked
-    updateCheckboxColor(checkbox);
+    updateCheckboxColor(checkbox); // Handle page load with pre-checked boxes
 });
+
 
 </script>
 
