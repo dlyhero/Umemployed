@@ -241,7 +241,7 @@
               <div
                 class="country text-base mb-1 flex items-center text-gray-700 font-semibold text-sm"
               >
-                 <div class="country"> <i class="fa-solid fa-earth-americas text-blue-500 mr-2"></i>{{ contact_info.country }}</div>
+                 <div class="country"> <i class="fa-solid fa-earth-americas text-blue-500 mr-2"></i>{{ contact_info.country.name }}</div>
                 
               </div>
             </div>
@@ -584,7 +584,7 @@
             </button>
         </div>
         <div id="saved-country" class="p-3 border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
-            <p>{{ country_name }}</p>
+            <p>{{ country_name.name }}</p>
         </div>
     </section>
     
