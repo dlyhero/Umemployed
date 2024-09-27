@@ -1,0 +1,157 @@
+{% extends 'resume/base.html' %}
+{% load static %}
+{% block title %}
+<title>All Companies | UmEmployed</title>
+{% endblock %}
+{% block custom_css %}
+<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+<script src="https://cdn.tailwindcss.com"></script> 
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="container mx-auto max-w-6xl p-4 lg:p-0 mb-10">
+    <section>
+        <ul class="flex justify-start space-x-6 bg-white rounded-lg border-b p-[8px] border-gray-200">
+            <li>
+                <a href="{% url 'company-list' %}" target="_self"
+                    class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-[#1e90ff] transition-all duration-300">
+                    <span class="air3-tab-btn-text">All Companies</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'job:saved_jobs' %}" target="_self"
+                    class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-transparent hover:border-[#1e90ff] transition-all duration-300">
+                    <span class="air3-tab-btn-text">Saved</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'job:applied_jobs' %}" target="_self"
+                    class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-transparent hover:border-[#1e90ff] transition-all duration-300">
+                    <span class="air3-tab-btn-text">Applied</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <section id="search-ctn-mobile" class="my-5 lg:hidden p-2">
+        <div class="search-wrapper flex mx-auto bg-white px-2 py-2 border rounded-full shadow sm:shadow-none">
+            <input
+                class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
+                type="text"
+                name="search"
+                id="search"
+                placeholder="Search companies"
+            />
+            <div class="border-l border-gray-300 mx-2 hidden sm:block"></div>
+            <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
+            <div class="button-wrap">
+                <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="my-10">
+        <div role="group" class="container mx-auto mb-6 md:mb-0">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0 w-full sm:w-fit">
+                    <h2 class="text-2xl font-bold mb-2 md:text-3xl">All Companies</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="company-section">
+        <div class="company-list md:p-6 lg:p-2">
+            {% if companies %}
+                {% for company in companies %}
+                    <!-- Company Item -->
+                    <div class="company border-b py-4 relative bg-white shadow-md rounded-lg p-4 mb-4">
+                        <div class="flex flex-col md:flex-row justify-between items-start">
+                            <div class="flex-1">
+                                <div class="flex items-center mb-2">
+                                    <img class="w-12 h-12 rounded-full mr-4" src="{{company.logo.url}}" alt="{{company.name}} Logo" />
+                                    <div>
+                                        <h4 class="text-xl font-bold mb-1">
+                                            <a href="{% url 'company-detail' company.id %}" class="text-gray-800 hover:text-[#1e90ff] transition">
+                                                {{ company.name }}
+                                            </a>
+                                        </h4>
+                                        <p class="text-sm text-gray-500">{{ company.industry }}</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600">{{ company.location }}</p>
+                                <p class="text-sm text-gray-600">{{ company.size }} employees</p>
+                                <p class="text-sm text-gray-600 mt-1">{{ company.description|safe|truncatewords:20 }}</p>
+                                <p class="text-sm text-green-600 mt-1">{{ company.available_jobs }} available jobs</p>
+                            </div>
+                            <div class="flex justify-end items-start mt-2 md:mt-0 relative w-full sm:w-fit space-x-4">
+                                <!-- Additional buttons or actions can go here -->
+                            </div>
+                        </div>
+                        <div class="flex flex-row justify-end items-center mt-4 space-x-4">
+                            <a href="{% url 'company-detail' company.id %}">
+                                <button class="text-[#1e90ff] text-xs px-2 py-2 rounded-full border border-dotted border-[#1e90ff]">Explore Company</button>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="flex justify-center items-center h-32">
+                    <p class="text-gray-600">No companies found, try revisiting any moment from now!</p>
+                </div>
+            {% endif %}
+
+            <!-- Pagination Controls -->
+            <div class="pagination flex justify-center items-center mt-6 space-x-2">
+                <button id="prev-page"
+                        class="pagination-btn flex items-center px-4 py-2 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        disabled>
+                    Previous
+                </button>
+
+                <span class="text-gray-600">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+
+                <button id="next-page"
+                        class="pagination-btn flex items-center px-4 py-2 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300">
+                    Next
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- JavaScript for Dropdowns -->
+<script>
+    function toggleFilterDropdown() {
+        const dropdown = document.getElementById('filter-dropdown');
+        dropdown.classList.toggle('hidden');
+    }
+
+    function toggleMobileFilter() {
+        const filterForm = document.getElementById('filter-form');
+        filterForm.classList.toggle('hidden');
+    }
+
+    // Close dropdown if clicked outside
+    window.onclick = function (event) {
+        if (!event.target.matches('#desktop-filter-btn')) {
+            const dropdown = document.getElementById('filter-dropdown');
+            if (!dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        }
+    }
+</script>
+<script>
+    function toggleFilterSection() {
+        const filterSection = document.getElementById('filters-section');
+        filterSection.classList.toggle('hidden');
+    }
+</script>
+{% endblock %}

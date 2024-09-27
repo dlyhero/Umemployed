@@ -14,6 +14,10 @@ urlpatterns = [
     path('dashboard/<int:company_id>/', views.company_dashboard, name="company_dashboard"),
     path('applications/<int:application_id>/details/', views.application_details, name='application_details'),
     path('company/<int:company_id>/job/<int:job_id>/applications/', views.job_applications_view, name='job_applications'),
+    path('info/<int:pk>/', views.company_detail_view, name='company-detail'),
+    path('<int:company_id>/jobs/', views.company_jobs_list_view, name='company-jobs-list'),
+    path('companies/', views.company_list_view, name='company-list'),
+
 
 
 ]

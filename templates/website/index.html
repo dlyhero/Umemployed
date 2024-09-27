@@ -340,9 +340,9 @@
             <h3 class="text-lg font-semibold text-gray-900">{{company.name}}</h3>
             <p class="text-sm text-gray-500">{{company.industry}}</p>
             <a
-              href="{% url 'home' %}"
+              href="{% url 'company-detail' company.id %}"
               class="text-[#1e90ff] font-semibold hover:text-blue-500 mt-4 inline-block"
-              >View Jobs</a
+              >Visit</a
             >
           </div>
           {% endfor %}
@@ -353,7 +353,7 @@
         <!-- Call to Action Button -->
         <div class="mt-8 text-center">
           <a
-            href="{% url 'feature-not-implemented' %}"
+            href="{% url 'company-list' %}"
             class="bg-[#1e90ff] text-white font-bold py-4 px-4 rounded-lg hover:bg-blue-400"
           >
             Explore All Companies

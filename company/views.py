@@ -120,7 +120,11 @@ def company_dashboard(request, company_id):
     company = get_object_or_404(Company, id=company_id)
     
     jobs = Job.objects.filter(company=company).order_by('-created_at')  # Assuming `created_at` is your timestamp field
-
+    
+    # Add the number of applications to each job
+    for job in jobs:
+        job.application_count = Application.objects.filter(job=job).count()
+    
     context = {
         'company': company,
         'jobs': jobs,  # Pass the jobs to the template
@@ -135,19 +139,13 @@ def view_my_jobs(request, company_id):
     company = get_object_or_404(Company, id=company_id)
     jobs = Job.objects.filter(company=company)
     
-    # Count the number of applications for each job
-    job_application_counts = {}
-    total_applications = 0  # Initialize total applications counter
-    
+  
     for job in jobs:
-        count = Application.objects.filter(job=job).count()
-        job_application_counts[job] = count
-        total_applications += count  # Add to total applications
+        job.application_count = Application.objects.filter(job=job).count()
     context = {
         'company': company,
         'jobs': jobs,
-        'job_application_counts': job_application_counts,
-        'total_applications': total_applications,  
+         
     }
     return render(request, 'company/myJobs.html', context)
 
@@ -353,5 +351,28 @@ def company_notifications(request,company_id):
 
     return render(request, 'company/notifications.html',{'company':company})
 
-def company_info(request):
-    return render(request, 'company/company_info.html')
+def company_detail_view(request, pk):
+    company = get_object_or_404(Company, pk=pk)
+    jobs = Job.objects.filter(company=company)
+    is_owner = request.user == company.user
+    applied_job_ids = []
+
+    # Check if the user is authenticated before querying applications
+    if request.user.is_authenticated:
+        applied_job_ids = Application.objects.filter(user=request.user).values_list('job_id', flat=True)
+    return render(request, 'company/company_detail.html', {'company': company, 'jobs': jobs,'applied_job_ids':applied_job_ids,'is_owner':is_owner})
+
+def company_jobs_list_view(request, company_id):
+    company = get_object_or_404(Company, id=company_id)
+    jobs = Job.objects.filter(company=company)
+
+    return render(request, 'company/company_jobs_list.html', {'company': company, 'jobs': jobs})
+
+
+from django.shortcuts import render
+from django.db.models import Count
+from .models import Company
+
+def company_list_view(request):
+    companies = Company.objects.annotate(available_jobs=Count('job'))
+    return render(request, 'company/company_list.html', {'companies': companies})
