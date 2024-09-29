@@ -175,6 +175,7 @@ class Application(models.Model):
     has_completed_quiz = models.BooleanField(default=False)
     round_scores = models.JSONField(default=dict)
     total_scores = models.JSONField(default=dict)
+    video_record = models.FileField(upload_to='videos/', null=True, blank=True)  # Field for video recording
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
