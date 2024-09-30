@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import os
 import geopy
@@ -8,10 +7,8 @@ from decouple import config
 import dj_database_url  
 import django_heroku
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -20,12 +17,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
 SITE_ID = 3
-
 
 # Application definition
 
@@ -68,18 +64,14 @@ INSTALLED_APPS = [
     
     'ckeditor',
     'ckeditor_uploader',
-    
-
 ]
+
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
-import os
 import redis
 REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
 # Create a Redis connection using the URL
 redis_client = redis.from_url(REDIS_URL, ssl=True, ssl_cert_reqs=None)
-
-
 
 # Caching setup using Redis
 CACHES = {
@@ -95,13 +87,10 @@ CACHES = {
     }
 }
 
-
-
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 
 import logging
-import redis
 
 # Log the Redis URL for debugging
 logger = logging.getLogger(__name__)
@@ -113,7 +102,6 @@ try:
     logger.debug("Redis connection successful")
 except Exception as e:
     logger.error(f"Redis connection failed: {e}")
-
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
@@ -157,35 +145,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'umemployed.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
   
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'dblog2hj0aubg6',
-        'USER': 'uepklalomgtt30',
+        '': 'uepklalomgtt30',
         'PASSWORD': 'p3e6a79a42e739605c32617dd0d4433f6dfce03cbf66b49a2a6f7c436dec3b6b0',
         'HOST': 'ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
         'PORT': '5432',      
     }
 }
 
-# DATABASES = {
-#     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-# }
-
 ADMINS = [('Nyuydine Bill', 'billleynyuy@gmail.com')]
 MANAGERS = ADMINS
-
 
 LOGGING = {
     'version': 1,
@@ -206,7 +181,6 @@ LOGGING = {
     },
 }
 
-
 # Automatically send a confirmation email after signup
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # options: "none", "optional", "mandatory"
 ACCOUNT_EMAIL_REQUIRED = True
@@ -215,24 +189,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
-
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'switch_account'  # If user is logged in
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'switch_account' 
-
-
-
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         'SCOPE': ['profile', 'email'],
-#         'AUTH_PARAMS': {'access_type': 'online'},
-#         'OAUTH_PKCE_ENABLED': True,
-#         'APP': {
-#             'client_id': os.environ.get('GOOGLE_CLIENT_ID'),
-#             'secret': os.environ.get('GOOGLE_CLIENT_SECRET'),
-#             'key': ''
-#         }
-#     }
-# }
 
 LOGIN_URL='/accounts/user/login'
 LOGOUT_URL='logout'
@@ -269,13 +227,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.user_details',
 )
 
-
-
 ACCOUNT_EMAIL_REQUIRED = True #new
 ACCOUNT_LOGOUT_REDIRECT_URL='/'
-# ACCOUNT_EMAIL_VERIFICATION = 'none'
-
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
 EMAIL_HOST = 'smtp.gmail.com' #new
@@ -284,9 +237,6 @@ EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
 EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
 EMAIL_USE_TLS = True #new
 DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -306,7 +256,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -318,48 +267,33 @@ USE_I18N = True
 
 USE_TZ = True
 
-# AWS S3 settings
-from decouple import config
-
-# AWS S3 settings from .env
-AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
-# Other optional settings
-AWS_S3_FILE_OVERWRITE = False  # Prevent overwriting files with the same name
-AWS_DEFAULT_ACL = None  # You can set this if you want more fine-grained control
-
-# Use the S3Boto3Storage backend for media files
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# Azure Blob Storage settings
+AZURE_ACCOUNT_NAME = config('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY = config('AZURE_ACCOUNT_KEY')
+AZURE_CONTAINER = config('AZURE_CONTAINER')
+AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
 # Media files settings
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/'
+DEFAULT_FILE_STORAGE = "storages.backends.azure_storage.AzureStorage"
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-STATIC_URL = 'static/'
+# Static files settings
+STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/'
+STATICFILES_STORAGE = "storages.backends.azure_storage.AzureStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 AUTH_USER_MODEL = 'users.User'
-AUTHENTICATION_BACKENDS =['users.backend.EmailBackend']
+AUTHENTICATION_BACKENDS = ['users.backend.EmailBackend']
 
-STATIC_URL = '/static/'
+# Local static files settings (if needed for development)
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Update the path to an absolute path
-
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
 
 # CKEditor settings
 CKEDITOR_UPLOAD_PATH = "uploads/"
@@ -370,20 +304,11 @@ CKEDITOR_CONFIGS = {
         'height': 300,
     },
 }
-# AUTHENTICATION_BACKENDS = (
-    
-#     # Needed to login by username in Django admin, regardless of `allauth`
-#     'django.contrib.auth.backends.ModelBackend',
-
-#     # `allauth` specific authentication methods, such as login by email
-#     'allauth.account.auth_backends.AuthenticationBackend'
-# )
 
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
-
 
 OPENAI_API_KEY = config('OPENAI_API_KEY')
 SECRET_KEY = config('SECRET_KEY')
@@ -391,4 +316,3 @@ GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
 
 django_heroku.settings(locals())
-
