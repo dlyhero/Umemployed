@@ -22,6 +22,7 @@ def update_resume(request):
                 var.user = request.user
                 var.save()
 
+
                 # Upload the file to the separate server
                 file_data = request.FILES['cv'].read()
 
