@@ -6,6 +6,10 @@ dotenv.load_dotenv()
 from decouple import config
 import dj_database_url  
 import django_heroku
+import redis
+import logging
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,7 +72,6 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
-import redis
 REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
 # Create a Redis connection using the URL
 redis_client = redis.from_url(REDIS_URL, ssl=True, ssl_cert_reqs=None)
@@ -90,7 +93,6 @@ CACHES = {
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 
-import logging
 
 # Log the Redis URL for debugging
 logger = logging.getLogger(__name__)
@@ -151,10 +153,10 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dblog2hj0aubg6',
-        '': 'uepklalomgtt30',
-        'PASSWORD': 'p3e6a79a42e739605c32617dd0d4433f6dfce03cbf66b49a2a6f7c436dec3b6b0',
-        'HOST': 'ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
+        'NAME': 'd97r55prv16las',
+        'USER': 'u3mlos1b16lhnu',
+        'PASSWORD': 'p5d239049119450812c414a246b1be69bc8479bb870fc89fca6bcdbc1f082f3c5',
+        'HOST': 'c9pv5s2sq0i76o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
         'PORT': '5432',      
     }
 }
