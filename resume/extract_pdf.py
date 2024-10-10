@@ -15,7 +15,7 @@ from resume.models import SkillCategory, Skill
 from job.models import Skill, SkillQuestion, Job
 from job.job_description_algorithm import save_skills_to_database 
 from . import views
-from datetime import datetime,date
+from datetime import datetime, date
 from django.contrib import messages
 
 dotenv.load_dotenv()
@@ -69,26 +69,30 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.shortcuts import redirect
 from django.contrib import messages
+from azure.storage.blob import BlobServiceClient
+
 
 def extract_text(request, file_path):
     """
-    Extracts text from a PDF resume file stored in S3 and saves it to the database.
+    Extracts text from a PDF resume file stored in Azure Blob Storage and saves it to the database.
     """
-    s3_client = boto3.client(
-        's3',
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        region_name=settings.AWS_S3_REGION_NAME
-    )
+    account_name = os.getenv('AZURE_ACCOUNT_NAME')
+    account_key = os.getenv('AZURE_ACCOUNT_KEY')
+    container_name = os.getenv('AZURE_CONTAINER')
 
-    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-    key = file_path.replace('https://', '').replace(settings.AWS_S3_CUSTOM_DOMAIN + '/', '')
+    connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};AccountKey={account_key};EndpointSuffix=core.windows.net"
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+    
+    blob_name = file_path.replace('https://', '').replace(f"{account_name}.blob.core.windows.net/{container_name}/", '')
 
-    print(f"Trying to access file with key: {key}")
+    print(f"Trying to access file with blob name: {blob_name}")
 
     try:
-        response = s3_client.get_object(Bucket=bucket_name, Key=key)
-        file_stream = response['Body'].read()
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+        file_stream = blob_client.download_blob().readall()
+
+        # Log the size of the file stream to ensure it's being read correctly
+        print(f"File stream size: {len(file_stream)} bytes")
 
         # Use pdfplumber for text extraction
         try:
@@ -96,16 +100,24 @@ def extract_text(request, file_path):
                 if pdf.pages:
                     page = pdf.pages[0]
                     extracted_text = page.extract_text() or ""
+                    print(f"Extracted text: {extracted_text[:500]}")  # Log the first 500 characters of the extracted text
                     extracted_text = clean_text(extracted_text)  # Clean the extracted text
                 else:
                     extracted_text = ""
+                    print("No pages found in the PDF.")
         except Exception as e:
             print(f"Error reading PDF with pdfplumber: {e}")
             extracted_text = "Unable to extract text"
 
         # Process extracted text
-        extracted_details = extract_resume_details(request, extracted_text)
-        print("Extracted Details:", extracted_details)
+        try:
+            extracted_details = extract_resume_details(request, extracted_text)
+            print("Extracted Details:", extracted_details)
+        except json.JSONDecodeError as e:
+            print(f"An error occurred while extracting resume details: {e}")
+            print(f"Extracted text content: {extracted_text}")
+            extracted_details = {}
+        
         parse_and_save_details(extracted_details, request.user)
 
         # Attempt to get the associated Resume
@@ -120,7 +132,7 @@ def extract_text(request, file_path):
 
         # Save the extracted text to the ResumeDoc
         try:
-            print("Searching for ResumeDoc with file path:", key)
+            print("Searching for ResumeDoc with file path:", blob_name)
             resume_doc = ResumeDoc.objects.get(user=request.user)
             print("ResumeDoc found:", resume_doc)
             resume_doc.extracted_text = extracted_text
@@ -131,7 +143,7 @@ def extract_text(request, file_path):
             return redirect('update-resume')
 
         except ResumeDoc.DoesNotExist:
-            print("ResumeDoc not found for file path:", key)
+            print("ResumeDoc not found for file path:", blob_name)
             extract_technical_skills(request, extracted_text, job_title)
             return HttpResponse("Error: ResumeDoc not found")
 
@@ -215,6 +227,7 @@ def extract_resume_details(request, extracted_text):
 
         response_content = response.choices[0].message.content
         extracted_details = json.loads(response_content)
+        print("Extracted Details from GPT-4:", extracted_details)  # Log the extracted details
         return extracted_details
 
     except (json.JSONDecodeError, Exception) as e:
@@ -227,7 +240,6 @@ def get_case_insensitive(d, key, default=None):
     return next((v for k, v in d.items() if k.lower() == key.lower()), default)
 
 from datetime import datetime, date
-# Function to parse dates with special values like "Present"
 # Function to parse dates with special values like "Present"
 def parse_date(date_str):
     if date_str is None:

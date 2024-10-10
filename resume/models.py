@@ -68,7 +68,7 @@ class Resume(models.Model):
     phone = models.CharField(max_length=20, null=True)
     description= models.TextField(max_length=500, default="I am a ...")
     profile_image = models.ImageField(upload_to="resume/images", blank=True, default="resume/images/default.jpg")
-    cv = models.FileField(upload_to='resume/cv', default=" resume/cv/Nyuydine_CV_Resume.pdf", blank=True, validators=[ext_validator, validate_file_mime_type])
+    cv = models.FileField(upload_to='resume/cv', default=" resume/cv/Nyuydine_CV_Resume.pdf", blank=True)
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE,null=True)
     skills = models.ManyToManyField(Skill)
     created_at = models.DateTimeField(auto_now_add=True)  # Add this line

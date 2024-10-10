@@ -198,12 +198,12 @@
                     </div>
                     <div class="flex flex-row justify-end items-center mt-4 space-x-4">
                         <a href="{% url 'job:job_details' job.id %}">
-                        <button class="text-[#1e90ff] text-xs px-2 py-2 rounded-full border border-dotted border-[#1e90ff]">View Details</button>
+                        <button class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">View Details</button>
                         </a>
                     <form action="{% url 'job:withdraw_application' job.id %}" method="POST" style="display:inline;">
                         {% csrf_token %}
 
-                        <button type="submit" class="text-[#1e90ff] text-xs px-2 py-2 rounded-full border border-dotted border-[#1e90ff]">Withdraw Application</button>
+                        <button type="submit" class="text-red-600 hover:underline">Withdraw Application</button>
                     </form>
                     </div>
                 </div>

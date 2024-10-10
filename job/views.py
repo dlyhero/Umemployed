@@ -828,6 +828,20 @@ def save_job(request, job_id):
     # If not an AJAX request
     return JsonResponse({"status": "error", "message": "Invalid request."}, status=400)
 
+def save_job_not_ajax(request, job_id):
+    user = request.user
+    job = get_object_or_404(Job, id=job_id)
+
+    # Check if the job is already saved
+    saved_job, created = SavedJob.objects.get_or_create(user=user, job=job)
+
+    if created:
+        messages.success(request, "Job saved successfully.")
+    else:
+        saved_job.delete()  # Optionally, remove the saved job if it was already saved
+        messages.info(request, "Job removed successfully.")
+
+    return redirect('home')  # Redirect to the home page
 
 def remove_saved_job(request, job_id):
     if request.method == "POST" and request.is_ajax():

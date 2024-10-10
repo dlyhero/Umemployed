@@ -18,6 +18,7 @@ urlpatterns = [
     path('confirm/<int:job_id>/', views.confirm_evaluation, name='confirm_evaluation'),
     path('enter-job-description/',enter_job_description, name='enter_job_description'),
     path('job/<int:job_id>/save/', views.save_job, name='save_job'),
+    path('save-job/<int:job_id>/', views.save_job_not_ajax, name='save_job_not_ajax'),  # Add this line
     path('saved-jobs/', views.saved_jobs_view, name='view_saved_jobs'),
     path('saved-job/<int:saved_job_id>/delete/', views.delete_saved_job, name='delete_saved_job'),
     path('results/<int:job_id>/',views.evaluation_results,name="evaluation_results"),

@@ -139,14 +139,39 @@
           <li>
             {% if user.is_authenticated %}
               {% if user.is_recruiter and user.has_company and user_company %}
-                <a href="{% url 'company_dashboard' user_company.id %}" class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full">Dashboard</a>
+                <a href="{% url 'company_dashboard' user_company.id %}">
+                  <div class="text-nowrap items-center flex gap-2">
+                    {% if user.resume.profile_image %}
+                      <img src="{{ user.resume.profile_image.url }}" alt="Profile Image" class="w-10 h-10 rounded-full object-cover">
+                    {% else %}
+                      <span class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100">
+                        <i class="fas fa-user"></i>
+                      </span>
+                    {% endif %}
+                    <span class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">Dashboard</span>
+                  </div>
+                </a>
               {% else %}
-                <a href="{% url 'dashboard' %}" class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full">Dashboard</a>
+                <a href="{% url 'dashboard' %}">
+                  <div class="text-nowrap items-center flex gap-2">
+                    {% if user.resume.profile_image %}
+                      <img src="{{ user.resume.profile_image.url }}" alt="Profile Image" class="w-10 h-10 rounded-full object-cover">
+                    {% else %}
+                      <span class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100">
+                        <i class="fas fa-user"></i>
+                      </span>
+                    {% endif %}
+                    <span class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">Dashboard</span>
+                  </div>
+                </a>
               {% endif %}
             {% else %}
-              <a href="{% url 'register-applicant' %}" class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full">Sign Up</a>
+              <a href="{% url 'register-applicant' %}" class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full">
+                Sign Up
+              </a>
             {% endif %}
           </li>
+
           <li>
             <button id="mobileMenuButton" class="sm:hidden"><i class="fas fa-bars"></i></button>
           </li>
