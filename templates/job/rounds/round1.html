@@ -5,13 +5,8 @@
 {% endblock search_bar %}
 {% block custom_css %}
 <link rel="stylesheet" href="{% static 'build/css/style.css' %}" />
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 <script src="https://cdn.tailwindcss.com"></script>
-
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-/>
 
 <style>
     /* General Styles */
@@ -116,7 +111,6 @@
         width: 300px;
         height: 200px;
         border: 2px solid #ccc;
-        display: none;
         position: relative;
         overflow: hidden;
     }
@@ -131,7 +125,7 @@
 
 {% block content %}
 
-<body class="text-sm" data-job="{{ job.id }}" style>
+<body class="text-sm" data-job="{{ job.id }}" data-application="{{ application.id }}">
     <main class="flex flex-col p-6 bg-white sm:bg-transparent">
         <div class="main-camera-container flex flex-col sm:flex-row justify-between items-start">
             <div class="main-container w-full max-w-7xl mr-0 mx-auto bg-white rounded-lg p-2 sm:p-8 sm:border border-gray-300 flex flex-col">
@@ -205,7 +199,7 @@
                         <p class="text-gray-700 mb-4">You have completed the current skill. Ready to move on to the next one?</p>
                     </div>
                     <div class="modal-footer flex justify-end mt-4">
-                        <button id="continue-later" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition duration-150"><a href="{% url 'home' %}">Continue Later</a></button>
+                        <button id="continue-later" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition duration-150"><a href="{% url 'job:save_job_not_ajax' job.id %}">Continue Later</a></button>
                         <button id="next-skill" class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-150">Next Skill</button>
                     </div>
                 </div>
@@ -215,167 +209,171 @@
 
     <script src="{% static 'assets_testing/JS/testing.js' %}"></script>
 
-    <script>
-    const jobId = "{{ job.id }}"; // Add job_id to JavaScript
-    document.addEventListener("DOMContentLoaded", function() {
-        const skillButtons = document.querySelectorAll(".skill-btn");
-        const nextBtn = document.getElementById("next-btn");
-        const submitBtn = document.getElementById("submit-btn");
-        const completedSkillModal = document.getElementById("completedSkillModal");
-        const nextSkillBtn = document.getElementById("next-skill");
-        const closeModalBtn = document.getElementById("close-modal");
-        let currentSkillIndex = 0;
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const jobId = "{{ job.id }}";
+    const skillButtons = document.querySelectorAll(".skill-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const submitBtn = document.getElementById("submit-btn");
+    const completedSkillModal = document.getElementById("completedSkillModal");
+    const nextSkillBtn = document.getElementById("next-skill");
+    const closeModalBtn = document.getElementById("close-modal");
+    const video = document.getElementById("camera-stream");
+    const questionForm = document.getElementById("question-form");
+    const applicationId = document.body.getAttribute("data-application");
+    let currentSkillIndex = 0;
+    let mediaRecorder;
+    let recordedChunks = [];
 
-        // Retrieve the last skill ID and remaining skills count from the context
-        const lastSkillId = "{{ last_skill_id }}";
-        const remainingSkillsCount = parseInt("{{ remaining_skills_count }}", 10);
+    // Retrieve the last skill ID and remaining skills count from the context
+    const lastSkillId = "{{ last_skill_id }}";
+    const remainingSkillsCount = parseInt("{{ remaining_skills_count }}", 10);
 
-        // Initialize button visibility based on remainingSkillsCount
-        updateButtonVisibility(remainingSkillsCount);
+    // Initialize button visibility based on remainingSkillsCount
+    updateButtonVisibility(remainingSkillsCount);
 
-        // Event listener for each skill button
-        skillButtons.forEach((button, index) => {
-            button.addEventListener("click", () => {
-                currentSkillIndex = index;
-                const skill = button.getAttribute("data-skill");
-                fetchQuestionsForSkill(skill);
-            });
+    // Event listener for each skill button
+    skillButtons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+            currentSkillIndex = index;
+            const skill = button.getAttribute("data-skill");
+            fetchQuestionsForSkill(skill);
         });
+    });
 
-        // Fetch questions for the selected skill
-        function fetchQuestionsForSkill(skill) {
-            const url = `/job/get_questions_for_skill/${skill}/?job_id=${jobId}`;
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Questions fetched:', data);
-                    displayQuestions(data.questions);
-                    // Check if the current skill is the last skill
-                    showNextOrSubmit(skill === lastSkillId);
-                })
-                .catch(error => console.error('Error fetching questions:', error));
-        }
-
-        // Display questions in the container
-        function displayQuestions(questions) {
-            const questionsContainer = document.getElementById("questions-container");
-            questionsContainer.innerHTML = questions.map(question => `
-                <fieldset class="mb-2">
-                    <legend class="font-semibold mb-2">${question.question}</legend>
-                    ${question.options.map((option, index) => `
-                        <label class="block mb-0">
-                            <input type="radio" name="question${question.id}" value="${String.fromCharCode(65 + index)}" class="mr-2">
-                            ${option}
-                        </label>
-                    `).join("")}
-                </fieldset>
-            `).join("");
-        }
-
-        // Update button visibility based on the remaining skills count
-        function updateButtonVisibility(count) {
-            if (count === 0) {
-                submitBtn.classList.remove("hidden");
-                nextBtn.classList.add("hidden");
-            } else {
-                nextBtn.classList.remove("hidden");
-                submitBtn.classList.add("hidden");
-            }
-        }
-
-        // Show 'Next' or 'Submit' button based on whether it is the last skill
-        function showNextOrSubmit(isLastSkill) {
-            console.log('isLastSkill:', isLastSkill); // Debugging
-            if (isLastSkill) {
-                // For the last skill, show 'Next' button initially
-                nextBtn.classList.remove("hidden");
-                submitBtn.classList.add("hidden");
-            } else {
-                // For other skills, update visibility based on remaining skills count
-                updateButtonVisibility(remainingSkillsCount);
-            }
-        }
-
-        // Handle 'Next' button click
-        nextBtn.addEventListener("click", () => {
-            saveResponses(() => {
-                if (skillButtons[currentSkillIndex].getAttribute("data-skill") === lastSkillId) {
-                    // For the last skill, switch to 'Submit' button
-                    updateButtonVisibility(0);
-                } else {
-                    // For other skills, show the completed skill modal
-                    completedSkillModal.classList.remove("hidden");
-                }
-            });
-        });
-
-        // Handle 'Next Skill' button click in the modal
-        nextSkillBtn.addEventListener("click", () => {
-            completedSkillModal.classList.add("hidden");
-            if (currentSkillIndex < skillButtons.length - 1) {
-                skillButtons[currentSkillIndex + 1].click();
-            }
-        });
-
-        // Handle 'Close Modal' button click
-        closeModalBtn.addEventListener("click", () => {
-            completedSkillModal.classList.add("hidden");
-        });
-
-        // Handle 'Submit' button click
-        submitBtn.addEventListener("click", () => {
-            saveResponses(() => {
-                window.location.href = '/job/complete'; // Redirect to completion page
-            });
-        });
-
-        // Save responses and invoke callback
-        function saveResponses(callback) {
-            const responses = [];
-            const responseInputs = document.querySelectorAll("input[type='radio']:checked");
-
-            responseInputs.forEach(input => {
-                responses.push({
-                    question_id: input.name.replace('question', ''),
-                    answer: input.value
-                });
-            });
-
-            const skillId = skillButtons[currentSkillIndex].getAttribute("data-skill");
-            const csrftoken = getCookie('csrftoken');
-            console.log('CSRF Token:', csrftoken); // Debugging
-
-            fetch('/job/save_responses/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({ skill_id: skillId, job_id: jobId, responses })
-            })
+    // Fetch questions for the selected skill
+    function fetchQuestionsForSkill(skill) {
+        const url = `/job/get_questions_for_skill/${skill}/?job_id=${jobId}`;
+        fetch(url)
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    console.log('Responses saved successfully');
-                    callback();
-                } else {
-                    console.error('Error saving responses:', data.error);
-                }
+                console.log('Questions fetched:', data);
+                displayQuestions(data.questions);
+                // Check if the current skill is the last skill
+                showNextOrSubmit(skill === lastSkillId);
             })
-            .catch(error => console.error('Error during saveResponses:', error));
-        }
+            .catch(error => console.error('Error fetching questions:', error));
+    }
 
-        // Get CSRF token from cookies
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
-        }
+    // Display questions in the container
+    function displayQuestions(questions) {
+        const questionsContainer = document.getElementById("questions-container");
+        questionsContainer.innerHTML = questions.map(question => `
+            <fieldset class="mb-2">
+                <legend class="font-semibold mb-2">${question.question}</legend>
+                ${question.options.map((option, index) => `
+                    <label class="block mb-0">
+                        <input type="radio" name="question${question.id}" value="${String.fromCharCode(65 + index)}" class="mr-2">
+                        ${option}
+                    </label>
+                `).join("")}
+            </fieldset>
+        `).join("");
+    }
 
-        // Initialize the default questions and timer on page load
-        skillButtons[0].click();
+    // Update button visibility based on the remaining skills count
+    function updateButtonVisibility(count) {
+        if (count === 0) {
+            submitBtn.classList.remove("hidden");
+            nextBtn.classList.add("hidden");
+        } else {
+            nextBtn.classList.remove("hidden");
+            submitBtn.classList.add("hidden");
+        }
+    }
+
+    // Show 'Next' or 'Submit' button based on whether it is the last skill
+    function showNextOrSubmit(isLastSkill) {
+        console.log('isLastSkill:', isLastSkill); // Debugging
+        if (isLastSkill) {
+            // For the last skill, show 'Next' button initially
+            nextBtn.classList.remove("hidden");
+            submitBtn.classList.add("hidden");
+        } else {
+            // For other skills, update visibility based on remaining skills count
+            updateButtonVisibility(remainingSkillsCount);
+        }
+    }
+
+    // Handle 'Next' button click
+    nextBtn.addEventListener("click", () => {
+        saveResponses(() => {
+            if (skillButtons[currentSkillIndex].getAttribute("data-skill") === lastSkillId) {
+                // For the last skill, switch to 'Submit' button
+                updateButtonVisibility(0);
+            } else {
+                // For other skills, show the completed skill modal
+                completedSkillModal.classList.remove("hidden");
+            }
+        });
     });
+
+    // Handle 'Next Skill' button click in the modal
+    nextSkillBtn.addEventListener("click", () => {
+        completedSkillModal.classList.add("hidden");
+        if (currentSkillIndex < skillButtons.length - 1) {
+            skillButtons[currentSkillIndex + 1].click();
+        }
+    });
+
+    // Handle 'Close Modal' button click
+    closeModalBtn.addEventListener("click", () => {
+        completedSkillModal.classList.add("hidden");
+    });
+
+    // Handle 'Submit' button click
+    submitBtn.addEventListener("click", () => {
+        saveResponses(() => {
+            window.location.href = '/job/complete'; // Redirect to completion page
+        });
+    });
+
+    // Save responses and invoke callback
+    function saveResponses(callback) {
+        const responses = [];
+        const responseInputs = document.querySelectorAll("input[type='radio']:checked");
+
+        responseInputs.forEach(input => {
+            responses.push({
+                question_id: input.name.replace('question', ''),
+                answer: input.value
+            });
+        });
+
+        const skillId = skillButtons[currentSkillIndex].getAttribute("data-skill");
+        const csrftoken = getCookie('csrftoken');
+        console.log('CSRF Token:', csrftoken); // Debugging
+
+        fetch('/job/save_responses/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ skill_id: skillId, job_id: jobId, responses })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Responses saved successfully');
+                callback();
+            } else {
+                console.error('Error saving responses:', data.error);
+            }
+        })
+        .catch(error => console.error('Error during saveResponses:', error));
+    }
+
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
+    // Initialize the default questions and timer on page load
+    skillButtons[0].click();
 
     // Function to start the camera feed
     function startCamera() {
@@ -386,6 +384,25 @@
             .then(function(stream) {
                 video.srcObject = stream;
                 cameraBox.style.display = 'block'; // Show the camera box
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = function(event) {
+                    console.log('Data available:', event.data); // Debugging log
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = function() {
+                    console.log('Recording stopped'); // Debugging log
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    recordedChunks = [];
+                    saveVideo(blob);
+                };
+
+                // Start recording automatically
+                console.log('Starting video recording'); // Debugging log
+                mediaRecorder.start();
             })
             .catch(function(err) {
                 console.error("Error accessing camera: ", err);
@@ -393,6 +410,50 @@
                 window.history.back(); // Redirect to the previous page
             });
     }
+
+    // Function to save the video
+    function saveVideo(blob) {
+        const formData = new FormData();
+        formData.append('video', blob, 'recording.webm');
+        formData.append('application_id', applicationId);  // Add application_id
+
+        console.log('Saving video for application:', applicationId); // Debugging log
+
+        return fetch('/job/save_video/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Video saved successfully:', data.file_path); // Debugging log
+            } else {
+                console.error('Error saving video:', data.error);
+            }
+        })
+        .catch(error => console.error('Error during saveVideo:', error));
+    }
+
+    // Stop recording and submit the form
+    questionForm.addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        console.log('Stopping video recording'); // Debugging log
+        mediaRecorder.stop(); // Stop the recording
+
+        // Wait for the recording to stop and video to be saved before submitting the form
+        mediaRecorder.onstop = function() {
+            console.log('MediaRecorder onstop event'); // Debugging log
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            recordedChunks = [];
+            saveVideo(blob).then(() => {
+                console.log('Submitting form'); // Debugging log
+                questionForm.submit(); // Submit the form after saving the video
+            });
+        };
+    });
 
     // Function to check camera permissions
     function checkCameraPermission() {
@@ -424,7 +485,8 @@
     window.onload = function() {
         checkCameraPermission();
     };
-    </script>
+});
+</script>
 </body>
 
 {% endblock %}

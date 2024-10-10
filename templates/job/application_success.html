@@ -18,45 +18,52 @@
 {% block content %}
 <div class="h-[90vh]  flex flex-col justify-around">
       <main class="w-full">
-      <div
-        class="md:bg-white sm:border border-gray-200 rounded-lg py-2 px-3 max-w-lg mx-auto"
-      >
-        <div class="flex flex-col items-center text-center">
-          <div class="text-green-500 text-6xl mb-4">
-            <i class="fas fa-check fa-sm"></i>
-          </div>
-          <h1 class="text-xl font-semibold text-gray-800 mb-2">
-            Congratulations!
-          </h1>
-          <p class="text-gray-600 mb-4 text-wrap text-center">
-            You have successfully completed the task. We're proud of your
-            accomplishment.
-          </p>
+        <div class="md:bg-white sm:border border-gray-200 rounded-lg py-2 px-3 max-w-lg mx-auto">
+            <div class="flex flex-col items-center text-center">
+                {% if application.overall_match_percentage < 70 %}
+                    <div class="text-red-500 text-6xl mb-4">
+                        <i class="fas fa-times fa-sm"></i>
+                    </div>
+                    <h1 class="text-xl font-semibold text-gray-800 mb-2">
+                        Oops!
+                    </h1>
+                    <p class="text-gray-600 mb-4 text-wrap text-center">
+                        You did not meet the expectation. However, stay tuned as you may still be given the chance to retake the test.
+                    </p>
+                {% else %}
+                    <div class="text-green-500 text-6xl mb-4">
+                        <i class="fas fa-check fa-sm"></i>
+                    </div>
+                    <h1 class="text-xl font-semibold text-gray-800 mb-2">
+                        Great!
+                    </h1>
+                    <p class="text-gray-600 mb-4 text-wrap text-center">
+                        Your application has been received and is being processed. Please wait for further updates.
+                    </p>
+                {% endif %}
 
-          <div class="bg-gray-50 p-4 rounded-lg shadow-sm w-full mb-4">
-            <h2 class="text-lg font-semibold text-gray-700 mb-3">
-              Test Summary
-            </h2>
-            <div class="flex flex-col space-y-3">
-              <div class="bg-white p-4 rounded-lg border border-gray-200">
-                <h3 class="text-base font-medium text-gray-800">
-                  Overall Score
-                </h3>
-                <p class="text-gray-600">
-                  Your overall score:
-                  <span class="text-green-500 font-semibold">{{application.quiz_score}}</span>
-                </p>
-              </div>
+                <div class="bg-gray-50 p-4 rounded-lg shadow-sm w-full mb-4">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-3">
+                        Test Summary
+                    </h2>
+                    <div class="flex flex-col space-y-3">
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
+                            <h3 class="text-base font-medium text-gray-800">
+                                Overall Score
+                            </h3>
+                            <p class="text-gray-600">
+                                Your overall score:
+                                <span class="text-green-500 font-semibold">{{ application.overall_match_percentage }}%</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{% url 'home' %}" class="bg-[#1e90ff] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 mb-2">
+                    Go to Dashboard
+                </a>
             </div>
-          </div>
-          <a
-            href="{% url 'home' %}"
-            class="bg-[#1e90ff] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 mb-2"
-          >
-            Go to Dashboard
-          </a>
         </div>
-      </div>
     </main>
     {% block footers %}
     

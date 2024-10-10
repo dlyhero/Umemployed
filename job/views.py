@@ -324,6 +324,8 @@ logger = logging.getLogger(__name__)
 
 
 
+from django.db import transaction
+
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
     logger.debug(f"Answer job questions view triggered for job_id: {job_id}")
@@ -332,11 +334,10 @@ def answer_job_questions(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     user = request.user
     skills = job.requirements.all()
-    skill = job.requirements.all()
-    last_skill = skill.last()  # Get the last skill based on the current ordering
+    last_skill = skills.last()  # Get the last skill based on the current ordering
     last_skill_id = last_skill.id if last_skill else None
-    print(last_skill_id,"last skill id################################################")
-    
+    logger.debug(f"Last skill ID: {last_skill_id}")
+
     # Get or create an application instance
     application, created = Application.objects.get_or_create(user=user, job=job)
     logger.debug(f"Application instance: {application}, created: {created}")
@@ -345,11 +346,10 @@ def answer_job_questions(request, job_id):
     if application.has_completed_quiz:
         messages.warning(request, "You have already completed the quiz for this job.")
         return redirect('job:job_application_success', job_id=job_id)
-    
+
     # Determine the remaining skills and current skill
     completed_skills = application.round_scores.keys()
     remaining_skills = [skill for skill in skills if str(skill.id) not in completed_skills]
-    remaining_skills_count = len(remaining_skills)
     logger.debug(f"Remaining skills: {remaining_skills}")
 
     if not remaining_skills:
@@ -358,7 +358,7 @@ def answer_job_questions(request, job_id):
         application.save()
         messages.success(request, "Congratulations! You have completed all rounds.")
         return redirect('job:job_application_success', job_id=job_id)
-    
+
     # Get the current skill to be answered
     current_skill = remaining_skills[0]
     logger.debug(f"Current skill: {current_skill}")
@@ -373,16 +373,17 @@ def answer_job_questions(request, job_id):
             mcqs = SkillQuestion.objects.filter(skill=current_skill, entry_level=job.level)
             logger.debug(f"MCQs for skill {current_skill}: {mcqs}")
 
-            for mcq in mcqs:
-                answer = answers.get(f'question{mcq.id}')
-                if answer:
-                    # Check if an ApplicantAnswer already exists
-                    if not ApplicantAnswer.objects.filter(
-                        applicant=user,
-                        question=mcq,
-                        job=job,
-                        application=application
-                    ).exists():
+            existing_answers = set(ApplicantAnswer.objects.filter(
+                applicant=user,
+                job=job,
+                application=application,
+                question__in=mcqs
+            ).values_list('question_id', flat=True))
+
+            with transaction.atomic():
+                for mcq in mcqs:
+                    answer = answers.get(f'question{mcq.id}')
+                    if answer and mcq.id not in existing_answers:
                         applicant_answer = ApplicantAnswer.objects.create(
                             applicant=user,
                             question=mcq,
@@ -393,15 +394,16 @@ def answer_job_questions(request, job_id):
                         applicant_answer.calculate_score()
                         total_score += applicant_answer.score
 
-            application.round_scores[str(current_skill.id)] = total_score
-            application.save()
-            # Update or create CompletedSkills entry
-            CompletedSkills.objects.update_or_create(
-                user=user,
-                job=job,
-                skill=current_skill,
-                defaults={'is_completed': True}
-            )
+                application.round_scores[str(current_skill.id)] = total_score
+                application.save()
+
+                # Update or create CompletedSkills entry
+                CompletedSkills.objects.update_or_create(
+                    user=user,
+                    job=job,
+                    skill=current_skill,
+                    defaults={'is_completed': True}
+                )
 
             logger.debug(f"Updated round_scores: {application.round_scores}")
 
@@ -409,7 +411,7 @@ def answer_job_questions(request, job_id):
             return redirect('job:job_application_success', job_id=job_id)
         else:
             messages.error(request, "Please answer all questions.")
-            return JsonResponse({'success': False, 'error': "Please answer all questions."})
+            return redirect('job:answer_job_questions', job_id=job_id)
 
     else:
         # Render the quiz form
@@ -432,15 +434,33 @@ def answer_job_questions(request, job_id):
             'current_skill': current_skill,
             'skills': skills,
             'job_id': job.id,
-            'last_skill_id':last_skill_id,
+            'last_skill_id': last_skill_id,
         }
 
         return render(request, 'job/rounds/round1.html', context)
 
 
 
+from django.core.files.storage import default_storage
+from django.views.decorators.csrf import csrf_exempt
 
-
+@csrf_exempt
+def save_video(request):
+    if request.method == 'POST' and request.FILES.get('video') and request.POST.get('application_id'):
+        video = request.FILES['video']
+        application_id = request.POST.get('application_id')
+        try:
+            application = Application.objects.get(id=application_id)
+            file_path = default_storage.save(f'videos/{video.name}', video)
+            application.video_file = file_path
+            application.save()
+            print(f'Video saved for application {application_id} at {file_path}')  # Debugging log
+            return JsonResponse({'success': True, 'file_path': file_path})
+        except Application.DoesNotExist:
+            print(f'Application {application_id} not found')  # Debugging log
+            return JsonResponse({'success': False, 'error': 'Application not found'})
+    print('Invalid request')  # Debugging log
+    return JsonResponse({'success': False, 'error': 'Invalid request'})
 
 
 
