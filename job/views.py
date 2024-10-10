@@ -828,6 +828,7 @@ def save_job(request, job_id):
     # If not an AJAX request
     return JsonResponse({"status": "error", "message": "Invalid request."}, status=400)
 
+@login_required(login_url='/login')
 def save_job_not_ajax(request, job_id):
     user = request.user
     job = get_object_or_404(Job, id=job_id)
