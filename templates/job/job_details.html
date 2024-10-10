@@ -109,7 +109,8 @@
           {% if job.id in applied_job_ids %}
                 <span style="color: green;">(Already Applied)</span>
                 {% else %}
-          <div class="mt-4 flex justify-end gap-4">
+          <div class="mt-4 flex justify-end gap-4"> 
+            {% if user.is_authenticated %}
           <form method="POST" action="{% url 'job:save_job_not_ajax' job.id %}">
             {% csrf_token %}
             <button
@@ -119,6 +120,7 @@
               Save for Later
             </button>
           </form>
+          {% endif %}
           <a href="{% url 'job:confirm_evaluation' job.id %}">
             <button
               class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 transition-colors"

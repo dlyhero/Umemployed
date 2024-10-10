@@ -62,11 +62,9 @@ def home(request):
     if user.is_authenticated:
         applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
         saved_job_ids = SavedJob.objects.filter(user=request.user).values_list('job_id', flat=True)
-
     else:
         applied_job_ids = []
         saved_job_ids = []
-
 
     # Get filtering parameters from the GET request
     salary_range = request.GET.get('salary_range')
@@ -121,7 +119,8 @@ def home(request):
     # Apply the ORed query to filter jobs
     filtered_jobs = all_jobs.filter(query).distinct()
 
-    # Check if there are any results
+    # Debugging output
+    print("Query:", query)
     print("Filtered jobs count:", filtered_jobs.count())
 
     # If the user is authenticated, match jobs by skills
@@ -176,12 +175,10 @@ def home(request):
         'jobs': jobs,
         'matching_jobs': matching_jobs,
         'applied_job_ids': applied_job_ids,
-        'query_string': query_string,  
+        'query_string': query_string,
         'saved_jobs': saved_job_ids,
-
     }
     return render(request, 'website/home.html', context)
-
 
 
 # login a user

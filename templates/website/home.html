@@ -510,13 +510,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    // Function to display the filter menu
+     // Function to display the filter menu
     function displayFilterMenu() {
         console.log("Displaying filter menu.");
 
         sidebar.innerHTML = `<div id="filterMenu" class="max-w-5xl mx-auto p-6 bg-white rounded-lg">
                               <h2 class="text-xl font-semibold mb-4">Filter Jobs</h2>
-                              <form method="GET" class="flex flex-col gap-6">
+                              <form id="filterForm" class="flex flex-col gap-6">
                                   <!-- Keyword Search -->
                                   <div class="col-span-1">
                                       <label class="block text-sm font-medium text-gray-700 mb-1">Keyword</label>
@@ -594,11 +594,36 @@ document.addEventListener("DOMContentLoaded", function () {
         addEventListenersToButtons(); // Reapply event listeners after rendering filter menu
     }
 
+    // Function to handle form submission
+    function handleFormSubmission(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const form = event.target;
+        const formData = new FormData(form);
+        const queryParams = new URLSearchParams();
+
+        // Iterate over form data and add non-empty fields to queryParams
+        for (const [key, value] of formData.entries()) {
+            if (value) {
+                queryParams.append(key, value);
+            }
+        }
+
+        // Redirect to the URL with query parameters
+        window.location.href = `${form.action}?${queryParams.toString()}`;
+    }
+
     // Initial setup for the page
     function setupInitialView() {
         console.log("Setting up the initial view.");
         displayFilterMenu(); // Show filter by default
         addEventListenersToButtons(); // Add listeners to "View Details" buttons
+
+        // Add event listener to the form
+        const filterForm = document.getElementById("filterForm");
+        if (filterForm) {
+            filterForm.addEventListener("submit", handleFormSubmission);
+        }
     }
 
     // Display Filter Menu on Button Click
