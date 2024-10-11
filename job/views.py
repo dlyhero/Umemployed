@@ -910,6 +910,42 @@ def saved_jobs_view(request):
 
     return render(request, 'job/saved_jobs.html', context)
 
+logger = logging.getLogger(__name__)
+
+def incomplete_jobs_view(request):
+    user = request.user
+    print(f"User: {user}")
+    
+    jobs = Job.objects.all()
+    print(f"Total jobs: {jobs.count()}")
+    
+    incomplete_jobs = []
+
+    for job in jobs:
+        print(f"Checking job: {job.title}")
+        
+        skills = job.requirements.all()
+        print(f"Required skills for job '{job.title}': {[skill.name for skill in skills]}")
+        print(f"Number of required skills: {skills.count()}")
+        
+        completed_skills = CompletedSkills.objects.filter(user=user, skill__in=skills)
+        print(f"Completed skills for user '{user}': {[cs.skill.name for cs in completed_skills]}")
+        print(f"Number of completed skills: {completed_skills.count()}")
+        
+        for cs in completed_skills:
+            print(f"Skill: {cs.skill.name}, Is Completed: {cs.is_completed}")
+        
+        # Check if completed_skills is not empty and not all required skills are completed
+        if completed_skills.exists() and not all(skill in [cs.skill for cs in completed_skills if cs.is_completed] for skill in skills):
+            print(f"Job '{job.title}' is incomplete")
+            incomplete_jobs.append(job)
+        else:
+            print(f"Job '{job.title}' is complete")
+
+    print(f"Incomplete jobs: {[job.title for job in incomplete_jobs]}")
+    
+    return render(request, 'job/incomplete_jobs.html', {'incomplete_jobs': incomplete_jobs})
+
 
 def success_page(request):
     return render(request, "job/compiler/success.html")

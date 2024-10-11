@@ -246,6 +246,12 @@
   </p>
   {% if job.id in applied_job_ids %}
   <span style="color: green;">(Already Applied)</span>
+  <button
+    class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"
+    data-job="{{ job.id }}"
+  >
+    View Details
+  </button>
   {% else %}
   <button
     class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"

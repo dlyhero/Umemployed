@@ -179,6 +179,7 @@
   {% if recent_jobs %}
     {% for job in recent_jobs %}
     <!-- Repeat the Job Cards multiple times as needed -->
+    <a href="{% url 'job:job_details' job.id %}">
     <div class="min-w-[100%] sm:min-w-[50%] lg:min-w-[22.99%] bg-white border rounded-lg p-6 snap-start">
       <div class="flex items-center justify-between mb-4">
         <img class="w-12 h-12 rounded-full mr-4" src="{{job.company.logo.url}}" alt="Company Logo" />
@@ -233,6 +234,7 @@
         {% endif %}
       </div>
     </div>
+    </a>
     {% endfor %}
   {% endif %}
 </div>

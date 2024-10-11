@@ -1,0 +1,255 @@
+{% extends 'resume/base.html' %}
+{% load static %}
+
+{% block custom_css %}
+<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+<script src="https://cdn.tailwindcss.com"></script> 
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="container mx-auto max-w-6xl p-4 lg:p-0 mb-10">
+    <section>
+        <ul class="flex justify-start space-x-6 bg-white rounded-lg border-b p-[8px] border-gray-200">
+            <li>
+                <a href="{% url 'job:saved_jobs' %}" target="_self"
+                    class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-transparent hover:border-[#1e90ff] transition-all duration-300">
+                    <span class="air3-tab-btn-text">Saved Jobs</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'job:applied_jobs' %}" target="_self"
+                    class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-transparent hover:border-[#1e90ff] transition-all duration-300">
+                    <span class="air3-tab-btn-text">Applied Jobs</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'job:incomplete_jobs' %}" target="_self"
+                    class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-[#1e90ff] transition-all duration-300">
+                    <span class="air3-tab-btn-text">Incomplete Jobs</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <section id="search-ctn-mobile" class="my-5 lg:hidden p-2">
+        <div class="search-wrapper flex mx-auto bg-white px-2 py-2 border rounded-full shadow sm:shadow-none">
+            <input
+                class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
+                type="text"
+                name="search"
+                id="search"
+                placeholder="Search jobs, companies, or keywords"
+            />
+            <div class="border-l border-gray-300 mx-2 hidden sm:block"></div>
+            <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
+            <div class="button-wrap">
+                <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="my-10">
+        <div role="group" class="container mx-auto mb-6 md:mb-0">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0 w-full sm:w-fit">
+                    <h2 class="text-2xl font-bold mb-2 md:text-3xl"> You Started Applying for these job(s)</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container mx-auto">
+            <div class="flex items-center gap-2 bg-white">
+                <form name="titleFilterForm" class="w-[55%]">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                class="w-5 h-5 text-gray-500">
+                                <path vector-effect="non-scaling-stroke" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M10.688 18.377a7.688 7.688 0 100-15.377 7.688 7.688 0 000 15.377zm5.428-2.261L21 21">
+                                </path>
+                            </svg>
+                        </span>
+                        <input id="input-icon-btn" type="search" placeholder="Search job postings"
+                            class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300">
+                    </div>
+                </form>
+                <button id="desktop-filter-btn" type="button"
+                    class="flex items-center text-[#1e90ff] gap-2 px-4 py-2 rounded-lg"
+                    onclick="toggleFilterSection()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6">
+                        <path vector-effect="non-scaling-stroke" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M9.57 10a3.5 3.5 0 100-7 3.5 3.5 0 000 7zm3.5-3.5H21m-18 0h3.07M14.43 21a3.5 3.5 0 100-7 3.5 3.5 0 000 7zm-3.5-3.5H3m18 0h-3.07"></path>
+                    </svg>
+                    Filters
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <hr class="my-5">
+    <section id="filters-section" class="hidden p-2 rounded-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold">Filters</h3>
+            <button class="text-blue-600 hover:underline" onclick="toggleFilterSection()">Back</button>
+        </div>
+        <form id="filter-form" class="lg:flex gap-16">
+            <div class="flex gap-12">
+                <!-- Job Type with checkboxes -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2">Job Type</label>
+                    <div class="flex flex-col space-y-2">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                            <span class="ml-2 text-gray-700">Full-Time</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                            <span class="ml-2 text-gray-700">Part-Time</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                            <span class="ml-2 text-gray-700">Contract</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <!-- Salary Range with checkboxes -->
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2">Salary Range</label>
+                        <div class="flex flex-col space-y-2">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-gray-700">$30,000 - $50,000</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-gray-700">$50,000 - $70,000</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-gray-700">$70,000+</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 max-w-xl">
+                <!-- Location -->
+                <div class="mb-4">
+                    <label for="location" class="block text-gray-700 font-bold mb-2">Location</label>
+                    <input type="text" id="location" placeholder="City or Remote"
+                        class="w-full border border-gray-300 rounded-lg p-2">
+                </div>
+
+                <!-- Keywords -->
+                <div class="mb-4">
+                    <label for="keywords" class="block text-gray-700 font-bold mb-2">Keywords</label>
+                    <input type="text" id="keywords" placeholder="e.g. Java, Marketing"
+                        class="w-full border border-gray-300 rounded-lg p-2">
+                </div>
+
+                <!-- Apply Filters Button -->
+                <button type="submit"
+                    class="w-full bg-[#1e90ff] text-white py-2 rounded-lg hover:bg-blue-500 transition-all">
+                    Apply Filters
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section id="job-section">
+        <div class="job-list md:p-6 lg:p-2">
+            {% if incomplete_jobs %}
+                {% for job in incomplete_jobs %}
+                    <!-- Incomplete Job Item -->
+                    <div class="job border-b py-4 relative">
+                        <div class="flex flex-col md:flex-row justify-between items-start">
+                            <div class="flex-1">
+                                <h4 class="text-xl font-bold mb-1">
+                                    <a href="{% url 'job:job_details' job.id %}" class="text-gray-800 hover:text-[#1e90ff] transition">
+                                        {{ job.title }}
+                                    </a>
+                                </h4>
+                                <p class="text-sm text-gray-500">{{ job.created_at }}</p>
+                                <p class="text-sm text-gray-600">Company: {{ job.company.name }} | Type: {{ job.job_type }}</p>
+                                <div class="text-sm text-gray-600 mt-1">
+                                    <span class="font-medium">Application Status:</span>
+                                    <span class="font-medium text-red-600">Incomplete</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="flex flex-row justify-end items-center mt-4 space-x-4">
+                            <a href="{% url 'job:job_details' job.id %}">
+                                <button class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">Continue Application</button>
+                            </a>
+                            <form action="{% url 'job:withdraw_application' job.id %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="text-red-600 hover:underline">Withdraw Application</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="flex justify-center items-center h-32">
+                    <p class="text-gray-600">No incomplete jobs found.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination flex justify-center items-center mt-6 space-x-2">
+            <button id="prev-page"
+                    class="pagination-btn flex items-center px-4 py-2 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    disabled>
+                Previous
+            </button>
+
+            <span class="text-gray-600">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+
+            <button id="next-page"
+                    class="pagination-btn flex items-center px-4 py-2 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300">
+                Next
+            </button>
+        </div>
+    </section>
+</main>
+
+<!-- JavaScript for Dropdowns -->
+<script>
+    function toggleFilterDropdown() {
+        const dropdown = document.getElementById('filter-dropdown');
+        dropdown.classList.toggle('hidden');
+    }
+
+    function toggleMobileFilter() {
+        const filterForm = document.getElementById('filter-form');
+        filterForm.classList.toggle('hidden');
+    }
+
+    // Close dropdown if clicked outside
+    window.onclick = function (event) {
+        if (!event.target.matches('#desktop-filter-btn')) {
+            const dropdown = document.getElementById('filter-dropdown');
+            if (!dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        }
+    }
+</script>
+<script>
+    function toggleFilterSection() {
+        const filterSection = document.getElementById('filters-section');
+        filterSection.classList.toggle('hidden');
+    }
+</script>
+{% endblock %}

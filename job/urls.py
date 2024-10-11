@@ -24,6 +24,9 @@ urlpatterns = [
     path('results/<int:job_id>/',views.evaluation_results,name="evaluation_results"),
     path('update/<int:job_id>/', views.update_job, name='update_job'),
     
+    path('incomplete-jobs/', views.incomplete_jobs_view, name='incomplete_jobs'),
+
+    
     path('save_video/', views.save_video, name='save_video'),
 
 
