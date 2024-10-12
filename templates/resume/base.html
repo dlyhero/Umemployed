@@ -60,7 +60,6 @@
 }
 
 .primary .alert {
-    animation: slideFadeIn 5s ease, slideFadeOut 5s 5s ease;
     background-color: #f0f9ff; /* Light blue background */
     border: 1px solid #b3e5fc; /* Matching border color */
     border-radius: 8px; /* Rounded corners */
@@ -148,7 +147,7 @@
                         <i class="fas fa-user"></i>
                       </span>
                     {% endif %}
-                    <span class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">Dashboard</span>
+                    <span class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">{{user.username}}</span>
                   </div>
                 </a>
               {% else %}
@@ -161,7 +160,7 @@
                         <i class="fas fa-user"></i>
                       </span>
                     {% endif %}
-                    <span class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">Dashboard</span>
+                    <span class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">{{user.username}}</span>
                   </div>
                 </a>
               {% endif %}
@@ -197,6 +196,25 @@
                   <i class="fas fa-briefcase"></i> Browse Jobs
                 </a>
                 {% if user.is_authenticated %}
+                <div
+                  class="header text-nowrap items-center flex gap-2 mb-4 bg-blue-200 p-2 rounded-lg"
+                >
+                  <span
+                    class="font-semibold text-xl text-[#1e90ff] rounded-full py-3 px-3.5 bg-blue-100"
+                    >
+                    {% if user.resume.profile_image %}
+                      <img src="{{ user.resume.profile_image.url }}" alt="Profile Image" class="w-10 h-10 rounded-full object-cover">
+                    {% else %}
+                      <span class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100">
+                        <i class="fas fa-user"></i>
+                      </span>
+                    {% endif %}
+                    </span
+                  >
+                  <span class="overflow-hidden whitespace-nowrap text-ellipsis"
+                    >{{user.username}}</span
+                  >
+              </div>
                   <a href="{% url 'notifications:user_notifications' %}" class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"><i class="fas fa-plus-circle"></i> Notifications</a>
                   <a href="{% url 'messaging:inbox' %}" class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"><i class="fas fa-envelope"></i> Messages</a>
                 {% endif %}
@@ -349,7 +367,7 @@
 
         <div class="mt-4 border-t border-gray-700 pt-6">
           <div class="container px-4 mx-auto flex flex-col md:flex-row justify-between items-center">
-            <p class="text-gray-800 mb-4 md:mb-0">© 2024 UmEmployed. All rights reserved.</p>
+            <p class="text-gray-800 text-nowrap mb-4 md:mb-0 flex items-center flex-wrap justify-center">© 2024 UmEmployed. All rights reserved. <span class="flex items-center ml-2 gap-2 ">Privacy Policy <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5"></span></p>
             <div class="flex space-x-4">
               <a href="{% url 'feature-not-implemented' %}" class="text-[#1e90ff] hover:tex-[#1e90ff]"><i class="fab fa-facebook-f"></i></a>
               <a href="{% url 'feature-not-implemented' %}" class="text-[#1e90ff] hover:tex-[#1e90ff]"><i class="fab fa-twitter"></i></a>
@@ -488,17 +506,7 @@
     <script src="{% static 'build/scripts/header.js' %}"></script>
     <script src="{% static 'build/scripts/sidebar_recruiter.js' %}"></script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-    const alerts = document.querySelectorAll('.primary .alert');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            alert.style.display = 'none';
-        }, 20000); // 10 seconds
-    });
-});
-
-    </script>
+ 
     <script src="{% static 'new_design/scripts/jobCards.js' %}"></script>
     <script src="{% static 'new_design/scripts/footer.js' %}"></script>
     <script src="{% static 'new_design/scripts/menu.js' %}"></script>

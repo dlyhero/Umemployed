@@ -631,10 +631,49 @@ def job_application_success(request, job_id):
         # Send an email to the recruiter about the new application
         send_application_email(recruiter.email, request.user.get_full_name(), job.title, job_link)
 
-    # Notify the applicant about the application status
-    applicant = request.user  # Assuming the current user is the applicant
-    applicant_message = f"Your application for the job '{job.title}' has been received. Please wait for further updates."
-    notify_user(applicant, applicant_message, 'application_received')
+    # Retrieve all applications for the job
+    applications = Application.objects.filter(job=job)
+
+    # Calculate overall match percentage for each application
+    for app in applications:
+        total_questions = SkillQuestion.objects.filter(skill__in=job.requirements.all(), entry_level=job.level).count()
+        if total_questions > 0:
+            app.overall_match_percentage = (app.quiz_score / total_questions) * 100
+        else:
+            app.overall_match_percentage = 0.0
+        app.save()
+
+    # Sort applications based on quiz score, matching percentage, and randomly if there's a tie
+    applications = sorted(applications, key=lambda x: (x.quiz_score, x.matching_percentage, random.random()), reverse=True)
+
+    # Determine if the current user's application is in the top 5 or the next 5 (waiting list)
+    top_5_applications = applications[:5]
+    waiting_list_applications = applications[5:10]
+
+    # Construct the job link for applicant emails
+    job_link = request.build_absolute_uri(
+        reverse('job_applications', args=[job.company.id, job.id])
+    )
+
+    if application in top_5_applications:
+        applicant_message = f"Your application for the job '{job.title}' has been received and you are in the top 5 candidates. Please wait for further updates."
+        notify_user(request.user, applicant_message, 'application_received')
+        send_application_email(request.user.email, "Application Received", applicant_message, job_link)
+    elif application in waiting_list_applications:
+        applicant_message = f"Your application for the job '{job.title}' has been received and you are on the waiting list. Please wait for further updates."
+        notify_user(request.user, applicant_message, 'application_received')
+        send_application_email(request.user.email, "Application Received", applicant_message, job_link)
+    else:
+        applicant_message = f"Your application for the job '{job.title}' has been received. Unfortunately, you did not make it to the top 10 candidates."
+        notify_user(request.user, applicant_message, 'application_received')
+        send_application_email(request.user.email, "Application Received", applicant_message, job_link)
+
+    # Check if any waiting list applications have been replaced
+    for app in waiting_list_applications:
+        if app != application and app not in applications[:10]:
+            rejection_message = f"Your application for the job '{job.title}' has been rejected as you have been replaced by another candidate."
+            notify_user(app.user, rejection_message, 'application_rejected')
+            send_application_email(app.user.email, "Application Rejected", rejection_message, job_link)
 
     context = {
         'skill_scores': skill_scores,

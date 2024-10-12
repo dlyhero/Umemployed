@@ -5,6 +5,64 @@
     {% endblock title %}
 {% block custom_css %}
   <meta name="csrf-token" content="{{ csrf_token }}">
+  <style>
+    .hero-text {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.cta-button {
+  transition: transform 0.3s ease-in-out;
+}
+
+.cta-button:hover {
+  transform: translateY(-5px);
+}
+
+
+.hero-section {
+  position: relative; /* Adjust based on the height of your hero section */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  overflow: hidden; /* To ensure no scrollbars appear */
+}
+
+.wave-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px; /* Adjust the wave height to fit your design */
+  overflow: hidden;
+  z-index: 0; /* Ensures wave is below content */
+}
+
+.wave-container svg {
+  width: 100%;
+  height: auto;
+  animation: wave 10s infinite linear;
+}
+
+@keyframes wave {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.hero-content, .image-container {
+  z-index: 10; /* Ensures the content is above the wave */
+}
+  </style>
 {% endblock %}
 {% block content %}
 
@@ -30,24 +88,24 @@
         </div>
       </section>
       <section
-        class=" container mx-auto hero-section lg:flex lg:flex-row items-center justify-between bg-white lg:h-[500px] p-6 lg:p-12 relative"
+        class=" container mx-auto hero-section lg:flex lg:flex-row items-center justify-between bg-white lg:h-[500px] px-4 lg:py-12 relative"
       >
         <!-- Text Section -->
         <div class="text-container lg:w-1/2 text-center lg:text-left z-10">
           <h2
-            class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4"
+            class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 hero-text"
           >
             Discover Your Next Career Move.
             <br />
             <span class="text-[#1e90ff]">Make it Happen</span>
           </h2>
-          <p class="mb-6 text-base md:text-lg text-gray-600 leading-relaxed">
+          <p class="mb-6 text-base md:text-lg text-gray-600 leading-relaxed hero-text">
             Browse thousands of job listings and seize the opportunity to
             advance your career.
           </p>
           <a
             href="{% url 'dashboard' %}"
-            class="inline-block px-8 py-3 bg-[#1e90ff] text-white font-semibold rounded-md transition-all duration-200 hover:bg-[#005b8c]"
+            class="cta-button px-8 py-3 bg-[#1e90ff] text-white font-semibold rounded-full transition-all duration-200 hover:bg-[#005b8c]"
           >
             Get Started
           </a>
@@ -88,7 +146,7 @@
               <div class="w-full h-full flex-shrink-0">
                 <div class="relative w-full h-full">
                   <img
-                    src="{% static 'new_design/images/view-3d-businessman.png' %}"
+                    src="{% static 'new_design/images/hero3.jpg' %}"
                     alt="Image 2"
                     class="w-full h-full object-cover"
                   />
@@ -107,7 +165,7 @@
               <div class="w-full h-full flex-shrink-0">
                 <div class="relative w-full h-full">
                   <img
-                    src="{% static 'new_design/images/cartoon-ai-robot-scene.png' %}"
+                    src="{% static 'new_design/images/hero.png' %}"
                     alt="Image 3"
                     class="w-full h-full object-cover"
                   />
@@ -142,6 +200,11 @@
               onclick="setCurrentSlide(2)"
             ></span>
           </div>
+        </div>
+        <div class="wave-container">
+          <svg viewBox="0 0 1440 320">
+            <path d="M0,64L1440,224L1440,320L0,320Z" fill="#4A90E2"></path>
+          </svg>
         </div>
       </section>
 
@@ -205,17 +268,21 @@
       </p>
 
       <!-- Bookmark Icon -->
-      <div class="flex items-center justify-between">
+      <div class="flex items-center">
          {% if job.id in saved_jobs %}
           <!-- Show filled bookmark if the job is saved -->
+          <div class="flex-1 mt-[5%]">
           <a class="bookmark-job" data-job-id="{{ job.id }}">
-              <i class="fas fa-bookmark text-[#1e90ff] text-xl"></i>  <!-- Filled Bookmark Icon -->
+              <i class="fas fa-bookmark text-[#1e90ff] text-xl order-start"></i>  <!-- Filled Bookmark Icon -->
           </a>
+          </div>
           {% else %}
           <!-- Show empty bookmark if the job is not saved -->
+          <div class="flex-1">
           <a class="bookmark-job" data-job-id="{{ job.id }}">
-              <i class="far fa-bookmark text-gray-500 text-xl hover:text-[#1e90ff]"></i>  <!-- Empty Bookmark Icon -->
+              <i class="far fa-bookmark text-gray-500 text-xl hover:text-[#1e90ff] "></i>  <!-- Empty Bookmark Icon -->
           </a>
+          </div>
           {% endif %}
 
 
@@ -224,7 +291,7 @@
         {% if job.id in applied_job_ids %}
         <span style="color: green;">(Already Applied)</span>
         {% else %}
-        <div class="mt-4">
+        <div class="mt-4 flex-1">
           <a href="{% url 'job:job_details' job.id %}">
             <button class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full">
               Apply Now
@@ -261,7 +328,7 @@
             </p>
             <a
               href="{% url 'dashboard' %}"
-              class="bg-[#1e90ff] text-white px-4 py-2 rounded-lg font-semibold"
+              class="bg-[#1e90ff] text-white px-4 py-2 rounded-full font-semibold"
               >Create Profile</a
             >
           </div>
@@ -283,7 +350,7 @@
             </p>
             <a
               href="{% url 'home' %}"
-              class="bg-[#1e90ff] text-white px-4 py-2 rounded-lg font-semibold"
+              class="bg-[#1e90ff] text-white px-4 py-2 rounded-full font-semibold"
               >View More</a
             >
           </div>
@@ -309,7 +376,7 @@
             </p>
             <a
               href="{% url 'feature-not-implemented' %}"
-              class="bg-[#1e90ff] text-white px-4 py-2 rounded-lg font-semibold"
+              class="bg-[#1e90ff] text-white px-4 py-2 rounded-full font-semibold"
               >Learn More</a
             >
           </div>
@@ -356,7 +423,7 @@
         <div class="mt-8 text-center">
           <a
             href="{% url 'company-list' %}"
-            class="bg-[#1e90ff] text-white font-bold py-4 px-4 rounded-lg hover:bg-blue-400"
+            class="bg-[#1e90ff] text-white font-bold py-4 px-4 rounded-full hover:bg-blue-400"
           >
             Explore All Companies
           </a>

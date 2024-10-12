@@ -153,6 +153,7 @@ def view_my_jobs(request, company_id):
 @company_belongs_to_user
 def view_applications(request, company_id):
     # Check if the current user is the owner of the company
+    applications = []
     current_user = request.user
     company = Company.objects.get(id=company_id)
     if company.user != current_user:
@@ -164,39 +165,37 @@ def view_applications(request, company_id):
         applications = Application.objects.filter(job=job)
         job_applications[job] = applications
 
-    # Calculate match percentage and overall score for each application
+    # Calculate match percentage for each application
     for job, applications in job_applications.items():
         for application in applications:
-            application.update_matching_percentage()  # Use the method to calculate the overall match percentage
+            user = application.user
+            resume = Resume.objects.filter(user=user).first()  # Use filter() to avoid DoesNotExist error
 
-        # Sort applications based on overall score, quiz score, and work experience
-        applications = sorted(applications, key=lambda x: (
-            -x.overall_match_percentage,  # Sort by overall match percentage descending
-            x.quiz_score,  # Sort by quiz score ascending
-            -WorkExperience.objects.filter(user=x.user).count()  # Sort by number of work experiences descending
-        ))
+            if resume:  # Check if the user has a resume
+                applicant_skills = set(resume.skills.all())
+                job_skills = set(job.requirements.all())
+                match_percentage, missing_skills = calculate_skill_match(applicant_skills, job_skills)
+                application.matching_percentage = match_percentage
 
-        # Handle ties by selecting a random candidate among tied candidates
-        top_applications = []
-        for i in range(min(5, len(applications))):
-            tied_applications = [app for app in applications if app.overall_match_percentage == applications[i].overall_match_percentage]
-            if len(tied_applications) > 1:
-                tied_applications = sorted(tied_applications, key=lambda x: (
-                    x.quiz_score,  # Sort by quiz score ascending
-                    -WorkExperience.objects.filter(user=x.user).count()  # Sort by number of work experiences descending
-                ))
-                if len(tied_applications) > 1:
-                    top_applications.append(random.choice(tied_applications))
-                else:
-                    top_applications.append(tied_applications[0])
+                # Calculate the quiz score (assumed to be stored in application.quiz_score)
+                quiz_score = application.quiz_score
+
+                # Calculate the overall score using match percentage and quiz score
+                overall_score = match_percentage * 0.7 + (quiz_score / 10) * 0.3
+                # Optionally, you can load user qualifications and skills for rendering in template
+                application.user.skills_list = list(resume.skills.all())  # Create a separate attribute
+                application.user.resume = resume
             else:
-                top_applications.append(applications[i])
-
-        job_applications[job] = top_applications
+                # Handle cases where no resume exists (optional: set default values)
+                application.matching_percentage = 0
+                application.overall_score = application.quiz_score / 10 * 0.3  # Only quiz score
+                application.user.skills_list = []
+        job_applications[job] = applications
 
     context = {
         'company': company,
         'job_applications': job_applications,
+        'applications': applications,
     }
     return render(request, 'company/candidates.html', context)
 
@@ -292,10 +291,18 @@ def job_applications_view(request, company_id, job_id):
             application.overall_score = application.quiz_score / 10 * 0.3  # Only quiz score
             application.user.skills_list = []
 
+    # Sort applications based on quiz score, matching percentage, and randomly if there's a tie
+    applications = sorted(applications, key=lambda x: (x.quiz_score, x.matching_percentage, random.random()), reverse=True)
+
+    # Select top 5 applications and the next 5 for the waiting list
+    top_5_applications = applications[:5]
+    waiting_list_applications = applications[5:10]
+
     context = {
         'company': company,
         'job': job,
-        'applications': applications,
+        'top_5_applications': top_5_applications,
+        'waiting_list_applications': waiting_list_applications,
     }
     return render(request, 'company/job_applications.html', context)
 

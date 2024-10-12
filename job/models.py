@@ -166,6 +166,12 @@ logger = logging.getLogger(__name__)
 
 class Application(models.Model):
     """Model for Application."""
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('rejected', 'Rejected'),
+        ('accepted', 'Accepted'),
+    ]
+
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     job = models.ForeignKey('Job', on_delete=models.CASCADE)
@@ -175,7 +181,8 @@ class Application(models.Model):
     has_completed_quiz = models.BooleanField(default=False)
     round_scores = models.JSONField(default=dict)
     total_scores = models.JSONField(default=dict)
-    video_file = models.FileField(upload_to='videos/', null=True, blank=True) 
+    video_file = models.FileField(upload_to='videos/', null=True, blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -191,7 +198,15 @@ class Application(models.Model):
         if self.has_completed_quiz:
             self.create_completed_skills()
 
-        logger.debug(f"Application saved with quiz_score: {self.quiz_score}, has_completed_quiz: {self.has_completed_quiz}")
+        # Determine status based on conditions
+        if self.overall_match_percentage >= 80:
+            self.status = 'accepted'
+        elif self.overall_match_percentage < 50:
+            self.status = 'rejected'
+        else:
+            self.status = 'pending'
+
+        logger.debug(f"Application saved with quiz_score: {self.quiz_score}, has_completed_quiz: {self.has_completed_quiz}, status: {self.status}")
         super().save(*args, **kwargs)
 
     def is_quiz_completed(self):
@@ -218,10 +233,10 @@ class Application(models.Model):
                 applicant=self.user, job=self.job, question__skill__in=job_skills
             ).aggregate(total_score=models.Sum('score'))['total_score'] or 0
 
-            skill_based_score = (user_total_score / total_questions) * 30 if total_questions > 0 else 0
+            skill_based_score = (user_total_score / total_questions) * 100 if total_questions > 0 else 0
 
             self.matching_percentage = match_percentage
-            self.overall_match_percentage = (0.7 * match_percentage) + skill_based_score
+            self.overall_match_percentage =  skill_based_score
 
             logger.debug(f"Updated matching percentage: {self.matching_percentage}, overall match percentage: {self.overall_match_percentage}")
         except Resume.DoesNotExist:

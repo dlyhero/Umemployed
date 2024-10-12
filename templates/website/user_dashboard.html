@@ -4,7 +4,21 @@
     <title>Dashboard|UmEmployed</title>
     {% endblock title %}
     {% block custom_css %}
-    
+    <style>
+      .sidebar-item {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .sidebar-item.visible {
+        opacity: 1;
+        transform: translateY(0);
+        }
+
+        #tips::-webkit-scrollbar{width: 1px;}
+
+    </style>
     
       
     {% endblock %}
@@ -44,7 +58,7 @@
           {% if user.has_resume %}
           <a
             href="{% url 'user_dashboard' %}"
-            class="flex items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
+            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
           >
             <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
             <span class="text-gray-700 font-semibold">Dashboard Overview</span>
@@ -52,7 +66,7 @@
           {% else %}
           <a
             href="{% url 'upload' %}"
-            class="flex items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
+            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
           >
             <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
             <span class="text-gray-700 font-semibold">Upload your resume to get a higher chance</span>
@@ -61,35 +75,35 @@
           {% endif %}
           <a
             href="{% url 'job:saved_jobs' %}"
-            class="flex items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
+            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
           >
             <i class="fas fa-bookmark text-[#1e90ff] text-2xl mr-3"></i>
             <span class="text-gray-700 font-semibold">Saved Jobs</span>
           </a>
           <a
             href="{% url 'job:applied_jobs' %}"
-            class="flex items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
+            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
           >
             <i class="fas fa-file-alt text-[#1e90ff] text-2xl mr-3"></i>
             <span class="text-gray-700 font-semibold">Applications</span>
           </a>
           <a
             href="{% url 'career_resources' %}"
-            class="flex items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
+            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
           >
             <i class="fas fa-briefcase text-[#1e90ff] text-2xl mr-3"></i>
             <span class="text-gray-700 font-semibold">Career Resources</span>
           </a>
           <a
             href="{% url 'feature-not-implemented' %}"
-            class="flex items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
+            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
           >
             <i class="fas fa-graduation-cap text-[#1e90ff] text-2xl mr-3"></i>
             <span class="text-gray-700 font-semibold">Skill Development</span>
           </a>
           <a
             href="{% url 'update-resume' %}"
-            class="flex items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
+            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
           >
             <i class="fas fa-cog text-[#1e90ff] text-2xl mr-3"></i>
             <span class="text-gray-700 font-semibold">Settings</span>
@@ -190,6 +204,8 @@
           {% if recommended_jobs %}
           {% for job in recommended_jobs %}
             <!-- Job Card 1 -->
+          <a href="{% url 'job:job_details' job.id %}">
+
             <div
               class="min-w-[100%] sm:min-w-[50%] lg:min-w-[32%] bg-white border rounded-lg p-6 snap-start"
             >
@@ -233,7 +249,9 @@
             </a>
               </div>
               {% endif %}
+            </a>
             </div>
+            
             {% endfor %}
             {% endif %}
 
@@ -241,5 +259,23 @@
         </section>
       </main>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const items = document.querySelectorAll('.sidebar-item');
+        items.forEach((item, index) => {
+          setTimeout(() => {
+            item.classList.add('visible');
+          }, index * 300); // 300ms delay between each item
+        });
+      });
+
+      function removeTip(button) {
+    // Get the parent card element
+    const card = button.parentElement;
+    // Remove the card from the DOM
+    card.remove();
+  }
+    </script>
 
 {% endblock %}
