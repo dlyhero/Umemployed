@@ -119,6 +119,11 @@
 }
 
     </style>  
+
+  <head>
+    <!-- Other head elements -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
       
   {% endblock %}
 {% block content %}
@@ -408,151 +413,167 @@
     </div>
 </section>
 
-    
-    
-    <div id="skills-container" class="p-2">
-      {% include 'partials/skills_list.html' with skills=skills %}
-    </div>
-    
-    <div id="pagination-container" class="flex justify-center items-center p-2 bg-gray-100 rounded-lg shadow-md">
-      {% include 'partials/pagination.html' with skills=skills %}
-    </div>
-    
+<div id="skills-container" class="p-2">
+    {% include 'partials/skills_list.html' with skills=skills %}
+</div>
 
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      // Function to show the modal
-      function showModal() {
-          fetchSuggestedSkills(); // Fetch and display suggested skills when the modal opens
-          document.getElementById('skill-modal').classList.remove('hidden');
-      }
+<div id="pagination-container" class="flex justify-center items-center p-2 bg-gray-100 rounded-lg shadow-md">
+    {% include 'partials/pagination.html' with skills=skills %}
+</div>
 
-      // Function to hide the modal
-      function hideModal() {
-          document.getElementById('skill-modal').classList.add('hidden');
-      }
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Pagination script loaded"); // Debug statement
 
-      // Function to fetch suggested skills from the backend
-      function fetchSuggestedSkills() {
-          fetch("/dashboard/api/suggested-skills/") // Replace with your actual endpoint
-              .then(response => response.json())
-              .then(data => {
-                  initializeSuggestedSkills(data); // Initialize suggested skills
-              })
-              .catch(error => console.error("Error fetching suggested skills:", error));
-      }
+    // Function to show the modal
+    function showModal() {
+        fetchSuggestedSkills(); // Fetch and display suggested skills when the modal opens
+        document.getElementById('skill-modal').classList.remove('hidden');
+    }
 
-      // Function to initialize the suggested skills in the modal
-      function initializeSuggestedSkills(suggestedSkills) {
-          const suggestedSkillsContainer = document.getElementById('suggested-skills');
-          suggestedSkillsContainer.innerHTML = ""; // Clear previous content
+    // Function to hide the modal
+    function hideModal() {
+        document.getElementById('skill-modal').classList.add('hidden');
+    }
 
-          if (suggestedSkills.length === 0) {
-              const notFoundElement = document.createElement("div");
-              notFoundElement.textContent = "No skills found";
-              notFoundElement.className = "not-found";
-              suggestedSkillsContainer.appendChild(notFoundElement);
-          } else {
-              suggestedSkills.forEach(skill => {
-                  const skillElement = document.createElement("div");
-                  skillElement.innerHTML = `
-                      <li data-id="${skill.id}" class="hover:bg-blue-500 hover:text-white mb-2 text-nowrap px-2 py-1 w-fit rounded-full suggested-skill">
-                          <input type="checkbox" id="skill-${skill.id}" class="custom-checkbox" data-id="${skill.id}" value="${skill.name}">
-                          <label for="skill-${skill.id}" class="custom-label">${skill.name}</label>
-                      </li>`;
-                  suggestedSkillsContainer.appendChild(skillElement);
-              });
-          }
-      }
+    // Function to fetch suggested skills from the backend
+    function fetchSuggestedSkills() {
+        fetch("/dashboard/api/suggested-skills/") // Replace with your actual endpoint
+            .then(response => response.json())
+            .then(data => {
+                initializeSuggestedSkills(data); // Initialize suggested skills
+            })
+            .catch(error => console.error("Error fetching suggested skills:", error));
+    }
 
-      // Function to handle skill input for auto-suggestions
-      function handleSkillInput() {
-          const skillInput = document.getElementById('input-skill');
-          const suggestedSkillsContainer = document.getElementById('suggested-skills');
-          const query = skillInput.value.toLowerCase();
-          suggestedSkillsContainer.innerHTML = "";
+    // Function to initialize the suggested skills in the modal
+    function initializeSuggestedSkills(suggestedSkills) {
+        const suggestedSkillsContainer = document.getElementById('suggested-skills');
+        suggestedSkillsContainer.innerHTML = ""; // Clear previous content
 
-          if (query) {
-              const filteredSkills = Array.from(suggestedSkillsContainer.querySelectorAll('.suggested-skill'))
-                  .filter(skillElement => skillElement.querySelector('.custom-label').textContent.toLowerCase().includes(query));
-
-              if (filteredSkills.length === 0) {
-                  const notFoundElement = document.createElement("div");
-                  notFoundElement.textContent = "No skills found";
-                  notFoundElement.className = "not-found";
-                  suggestedSkillsContainer.appendChild(notFoundElement);
-              } else {
-                  filteredSkills.forEach(skillElement => suggestedSkillsContainer.appendChild(skillElement));
-              }
-          }
-      }
-
-      // Add event listener to the plus icon button to show the modal
-      document.getElementById('add-skill-btn').addEventListener('click', showModal);
-
-      // Add event listener to the close button inside the modal to hide it
-      document.getElementById('skill-modal-btn').addEventListener('click', hideModal);
-
-      // Add event listener to the backdrop to hide the modal when clicked
-      document.getElementById('backdrop').addEventListener('click', hideModal);
-
-      // Add event listener to the save button to handle form submission
-      document.getElementById('save-skill-btn').addEventListener('click', function(event) {
-          event.preventDefault(); // Prevent the default form submission
-
-          // Collect selected skill IDs
-          let selectedSkillIds = [];
-          document.querySelectorAll('.custom-checkbox:checked').forEach(function(checkbox) {
-              selectedSkillIds.push(checkbox.dataset.id); // Use dataset.id to get the skill ID
-          });
-
-          console.log("Selected Skill IDs:", selectedSkillIds); // Debug statement
-
-          // Update the hidden input field with the selected skill IDs
-          document.getElementById('selected-skills').value = JSON.stringify(selectedSkillIds);
-
-          console.log("Hidden Input Value:", document.getElementById('selected-skills').value); // Debug statement
-
-          // Optionally submit the form (or use AJAX as needed)
-          document.getElementById('skills-form').submit();
-      });
-
-      // Add event listener to the skill input field for auto-suggestions
-      document.getElementById('input-skill').addEventListener('input', handleSkillInput);
-  });
-</script>
-
-    
-    <script>
-        function fetchSkills(page) {
-            $.ajax({
-                url: "{% url 'paginated_skills' %}",
-                data: {
-                    'page': page
-                },
-                success: function(data) {
-                    $('#skills-container').html(data.skills_html);
-                    $('#pagination-container').html(data.pagination_html);
-                    attachPaginationHandlers();  // Re-attach handlers after updating pagination
-                }
+        if (suggestedSkills.length === 0) {
+            const notFoundElement = document.createElement("div");
+            notFoundElement.textContent = "No skills found";
+            notFoundElement.className = "not-found";
+            suggestedSkillsContainer.appendChild(notFoundElement);
+        } else {
+            suggestedSkills.forEach(skill => {
+                const skillElement = document.createElement("div");
+                skillElement.innerHTML = `
+                    <li data-id="${skill.id}" class="hover:bg-blue-500 hover:text-white mb-2 text-nowrap px-2 py-1 w-fit rounded-full suggested-skill">
+                        <input type="checkbox" id="skill-${skill.id}" class="custom-checkbox" data-id="${skill.id}" value="${skill.name}">
+                        <label for="skill-${skill.id}" class="custom-label">${skill.name}</label>
+                    </li>`;
+                suggestedSkillsContainer.appendChild(skillElement);
             });
         }
-    
-        function attachPaginationHandlers() {
-            $('#pagination-container a').on('click', function(event) {
-                event.preventDefault();
-                var page = $(this).data('page');
-                fetchSkills(page);
-            });
+    }
+
+    // Function to handle skill input for auto-suggestions
+    function handleSkillInput() {
+        const skillInput = document.getElementById('input-skill');
+        const suggestedSkillsContainer = document.getElementById('suggested-skills');
+        const query = skillInput.value.toLowerCase();
+        suggestedSkillsContainer.innerHTML = "";
+
+        if (query) {
+            const filteredSkills = Array.from(suggestedSkillsContainer.querySelectorAll('.suggested-skill'))
+                .filter(skillElement => skillElement.querySelector('.custom-label').textContent.toLowerCase().includes(query));
+
+            if (filteredSkills.length === 0) {
+                const notFoundElement = document.createElement("div");
+                notFoundElement.textContent = "No skills found";
+                notFoundElement.className = "not-found";
+                suggestedSkillsContainer.appendChild(notFoundElement);
+            } else {
+                filteredSkills.forEach(skillElement => suggestedSkillsContainer.appendChild(skillElement));
+            }
         }
-    
-        // Initial handler attachment
-        $(document).ready(function() {
-            attachPaginationHandlers();
+    }
+
+    // Add event listener to the plus icon button to show the modal
+    const addSkillBtn = document.getElementById('add-skill-btn');
+    if (addSkillBtn) {
+        addSkillBtn.addEventListener('click', showModal);
+    }
+
+    // Add event listener to the close button inside the modal to hide it
+    const skillModalBtn = document.getElementById('skill-modal-btn');
+    if (skillModalBtn) {
+        skillModalBtn.addEventListener('click', hideModal);
+    }
+
+    // Add event listener to the backdrop to hide the modal when clicked
+    const backdrop = document.getElementById('backdrop');
+    if (backdrop) {
+        backdrop.addEventListener('click', hideModal);
+    }
+
+    // Add event listener to the save button to handle form submission
+    const saveSkillBtn = document.getElementById('save-skill-btn');
+    if (saveSkillBtn) {
+        saveSkillBtn.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Collect selected skill IDs
+            let selectedSkillIds = [];
+            document.querySelectorAll('.custom-checkbox:checked').forEach(function(checkbox) {
+                selectedSkillIds.push(checkbox.dataset.id); // Use dataset.id to get the skill ID
+            });
+
+            console.log("Selected Skill IDs:", selectedSkillIds); // Debug statement
+
+            // Update the hidden input field with the selected skill IDs
+            document.getElementById('selected-skills').value = JSON.stringify(selectedSkillIds);
+
+            console.log("Hidden Input Value:", document.getElementById('selected-skills').value); // Debug statement
+
+            // Optionally submit the form (or use AJAX as needed)
+            document.getElementById('skills-form').submit();
         });
-    </script>
-    
-    </section>
+    }
+
+    // Add event listener to the skill input field for auto-suggestions
+    const inputSkill = document.getElementById('input-skill');
+    if (inputSkill) {
+        inputSkill.addEventListener('input', handleSkillInput);
+    }
+
+    function fetchSkills(page) {
+        console.log("Fetching skills for page:", page); // Debug statement
+        $.ajax({
+            url: "{% url 'paginated_skills' %}",
+            data: {
+                'page': page
+            },
+            success: function(data) {
+                console.log("AJAX request successful:", data); // Debug statement
+                $('#skills-container').html(data.skills_html);
+                $('#pagination-container').html(data.pagination_html);
+                attachPaginationHandlers();  // Re-attach handlers after updating pagination
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed:", status, error); // Debug statement
+            }
+        });
+    }
+
+    function attachPaginationHandlers() {
+        console.log("Attaching pagination handlers"); // Debug statement
+        $('#pagination-container a').on('click', function(event) {
+            event.preventDefault();
+            var page = $(this).data('page');
+            console.log("Pagination link clicked, page:", page); // Debug statement
+            fetchSkills(page);
+        });
+    }
+
+    // Initial handler attachment
+    $(document).ready(function() {
+        attachPaginationHandlers();
+    });
+});
+</script>
     
     
     <section id="lang-sec" class="mb-10 bg-white p-2 rounded-lg">
@@ -593,7 +614,7 @@
         <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
             <h2 class="font-bold text-lg mb-2">Add Language</h2>
             <hr>
-            <form method="post" action="{% url 'dashboard' %}" class="space-y-4">
+            <form method="post" action="{% url 'add_language' %}" class="space-y-4">
                 {% csrf_token %}
                 {{ language_form.as_p }}
                 <div class="flex justify-end space-x-4">
@@ -609,7 +630,7 @@
         <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
             <h2 class="font-bold text-lg mb-2">Edit Country</h2>
             <hr>
-            <form method="post" action="{% url 'dashboard' %}" class="space-y-4">
+            <form method="post" action="{% url 'update_country' %}" class="space-y-4">
                 {% csrf_token %}
                 {{ profile_form.as_p }}
                 <div class="flex justify-end space-x-4">
@@ -619,6 +640,7 @@
             </form>
         </div>
     </div>
+
     <script>
       function showLanguageModal() {
           document.getElementById('language-modal').classList.remove('hidden');
@@ -1118,7 +1140,7 @@
                     </div>
                     <div class="flex flex-col">
                         <span class="text-gray-800 text-sm font-medium">{{ job.title }}</span>
-                        <span class="text-gray-600 text-xs">{{ job.company }} - {{ job.location }}</span>
+                        <span class="text-gray-600 text-xs">{{ job.company }} - {{ job.location.name }}</span>
                     </div>
                 </div>
             </a>

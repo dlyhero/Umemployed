@@ -111,17 +111,18 @@ def dashboard(request):
             extracted_skills = resume_doc.extracted_skills.all()  # Access as queryset
 
             # Add extracted skills to the resume
-            for skill in extracted_skills:
-                resume.skills.add(skill)
-            
+            resume.skills.add(*extracted_skills)
             resume.save()  # Save the updated resume
+
+            # Re-fetch skills after adding extracted skills
+            skills = resume.skills.all()
 
         except ResumeDoc.DoesNotExist:
             pass
 
         # Implement pagination for skills
         paginator = Paginator(skills, 10)  # Show 10 skills per page
-        page = request.GET.get('page')
+        page = request.GET.get('page') or 1
         try:
             skills_paginated = paginator.page(page)
         except PageNotAnInteger:
@@ -212,6 +213,37 @@ def dashboard(request):
     return render(request, 'dashboard/dashboard.html', context)
 
 
+@login_required(login_url='login')
+def add_language(request):
+    if request.method == 'POST':
+        language_form = UserLanguageForm(request.POST)
+        if language_form.is_valid():
+            user_profile = UserProfile.objects.get(user=request.user)
+            user_language = language_form.save(commit=False)
+            user_language.user_profile = user_profile
+            user_language.save()
+            messages.success(request, "Language added successfully.")
+        else:
+            messages.error(request, f"Language form errors: {language_form.errors}")
+    return redirect('user_dashboard')
+
+@login_required(login_url='login')
+def update_country(request):
+    if request.method == 'POST':
+        user_profile = UserProfile.objects.get(user=request.user)
+        profile_form = UserProfileForm(request.POST, instance=user_profile)
+        if profile_form.is_valid():
+            profile_form.save()
+            
+            # Update contact_info.country field
+            contact_info = get_object_or_404(ContactInfo, user=request.user)
+            contact_info.country = profile_form.cleaned_data['country']
+            contact_info.save()
+            
+            messages.success(request, "Country updated successfully.")
+        else:
+            messages.error(request, f"Profile form errors: {profile_form.errors}")
+    return redirect('user_dashboard')
 from django.shortcuts import get_object_or_404
 
 @login_required(login_url='login')

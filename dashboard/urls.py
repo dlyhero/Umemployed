@@ -14,6 +14,9 @@ urlpatterns = [
     path('education/<int:id>/delete/', views.delete_education, name='delete_education'),
     path('education/save/', views.save_education, name='save_education'),
     
+    path('add_language/', views.add_language, name='add_language'),
+    path('update_country/', views.update_country, name='update_country'),
+    
     path('experience/<int:id>/', views.get_experience_details, name='get_experience_details'),
     path('experience/<int:id>/delete/', views.delete_experience, name='delete_experience'),
     path('experience/save/', views.save_experience, name='save_experience'),

@@ -1,19 +1,27 @@
 {% load static %}
 
-<div class="pagination">
-    <span class="step-links">
+<div class="pagination flex justify-center items-center space-x-2">
+    <span class="step-links flex items-center space-x-2">
         {% if skills.has_previous %}
-            <a href="#" data-page="1">&laquo; first</a>
-            <a href="#" data-page="{{ skills.previous_page_number }}">previous</a>
+            <a href="javascript:void(0)" data-page="1" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-700">&laquo; first</a>
+            <a href="javascript:void(0)" data-page="{{ skills.previous_page_number }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-700">previous</a>
         {% endif %}
 
-        <span class="current">
+        <span class="current px-3 py-1 bg-gray-200 rounded">
             Page {{ skills.number }} of {{ skills.paginator.num_pages }}.
         </span>
 
+        {% for num in skills.paginator.page_range %}
+            {% if skills.number == num %}
+                <span class="current px-3 py-1 bg-blue-500 text-white rounded">{{ num }}</span>
+            {% else %}
+                <a href="javascript:void(0)" data-page="{{ num }}" class="px-3 py-1 bg-gray-200 text-black rounded hover:bg-gray-300">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
         {% if skills.has_next %}
-            <a href="#" data-page="{{ skills.next_page_number }}">next</a>
-            <a href="#" data-page="{{ skills.paginator.num_pages }}">last &raquo;</a>
+            <a href="javascript:void(0)" data-page="{{ skills.next_page_number }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-700">next</a>
+            <a href="javascript:void(0)" data-page="{{ skills.paginator.num_pages }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-700">last &raquo;</a>
         {% endif %}
     </span>
 </div>
