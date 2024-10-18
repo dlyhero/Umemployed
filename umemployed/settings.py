@@ -73,6 +73,9 @@ ASGI_APPLICATION = 'umemployed.asgi.application'
 
 REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
 
+import logging
+from channels_redis.core import RedisChannelLayer
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -81,10 +84,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
-# Create a Redis connection using the URL
-redis_client = redis.from_url(REDIS_URL, ssl=True, ssl_cert_reqs=None)
-
 # Caching setup using Redis
 CACHES = {
     'default': {
