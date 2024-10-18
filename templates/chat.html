@@ -25,7 +25,8 @@
     let chatSocket;
 
     function connectWebSocket() {
-        chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + conversationId + '/');
+        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const chatSocket = new WebSocket(protocol + window.location.host + '/ws/chat/' + conversationId + '/');
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
