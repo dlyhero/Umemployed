@@ -319,7 +319,6 @@ from notifications.utils import notify_user
 @login_required
 def user_dashboard(request):
     user = request.user
-    notify_user(request.user, "Testing when dashboard was clicked", notification_type="Endorsement Received")
     # Fetch only the first 3 jobs
     recommended_jobs = Job.objects.all()[:5]
     applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)

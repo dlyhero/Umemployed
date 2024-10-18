@@ -1,0 +1,6 @@
+<h2>Chats</h2>
+<ul>
+    {% for user, message in chats.items %}
+        <li><a href="{% url 'messaging:chat' user.id %}">{{ user.username }}</a>: {{ message.text }}</li>
+    {% endfor %}
+</ul>

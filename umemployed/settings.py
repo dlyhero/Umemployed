@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     # 'easyaudit',
     'asseessments',
     'social_features',
-    
     'messaging',
     'notifications',
     
@@ -73,6 +72,16 @@ INSTALLED_APPS = [
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
 REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379),REDIS_URL],  # Ensure Redis is running here
+        },
+    },
+}
+
 # Create a Redis connection using the URL
 redis_client = redis.from_url(REDIS_URL, ssl=True, ssl_cert_reqs=None)
 
@@ -94,16 +103,6 @@ CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 
 
-# Log the Redis URL for debugging
-logger = logging.getLogger(__name__)
-logger.debug(f"Connecting to Redis at {REDIS_URL}")
-
-try:
-    client = redis.from_url(REDIS_URL)
-    client.ping()
-    logger.debug("Redis connection successful")
-except Exception as e:
-    logger.error(f"Redis connection failed: {e}")
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
@@ -161,27 +160,16 @@ DATABASES = {
     }
 }
 
+# DATABASES = {  
+#     'default': {  
+#         'ENGINE': 'django.db.backends.sqlite3',  
+#         'NAME': BASE_DIR / "db.sqlite3",  
+#     }  
+# }
+
 ADMINS = [('Nyuydine Bill', 'billleynyuy@gmail.com')]
 MANAGERS = ADMINS
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'django_debug.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
 
 # Automatically send a confirmation email after signup
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # options: "none", "optional", "mandatory"
@@ -232,14 +220,21 @@ SOCIAL_AUTH_PIPELINE = (
 ACCOUNT_EMAIL_REQUIRED = True #new
 ACCOUNT_LOGOUT_REDIRECT_URL='/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
-EMAIL_HOST = 'smtp.gmail.com' #new
-EMAIL_PORT = 587 #new
-EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
-EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
-EMAIL_USE_TLS = True #new
-DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
+# EMAIL_HOST = 'smtp.gmail.com' #new
+# EMAIL_PORT = 587 #new
+# EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
+# EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
+# EMAIL_USE_TLS = True #new
+# DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
+EMAIL_HOST = 'mail.umemployed.com' #new
+EMAIL_PORT = 465 #new
+EMAIL_HOST_USER = 'info@umemployed.com'  #new
+EMAIL_HOST_PASSWORD = "guew cfro yuao tkiz" #new
+EMAIL_USE_TLS = True #new
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

@@ -73,3 +73,5 @@ This project is licensed under the MIT License.
 Acknowledgments
 This project was inspired by the need to simplify the job search process.
 Special thanks to the Django community for their excellent documentation and support.
+
+daphne -p 8001 umemployed.asgi:application

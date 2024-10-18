@@ -1,0 +1,11 @@
+<h2>Chat with {{ user.username }}</h2>
+<div>
+    {% for message in messages %}
+        <p><strong>{{ message.sender.username }}:</strong> {{ message.text }}</p>
+    {% endfor %}
+</div>
+<form method="post">
+    {% csrf_token %}
+    <textarea name="text"></textarea>
+    <button type="submit">Send</button>
+</form>
