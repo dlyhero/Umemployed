@@ -62,8 +62,8 @@ class Company(models.Model):
     video_introduction = models.URLField(blank=True, null=True)
 
     # Media
-    logo = models.ImageField(upload_to="company/logos", blank=True, default="company/logos/zilotech-favicon-bgtransparent.png ")
-    cover_photo = models.ImageField(upload_to="company/cover_photos", blank=True, default="company/logos/zilotech-favicon-bgtransparent.png ")
+    logo = models.ImageField(upload_to="company/logos", blank=True, default="resume/images/default.jpg")
+    cover_photo = models.ImageField(upload_to="company/cover_photos", blank=True, default="resume/images/default.jpg")
 
     # Job Openings with CKEditor
     job_openings = RichTextField(null=True, blank=True)

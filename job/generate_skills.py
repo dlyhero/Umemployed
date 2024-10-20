@@ -125,7 +125,7 @@ def generate_mcqs_for_skill(skill_name):
     conversation = [
         {
             "role": "user", 
-            "content": f"Generate 1 technical multiple-choice question and answers related to the skill: {skill_name}. Each question should be followed by four answer choices (A, B, C, D) and a correct answer indicated. Ensure that the response is provided in JSON format, where the MCQ is represented as an object with the following structure: \n\n{{\n  \"question\": \"\",\n  \"options\": {{\n    \"A\": \"\",\n    \"B\": \"\",\n    \"C\": \"\",\n    \"D\": \"\"\n  }},\n  \"correct_answer\": \"\"\n}}"
+            "content": f"Generate 5 technical multiple-choice questions and answers related to the skill: {skill_name}. Each question should be followed by four answer choices (A, B, C, D) and a correct answer indicated. Ensure that the response is provided in JSON format, where the MCQ is represented as an object with the following structure: \n\n{{\n  \"question\": \"\",\n  \"options\": {{\n    \"A\": \"\",\n    \"B\": \"\",\n    \"C\": \"\",\n    \"D\": \"\"\n  }},\n  \"correct_answer\": \"\"\n}}"
         }
     ]
 

@@ -1,24 +1,147 @@
-<h2>Chat with 
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    <title>Chat | UmEmployed</title>
+{% endblock title %}
+{% block custom_css %}
+<style>
+  /* Updated chat container for professional look */
+  .chat-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+  }
+
+  .chat-header {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #333;
+  }
+
+  #messagess {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .message {
+    padding: 12px 16px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    max-width: 60%;
+    word-wrap: break-word;
+  }
+
+  .message-sent {
+    background-color: #e0f7fa;
+    align-self: flex-end;
+    text-align: right;
+    color: #00695c;
+  }
+
+  .message-received {
+    background-color: #f1f1f1;
+    align-self: flex-start;
+    text-align: left;
+    color: #333;
+  }
+
+  #chat-form {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    background-color: #ffffff;
+    position: sticky;
+    bottom: 0;
+  }
+
+  #chat-message-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-right: 10px;
+    font-size: 16px;
+  }
+
+  #chat-message-submit {
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  #chat-message-submit:hover {
+    background-color: #0056b3;
+  }
+
+  /* Remove page scroll */
+  html, body {
+    overflow: hidden;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .chat-container {
+      padding: 15px;
+    }
+
+    .chat-header {
+      font-size: 22px;
+    }
+
+    #chat-message-input {
+      padding: 10px;
+    }
+
+    #chat-message-submit {
+      padding: 10px 18px;
+    }
+  }
+</style>
+{% endblock custom_css %}
+{% block messagess %}
+        <!-- Intentionally left blank to disable messagess display -->
+{% endblock messagess %}
+{% block content %}
+
+<div class="chat-container">
+  <h2 class="chat-header">Chat with 
     {% if conversation.participant2 == request.user %}
         {{ conversation.participant1 }}
     {% else %}
         {{ conversation.participant2 }}
     {% endif %}
-</h2>
+  </h2>
 
-<div id="messages">
-    {% for message in messages %}
-        <div>
-            <strong>{{ message.sender }}:</strong> {{ message.text }}
-        </div>
+  <div id="messagess">
+    {% for message in messagess %}
+      <div class="message {% if message.sender == request.user %}message-sent{% else %}message-received{% endif %}">
+        <strong>{{ message.sender.first_name }}:</strong> {{ message.text }}
+      </div>
     {% endfor %}
-</div>
+  </div>
 
-<form id="chat-form" method="post" action="{% url 'messaging:send_message' conversation.id %}">
+  <form id="chat-form" method="post" action="{% url 'messaging:send_message' conversation.id %}">
     {% csrf_token %}
-    <textarea id="chat-message-input" name="text" placeholder="Type your message..."></textarea>
+    <input type="text" id="chat-message-input" name="text" placeholder="Type your message...">
     <button type="submit" id="chat-message-submit">Send</button>
-</form>
+  </form>
+</div>
 
 <script>
     const conversationId = "{{ conversation.id }}";
@@ -30,8 +153,15 @@
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            if (data.sender === '{{ request.user.username }}') {
+                messageDiv.classList.add('message-sent');
+            } else {
+                messageDiv.classList.add('message-received');
+            }
             messageDiv.innerHTML = `<strong>${data.sender}:</strong> ${data.message}`;
-            document.querySelector('#messages').appendChild(messageDiv);
+            document.querySelector('#messagess').appendChild(messageDiv);
+            document.querySelector('#messagess').scrollTop = document.querySelector('#messagess').scrollHeight;
         };
 
         chatSocket.onclose = function(e) {
@@ -63,3 +193,7 @@
         }
     };
 </script>
+{% endblock content %}
+{% block footer %}
+
+{% endblock footer %}

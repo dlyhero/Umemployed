@@ -66,18 +66,34 @@ class Resume(models.Model):
     job_title = models.CharField(max_length=100, null=True, blank=True)
     date_of_birth = models.DateField(default=date.today, null=True)
     phone = models.CharField(max_length=20, null=True)
-    description= models.TextField(max_length=500, default="I am a ...")
+    description = models.TextField(max_length=500, default="I am a ...")
     profile_image = models.ImageField(upload_to="resume/images", blank=True, default="resume/images/default.jpg")
-    cv = models.FileField(upload_to='resume/cv', default=" resume/cv/Nyuydine_CV_Resume.pdf", blank=True)
-    category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE,null=True)
+    cv = models.FileField(upload_to='resume/cv', default="resume/cv/Nyuydine_CV_Resume.pdf", blank=True)
+    category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, null=True)
     skills = models.ManyToManyField(Skill)
-    created_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         first_name = self.first_name if self.first_name else ""
         surname = self.surname if self.surname else ""
         return first_name + " " + surname
+
+    def calculate_completion_percentage(self):
+        required_fields = [
+            'first_name', 'surname', 'state', 'country', 'job_title', 
+            'date_of_birth', 'phone', 'description', 'profile_image', 'cv'
+        ]
+        filled_fields = [field for field in required_fields if getattr(self, field)]
+        completion_percentage = (len(filled_fields) / len(required_fields)) * 100
+        return completion_percentage
+
+    def notify_user_completion(self):
+        completion_percentage = self.calculate_completion_percentage()
+        if completion_percentage == 100:
+            return "Congratulations! Your profile is 100% complete."
+        else:
+            return f"Your profile is {completion_percentage:.2f}% complete. Please complete the remaining fields."
         
         
 class ResumeDoc(models.Model):

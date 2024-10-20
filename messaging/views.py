@@ -6,6 +6,19 @@ from .models import Conversation, ChatMessage
 User = get_user_model()
 
 @login_required
+def start_chat(request, user_id):
+    selected_user = get_object_or_404(User, id=user_id)
+    
+    # Check if a conversation already exists between the two users
+    conversation, created = Conversation.objects.get_or_create(
+        participant1=request.user,
+        participant2=selected_user
+    )
+    
+    # If the conversation already exists, redirect to it
+    return redirect('messaging:chat', conversation_id=conversation.id)
+
+@login_required
 def inbox_view(request):
     # Get existing chat rooms
     rooms = Conversation.objects.filter(participant1=request.user) | Conversation.objects.filter(participant2=request.user)
@@ -40,8 +53,8 @@ def inbox_view(request):
 @login_required
 def chat_view(request, conversation_id):
     conversation = get_object_or_404(Conversation, id=conversation_id)
-    messages = ChatMessage.objects.filter(conversation=conversation).order_by('timestamp')
-    return render(request, 'chat.html', {'conversation': conversation, 'messages': messages})
+    messagess = ChatMessage.objects.filter(conversation=conversation).order_by('timestamp')
+    return render(request, 'chat.html', {'conversation': conversation, 'messagess': messagess})
 
 @login_required
 def send_message(request, conversation_id):

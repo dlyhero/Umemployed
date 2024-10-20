@@ -113,7 +113,7 @@
                       d="M19 9h-3.23V6.54A3.88 3.88 0 0012 3v3.61L9.09 9.69A3 3 0 008 12v8a1 1 0 001 1h8.76a1 1 0 001-.75l2.21-8.76A1.999 1.999 0 0019 9z" />
                   </svg>
                 </button>
-                <a href="{% url 'messaging:inbox' %}">
+                <a href="{% url 'messaging:start_chat' application.user.id %}">
                 <button
                   class="hidden md:block border border-[#1e90ff] font-semibold text-[#1e90ff]  rounded-full px-4 py-2"
                   >Message</button>
@@ -202,7 +202,7 @@
                       d="M19 9h-3.23V6.54A3.88 3.88 0 0012 3v3.61L9.09 9.69A3 3 0 008 12v8a1 1 0 001 1h8.76a1 1 0 001-.75l2.21-8.76A1.999 1.999 0 0019 9z" />
                   </svg>
                 </button>
-                <a href="{% url 'messaging:inbox' %}">
+                <a href="{% url 'messaging:start_chat' application.user.id %}">
                 <button
                   class="hidden md:block border border-[#1e90ff] font-semibold text-[#1e90ff]  rounded-full px-4 py-2"
                   >Message</button>

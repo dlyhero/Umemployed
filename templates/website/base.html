@@ -255,7 +255,7 @@
         </nav>
     </header>
 
-
+{% block messages %}
     <div class="primary">
         {% for message in messages %}
             <div class="alert alert-info" role="alert">
@@ -264,7 +264,7 @@
             </div>
         {% endfor %}
     </div>
-
+{% endblock messages %}
 
 
       {% block content %}

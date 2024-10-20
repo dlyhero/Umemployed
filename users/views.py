@@ -319,13 +319,20 @@ from notifications.utils import notify_user
 @login_required
 def user_dashboard(request):
     user = request.user
-    # Fetch only the first 3 jobs
     recommended_jobs = Job.objects.all()[:5]
     applied_job_ids = Application.objects.filter(user=user).values_list('job_id', flat=True)
+    
+    # Calculate profile completion percentage
+    resume = Resume.objects.filter(user=user).first()
+    if resume:
+        completion_percentage = resume.calculate_completion_percentage()
+    else:
+        completion_percentage = 0
 
     context = {
         'recommended_jobs': recommended_jobs,
-        'applied_job_ids':applied_job_ids,
+        'applied_job_ids': applied_job_ids,
+        'completion_percentage': completion_percentage,
     }
     return render(request, 'website/user_dashboard.html', context)
 
