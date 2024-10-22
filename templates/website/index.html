@@ -38,6 +38,18 @@
   canvas {
     display: block;
   }
+  /* Add this CSS to your styles */
+.image-section {
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth transition */
+  opacity: 0; /* Initially hidden */
+  transform: translateY(30px); /* Start slightly lower */
+}
+
+.image-section.visible {
+  opacity: 1; /* Fully visible */
+  transform: translateY(0); /* Move to original position */
+}
+
 </style>
 {% endblock %} {% block content %}
 
@@ -224,7 +236,7 @@
               alt="Company Logo"
             />
             <div>
-              <span class="text-sm text-gray-500">{{job.job_type}}</span>
+              <span class="text-md text-gray-500">{{job.job_type}}</span>
             </div>
           </div>
 
@@ -292,148 +304,94 @@
 
   <section class="container mx-auto bg-gray-50 sm:bg-white pb-16 px-2">
     <!-- Section 1: Let's get you Started -->
-    <div class="flex flex-col lg:flex-row items-center gap-12 mb-12 lg:mb-0">
-      <!-- Image -->
-      <img
-        src="{% static 'new_design/images/create.png' %}"
-        alt="Create Profile"
-        class="lg:w-1/2 w-full object-cover rounded-lg"
-      />
-      <!-- Text Content -->
+    <div class="image-section flex flex-col lg:flex-row items-center gap-12 mb-12 lg:mb-0">
+      <img src="{% static 'new_design/images/create.png' %}" alt="Create Profile" class="lg:w-1/2 w-full object-cover rounded-lg" />
       <div class="lg:w-1/2 w-full text-center lg:text-left">
-        <h2
-          class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900"
-        >
-          Let's get you Started
-        </h2>
-        <p class="text-gray-700 mb-6 text-lg md:text-xl">
-          Complete your profile to unlock more features and opportunities.
-        </p>
-        <a
-          href="{% url 'dashboard' %}"
-          class="bg-gradient-to-r from-[#1e90ff] to-[#1e80ff] text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300"
-        >
-          Create Profile
-        </a>
+        <h2 class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900">Let's get you Started</h2>
+        <p class="text-gray-700 mb-6 text-lg md:text-xl">Complete your profile to unlock more features and opportunities.</p>
+        <a href="{% url 'dashboard' %}" class="bg-gradient-to-r from-[#1e90ff] to-[#1e80ff] text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300">Create Profile</a>
       </div>
     </div>
-
+  
     <!-- Section 2: Your Employers -->
-    <div
-      class="flex flex-col lg:flex-row-reverse items-center gap-12 mb-12 lg:mb-0"
-    >
-      <!-- Image -->
-      <img
-        src="{% static 'new_design/images/employers.png' %}"
-        alt="Your Employers"
-        class="lg:w-1/2 w-full object-cover rounded-lg"
-      />
-      <!-- Text Content -->
+    <div class="image-section flex flex-col lg:flex-row-reverse items-center gap-12 mb-12 lg:mb-0">
+      <img src="{% static 'new_design/images/employers.png' %}" alt="Your Employers" class="lg:w-1/2 w-full object-cover rounded-lg" />
       <div class="lg:w-1/2 w-full text-center lg:text-left">
-        <h2
-          class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900"
-        >
-          Your Employers
-        </h2>
-        <p class="text-gray-700 mb-6 text-lg md:text-xl">
-          See who hires on UmEmployed and discover how our platform helps you
-          find top talent and streamline your hiring process.
-        </p>
-        <a
-          href="{% url 'home' %}"
-          class="bg-gradient-to-r from-[#1e90ff] to-[#1e80ff] text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300"
-        >
-          View More
-        </a>
+        <h2 class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900">Your Employers</h2>
+        <p class="text-gray-700 mb-6 text-lg md:text-xl">See who hires on UmEmployed and discover how our platform helps you find top talent and streamline your hiring process.</p>
+        <a href="{% url 'home' %}" class="bg-gradient-to-r from-[#1e90ff] to-[#1e80ff] text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300">View More</a>
       </div>
     </div>
-
+  
     <!-- Section 3: How It Works -->
-    <div class="flex flex-col lg:flex-row items-center gap-12 mb-12 lg:mb-0">
-      <!-- Image -->
-      <img
-        src="{% static 'new_design/images/learn.png' %}"
-        alt="How It Works"
-        class="lg:w-1/2 w-full object-cover rounded-lg"
-      />
-      <!-- Text Content -->
+    <div class="image-section flex flex-col lg:flex-row items-center gap-12 mb-12 lg:mb-0">
+      <img src="{% static 'new_design/images/learn.png' %}" alt="How It Works" class="lg:w-1/2 w-full object-cover rounded-lg" />
       <div class="lg:w-1/2 w-full text-center lg:text-left">
-        <h2
-          class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900"
-        >
-          How It Works
-        </h2>
-        <p class="text-gray-700 mb-6 text-lg md:text-xl">
-          Learn how to utilize our features to enhance your job search
-          experience.
-        </p>
-        <a
-          href="{% url 'feature-not-implemented' %}"
-          class="bg-gradient-to-r from-[#1e90ff] to-[#1e80ff] text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300"
-        >
-          Learn More
-        </a>
+        <h2 class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900">How It Works</h2>
+        <p class="text-gray-700 mb-6 text-lg md:text-xl">Learn how to utilize our features to enhance your job search experience.</p>
+        <a href="{% url 'feature-not-implemented' %}" class="bg-gradient-to-r from-[#1e90ff] to-[#1e80ff] text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300">Learn More</a>
       </div>
     </div>
   </section>
+  
 
   <section class="border-b">
-    <div class="container mx-auto px-6 py-16">
+    <div class="container mx-auto px-4 py-12">
       <!-- Section Header -->
-      <div class="mb-12 text-center">
-        <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">
+      <div class="mb-10 text-center">
+        <h2 class="text-3xl font-bold text-gray-900 tracking-tight">
           Top Hiring Companies
         </h2>
-        <p class="text-gray-500 mt-3 text-lg max-w-2xl mx-auto">
+        <p class="text-gray-500 mt-2 text-base max-w-xl mx-auto">
           Discover opportunities from companies actively hiring on our platform.
         </p>
       </div>
-
+  
       <!-- Companies List -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6">
         {% if featured_companies %} {% for company in featured_companies %}
         <!-- Company Card -->
-        <div class="bg-white border rounded-lg p-6">
-          <!-- Company Logo -->
-          <div class="flex items-center space-x-6">
-            <div
-              class="w-20 h-20 flex-shrink-0 bg-gray-100 rounded-full border border-gray-200 overflow-hidden"
-            >
-              <img
-                class="w-full h-full object-cover"
-                src="{{company.logo.url}}"
-                alt="{{company.name}} Logo"
-              />
+        <a class="bg-white w-full h-[250px]  rounded-lg p-1 duration-200 group block border border-gray-200" href="{% url 'company-detail' company.id %}">
+          <div class="flex flex-col h-full">
+            <div class="w-full h-[120px] !rounded-md bg-gray-100 group-hover:bg-white duration-200 relative overflow-hidden">
+              <div class="absolute w-full h-full blur-3xl opacity-0 group-hover:opacity-100 duration-200">
+                <div class="absolute left-[50%] w-[50%] aspect-square bg-indigo-300 rounded-full opacity-50" style="background-color:rgb(251 146 60)"></div>
+                <div class="absolute left-[0] w-[50%] top-[60%] aspect-square bg-purple-400 rounded-full opacity-50" style="background-color:rgb(250 204 21)"></div>
+              </div>
+              <div class="absolute rounded-lg overflow-hidden top-6 w-full flex flex-row justify-center">
+                <img src="{{company.logo.url}}" alt="{{company.name}} Logo" class="w-[60px] h-[60px] object-cover rounded-full">
+              </div>
             </div>
-            <!-- Company Details -->
-            <div>
-              <h3 class="text-2xl font-semibold text-gray-800">
+  
+            <div class="h-[120px] group-hover:h-32 w-full duration-200 p-3 md:p-4 z-10">
+              <div class="w-fit p-1.5 rounded-md bg-gray-100 flex flex-row items-center gap-1.5">
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" class="w-4 text-indigo-600 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 100.54" style="enable-background:new 0 0 122.88 100.54" xml:space="preserve"><g><path d="M65.98,54.6H56.9c-0.15,0-0.27,0.06-0.37,0.15c-0.1,0.1-0.15,0.23-0.15,0.37v19.14c0,0.15,0.06,0.27,0.15,0.37 c0.1,0.1,0.23,0.15,0.37,0.15h9.07c0.15,0,0.27-0.06,0.37-0.15c0.1-0.1,0.15-0.23,0.15-0.37V55.12c0-0.15-0.06-0.27-0.15-0.37 C66.25,54.64,66.12,54.6,65.98,54.6L65.98,54.6L65.98,54.6z M6.98,13.97h31.49V4.94c0-1.37,0.56-2.6,1.45-3.49 C40.82,0.56,42.06,0,43.41,0h36.06c1.37,0,2.59,0.56,3.49,1.45c0.89,0.89,1.45,2.14,1.45,3.49v9.03h31.49 c1.93,0,3.67,0.79,4.92,2.06c1.27,1.27,2.06,3.01,2.06,4.92v16.86c-7.89,5.41-16.03,10.02-24.42,13.78 c-8.44,3.78-17.14,6.71-26.14,8.73v-6.74c0-1.54-0.63-2.96-1.64-3.98c-1.01-1.01-2.43-1.64-3.98-1.64H56.17l0,0 c-1.54,0-2.96,0.63-3.98,1.64c-1.01,1.01-1.64,2.43-1.64,3.98v6.59c-8.76-2.01-17.25-4.89-25.48-8.58 C16.45,47.73,8.1,42.96,0,37.36V20.95c0-1.93,0.79-3.67,2.06-4.92C3.32,14.76,5.07,13.97,6.98,13.97L6.98,13.97L6.98,13.97z M122.88,47.81v45.76c0,1.93-0.79,3.67-2.06,4.92c-1.27,1.27-3.01,2.06-4.92,2.06H6.98c-1.93,0-3.67-0.79-4.92-2.06 C0.79,97.22,0,95.48,0,93.57V47.39c6.89,4.42,13.98,8.28,21.27,11.55c9.41,4.22,19.17,7.45,29.29,9.61v7.25 c0,1.54,0.63,2.96,1.64,3.98c1.01,1.01,2.44,1.64,3.98,1.64h10.53c1.54,0,2.96-0.63,3.98-1.64c1.01-1.01,1.64-2.43,1.64-3.98v-7.6 l0.11,0.46c10.31-2.17,20.25-5.43,29.83-9.73C109.33,55.77,116.2,52.05,122.88,47.81L122.88,47.81z M75.71,6.73H47.19 c-0.17,0-0.31,0.06-0.44,0.19c-0.1,0.1-0.19,0.27-0.19,0.44v6.42h29.75V7.36c0-0.17-0.06-0.31-0.19-0.44 c-0.1-0.1-0.27-0.19-0.44-0.19H75.71L75.71,6.73z"/></g></svg>
+                <div class="text-xs font-medium">{{company.industry}}</div>
+              </div>
+              <h3 class="text-lg font-bold tracking-tight mt-3 truncate">
                 {{company.name}}
               </h3>
-              <p class="text-sm text-gray-500">{{company.industry}}</p>
-              <a
-                href="{% url 'company-detail' company.id %}"
-                class="inline-block mt-3 text-[#1e90ff] font-medium hover:text-blue-600 transition-colors"
-              >
-                Visit Company
-              </a>
+              <div class="text-indigo-600 font-medium h-0 opacity-0 group-hover:opacity-100 group-hover:h-5 duration-[300ms] hover:text-black group-hover:mt-3 flex items-center gap-1">
+                <div>Visit Company</div>
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="m268 112 144 144-144 144m124-144H100"></path>
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
+        </a>
         {% endfor %} {% endif %}
       </div>
-
+  
       <!-- Call to Action Button -->
-      <div class="mt-16 text-center">
-        <a
-          href="{% url 'company-list' %}"
-          class="inline-block bg-gradient-to-r from-[#1e90ff] shadow to-[#1e80ff] text-white font-bold py-4 px-10 rounded-full hover:shadow-lg hover:scale-105 transform transition duration-300"
-        >
+      <div class="mt-12 text-center">
+        <a href="{% url 'company-list' %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full transition transform hover:scale-105 duration-300">
           Explore All Companies
         </a>
       </div>
     </div>
   </section>
+  
 
   <!-- Call-to-Action Section -->
   <div
@@ -459,7 +417,7 @@
           <!-- Browse Jobs Button -->
           <a
             href="{% url 'home' %}"
-            class="flex items-center justify-center gap-3 px-5 py-3 bg-[#1e90ff] hover:bg-blue-500 text-white font-semibold rounded-full shadow transition duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="flex items-center justify-center gap-3 px-5 py-3 bg-[#1e90ff] hover:bg-blue-500 text-white font-semibold rounded-full  transition duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Browse jobs on UE
           </a>
@@ -467,7 +425,7 @@
           <!-- Hire Talent Button -->
           <a
             href="/hire"
-            class="flex items-center justify-center gap-3 px-5 py-3 font-semibold rounded-full shadow"
+            class="flex items-center justify-center gap-3 px-5 py-3 font-semibold "
           >
             Hire Top Talent
             <svg
@@ -1490,33 +1448,7 @@
     </div>
   </div>
 
-  <!-- Animation Script -->
-  <script>
-    function animateImage() {
-      const image = document.getElementById("job-portal-image");
-
-      // Initial state: Set image opacity to 0
-      image.style.opacity = 0;
-
-      // Fade in after a delay
-      setTimeout(() => {
-        image.style.transition = "opacity 2s ease-in-out";
-        image.style.opacity = 1;
-      }, 1000);
-
-      // Fade out after 5 seconds
-      setTimeout(() => {
-        image.style.transition = "opacity 2s ease-in-out";
-        image.style.opacity = 0;
-      }, 5000);
-
-      // Repeat the animation after 7 seconds
-      setTimeout(animateImage, 7000);
-    }
-
-    // Start the animation when the page loads
-    window.onload = animateImage;
-  </script>
+ 
 </main>
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -1605,6 +1537,30 @@
 
   // Start the typing effect
   typeEffect();
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const sections = document.querySelectorAll('.image-section');
+
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1 // Adjust this value to control when the animation triggers
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible'); // Add the 'visible' class to trigger the animation
+        } else {
+          entry.target.classList.remove('visible'); // Remove the class to reset the animation when out of view
+        }
+      });
+    }, options);
+
+    sections.forEach(section => {
+      observer.observe(section); // Observe each section
+    });
+  });
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
