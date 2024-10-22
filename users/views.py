@@ -37,7 +37,7 @@ def index(request):
     else:
         saved_job_ids = []
 
-    featured_companies = Company.objects.all()[:6]
+    featured_companies = Company.objects.all()[:4]
 
     context = {
         'job_count': job_count,
