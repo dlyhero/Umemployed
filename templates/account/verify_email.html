@@ -1,0 +1,13 @@
+<!-- verify_email.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Email Verification Required</h1>
+    <p>Please verify your email address to access this page.</p>
+    <form method="post" action="{% url 'custom_resend_verification_email' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Resend Verification Email</button>
+    </form>
+</div>
+{% endblock %}

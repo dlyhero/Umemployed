@@ -9,6 +9,7 @@ from django.conf import settings
 from ckeditor.fields import RichTextField
 from django.urls import reverse
 from django_countries.fields import CountryField
+from decimal import Decimal
 
 
 
@@ -177,7 +178,11 @@ class Application(models.Model):
     job = models.ForeignKey('Job', on_delete=models.CASCADE)
     quiz_score = models.IntegerField(default=0)
     matching_percentage = models.FloatField(default=0.0)
-    overall_match_percentage = models.FloatField(default=0.0)
+    overall_match_percentage = models.DecimalField(
+        max_digits=5,  # Total number of digits
+        decimal_places=2,  # Number of decimal places
+        default=Decimal('0.00')
+    )    
     has_completed_quiz = models.BooleanField(default=False)
     round_scores = models.JSONField(default=dict)
     total_scores = models.JSONField(default=dict)
