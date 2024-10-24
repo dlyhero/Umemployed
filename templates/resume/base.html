@@ -51,15 +51,8 @@
         font-style: normal;
       }
       header {
+     
         background-color: White;
-      }
-
-      #mobileMenu{
-        background-color: white;
-        height: 100vh;
-        margin: 0;
-        overflow: hidden;
-        z-index: 100;
       }
       /* styles for messages*/
       @keyframes slideFadeIn {
@@ -74,6 +67,14 @@
         100% {
           opacity: 1;
         }
+      }
+
+      #mobileMenu{
+        background-color: white;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        z-index: 100;
       }
 
       @keyframes slideFadeOut {
@@ -157,60 +158,83 @@
         </div>
 
         <div id="right-section">
-  <ul class="flex gap-4 items-center">
-    {% if user.is_authenticated %}
-      {% if user.is_applicant %}
-        <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
-          <a href="{% url 'upload' %}">Resume</a>
-        </li>
-        <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
-          <a href="{% url 'home' %}">Browse jobs</a>
-        </li>
-      {% elif user.is_recruiter and user.has_company and user_company %}
-        <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
-          <i>Logged as Recruiter</i>
-        </li>
-      {% endif %} 
-      
-      <li>
-        {% if user.is_recruiter and user.has_company and user_company %}
-          <a href="{% url 'company_dashboard' user_company.id %}">
-            <div class="text-nowrap items-center flex gap-2">
-              {% if user.resume.profile_image %}
-                <img src="{{ user.resume.profile_image.url }}" alt="Profile Image" class="w-10 h-10 rounded-full object-cover" />
+          <ul class="flex gap-4 items-center">
+            {% if user.is_authenticated %}   {% if user.is_applicant %}
+            <li
+              class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+            >
+              <a href="{% url 'upload' %}">Resume</a>
+            </li>
+            <li
+              class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+            >
+              <a href="{% url 'home' %}">Browse jobs</a>
+            </li>
+            {% elif user.is_recruiter and user.has_company and user_company%}
+            <li
+              class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+            >
+              <i>Logged as Recruiter</i>
+            </li>
+            {% endif %} 
+            {% endif %}
+            <li></li>
+            <li>
+              {% if user.is_authenticated %}
+           {% if user.is_recruiter and user.has_company and user_company %}
+              <a href="{% url 'company_dashboard' user_company.id %}">
+                <div class="text-nowrap items-center flex gap-2">
+                  {% if user.resume.profile_image %}
+                  <img
+                    src="{{ user.resume.profile_image.url }}"
+                    alt="Profile Image"
+                    class="w-10 h-10 rounded-full object-cover"
+                  />
+                  {% else %}
+                  <span
+                    class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100"
+                  >
+                    <i class="fas fa-user"></i>
+                  </span>
+                  {% endif %}
+                  <span
+                    class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block"
+                    >{{user.username}}</span
+                  >
+                </div>
+              </a>
               {% else %}
-                <span class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100">
-                  <i class="fas fa-user"></i>
-                </span>
-              {% endif %}
-              <span class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">{{ user.username }}</span>
-            </div>
-          </a>
-        {% else %}
-          <a href="{% url 'dashboard' %}">
-            <div class="text-nowrap items-center flex gap-2">
-              {% if user.resume.profile_image %}
-                <img src="{{ user.resume.profile_image.url }}" alt="Profile Image" class="w-10 h-10 rounded-full object-cover" />
+              <a href="{% url 'dashboard' %}">
+                <div class="text-nowrap items-center flex gap-2">
+                  {% if user.resume.profile_image %}
+                  <img
+                    src="{{ user.resume.profile_image.url }}"
+                    alt="Profile Image"
+                    class="w-10 h-10 rounded-full object-cover"
+                  />
+                  {% else %}
+                  <span
+                    class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100"
+                  >
+                    <i class="fas fa-user"></i>
+                  </span>
+                  {% endif %}
+                  <span
+                    class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block"
+                    >{{user.username}}</span
+                  >
+                </div>
+              </a>
+              {% endif %} 
               {% else %}
-                <span class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100">
-                  <i class="fas fa-user"></i>
-                </span>
+              <a
+                href="{% url 'register-applicant' %}"
+                class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full"
+              >
+                Sign Up
+              </a>
               {% endif %}
-              <span class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">{{ user.username }}</span>
-            </div>
-          </a>
-        {% endif %}
-      </li>
-
-    {% else %}
-      <li>
-        <a href="{% url 'register-applicant' %}" class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full">
-          Sign Up
-        </a>
-      </li>
-    {% endif %}
- 
-
+            </li>
 
             <li>
               <button id="mobileMenuButton" class="sm:hidden">
@@ -220,7 +244,7 @@
             <li class="relative hidden sm:block">
               <button
                 id="menuButton"
-                class="p-2  rounded-lg"
+                class="p-2 active:border-2 active:border-[#1e90ff] rounded-lg"
               >
                 <i class="fas fa-bars"></i>
               </button>
@@ -346,7 +370,6 @@
     </div>
 
     {% block content %} {% endblock %} {% block footer %}
-     {% block content %} {% endblock %} {% block footer %}
     <footer class=" bg-gray-50 py-">
       <div class="container mx-auto px-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 py-6 md:pb-12 lg:pt-16 lg:pb-16">
