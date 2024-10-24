@@ -85,12 +85,16 @@
     cursor: pointer;
 }
 header { 
-            position: sticky ;
-            left: 0; 
-            right: 0; 
-            z-index: 100; 
+            
             background-color: White;
         }
+        #mobileMenu{
+        background-color: white;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+      }
+
 
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -476,7 +480,7 @@ viewBox="0 0 466 511.98">
     <!-- Sidebar -->
     <div
       id="mobileMenu"
-      class="fixed top-0 left-0 bottom-0 right-0 flex flex-col bg-white max-w-[500px] py-4 px-4"
+      class="fixed h-screen overflow-hidden z-[100]  top-0 left-0 bottom-0 right-0 flex flex-col bg-white max-w-[500px] py-4 px-4 z-100"
     >
       <div class="menu-header flex justify-between items-center mb-6">
         <img
