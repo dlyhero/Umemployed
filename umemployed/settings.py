@@ -73,6 +73,12 @@ ASGI_APPLICATION = 'umemployed.asgi.application'
 
 REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
 
+# settings.py
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GEMINI_API_KEY = os.getenv("GENAI_API_KEY")
+LLAMA_API_KEY = os.getenv("LLAMA_API_KEY")
+
+
 import logging
 from channels_redis.core import RedisChannelLayer
 
@@ -98,8 +104,13 @@ CACHES = {
     }
 }
 
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
+# CELERY_BROKER_URL = REDIS_URL
+# CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT=['application/json']
+CELERY_RESULT_SERIALIZER= 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 
 
@@ -219,21 +230,21 @@ SOCIAL_AUTH_PIPELINE = (
 ACCOUNT_EMAIL_REQUIRED = True #new
 ACCOUNT_LOGOUT_REDIRECT_URL='/'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
-# EMAIL_HOST = 'smtp.gmail.com' #new
-# EMAIL_PORT = 587 #new
-# EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
-# EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
-# EMAIL_USE_TLS = True #new
-# DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
-EMAIL_HOST = 'mail.umemployed.com' #new
-EMAIL_PORT = 465 #new
-EMAIL_HOST_USER = 'info@umemployed.com'  #new
-EMAIL_HOST_PASSWORD = "guew cfro yuao tkiz" #new
+EMAIL_HOST = 'smtp.gmail.com' #new
+EMAIL_PORT = 587 #new
+EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
+EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
 EMAIL_USE_TLS = True #new
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
+# EMAIL_HOST = 'mail.umemployed.com' #new
+# EMAIL_PORT = 465 #new
+# EMAIL_HOST_USER = 'info@umemployed.com'  #new
+# EMAIL_HOST_PASSWORD = "guew cfro yuao tkiz" #new
+# EMAIL_USE_TLS = True #new
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

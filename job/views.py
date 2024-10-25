@@ -17,7 +17,6 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Job, MCQ
 from .forms import CreateJobForm
-from job.generate_skills import generate_mcqs_for_skill
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .models import Skill, SkillQuestion, CompletedSkills
@@ -50,6 +49,9 @@ from .forms import ApplicantAnswerForm  # Make sure this form is updated as nece
 from django.shortcuts import render, redirect
 from .forms import JobDescriptionForm
 from .models import Job
+
+from .tasks import send_new_job_email_task
+from notifications.utils import notify_user
 
 
 import json
@@ -172,7 +174,6 @@ def enter_job_description(request):
 
 
 from django.shortcuts import get_object_or_404
-from notifications.utils import notify_user
 
 
 @login_required
@@ -206,18 +207,15 @@ def select_skills(request):
                         # Send new job email notification
                         job_description = job_instance.description if job_instance.description else 'No description available.'
                         job_link = request.build_absolute_uri(job_instance.get_absolute_url())
-                        # Send new job email to all users
                         
+                        # Schedule email sending task with a 2-minute delay
                         users = User.objects.all()
                         for user in users:
-                            send_new_job_email(
-                                user.email, 
-                                user.get_full_name(), 
-                                job_instance.title, 
-                                job_link, 
-                                job_description, 
-                                company.name
+                            send_new_job_email_task.apply_async(
+                                args=[user.email, user.get_full_name(), job_instance.title, job_link, job_description, company.name],
+                                countdown=120  # 2 minutes delay
                             )
+
                         # Notify all users about the new job
                         message = f"A new job has been posted: {job_instance.title}. Check it out!"
                         notification_type = 'new_job_posted'

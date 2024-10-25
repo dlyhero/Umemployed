@@ -140,6 +140,7 @@ class SkillQuestion(models.Model):
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
     entry_level = models.CharField(max_length=100, blank=True, null=True)  # Assuming entry level is a string field
     job = models.ForeignKey(Job, on_delete=models.CASCADE,null=True, related_name='skill_questions')
+    area = models.CharField(max_length=255, blank=True, null=True)  # New field for area of expertise
 
     def __str__(self):
         return self.question

@@ -1,0 +1,103 @@
+# tasks.py
+from celery import shared_task
+from .models import Skill, SkillQuestion
+import json
+import logging
+from openai import OpenAI
+import os
+import dotenv
+from django.core.mail import send_mail
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+
+dotenv.load_dotenv()
+api_key = os.environ.get('OPENAI_API_KEY')
+client = OpenAI(api_key=api_key)
+logger = logging.getLogger(__name__)
+
+@shared_task
+def generate_questions_task(job_title, entry_level, skill_name, questions_per_skill):
+    questions = []
+    serialized_questions = []
+    
+    try:
+        question_data_list = generate_mcqs_for_skill(skill_name, entry_level, job_title)
+        
+        if question_data_list and isinstance(question_data_list, list):
+            for question_data in question_data_list[:questions_per_skill]:
+                skill = Skill.objects.get(name=skill_name)
+                skill_question = SkillQuestion.objects.create(
+                    question=question_data['question'],
+                    option_a=question_data['options'].get('A', ''),
+                    option_b=question_data['options'].get('B', ''),
+                    option_c=question_data['options'].get('C', ''),
+                    option_d=question_data['options'].get('D', ''),
+                    correct_answer=question_data['correct_answer'],
+                    skill=skill,
+                    entry_level=entry_level,
+                    area=question_data['area']  # Save the area of expertise
+                )
+                questions.append(skill_question)
+                serialized_questions.append({
+                    'question': skill_question.question,
+                    'option_a': skill_question.option_a,
+                    'option_b': skill_question.option_b,
+                    'option_c': skill_question.option_c,
+                    'option_d': skill_question.option_d,
+                    'correct_answer': skill_question.correct_answer,
+                    'skill': skill_question.skill.name,
+                    'entry_level': skill_question.entry_level,
+                    'area': skill_question.area
+                })
+        else:
+            logger.error("Failed to generate question for skill: %s", skill_name)
+    
+    except Exception as e:
+        logger.error(f"An error occurred while generating questions for skill {skill_name}: {e}")
+    
+    return serialized_questions
+
+def generate_mcqs_for_skill(skill_name, entry_level, job_title):
+    conversation = [
+        {
+            "role": "user", 
+            "content": f"Generate a set of 10 technical multiple-choice questions and answers related to the skill of {skill_name}, specifically tailored for a {entry_level} {job_title} position. Ensure that the questions cover the five key interview areas most relevant for this role. Each question should be followed by four answer choices (A, B, C, D) and include a correct answer.\n\nThe response should be formatted in JSON, with each multiple-choice question represented as an object structured as follows:\n{{\n  \"question\": \"\",\n  \"options\": {{\n    \"A\": \"\",\n    \"B\": \"\",\n    \"C\": \"\",\n    \"D\": \"\"\n  }},\n  \"correct_answer\": \"\",\n  \"area\": \"\"\n}}\nPlease ensure that the area of expertise related to each question is also specified within the JSON object."
+        }
+    ]
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=conversation,
+            timeout=120
+        )
+
+        mcqs_and_answers = response.choices[0].message.content
+        mcqs_and_answers_list = json.loads(mcqs_and_answers)
+        
+        if isinstance(mcqs_and_answers_list, list):
+            return mcqs_and_answers_list
+        else:
+            logger.error("Unexpected format for MCQs data: %s", mcqs_and_answers_list)
+            return None
+
+    except (json.JSONDecodeError, Exception) as e:
+        logger.error("An error occurred while generating MCQs for skill %s: %s", skill_name, e)
+        return None
+    
+    
+#to send job emails to users
+
+
+logger = logging.getLogger(__name__)
+
+@shared_task
+def send_new_job_email_task(email, full_name, job_title, job_link, job_description, company_name):
+    subject = f"New Job Posted: {job_title}"
+    message = f"Hello {full_name},\n\nA new job has been posted at {company_name}.\n\nJob Title: {job_title}\nDescription: {job_description}\n\nYou can view the job here: {job_link}\n\nBest regards,\n{company_name}"
+    from_email = settings.DEFAULT_FROM_EMAIL
+
+    try:
+        send_mail(subject, message, from_email, [email])
+    except Exception as e:
+        logger.error(f"An error occurred while sending email to {email}: {e}")
