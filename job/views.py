@@ -229,6 +229,7 @@ def select_skills(request):
                         entry_level = form.cleaned_data['level']
                         selected_skill_names = [skill.name for skill in selected_extracted_skills]
                         redirect_url = f'/job/generate-questions/?job_title={job_instance.title}&entry_level={entry_level}&selected_skills={",".join(selected_skill_names)}'
+                        messages.info(request, "You have successfully created the job.")
                         return redirect(redirect_url)
                 else:
                     form = SkillForm(job_instance=job_instance)
