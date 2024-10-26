@@ -71,12 +71,15 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
+SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
 # REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
 
 # settings.py
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GEMINI_API_KEY = os.getenv("GENAI_API_KEY")
 LLAMA_API_KEY = os.getenv("LLAMA_API_KEY")
+
+
 
 
 import logging
