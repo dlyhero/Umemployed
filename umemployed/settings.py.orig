@@ -71,7 +71,7 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
-# REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
+REDIS_URL  = os.getenv('REDIS_URL')
 
 # settings.py
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -84,16 +84,14 @@ from channels_redis.core import RedisChannelLayer
 import os
 import ssl
 
-import os
-
 # Load environment variables
-REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+REDIS_URL = os.getenv('REDIS_URL', 'rediss://:p2ae106d8d68c62b36a40bcd26d5e854e78a219c54664828c1987db33f8cfe2c6@ec2-54-146-141-60.compute-1.amazonaws.com:14190')
 
 # Channels configuration
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
             "hosts": [REDIS_URL],
         },
     },
@@ -107,7 +105,7 @@ CACHES = {
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             'CONNECTION_POOL_CLASS_KWARGS': {
-                'ssl': False,  # Disable SSL
+                'ssl_cert_reqs': ssl.CERT_NONE,  # This allows self-signed certificates
             },
         },
     }
@@ -116,8 +114,6 @@ CACHES = {
 # Celery configuration
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 accept_content = ['application/json']
 result_serializer = 'json'
@@ -134,6 +130,7 @@ result_backend_transport_options = {
         'ssl_cert_reqs': ssl.CERT_NONE  # Change to 'CERT_REQUIRED' or 'CERT_OPTIONAL' as needed
     }
 }
+
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
