@@ -31,7 +31,7 @@ def generate_questions_view(request):
         selected_skill_names = selected_skills.split(',') if selected_skills else []
 
         try:
-            questions_per_skill = 3
+            questions_per_skill = 5
 
             for skill_name in selected_skill_names:
                 generate_questions_task.delay(job_title, entry_level, skill_name, questions_per_skill)
