@@ -81,9 +81,9 @@
       <!-- Text Section -->
       <div class="text-container lg:w-1/2 text-center lg:text-left z-10">
         <h2
-          class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 hero-text text-[#1e90ff]"
+          class="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 hero-text text-[#1e90ff] text-nowrap"
         >
-          Discover <span id="dynamic-text" class="text-[#1e90ff]"></span>
+          Your <span id="dynamic-text" class="text-[#1e90ff]"></span>
         </h2>
         <p
           class="mb-6 text-gray-700 leading-relaxed hero-text text-xl lg:text-2xl max-w-xl mx-auto lg:mx-0"
@@ -393,41 +393,36 @@
       </div>
     </div>
   </section>
-  
 
-  <!-- Call-to-Action Section -->
-  <div
-    class="relative overflow-hidden py-20 md:pb-32 lg:pt-40 lg:pb-40  border-gray-200"
-  >
-    <div
-      class="container mx-auto px-2 lg:px-6 flex flex-col lg:flex-row items-center justify-between"
-    >
-      <!-- Left Content -->
-      <div class="w-full text-center md:text-left">
-        <h2 class="text-4xl font-bold tracking-tight text-gray-900">
-          Ready to elevate your career ?
-        </h2>
-        <p class="text-gray-700 mt-6 text-lg">
-          Join <span class="text-[#1e90ff] font-semibold">UmEmployed</span> to
-          find your perfect job or hire top talent.
-          <br class="hidden md:inline-block" />Your journey to success starts
-          here.
-        </p>
-
-        <!-- Buttons -->
-        <div class="mt-10 flex flex-col text-center sm:flex-row items-center gap-4 mb-4 md:mb-8  lg:mb-0">
-          <!-- Browse Jobs Button -->
-          <a
-            href="{% url 'home' %}"
-            class="flex items-center justify-center gap-3 px-5 py-3 bg-[#1e90ff] hover:bg-blue-500 text-white font-semibold rounded-full  transition duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Browse jobs on UE
-          </a>
-
-          <!-- Hire Talent Button -->
-          <a
+  <section class=" px-2 py-6 border-b">
+    <div class="container mx-auto flex flex-col lg:flex-row items-center ">
+        <!-- Left Column: Text Content -->
+        <div class="w-full lg:w-1/2 mb-8 lg:mb-0 lg:pr-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Transform Your Career with Us</h2>
+            <p class="text-lg text-gray-600 mb-6">Discover opportunities, connect with top employers, and take the next step in your professional journey with UmEmployed.</p>
+            <ul class="space-y-2 text-gray-700">
+                <li class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Advanced Job Search Tools</span>
+                </li>
+                <li class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>AI-Generated Resumes & Cover Letters</span>
+                </li>
+                <li class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Comprehensive Skill Assessments</span>
+                </li>
+            </ul>
+            <a  href="{% url 'home' %}" class="inline-flex items-center px-6 py-2 mt-6 bg-blue-500 text-white rounded-full font-semibold">
+                Get Started with UmEmployed
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+            </a>
+            <a
             href="/hire"
-            class="flex items-center justify-center gap-3 px-5 py-3 font-semibold "
+            class="inline-flex items-center justify-center gap-3 px-6 py-2 font-semibold o"
           >
             Hire Top Talent
             <svg
@@ -446,16 +441,10 @@
             </svg>
           </a>
         </div>
-      </div>
 
-      <!-- Job Portal Image Container -->
-      <div
-        id="illustration-container"
-        class="w-full lg:w-1/2 h-[300px] relative flex items-center justify-center"
-      >
-        <!-- Your Image -->
-
-        <svg
+        <!-- Right Column: Image -->
+        <div class="w-full lg:w-1/2 flex justify-center">
+          <svg
           id="job-portal-image"
           class="md:w-1/2 lg:w-[1000px]"
           version="1.1"
@@ -1446,10 +1435,13 @@
             </g>
           </g>
         </svg>
-      </div>
+        </div>
     </div>
-  </div>
+  </section>
 
+  
+
+ 
  
 </main>
 <!-- Include jQuery -->
@@ -1492,7 +1484,7 @@
       },
     });
   });
-  const phrases = ["Your Next Career Move."];
+  const phrases = ["Career Starts Here"];
   const typingSpeed = 100; // Speed of typing
   const deletingSpeed = 50; // Speed of deleting
   const delayBetweenPhrases = 1000; // Delay between phrases
@@ -1553,9 +1545,7 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible'); // Add the 'visible' class to trigger the animation
-        } else {
-          entry.target.classList.remove('visible'); // Remove the class to reset the animation when out of view
-        }
+        } 
       });
     }, options);
 
