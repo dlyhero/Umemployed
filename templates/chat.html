@@ -148,7 +148,8 @@
     let chatSocket;
 
     function connectWebSocket() {
-        chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + conversationId + '/');
+        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+         chatSocket = new WebSocket(protocol + window.location.host + '/ws/chat/' + conversationId + '/');
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
@@ -192,6 +193,23 @@
             messageInputDom.value = '';
         }
     };
+
+     // Function to scroll to the bottom of the messages container
+  function scrollToBottom() {
+    var messageContainer = document.getElementById('messagess');
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+  }
+
+  // Scroll to the bottom when the page is loaded
+  window.onload = function() {
+    scrollToBottom();
+  };
+
+  // Optionally, you can trigger this function after new messages are sent
+  const chatForm = document.getElementById('chat-form');
+  chatForm.addEventListener('submit', function() {
+    setTimeout(scrollToBottom, 100);  // Scroll after message submission
+  });
 </script>
 {% endblock content %}
 {% block footer %}
