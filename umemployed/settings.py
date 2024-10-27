@@ -216,8 +216,7 @@ LOGOUT_REDIRECT='/'
 
 SOCIAL_AUTH_GOOGLE_OAUTH_KEY = '38566500036-s92j092h19cnf0seht935oatlm9bb67a.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH_SECRET = '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'
-SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI='https://umemployed-app-afec951f7ec7.herokuapp.com/social-auth/complete/google-oauth2/'
-
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://umemployed-app-afec951f7ec7.herokuapp.com/social-auth/complete/google-oauth2/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SOCIAL_AUTH_GOOGLE_OAUTH_KEY  # This is the same as above
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SOCIAL_AUTH_GOOGLE_OAUTH_SECRET  # This is the same as above
 
