@@ -79,10 +79,10 @@
 {% endblock %}
 
 {% block content %}
-<main class="p-4 md:p-6 lg:p-8 max-w-8xl mx-auto">
+<main class="px-2 md:px-6 container mx-auto">
   <section class="flex flex-col lg:flex-row gap-6 lg:justify-center">
     <!-- Profile Edit Form -->
-    <div class="bg-white sm:bg-white sm:border border-gray-300 rounded-lg sm:shadow-md lg:ml-20 p-6" style="flex: 0 0 60%">
+    <div class="bg-white sm:bg-white sm:border border-gray-300 rounded-lg p-6" style="flex: 0 0 70%">
       <h2 class="text-[#1e90ff] font-semibold text-lg mb-4">
         Edit Profile
       </h2>
@@ -90,8 +90,8 @@
       <!-- Illustrative Image -->
       <div class="mb-6 text-center">
         <img
-          src="{% static 'build/pics/20769939_Sandy_Med-02_Single-03.jpg' %}"
-          class="h-[60vh] w-full"
+          src="{% static 'new_design/images/profile.jpg' %}"
+          class="h-auto w-full lg:w-[60%] mx-auto"
           alt="edit"
         />
       </div>
@@ -152,12 +152,127 @@
       </form>
     </div>
 
-    <!-- Additional Features Section -->
-    <div class="flex-1 space-y-6" style="flex: 0 0 20%">
-      <!-- Job Opportunities and other sections unchanged -->
-    </div>
+     <!-- Additional Features -->
+        <div class="flex-1 space-y-6" style="flex: 0 0 28%">
+          <div class="bg-white border border-gray-300 rounded-lg  p-6">
+            <h2
+              class="text-[#1e90ff] font-semibold text-lg mb-4 flex items-center"
+            >
+              <i class="fas fa-briefcase mr-3 text-[#1e90ff]"></i>
+              Featured Job Opportunities
+            </h2>
+            <p class="text-gray-700 mb-4">
+              Explore top job opportunities based on your profile and
+              preferences.
+            </p>
+            <ul class="list-none text-gray-700 space-y-2">
+              <li>
+                <a
+                  href="{% url 'feature-not-implemented' %}"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-laptop-code mr-2"></i> Software Engineer at
+                  TechCorp</a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'feature-not-implemented' %}"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-project-diagram mr-2"></i> Product Manager
+                  at Innovate Inc.</a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'feature-not-implemented' %}"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-pencil-ruler mr-2"></i> UX Designer at
+                  Creative Studio</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-white border border-gray-300 rounded-lg  p-6">
+            <h2
+              class="text-[#1e90ff] font-semibold text-lg mb-4 flex items-center"
+            >
+              <i class="fas fa-lightbulb mr-3 text-[#1e90ff]"></i>
+              Career Insights
+            </h2>
+            <p class="text-gray-700 mb-4">
+              Gain insights into your career growth and tips for improving your
+              job prospects.
+            </p>
+            <ul class="list-none text-gray-700 space-y-2">
+              <li>
+                <a
+                  href="{% url 'feature-not-implemented' %}"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-envelope-dots mr-2"></i> How to Ace a
+                  Technical Interview</a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'feature-not-implemented' %}"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-network-wired mr-2"></i> Building a Strong
+                  Professional Network</a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'feature-not-implemented' %}"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-file-alt mr-2"></i> Crafting an Effective
+                  Resume</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-white border border-gray-300 rounded-lg  p-6">
+            <h2
+              class="text-[#1e90ff] font-semibold text-lg mb-4 flex items-center"
+            >
+              <i class="fas fa-chart-line mr-3 text-[#1e90ff]"></i>
+              Profile Analytics
+            </h2>
+            <p class="text-gray-700 mb-4">
+              Review analytics related to your profile views and interactions to
+              enhance visibility.
+            </p>
+            <ul class="list-none text-gray-700 space-y-2">
+              <li>
+                <a
+                  href="{% url 'feature-not-implemented' %}"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-eye mr-2"></i> View Profile Insights</a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'feature-not-implemented' %}"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-search mr-2"></i> Track Profile Views</a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'feature-not-implemented' %}"
+                  class="text-[#1e90ff] hover:underline flex items-center"
+                  ><i class="fas fa-bar-chart mr-2"></i> Analyze Engagement
+                  Metrics</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
   </section>
 </main>
+
+
 
 <!-- Loader -->
 <div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50">
@@ -169,6 +284,46 @@
     <span><p>Processing, this might take some seconds.</p><span>
   </div>
 </div>
+
+{% block footer %}
+    
+    
+    {% endblock footer %}
+    <footer class="text-gray-800 text-center p-3">
+      <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
+        <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
+        <div class="flex space-x-4 items-center">
+          <a
+            href="{% url 'feature-not-implemented' %}"
+            class="text-white hover:text-gray-300"
+          >
+            <i class="fab fa-twitter text-black"></i>
+          </a>
+          <a
+            href="{% url 'feature-not-implemented' %}"
+            class="text-white hover:text-gray-300"
+          >
+            <i class="fab fa-linkedin text-black"></i>
+          </a>
+          <a
+            href="{% url 'feature-not-implemented' %}"
+            class="text-white hover:text-gray-300"
+          >
+            <i class="fab fa-facebook text-black"></i>
+          </a>
+          <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
+        </div>
+        <div class="text-sm ">
+                        
+          <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300"
+            >Privacy Policy
+            </a
+          >
+          
+          <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
+        </div>
+      </div>
+    </footer>
 
 <!-- Form Submission Script -->
 <script>

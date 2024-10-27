@@ -182,10 +182,21 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-  
+
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd97r55prv16las',
+        'USER': 'u3mlos1b16lhnu',
+        'PASSWORD': 'p5d239049119450812c414a246b1be69bc8479bb870fc89fca6bcdbc1f082f3c5',
+        'HOST': 'c9pv5s2sq0i76o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
+        'PORT': '5432',      
+    }
 }
+
+# DATABASES = {
+#     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+# }
 
 # DATABASES = {  
 #     'default': {  

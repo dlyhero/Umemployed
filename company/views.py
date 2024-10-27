@@ -137,15 +137,14 @@ def company_dashboard(request, company_id):
 @company_belongs_to_user
 def view_my_jobs(request, company_id):
     company = get_object_or_404(Company, id=company_id)
-    jobs = Job.objects.filter(company=company)
+    jobs = Job.objects.filter(company=company).order_by('-created_at')
     
-  
     for job in jobs:
         job.application_count = Application.objects.filter(job=job).count()
+    
     context = {
         'company': company,
         'jobs': jobs,
-         
     }
     return render(request, 'company/myJobs.html', context)
 
