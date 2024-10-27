@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -87,7 +87,6 @@ from channels_redis.core import RedisChannelLayer
 import os
 import ssl
 
-import os
 
 # Load environment variables
 REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
