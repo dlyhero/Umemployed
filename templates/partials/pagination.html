@@ -1,6 +1,6 @@
 {% load static %}
 
-<div class="container mx-auto pagination flex justify-center items-center space-x-2">
+<div class="pagination flex justify-center items-center space-x-2">
     <span class="step-links flex items-center space-x-2">
         {% if skills.has_previous %}
             <a href="javascript:void(0)" data-page="1" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-700">&laquo; first</a>
@@ -11,30 +11,7 @@
             Page {{ skills.number }} of {{ skills.paginator.num_pages }}.
         </span>
 
-        {% with total_pages=5 %}
-            {% with start_page=skills.number|add:-2 %}
-                {% with end_page=skills.number|add:2 %}
-                    {% if start_page < 1 %}
-                        {% with start_page=1 %}
-                            {% with end_page=total_pages %}
-                                {% endwith %}
-                            {% endwith %}
-                    {% endif %}
-                    {% if end_page > skills.paginator.num_pages %}
-                        {% with end_page=skills.paginator.num_pages %}
-                            {% with start_page=skills.paginator.num_pages|add:-4 %}
-                                {% if start_page < 1 %}
-                                    {% with start_page=1 %}
-                                        {% endwith %}
-                                {% endif %}
-                            {% endwith %}
-                        {% endwith %}
-                    {% endif %}
-                {% endwith %}
-            {% endwith %}
-        {% endwith %}
-
-        {% for num in start_page|default:1|to:end_page|default:skills.paginator.num_pages %}
+        {% for num in skills.paginator.page_range %}
             {% if skills.number == num %}
                 <span class="current px-3 py-1 bg-blue-500 text-white rounded">{{ num }}</span>
             {% else %}
