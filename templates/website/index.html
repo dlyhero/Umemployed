@@ -193,7 +193,8 @@
     </div>
   </section>
 
-  <section class="container px-2 mx-auto py-12">
+ 
+ <section class="container px-2 mx-auto py-12">
     <!-- Section Header -->
     <div class="mb-8">
       <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">Featured Opportunities</h2>
@@ -324,7 +325,7 @@
     </div>
   
     <!-- Section 3: How It Works -->
-    <div class="image-section flex flex-col lg:flex-row items-center gap-12 mb-12 lg:mb-0">
+    <div class="image-section flex flex-col lg:flex-row items-center border lg:border-none rounded-lg gap-12 mb-12 lg:mb-0">
       <img src="{% static 'new_design/images/learn.png' %}" alt="How It Works" class="lg:w-1/2 w-full object-cover rounded-lg" />
       <div class="lg:w-1/2 w-full text-center lg:text-left">
         <h2 class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900">How It Works</h2>
@@ -333,6 +334,7 @@
       </div>
     </div>
   </section>
+  
   
 
   <section class="border-b">
@@ -394,6 +396,50 @@
     </div>
   </section>
 
+  <section class="bg-blue-50 py-16">
+    <div class="container mx-auto px-4">
+        <!-- Header Section -->
+        <div class="text-center mb-10">
+            <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-gray-900">Expand Your Horizons</h2>
+            <p class="mt-4 text-lg sm:text-xl text-gray-700">
+                Discover job opportunities tailored to your skills and ambitions with UmEmployed. <br class="hidden lg:inline">
+                Connect with companies actively seeking top talent for roles that match your background and goals.
+            </p>
+        </div>
+
+        <!-- Features Grid Section -->
+        <div class="flex flex-col md:flex-row items-center gap-8 md:gap-10 mt-12">
+            <!-- Feature List Column -->
+            <div class="flex flex-col md:w-1/2 space-y-6">
+                <div class="flex items-start gap-4">
+                    <div class="text-3xl font-bold text-indigo-600">+50,000</div>
+                    <p class="text-gray-700 text-base sm:text-lg">Active job opportunities around the world</p>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="text-3xl font-bold text-indigo-600">Global Reach</div>
+                    <p class="text-gray-700 text-base sm:text-lg">Find roles with companies from all over the globe</p>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="text-3xl font-bold text-indigo-600">AI-Powered Insights</div>
+                    <p class="text-gray-700 text-base sm:text-lg">Receive personalized job suggestions using AI</p>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="text-3xl font-bold text-indigo-600">Real-Time Notifications</div>
+                    <p class="text-gray-700 text-base sm:text-lg">Stay updated on job matches and company interactions</p>
+                </div>
+            </div>
+
+            <!-- Image Section -->
+            <div class="relative md:w-1/2 h-[440px] rounded-xl overflow-hidden border-[4px] border-white ring-1 ring-gray-200">
+                <img src="{% static 'new_design/images/newfeature.jpg' %}" alt="Empowering Careers" class="rounded-xl object-cover w-full h-full">
+                <div class="absolute inset-0 bg-yellow-400 bg-opacity-20 flex items-center justify-center text-white text-3xl font-semibold">
+                    Start Your Career Journey
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
   <section class=" px-2 py-6 border-b">
     <div class="container mx-auto flex flex-col lg:flex-row items-center ">
         <!-- Left Column: Text Content -->
@@ -446,7 +492,7 @@
         <div class="w-full lg:w-1/2 flex justify-center">
           <svg
           id="job-portal-image"
-          class="md:w-1/2 lg:w-[1000px]"
+          class="md:w-1/2 lg:w-[500px]"
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
