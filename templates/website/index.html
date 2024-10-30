@@ -325,7 +325,7 @@
     </div>
   
     <!-- Section 3: How It Works -->
-    <div class="image-section flex flex-col lg:flex-row items-center border lg:border-none rounded-lg gap-12 mb-12 lg:mb-0">
+    <div class="image-section flex flex-col lg:flex-row items-center  gap-12 mb-12 lg:mb-0">
       <img src="{% static 'new_design/images/learn.png' %}" alt="How It Works" class="lg:w-1/2 w-full object-cover rounded-lg" />
       <div class="lg:w-1/2 w-full text-center lg:text-left">
         <h2 class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900">How It Works</h2>
@@ -399,46 +399,50 @@
   <section class="bg-blue-50 py-16">
     <div class="container mx-auto px-4">
         <!-- Header Section -->
-        <div class="text-center mb-10">
-            <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-gray-900">Expand Your Horizons</h2>
-            <p class="mt-4 text-lg sm:text-xl text-gray-700">
-                Discover job opportunities tailored to your skills and ambitions with UmEmployed. <br class="hidden lg:inline">
+        <div class="text-center mb-10 px-4">
+            <h2 class="text-3xl sm:text-5xl font-bold tracking-tight text-gray-900">
+                Expand Your Horizons
+            </h2>
+            <p class="mt-4 text-base sm:text-lg text-gray-700">
+                Discover job opportunities tailored to your skills and ambitions with UmEmployed. 
+                <br class="hidden lg:inline">
                 Connect with companies actively seeking top talent for roles that match your background and goals.
             </p>
         </div>
 
         <!-- Features Grid Section -->
-        <div class="flex flex-col md:flex-row items-center gap-8 md:gap-10 mt-12">
+        <div class="flex flex-col md:flex-row items-center gap-10 mt-8 md:mt-12">
             <!-- Feature List Column -->
-            <div class="flex flex-col md:w-1/2 space-y-6">
-                <div class="flex items-start gap-4">
+            <div class="flex flex-col md:w-1/2 space-y-6 px-4 md:px-0">
+                <div class="">
                     <div class="text-3xl font-bold text-indigo-600">+50,000</div>
                     <p class="text-gray-700 text-base sm:text-lg">Active job opportunities around the world</p>
                 </div>
-                <div class="flex items-start gap-4">
+                <div class="">
                     <div class="text-3xl font-bold text-indigo-600">Global Reach</div>
                     <p class="text-gray-700 text-base sm:text-lg">Find roles with companies from all over the globe</p>
                 </div>
-                <div class="flex items-start gap-4">
+                <div class=" ">
                     <div class="text-3xl font-bold text-indigo-600">AI-Powered Insights</div>
                     <p class="text-gray-700 text-base sm:text-lg">Receive personalized job suggestions using AI</p>
                 </div>
-                <div class="flex items-start gap-4">
+                <div class="">
                     <div class="text-3xl font-bold text-indigo-600">Real-Time Notifications</div>
                     <p class="text-gray-700 text-base sm:text-lg">Stay updated on job matches and company interactions</p>
                 </div>
             </div>
 
             <!-- Image Section -->
-            <div class="relative md:w-1/2 h-[440px] rounded-xl overflow-hidden border-[4px] border-white ring-1 ring-gray-200">
+            <div class="relative w-full md:w-1/2 h-[300px] md:h-[440px] rounded-xl overflow-hidden border-[4px] border-white ring-1 ring-gray-200 mt-8 md:mt-0 px-4 md:px-0">
                 <img src="{% static 'new_design/images/newfeature.jpg' %}" alt="Empowering Careers" class="rounded-xl object-cover w-full h-full">
-                <div class="absolute inset-0 bg-yellow-400 bg-opacity-20 flex items-center justify-center text-white text-3xl font-semibold">
+                <div class="absolute inset-0 bg-yellow-400 bg-opacity-20 flex items-center justify-center text-white text-xl sm:text-2xl md:text-3xl font-semibold">
                     Start Your Career Journey
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 
   <section class=" px-2 py-6 border-b">
     <div class="container mx-auto flex flex-col lg:flex-row items-center ">
