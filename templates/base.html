@@ -22,11 +22,15 @@
       href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Nerko+One&family=Pirata+One&display=swap"
       rel="stylesheet"
     />
-    
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
    
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      .svg-text {
+    font-family: 'Lobster', cursive;
+  }
       /* styles for messages*/
       @keyframes slideFadeIn {
     0% {
@@ -101,21 +105,24 @@ header {
   </head>
 
   <body>
-    <header class="border-b">
-     <div id="sub-header" class="container mx-auto p-4 bg-[#fff] sm:p-6 flex items-center justify-between">
+    <header >
+     <div id="sub-header" class="container mx-auto px-2 py-4 bg-[#fff] lg:p-6 flex items-center justify-between">
       <div id="left-section" class="flex items-center">
-       <div class="logo-wrap mr-4">
-        <a href="{% url 'index' %}" class="flex items-center">
-         <img src="{% static 'img/svg/ue.svg'%}" alt="">
+       <div class="logo-wrap flex items-center mr-10">
+        <a href="{% url 'index' %}">
+         
+<svg width="55" height="55" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="40" class="svg-text" font-size="40" fill="#1e90ff" font-weight="bold">UE</text>
+</svg>
         </a>
        </div>
-        <ul class="hidden md:flex items-center gap-2">
+        <ul class="hidden md:flex items-center gap-8">
           <li><a href="{% url 'company-list' %}" class="font-semibold">Companies</a></li>
           <li><a href="#" class="font-semibold">Find Talent</a></li>
         </ul>
       </div>
 
-     <div class="middle-section flex flex-1 max-w-3xl">
+     <div class="middle-section flex flex-1 max-w-xl">
 
       {% block search_bar %}
       <div

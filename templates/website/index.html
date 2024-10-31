@@ -2,13 +2,17 @@
 <title>Find Your Dream Job with UmEmployed</title>
 {% endblock title %} {% block custom_css %}
 <meta name="csrf-token" content="{{ csrf_token }}" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
   .hero-text {
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 1.5s ease-out forwards;
   }
-
+   .headingI{
+    font-family: 'Montserrat Alternates', sans-serif;
+   }
   @keyframes fadeInUp {
     to {
       opacity: 1;
@@ -54,9 +58,9 @@
 {% endblock %} {% block content %}
 
 <main class="">
-  <section id="search-ctn-mobile" class="my-5 lg:hidden container mx-auto">
+  <section id="search-ctn-mobile" class="my-5 lg:hidden container mx-auto px-3">
     <div
-      class="search-wrapper flex max-w-[90%] mx-auto bg-white px-2 py-2 border rounded-full shadow sm:shadow-none"
+      class="search-wrapper flex  mx-auto bg-white px-2 py-2 border rounded-full shadow sm:shadow-none"
     >
       <input
         class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
@@ -76,36 +80,42 @@
   </section>
   <section class="bg-white mt-6">
     <div
-      class="container  mx-auto hero-section lg:flex lg:flex-row gap-10 justify-between lg:h-[600px] px-4 lg:px-6 lg:py-12 relative"
+      class="container  mx-auto hero-section lg:flex lg:flex-row gap-10 justify-between lg:h-[450px] px-4 lg:px-10 lg:py-5 relative"
     >
       <!-- Text Section -->
-      <div class="text-container flex flex-col  lg:w-1/2 text-center lg:text-left z-10">
-        <h2
-          class="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 hero-text text-[#1e90ff] text-nowrap"
+      <div class="text-container flex flex-col lg:items-start  lg:w-1/2  z-10">
+        <h3
+          class="text-2xl headingI md:text-3xl lg:text-4xl font-extrabold mb-4 hero-text text-[#1e90ff] text-nowrap"
         >
           Your <span id="dynamic-text" class="text-[#1e90ff]"></span>
-        </h2>
+        </h3>
         <p
-          class="mb-6 text-gray-700 leading-relaxed hero-text text-xl lg:text-2xl max-w-xl mx-auto lg:mx-0"
+          class="mb-2  text-gray-700 leading-relaxed  hero-text text-2xl lg:text-3xl lg:mx-0"
         >
           Browse thousands of job listings and seize the opportunity to advance
           your career.
         </p>
-        <p class="text-base leading-relaxed hero-text mb-6 text-gray-700"> Welcome to our platform, where opportunities and innovation merge to create a dynamic experience. Our mission is to provide seamless solutions that empower individuals and businesses alike. Dive into a world where every interaction is designed to inspire, motivate, and bring your goals closer within reach.</p>
+        <p class="mb-6 text-lg text-gray-700">
+          Unlock new opportunities with our platform. Connect with leading companies, grow your career, and realize your potential.
+        </p>
+        
         <a
           href="{% url 'dashboard' %}"
-          class="cta-button px-10 w-fit py-4 bg-gradient-to-r from-[#1e90ff] to-[#005b8c] text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
+          class="cta-button flex items-center lg:px-10 w-fit py-4 lg:bg-gradient-to-r from-[#1e90ff] to-[#005b8c] text-[#1e90ff] lg:text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
         >
           Get Started
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+        </svg>
         </a>
       </div>
 
       <!-- Carousel Container -->
       <div
-        class="image-container lg:w-1/2 mt-8 lg:mt-0 relative hidden lg:block"
+        class="image-container lg:w-1/2 mt-0 lg:mt-0 relative hidden lg:block"
       >
         <div
-          class="relative w-full h-72 lg:h-[500px] overflow-hidden rounded-lg shadow-xl"
+          class="relative w-full h-72 lg:h-[400px] overflow-hidden rounded-lg shadow-xl"
         >
           <div
             id="carousel"
@@ -175,7 +185,7 @@
 
         <!-- Navigation Dots -->
         <div
-          class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-3"
+          class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3"
         >
           <span
             class="dot w-4 h-4 bg-gray-400 rounded-full cursor-pointer"
@@ -195,7 +205,7 @@
   </section>
 
  
- <section class="container px-4 lg:px-6  mx-auto py-12">
+ <section class="container px-4 lg:px-10  mx-auto py-12">
     <!-- Section Header -->
     <div class="mb-8">
       <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">Featured Opportunities</h2>
@@ -305,7 +315,7 @@
   </section>
 
   <section class="bg-slate-50 sm:bg-white  py-16">
-   <div class="container mx-auto px-4 lg:px-6 ">
+   <div class="container mx-auto px-4 lg:px-10 ">
      <!-- Section 1: Let's get you Started -->
      <div class="image-section flex flex-col lg:flex-row items-center gap-12 mb-12 lg:mb-0">
       <img src="{% static 'new_design/images/create.png' %}" alt="Create Profile" class="lg:w-1/2 w-full object-cover rounded-lg" />
@@ -341,7 +351,7 @@
   
 
   <section class="border-b">
-    <div class="container mx-auto px-4 lg:px-6  py-12">
+    <div class="container mx-auto px-4 lg:px-10  py-12">
       <!-- Section Header -->
       <div class="mb-10 text-center">
         <h2 class="text-3xl font-bold text-gray-900 tracking-tight">
@@ -400,7 +410,7 @@
   </section>
 
   <section class="bg-gray-50 py-12">
-    <div class="container mx-auto px-4 lg:px-6 ">
+    <div class="container mx-auto px-4 lg:px-10 ">
         <!-- Header Section -->
         <div class="text-center mb-10">
             <h2 class="text-3xl sm:text-5xl font-bold tracking-tight text-gray-900">
@@ -446,7 +456,7 @@
 
 
   <section class="  py-6 border-b">
-    <div class="container px-4 lg:px-6  mx-auto flex flex-col lg:flex-row items-center ">
+    <div class="container px-4 lg:px-10  mx-auto flex flex-col lg:flex-row items-center ">
         <!-- Left Column: Text Content -->
         <div class="w-full lg:w-1/2 mb-8 lg:mb-0 lg:pr-8">
             <h2 class="text-3xl font-bold text-gray-800 mb-4">Transform Your Career with Us</h2>
@@ -1535,7 +1545,7 @@
       },
     });
   });
-  const phrases = ["Career Starts Here"];
+  const phrases = ["Career Starts Here!"];
   const typingSpeed = 100; // Speed of typing
   const deletingSpeed = 50; // Speed of deleting
   const delayBetweenPhrases = 1000; // Delay between phrases
