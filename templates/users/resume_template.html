@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.first_name }} {{ user.last_name }}'s Profile</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 5px;
+            color: #00539C; /* Dark blue color */
+        }
+        h3 {
+            font-size: 22px;
+            margin-top: 0;
+            color: #00539C; /* Matching blue color */
+        }
+        .contact-info {
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: #555;
+        }
+        .contact-info span {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #00539C;
+            padding-bottom: 5px;
+            color: #333;
+        }
+        p, li {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #444;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+        .key-competencies, .skills, .technologies-tools {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .key-competencies div, .skills div, .technologies-tools div {
+            margin: 5px 15px 5px 0;
+            background-color: #e9f1f7; /* Light blue background */
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 10px;
+            color: #00539C;
+        }
+        .project-list ul {
+            padding-left: 14px;
+        }
+        .project-list li {
+            margin-bottom: 6px;
+        }
+        .project-list li::before {
+            content: '• ';
+            color: #00539C; /* Bullet color */
+            font-weight: bold;
+        }
+        .education, .certifications, .references {
+            font-size: 16px;
+        }
+        .technologies-tools div {
+            margin: 10px 15px 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>UmEmployed</h1>
+        <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+        <h3>{{ resume.job_title }}</h3>
+        <div class="contact-info">
+            <span>Email: {{ contact_info.email }}</span>
+            <span>Phone: {{ contact_info.phone }}</span>
+            <span>Country: {{ contact_info.country }}</span>
+        </div>
+
+        <div class="section">
+            <h2>Summary</h2>
+            <p>{{ resume.description }}</p>
+        </div>
+
+        <div class="section">
+            <h2>Experience</h2>
+            <ul>
+                {% if work_experiences %}
+                    {% for experience in work_experiences %}
+                        <li><strong>{{ experience.company_name }} - {{ experience.role }} ({{ experience.start_date }} - {{ experience.end_date }})</strong></li>
+                        <ul>
+                            <!-- Add details if available -->
+                        </ul>
+                    {% endfor %}
+                {% else %}
+                    <li>User did not add any work experience.</li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="section key-competencies">
+            <h2>Key Competencies</h2>
+            {% if resume.skills.all %}
+                {% for skill in resume.skills.all %}
+                    <div>{{ skill.name }}</div>
+                {% endfor %}
+            {% else %}
+                <p>User did not add any key competencies.</p>
+            {% endif %}
+        </div>
+
+        
+
+        <div class="section project-list">
+            <h2>Projects</h2>
+            <ul>
+                <!-- Add project details if available -->
+                <li>User did not add any projects.</li>
+            </ul>
+        </div>
+
+        <div class="section education">
+            <h2>Education</h2>
+            <ul>
+                {% if education_list %}
+                    {% for education in education_list %}
+                        <li>{{ education.degree }} in {{ education.field_of_study }}, {{ education.institution_name }} ({{ education.graduation_year }})</li>
+                    {% endfor %}
+                {% else %}
+                    <li>User did not add any education details.</li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="section certifications">
+            <h2>Certifications</h2>
+            <ul>
+                <!-- Add certifications if available -->
+                <li>User did not add any certifications.</li>
+            </ul>
+        </div>
+
+        <div class="section references">
+            <h2>References</h2>
+            <p>Available upon request.</p>
+        </div>
+    </div>
+</body>
+</html>

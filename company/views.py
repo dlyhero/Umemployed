@@ -60,7 +60,9 @@ def create_company(request):
                 return redirect('update_company', company_id=company.id)  
             else:
                 print(form.errors)  # This will print out form errors to the console
-                messages.error(request, 'Error creating company.')
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"{field}: {error}")
         else:
             form = CreateCompanyForm()
 

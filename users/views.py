@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import User
@@ -406,3 +406,24 @@ def career_resources(request):
 
 def feature_not_implemented(request):
     return render(request, 'modal.html') 
+
+#user umemployed resume
+from resume.models import  Resume, Education, WorkExperience, UserLanguage, ContactInfo
+
+def user_resume(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    resume = get_object_or_404(Resume, user=user)
+    education_list = Education.objects.filter(user=user)
+    work_experiences = WorkExperience.objects.filter(user=user)
+    languages = UserLanguage.objects.filter(user_profile__user=user)
+    contact_info = get_object_or_404(ContactInfo, user=user)
+
+    context = {
+        'user': user,
+        'resume': resume,
+        'education_list': education_list,
+        'work_experiences': work_experiences,
+        'languages': languages,
+        'contact_info': contact_info,
+    }
+    return render(request, 'users/resume_template.html', context)

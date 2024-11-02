@@ -80,8 +80,8 @@
         </label>
       </div>
 
-      <!-- Sign Up Button (Initially Disabled) -->
-      <button type="submit" id="signup-btn" class="w-full px-43 py-2 bg-gray-400 font-semibold text-white rounded" disabled>Sign Up</button>
+      <!-- Sign Up Button -->
+      <button type="submit" id="signup-btn" class="w-full px-43 py-2 bg-[#1e90ff] font-semibold text-white rounded hover:bg-[#1e90fc]">Sign Up</button>
     </form>
 
     <p class="text-center text-gray-600 mt-4">
@@ -168,7 +168,6 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const termsCheckbox = document.getElementById('terms');
-    const signupButton = document.getElementById('signup-btn');
     const termsModal = document.getElementById('terms-modal');
     const openTerms = document.getElementById('open-terms');
     const acceptTerms = document.getElementById('accept-terms');
@@ -189,9 +188,6 @@
     acceptTerms.addEventListener('click', function() {
       termsModal.classList.add('hidden');
       termsCheckbox.checked = true;
-      signupButton.disabled = false; // Enable signup button once terms are accepted
-      signupButton.classList.remove('bg-gray-400');
-      signupButton.classList.add('bg-[#1e90ff]', 'hover:bg-[#1e90fc]');
     });
 
     // Optional: Close the modal when clicking outside of it

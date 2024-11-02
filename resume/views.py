@@ -110,7 +110,9 @@ def update_resume_view(request):
             messages.success(request, 'Resume updated successfully.')
             return redirect('user_dashboard')  # Redirect to user dashboard or a success page
         else:
-            messages.error(request, 'Error updating resume. Please correct the errors below.')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         form = UpdateResumeForm(instance=resume)  # Pre-populate the form with the resume data
 

@@ -1,5 +1,7 @@
 from django import forms
 from .models import Resume,ResumeDoc, SkillCategory, Skill, Experience, Education, ContactInfo
+from django.core.exceptions import ValidationError
+from datetime import date
 
 class ContactInfoForm(forms.ModelForm):
     job_title = forms.ModelChoiceField(
@@ -20,8 +22,16 @@ class ContactInfoForm(forms.ModelForm):
 class UpdateResumeForm(forms.ModelForm):
     class Meta:
         model = Resume
-        fields = ['first_name', 'surname', 'date_of_birth', 'phone', 'state', 'country', 'job_title','date_of_birth', 'phone', 'description','profile_image']
+        fields = ['first_name', 'surname', 'date_of_birth', 'phone', 'state', 'country', 'job_title', 'description', 'profile_image']
 
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data.get('date_of_birth')
+        if dob:
+            today = date.today()
+            age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+            if age < 18:
+                raise ValidationError("You must be at least 18 years old.")
+        return dob
 
 from django.db.models import Q
 

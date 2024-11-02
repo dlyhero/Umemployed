@@ -22,5 +22,7 @@ urlpatterns = [
     path('career-resources', views.career_resources, name='career_resources'),
     path('feature-not-implemented/', views.feature_not_implemented, name='feature-not-implemented'),
 
+    path('resume/<int:user_id>/', views.user_resume, name='user_resume'),
+
 
 ]
