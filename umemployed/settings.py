@@ -71,19 +71,36 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
-REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
+SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
+# REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
+
+# settings.py
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GEMINI_API_KEY = os.getenv("GENAI_API_KEY")
+LLAMA_API_KEY = os.getenv("LLAMA_API_KEY")
+
+
+
 
 import logging
 from channels_redis.core import RedisChannelLayer
+import os
+import ssl
 
+
+# Load environment variables
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+
+# Channels configuration
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [REDIS_URL],
         },
     },
 }
+
 # Caching setup using Redis
 CACHES = {
     'default': {
@@ -91,16 +108,36 @@ CACHES = {
         'LOCATION': REDIS_URL,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'SOCKET_CONNECT_TIMEOUT': 10,  # in seconds
+            'SOCKET_TIMEOUT': 10,
             'CONNECTION_POOL_CLASS_KWARGS': {
-                'ssl_cert_reqs': None,  # This allows self-signed certificates
+                'ssl': False,  # Disable SSL
             },
         },
     }
 }
 
+# Celery configuration
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
+accept_content = ['application/json']
+result_serializer = 'json'
+task_serializer = 'json'
+
+broker_transport_options = {
+    'ssl': {
+        'ssl_cert_reqs': ssl.CERT_NONE  # Change to 'CERT_REQUIRED' or 'CERT_OPTIONAL' as needed
+    }
+}
+
+result_backend_transport_options = {
+    'ssl': {
+        'ssl_cert_reqs': ssl.CERT_NONE  # Change to 'CERT_REQUIRED' or 'CERT_OPTIONAL' as needed
+    }
+}
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
@@ -147,17 +184,13 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-  
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd97r55prv16las',
-        'USER': 'u3mlos1b16lhnu',
-        'PASSWORD': 'p5d239049119450812c414a246b1be69bc8479bb870fc89fca6bcdbc1f082f3c5',
-        'HOST': 'c9pv5s2sq0i76o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
-        'PORT': '5432',      
-    }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
+
+# DATABASES = {
+#     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+# }
 
 # DATABASES = {  
 #     'default': {  
@@ -188,7 +221,7 @@ LOGOUT_REDIRECT='/'
 
 SOCIAL_AUTH_GOOGLE_OAUTH_KEY = '38566500036-s92j092h19cnf0seht935oatlm9bb67a.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH_SECRET = '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'
-
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://umemployed-app-afec951f7ec7.herokuapp.com/social-auth/complete/google-oauth2/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SOCIAL_AUTH_GOOGLE_OAUTH_KEY  # This is the same as above
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SOCIAL_AUTH_GOOGLE_OAUTH_SECRET  # This is the same as above
 
@@ -219,21 +252,21 @@ SOCIAL_AUTH_PIPELINE = (
 ACCOUNT_EMAIL_REQUIRED = True #new
 ACCOUNT_LOGOUT_REDIRECT_URL='/'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
-# EMAIL_HOST = 'smtp.gmail.com' #new
-# EMAIL_PORT = 587 #new
-# EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
-# EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
-# EMAIL_USE_TLS = True #new
-# DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
-EMAIL_HOST = 'mail.umemployed.com' #new
-EMAIL_PORT = 465 #new
-EMAIL_HOST_USER = 'info@umemployed.com'  #new
-EMAIL_HOST_PASSWORD = "guew cfro yuao tkiz" #new
+EMAIL_HOST = 'smtp.gmail.com' #new
+EMAIL_PORT = 587 #new
+EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
+EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
 EMAIL_USE_TLS = True #new
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
+# EMAIL_HOST = 'mail.umemployed.com' #new
+# EMAIL_PORT = 465 #new
+# EMAIL_HOST_USER = 'info@umemployed.com'  #new
+# EMAIL_HOST_PASSWORD = "guew cfro yuao tkiz" #new
+# EMAIL_USE_TLS = True #new
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

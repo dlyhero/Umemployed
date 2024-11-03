@@ -56,12 +56,39 @@ def chat_view(request, conversation_id):
     messagess = ChatMessage.objects.filter(conversation=conversation).order_by('timestamp')
     return render(request, 'chat.html', {'conversation': conversation, 'messagess': messagess})
 
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from .tasks import send_message_email_task
+
 @login_required
 def send_message(request, conversation_id):
     conversation = get_object_or_404(Conversation, id=conversation_id)
     if request.method == 'POST':
         text = request.POST.get('text')
         if text:
-            ChatMessage.objects.create(conversation=conversation, sender=request.user, text=text)
+            message = ChatMessage.objects.create(conversation=conversation, sender=request.user, text=text)
+
+            # Notify the recipient via WebSocket
+            recipient = conversation.participant1 if conversation.participant2 == request.user else conversation.participant2
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f'chat_{recipient.id}',
+                {
+                    'type': 'chat_message',
+                    'message': message.text,
+                    'sender': request.user.username,
+                    'conversation_id': conversation.id
+                }
+            )
+
+            # Send email notification
+            send_message_email_task.delay(
+                email=recipient.email,
+                sender_name=request.user.get_full_name(),
+                message_text=message.text,
+                conversation_id=conversation.id
+            )
+
         return redirect('messaging:chat', conversation_id=conversation_id)
     return redirect('messaging:chat', conversation_id=conversation_id)

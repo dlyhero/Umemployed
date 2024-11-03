@@ -17,7 +17,6 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Job, MCQ
 from .forms import CreateJobForm
-from job.generate_skills import generate_mcqs_for_skill
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .models import Skill, SkillQuestion, CompletedSkills
@@ -50,6 +49,9 @@ from .forms import ApplicantAnswerForm  # Make sure this form is updated as nece
 from django.shortcuts import render, redirect
 from .forms import JobDescriptionForm
 from .models import Job
+
+from .tasks import send_new_job_email_task
+from notifications.utils import notify_user
 
 
 import json
@@ -95,22 +97,26 @@ from .forms import JobTypeForm
 @login_required(login_url='/login')
 def job_type_view(request):
     user = request.user
-    company=request.user.company
+    company = user.company
+
     if request.method == 'POST':
         form = JobTypeForm(request.POST)
         if form.is_valid():
             job_id = request.session.get('selected_job_id')
-            job = Job.objects.get(id=job_id)
+            job = get_object_or_404(Job, id=job_id)
             job.job_type = request.POST.get('job_types', '')
             job.experience_levels = request.POST.get('experience_levels', '')
             job.weekly_ranges = request.POST.get('weekly_ranges', '')
             job.shifts = request.POST.get('shifts', '')
             job.save()
-            return redirect('job:enter_job_description') 
+            messages.success(request, "Job preferences updated successfully.")
+            return redirect('job:enter_job_description')
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = JobTypeForm()
-    return render(request, 'dashboard/recruiterDashboard/jobProps.html', {'form': form, 'company':company})
 
+    return render(request, 'dashboard/recruiterDashboard/jobProps.html', {'form': form, 'company': company})
 
 
 @login_required
@@ -172,7 +178,6 @@ def enter_job_description(request):
 
 
 from django.shortcuts import get_object_or_404
-from notifications.utils import notify_user
 
 
 @login_required
@@ -206,18 +211,15 @@ def select_skills(request):
                         # Send new job email notification
                         job_description = job_instance.description if job_instance.description else 'No description available.'
                         job_link = request.build_absolute_uri(job_instance.get_absolute_url())
-                        # Send new job email to all users
                         
+                        # Schedule email sending task with a 2-minute delay
                         users = User.objects.all()
                         for user in users:
-                            send_new_job_email(
-                                user.email, 
-                                user.get_full_name(), 
-                                job_instance.title, 
-                                job_link, 
-                                job_description, 
-                                company.name
+                            send_new_job_email_task.apply_async(
+                                args=[user.email, user.get_full_name(), job_instance.title, job_link, job_description, company.name],
+                                countdown=120  # 2 minutes delay
                             )
+
                         # Notify all users about the new job
                         message = f"A new job has been posted: {job_instance.title}. Check it out!"
                         notification_type = 'new_job_posted'
@@ -231,6 +233,7 @@ def select_skills(request):
                         entry_level = form.cleaned_data['level']
                         selected_skill_names = [skill.name for skill in selected_extracted_skills]
                         redirect_url = f'/job/generate-questions/?job_title={job_instance.title}&entry_level={entry_level}&selected_skills={",".join(selected_skill_names)}'
+                        messages.info(request, "You have successfully created the job.")
                         return redirect(redirect_url)
                 else:
                     form = SkillForm(job_instance=job_instance)
@@ -328,7 +331,6 @@ from django.db import transaction
 
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
-    logger.debug(f"Answer job questions view triggered for job_id: {job_id}")
 
     # Fetch the job and user
     job = get_object_or_404(Job, id=job_id)
@@ -336,11 +338,9 @@ def answer_job_questions(request, job_id):
     skills = job.requirements.all()
     last_skill = skills.last()  # Get the last skill based on the current ordering
     last_skill_id = last_skill.id if last_skill else None
-    logger.debug(f"Last skill ID: {last_skill_id}")
 
     # Get or create an application instance
     application, created = Application.objects.get_or_create(user=user, job=job)
-    logger.debug(f"Application instance: {application}, created: {created}")
 
     # Check if the quiz has already been completed
     if application.has_completed_quiz:
@@ -348,8 +348,8 @@ def answer_job_questions(request, job_id):
         return redirect('job:job_application_success', job_id=job_id)
 
     # Determine the remaining skills and current skill
-    completed_skills = application.round_scores.keys()
-    remaining_skills = [skill for skill in skills if str(skill.id) not in completed_skills]
+    completed_skills = CompletedSkills.objects.filter(user=user, job=job, is_completed=True).values_list('skill_id', flat=True)
+    remaining_skills = [skill for skill in skills if skill.id not in completed_skills]
     logger.debug(f"Remaining skills: {remaining_skills}")
 
     if not remaining_skills:

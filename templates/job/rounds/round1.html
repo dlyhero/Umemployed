@@ -5,12 +5,18 @@
 {% endblock search_bar %}
 {% block custom_css %}
 <link rel="stylesheet" href="{% static 'build/css/style.css' %}" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-<script src="https://cdn.tailwindcss.com"></script>
 
+
+     <script src="https://cdn.tailwindcss.com"></script>
+
+ <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    
 <style>
     /* General Styles */
-    body {
+    body{
         display: flex;
         flex-direction: column;
         height: 100vh;
@@ -57,8 +63,12 @@
 
     /* For Mobile View */
     @media (max-width: 640px) {
+        
     }
 
+  
+
+  
     /* Button Styles */
     .skill-btn {
         display: inline-block;
@@ -102,128 +112,134 @@
         padding-bottom: 1rem;
         margin-bottom: 1rem;
     }
-    #skill-sidebar::-Webkit-scrollbar,
-    #question-section::-webkit-scrollbar {
+    #skill-sidebar::-Webkit-scrollbar, #question-section::-webkit-scrollbar{
         width: 1px;
     }
     /* For web cam */
     #camera-box {
-        width: 300px;
-        height: 200px;
-        border: 2px solid #ccc;
-        position: relative;
-        overflow: hidden;
+      width: 300px;
+      height: 200px;
+      border: 2px solid #ccc;
+      display: none;
+      position: relative;
+      overflow: hidden;
     }
 
     video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
+   
 </style>
 {% endblock %}
 
 {% block content %}
 
-<body class="text-sm" data-job="{{ job.id }}" data-application="{{ application.id }}">
+<body class="text-sm" data-job="{{ job.id }}" style>
+    
     <main class="flex flex-col p-6 bg-white sm:bg-transparent">
-        <div class="main-camera-container flex flex-col sm:flex-row justify-between items-start">
-            <div class="main-container w-full max-w-7xl mr-0 mx-auto bg-white rounded-lg p-2 sm:p-8 sm:border border-gray-300 flex flex-col">
-                <!-- Header Section -->
-                <header id="header" class="header-main flex items-center p-4 rounded-lg mb-6 relative bg-blue-100 border-l-4 border-blue-500">
-                    <div class="left-bar"></div>
-                    <div class="flex-1 flex items-center justify-between">
-                        <h1 class="text-lg md:text-2xl font-medium tracking-tight">Skill Assessment</h1>
-                        <div id="timer" class="flex items-center space-x-2 bg-gray-800 border border-gray-700 py-2 px-4 rounded-lg shadow-md text-white"></div>
-                    </div>
-                </header>
-
-                <!-- Content Section -->
-                <div class="flex flex-col sm:flex-row gap-6 flex-1 overflow-hidden">
-                    <div class="w-full sm:w-[20%] p-0 m-0 h-24 sm:h-full flex items-center">
-                        <div id="skill-sidebar" class="h-20 sm:h-full w-full px-4 sm:p-5 sm:border rounded-lg flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden">
-                            {% for skill in skills %}
-                            <div class="p-0 m-0 flex items-center">
-                                <button class="skill-btn py-2 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-nowrap rounded-lg sm:mb-2 hover:opacity-90 transition-opacity duration-150" data-skill="{{ skill.id }}">{{ skill.name }}</button>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <!-- Main Content for Questions -->
-                    <div class="w-full sm:w-3/4 flex flex-col overflow-hidden">
-                        <section id="question-section" class="flex-1 p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-sm scrollable">
-                            <h2 id="question-header" class="text-2xl font-bold mb-4 text-gray-800">Current Questions</h2>
-                            <form id="question-form" class="space-y-6" method="POST" action="{% url 'job:answer_job_questions' job.id %}">
-                                {% csrf_token %}
-                                <div id="questions-container">
-                                    {% if mcqs %}
-                                    {% for question in mcqs %}
-                                    <fieldset class="mb-6">
-                                        <legend class="text-lg font-semibold text-gray-700">{{ question.question }}</legend>
-                                        {% for option in question.options.all %}
-                                        <label class="block mb-2 text-gray-600">
-                                            <input type="radio" name="question{{ question.id }}" value="{{ option.id }}" class="mr-2">
-                                            {{ option.text }}
-                                        </label>
-                                        {% endfor %}
-                                    </fieldset>
-                                    {% endfor %}
-                                    {% endif %}
-                                </div>
-                            </form>
-                        </section>
-                        <div class="flex justify-end mt-6">
-                            <button id="next-btn" class="py-2 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-150">Next</button>
-                            <button id="submit-btn" class="ml-4 py-2 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-150">
-                                <a href="{% url 'job:job_application_success' job_id=job.id %}" class="text-white no-underline">Submit</a>
-                            </button>
-                        </div>
+        
+    <div class="main-camera-container flex flex-col sm:flex-row justify-between items-start">
+        <div class="main-container w-full max-w-7xl mr-0 mx-auto bg-white rounded-lg p-2 sm:p-8 sm:border border-gray-300 flex flex-col">
+            
+            <!-- Header Section -->
+            <header id="header" class="header-main flex items-center p-4 rounded-lg mb-6 relative bg-blue-100 border-l-4 border-blue-500">
+                <div class="left-bar"></div>
+                <div class="flex-1 flex items-center justify-between">
+                    <h1 class="text-lg md:text-2xl font-medium tracking-tight">Skill Assessment</h1>
+                    <div id="timer" class="flex items-center space-x-2 bg-gray-800 border border-gray-700 py-2 px-4 rounded-lg shadow-md text-white">
+                        
+                       
                     </div>
                 </div>
-            </div>
-            <!-- Camera box beside the main-container -->
-            <div id="camera-box" class="w-32 h-24 border border-gray-300 rounded-lg ml-6 hidden">
-                <video id="camera-stream" autoplay></video>
-            </div>
+            </header>
+            
 
-            <!-- Modal Structure -->
-            <div id="completedSkillModal" class="fixed inset-0 z-50 flex items-center justify-center hidden" style="margin: 35%;">
-                <div class="modal-overlay fixed inset-0 bg-gray-900 opacity-50"></div>
-                <div class="modal-container bg-white rounded-lg max-w-lg mx-auto p-8 shadow-lg relative border border-gray-200">
-                    <header class="modal-header flex justify-between items-center border-b pb-4 mb-4">
-                        <h2 class="text-lg font-semibold text-gray-900">Skill Completed</h2>
-                        <button id="close-modal" class="text-gray-600 hover:text-gray-900 transition duration-150">&times;</button>
-                    </header>
-                    <div class="modal-body">
-                        <p class="text-gray-700 mb-4">You have completed the current skill. Ready to move on to the next one?</p>
+            <!-- Content Section -->
+            <div class="flex flex-col sm:flex-row gap-6 flex-1 overflow-hidden">
+                
+                <div class="w-full sm:w-[20%]  p-0 m-0 h-24 sm:h-full flex items-center">
+                    <div id="skill-sidebar" class=" h-20 sm:h-full w-full px-4 sm:p-5 sm:border rounded-lg flex sm:flex-col  gap-3 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden">
+                        {% for skill in skills %}
+                        <div class="p-0 m-0 flex items-center">
+                            
+                            <button class="skill-btn py-2 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-nowrap rounded-lg sm:mb-2 hover:opacity-90 transition-opacity duration-150" data-skill="{{ skill.id }}">{{ skill.name }}</button>
+                        </div>
+                        {% endfor %}
                     </div>
-                    <div class="modal-footer flex justify-end mt-4">
-                        <a href="{% url 'job:incomplete_jobs' %}"><button id="continue-later" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition duration-150">Continue Later</button></a>
-                        <button id="next-skill" class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-150">Next Skill</button>
+                </div>
+                
+
+                <!-- Main Content for Questions -->
+                <div class="w-full sm:w-3/4 flex flex-col overflow-hidden">
+                    <section id="question-section" class="flex-1 p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-sm scrollable">
+                        <h2 id="question-header" class="text-2xl font-bold mb-4 text-gray-800">Current Questions</h2>
+                        <form id="question-form" class="space-y-6" method="POST" action="{% url 'job:answer_job_questions' job.id %}">
+                            {% csrf_token %}
+                            <div id="questions-container">
+                                {% if mcqs %}
+                                    {% for question in mcqs %}
+                                        <fieldset class="mb-6">
+                                            <legend class="text-lg font-semibold text-gray-700">{{ question.question }}</legend>
+                                            {% for option in question.options.all %}
+                                                <label class="block mb-2 text-gray-600">
+                                                    <input type="radio" name="question{{ question.id }}" value="{{ option.id }}" class="mr-2">
+                                                    {{ option.text }}
+                                                </label>
+                                            {% endfor %}
+                                        </fieldset>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </form>
+                    </section>
+                    <div class="flex justify-end mt-6">
+                        <button id="next-btn" class="py-2 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-150">Next</button>
+                        <button id="submit-btn" class="ml-4 py-2 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-150">
+                            <a href="{% url 'job:job_application_success' job_id=job.id %}" class="text-white no-underline">Submit</a>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+        <!-- Camera box beside the main-container -->
+        <div id="camera-box" class="w-32 h-24 border border-gray-300 rounded-lg ml-6 hidden">
+        <video id="camera-stream" autoplay></video>
+        </div>
 
+        <!-- Modal Structure -->
+        <div id="completedSkillModal" class="fixed inset-0 z-50 flex items-center justify-center hidden" style="margin:  35%;">
+            <div class="modal-overlay fixed inset-0 bg-gray-900 opacity-50"></div>
+            <div class="modal-container bg-white rounded-lg max-w-lg mx-auto p-8 shadow-lg relative border border-gray-200">
+                <header class="modal-header flex justify-between items-center border-b pb-4 mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Skill Completed</h2>
+                    <button id="close-modal" class="text-gray-600 hover:text-gray-900 transition duration-150">&times;</button>
+                </header>
+                <div class="modal-body">
+                    <p class="text-gray-700 mb-4">You have completed the current skill. Ready to move on to the next one?</p>
+                </div>
+                 <div class="modal-footer flex justify-end mt-4">
+            <button id="continue-later" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition duration-150"><a href="{% url 'home' %}">Continue Later</a></button>
+            <button id="next-skill" class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-150">Next Skill</button>
+        </div>
+            </div>
+        </div>
+    </div>
+    </main>
+    
     <script src="{% static 'assets_testing/JS/testing.js' %}"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const jobId = "{{ job.id }}";
+    <script>
+    const jobId = "{{ job.id }}"; // Add job_id to JavaScript
+    document.addEventListener("DOMContentLoaded", function() {
     const skillButtons = document.querySelectorAll(".skill-btn");
     const nextBtn = document.getElementById("next-btn");
     const submitBtn = document.getElementById("submit-btn");
     const completedSkillModal = document.getElementById("completedSkillModal");
     const nextSkillBtn = document.getElementById("next-skill");
     const closeModalBtn = document.getElementById("close-modal");
-    const video = document.getElementById("camera-stream");
-    const questionForm = document.getElementById("question-form");
-    const applicationId = document.body.getAttribute("data-application");
     let currentSkillIndex = 0;
-    let mediaRecorder;
-    let recordedChunks = [];
 
     // Retrieve the last skill ID and remaining skills count from the context
     const lastSkillId = "{{ last_skill_id }}";
@@ -374,119 +390,58 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Initialize the default questions and timer on page load
     skillButtons[0].click();
-
-    // Function to start the camera feed
-    function startCamera() {
-        const video = document.getElementById('camera-stream');
-        const cameraBox = document.getElementById('camera-box');
-
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function(stream) {
-                video.srcObject = stream;
-                cameraBox.style.display = 'block'; // Show the camera box
-                mediaRecorder = new MediaRecorder(stream);
-
-                mediaRecorder.ondataavailable = function(event) {
-                    console.log('Data available:', event.data); // Debugging log
-                    if (event.data.size > 0) {
-                        recordedChunks.push(event.data);
-                    }
-                };
-
-                mediaRecorder.onstop = function() {
-                    console.log('Recording stopped'); // Debugging log
-                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                    recordedChunks = [];
-                    saveVideo(blob);
-                };
-
-                // Start recording automatically
-                console.log('Starting video recording'); // Debugging log
-                mediaRecorder.start();
-            })
-            .catch(function(err) {
-                console.error("Error accessing camera: ", err);
-                alert("Unable to access the camera. Please check your permissions.");
-                window.history.back(); // Redirect to the previous page
-            });
-    }
-
-    // Function to save the video
-    function saveVideo(blob) {
-        const formData = new FormData();
-        formData.append('video', blob, 'recording.webm');
-        formData.append('application_id', applicationId);  // Add application_id
-
-        console.log('Saving video for application:', applicationId); // Debugging log
-
-        return fetch('/job/save_video/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Video saved successfully:', data.file_path); // Debugging log
-            } else {
-                console.error('Error saving video:', data.error);
-            }
-        })
-        .catch(error => console.error('Error during saveVideo:', error));
-    }
-
-    // Stop recording and submit the form
-    questionForm.addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent the default form submission
-        console.log('Stopping video recording'); // Debugging log
-        mediaRecorder.stop(); // Stop the recording
-
-        // Wait for the recording to stop and video to be saved before submitting the form
-        mediaRecorder.onstop = function() {
-            console.log('MediaRecorder onstop event'); // Debugging log
-            const blob = new Blob(recordedChunks, { type: 'video/webm' });
-            recordedChunks = [];
-            saveVideo(blob).then(() => {
-                console.log('Submitting form'); // Debugging log
-                questionForm.submit(); // Submit the form after saving the video
-            });
-        };
-    });
-
-    // Function to check camera permissions
-    function checkCameraPermission() {
-        // Check if permissions API is supported
-        if (navigator.permissions) {
-            navigator.permissions.query({ name: 'camera' })
-                .then(function(permissionStatus) {
-                    if (permissionStatus.state === 'granted') {
-                        startCamera();
-                    } else if (permissionStatus.state === 'denied') {
-                        alert("Camera permission denied. Please reset permissions in your browser settings.");
-                        window.history.back(); // Redirect to the previous page
-                    } else {
-                        // If permission is 'prompt' or unknown, request the camera
-                        startCamera();
-                    }
-                })
-                .catch(function(error) {
-                    console.error("Permission query error: ", error);
-                    startCamera(); // Fallback to starting the camera even if query fails
-                });
-        } else {
-            // If permissions API is not supported, just try starting the camera
-            startCamera();
-        }
-    }
-
-    // Start the camera or check permission when the page loads
-    window.onload = function() {
-        checkCameraPermission();
-    };
 });
+
 </script>
+<script>
+  // Function to start the camera feed
+  function startCamera() {
+    const video = document.getElementById('camera-stream');
+    const cameraBox = document.getElementById('camera-box');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function(stream) {
+        video.srcObject = stream;
+        cameraBox.style.display = 'block'; // Show the camera box
+      })
+      .catch(function(err) {
+        console.error("Error accessing camera: ", err);
+        alert("Unable to access the camera. Please check your permissions.");
+      });
+  }
+
+  // Function to check camera permissions
+  function checkCameraPermission() {
+    // Check if permissions API is supported
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: 'camera' })
+        .then(function(permissionStatus) {
+          if (permissionStatus.state === 'granted') {
+            startCamera();
+          } else if (permissionStatus.state === 'denied') {
+            alert("Camera permission denied. Please reset permissions in your browser settings.");
+          } else {
+            // If permission is 'prompt' or unknown, request the camera
+            startCamera();
+          }
+        })
+        .catch(function(error) {
+          console.error("Permission query error: ", error);
+          startCamera(); // Fallback to starting the camera even if query fails
+        });
+    } else {
+      // If permissions API is not supported, just try starting the camera
+      startCamera();
+    }
+  }
+
+  // Start the camera or check permission when the page loads
+  window.onload = function() {
+    checkCameraPermission();
+  };
+</script>
+
 </body>
+
 
 {% endblock %}

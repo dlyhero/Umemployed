@@ -20,30 +20,6 @@ logger = logging.getLogger(__name__)
 class Job(models.Model):
     """
     Represents a job listing created by a user for a specific company.
-
-    Attributes:
-        user (ForeignKey): Reference to the user who created the job.
-        company (ForeignKey): Reference to the company where the job is offered.
-        title (CharField): Title of the job.
-        hire_number (IntegerField): Number of hires needed for the job.
-        job_location_type (CharField): The type of job location (remote, onsite, hybrid, internship).
-        location (CharField): The location of the job.
-        salary (PositiveBigIntegerField): Salary offered for the job.
-        requirements (ManyToManyField): Skills required for the job.
-        extracted_skills (ManyToManyField): Additional skills extracted from the job description.
-        ideal_candidate (TextField): Description of the ideal candidate for the job.
-        is_available (BooleanField): Whether the job is currently available.
-        description (TextField): Job description.
-        responsibilities (TextField): Responsibilities of the job.
-        benefits (TextField): Benefits offered with the job.
-        level (CharField): Experience level required for the job (Beginner, Mid, Expert).
-        category (ForeignKey): The category of skills related to the job.
-        job_type (CharField): The type of job (e.g., full-time, part-time).
-        experience_levels (CharField): Required experience levels.
-        weekly_ranges (CharField): Weekly working hours range.
-        shifts (CharField): Shifts offered for the job.
-        created_at (DateTimeField): The date and time when the job was created.
-        updated_at (DateTimeField): The date and time when the job was last updated.
     """
     BEGINNER = 'Beginner'
     MID = 'Mid'
@@ -54,6 +30,54 @@ class Job(models.Model):
         (MID, 'Mid'),
         (EXPERT, 'Expert'),
     ]
+
+    FULL_TIME = 'Full_time'
+    PART_TIME = 'Part_time'
+    CONTRACT = 'Contract'
+    TEMPORARY = 'Temporary'
+    INTERNSHIP = 'Internship'
+    FREELANCE = 'Freelance'
+
+    JOB_TYPE_CHOICES = [
+        (FULL_TIME, 'Full-Time'),
+        (PART_TIME, 'Part-Time'),
+        (CONTRACT, 'Contract'),
+        (TEMPORARY, 'Temporary'),
+        (INTERNSHIP, 'Internship'),
+        (FREELANCE, 'Freelance'),
+    ]
+
+    EXPERIENCE_LEVEL_CHOICES = [
+        ('noExperience', 'No Experience Needed'),
+        ('under1Year', 'Under 1 Year'),
+        ('1-3Years', '1-3 Years'),
+        ('3-5Years', '3-5 Years'),
+        ('5-10Years', '5-10 Years'),
+        ('10+Years', '10+ Years'),
+    ]
+
+    WEEKLY_RANGE_CHOICES = [
+        ('mondayToFriday', 'Monday to Friday'),
+        ('weekendsNeeded', 'Weekends Needed'),
+        ('everyWeekend', 'Every Weekend'),
+        ('rotatingWeekend', 'Rotating Weekend'),
+        ('noneWeekend', 'None Weekend'),
+        ('weekendsOnly', 'Weekends Only'),
+        ('other', 'Other'),
+    ]
+
+    SHIFT_CHOICES = [
+        ('morningShift', 'Morning Shift'),
+        ('dayShift', 'Day Shift'),
+        ('eveningShift', 'Evening Shift'),
+        ('nightShift', 'Night Shift'),
+        ('eightHourShift', '8 Hours Shift'),
+        ('tenHourShift', '10 Hours Shift'),
+        ('twelveHourShift', '12 Hours Shift'),
+        ('otherShift', 'Other'),
+        ('noneShift', 'None'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
@@ -65,32 +89,14 @@ class Job(models.Model):
         ('internship', 'Internship'),
     ])
     location = CountryField(blank_label='(Select Country)', null=True)
-    
-    # Define choices for job types
-    FULL_TIME = 'Full_time'
-    PART_TIME = 'Part_time'
-    CONTRACT = 'Contract'
-    TEMPORARY = 'Temporary'
-    INTERNSHIP = 'Internship'
-    FREELANCE = 'Freelance'
-
-    JOB_TYPE_CHOICES = [
-        ('Full_time', 'Full-Time'),
-        ('Part_time', 'Part-Time'),
-        ('Contract', 'Contract'),
-        ('Temporary', 'Temporary'),
-        ('Internship', 'Internship'),
-        ('Freelance', 'Freelance'),
-    ]
-    SALARY_RANGES = [
+    salary = models.PositiveBigIntegerField(default=35000)
+    salary_range = models.CharField(max_length=20, choices=[
         ('30000-50000', '$30,000 - $50,000'),
         ('50001-70000', '$50,001 - $70,000'),
         ('70001-100000', '$70,001 - $100,000'),
         ('100001-150000', '$100,001 - $150,000'),
         ('150001+', '$150,001 and above'),
-    ]
-    salary = models.PositiveBigIntegerField(default=35000)
-    salary_range = models.CharField(max_length=20, choices=SALARY_RANGES, default='30000-50000')  # Predefined salary ranges
+    ], default='30000-50000')
     requirements = models.ManyToManyField(Skill, related_name='required_jobs')
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='extracted_jobs')
     ideal_candidate = RichTextField()
@@ -100,12 +106,11 @@ class Job(models.Model):
     benefits = RichTextField(default="...")
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default=BEGINNER)
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, default=1)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES, blank=True, verbose_name='Job Type')
-    experience_levels = models.CharField(max_length=255, blank=True)
-    weekly_ranges = models.CharField(max_length=255, blank=True)
-    shifts = models.CharField(max_length=255, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)  # Add this line
+    experience_levels = models.CharField(max_length=255, choices=EXPERIENCE_LEVEL_CHOICES, blank=True)
+    weekly_ranges = models.CharField(max_length=255, choices=WEEKLY_RANGE_CHOICES, blank=True)
+    shifts = models.CharField(max_length=255, choices=SHIFT_CHOICES, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
@@ -140,6 +145,7 @@ class SkillQuestion(models.Model):
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
     entry_level = models.CharField(max_length=100, blank=True, null=True)  # Assuming entry level is a string field
     job = models.ForeignKey(Job, on_delete=models.CASCADE,null=True, related_name='skill_questions')
+    area = models.CharField(max_length=255, blank=True, null=True)  # New field for area of expertise
 
     def __str__(self):
         return self.question

@@ -192,7 +192,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start">
                     <div class="flex-1">
                         <h4 class="text-xl font-bold mb-1">
-                            <a href="{% url 'feature-not-implemented' %}" class="text-gray-800 hover:text-[#1e90ff] transition">
+                            <a href="{% url 'job_applications' company.id job.id %}" class="text-gray-800 hover:text-[#1e90ff] transition">
                                 {{job.title }}
                             </a>
                         </h4>
@@ -259,7 +259,7 @@
                 </button>
 
                 <span class="text-gray-600">Page <span id="current-page">1</span> of <span
-                        id="total-pages">10</span></span>
+                        id="total-pages">1</span></span>
 
                 <button id="next-page"
                     class="pagination-btn flex items-center px-4 py-2 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300">
