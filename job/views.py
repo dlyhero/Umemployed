@@ -97,22 +97,26 @@ from .forms import JobTypeForm
 @login_required(login_url='/login')
 def job_type_view(request):
     user = request.user
-    company=request.user.company
+    company = user.company
+
     if request.method == 'POST':
         form = JobTypeForm(request.POST)
         if form.is_valid():
             job_id = request.session.get('selected_job_id')
-            job = Job.objects.get(id=job_id)
+            job = get_object_or_404(Job, id=job_id)
             job.job_type = request.POST.get('job_types', '')
             job.experience_levels = request.POST.get('experience_levels', '')
             job.weekly_ranges = request.POST.get('weekly_ranges', '')
             job.shifts = request.POST.get('shifts', '')
             job.save()
-            return redirect('job:enter_job_description') 
+            messages.success(request, "Job preferences updated successfully.")
+            return redirect('job:enter_job_description')
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = JobTypeForm()
-    return render(request, 'dashboard/recruiterDashboard/jobProps.html', {'form': form, 'company':company})
 
+    return render(request, 'dashboard/recruiterDashboard/jobProps.html', {'form': form, 'company': company})
 
 
 @login_required
