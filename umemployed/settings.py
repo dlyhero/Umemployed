@@ -108,6 +108,8 @@ CACHES = {
         'LOCATION': REDIS_URL,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'SOCKET_CONNECT_TIMEOUT': 10,  # in seconds
+            'SOCKET_TIMEOUT': 10,
             'CONNECTION_POOL_CLASS_KWARGS': {
                 'ssl': False,  # Disable SSL
             },
