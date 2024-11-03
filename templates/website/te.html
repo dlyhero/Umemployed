@@ -1,15 +1,49 @@
-<!-- Google Translate Widget -->
-    <div id="google_translate_element"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero with Animation</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
+<style>
+  body {
+    font-family: 'Montserrat Alternates', sans-serif;
+  }
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+  .hero-text {
+    font-size: 1.25rem;
+    color: #555;
+  }
+</style>
+</head>
+<body>
 
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'fr,de,es,it,ja,zh-CN',  // Specify the languages you want to support
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            }, 'google_translate_element');
-        }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<section class="hero">
+  <h1 class="text-4xl font-bold text-gray-800">Welcome to Our Platform</h1>
+  <p class="hero-text">Experience tailored opportunities like never before.</p>
+  
+  <!-- Animation container with inline styling -->
+  <div id="animation-container" style="width: 300px; height: 300px;"></div>
+</section>
 
-    <!-- Content of your site -->
+<script>
+  // Load the animation using Lottie
+  lottie.loadAnimation({
+    container: document.getElementById('animation-container'), // HTML element for animation
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: './ue.json' // Ensure this path is correct
+  });
+</script>
+
+</body>
+</html>
