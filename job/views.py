@@ -327,7 +327,6 @@ from django.db import transaction
 
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
-    logger.debug(f"Answer job questions view triggered for job_id: {job_id}")
 
     # Fetch the job and user
     job = get_object_or_404(Job, id=job_id)
@@ -335,11 +334,9 @@ def answer_job_questions(request, job_id):
     skills = job.requirements.all()
     last_skill = skills.last()  # Get the last skill based on the current ordering
     last_skill_id = last_skill.id if last_skill else None
-    logger.debug(f"Last skill ID: {last_skill_id}")
 
     # Get or create an application instance
     application, created = Application.objects.get_or_create(user=user, job=job)
-    logger.debug(f"Application instance: {application}, created: {created}")
 
     # Check if the quiz has already been completed
     if application.has_completed_quiz:
@@ -347,8 +344,8 @@ def answer_job_questions(request, job_id):
         return redirect('job:job_application_success', job_id=job_id)
 
     # Determine the remaining skills and current skill
-    completed_skills = application.round_scores.keys()
-    remaining_skills = [skill for skill in skills if str(skill.id) not in completed_skills]
+    completed_skills = CompletedSkills.objects.filter(user=user, job=job, is_completed=True).values_list('skill_id', flat=True)
+    remaining_skills = [skill for skill in skills if skill.id not in completed_skills]
     logger.debug(f"Remaining skills: {remaining_skills}")
 
     if not remaining_skills:
