@@ -373,7 +373,23 @@ class CustomConfirmEmailView(ConfirmEmailView):
 
 from django.core.mail import send_mail
 from django.conf import settings
-    
+
+from allauth.account.models import EmailAddress
+from allauth.account.utils import send_email_confirmation
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+import logging
+
+logger = logging.getLogger(__name__)
+
+@login_required
+def resend_verification_email(request):
+    logger.info("Resending verification email for user: %s", request.user.email)
+    send_email_confirmation(request, request.user)
+    print("Email confirmation sent successfully:", request.user.email)
+    return redirect('account_email_verification_sent')
+
+
 def resend_confirmation_email(request):
     if request.method == 'POST':
         email = request.POST.get('email')

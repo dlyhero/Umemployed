@@ -24,14 +24,50 @@
         <p class="text-sm text-gray-600 mb-4">
             If you do not receive the email, you can request a new one by clicking the button below.
         </p>
-        <form method="post" action="{% url 'resend_confirmation_email' %}">
-            {% csrf_token %}
-            <button type="submit" class="bg-blue-500 mx-auto text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center space-x-2">
-                <i class="fas fa-envelope" style="color: #1e90ff;"></i>
-                <span>Resend Confirmation Email</span>
-            </button>
-        </form>
+        <a href="{% url 'resend_verification_email' %}" class="bg-blue-500 mx-auto text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center space-x-2">
+            <i class="fas fa-envelope" style="color: #1e90ff;"></i>
+            <span>Resend Confirmation Email</span>
+        </a>
     </div>
 </div>
 </main>
+    {% block footer %}
+    
+    
+    {% endblock footer %}
+    <footer class="text-gray-800 text-center p-3">
+      <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
+        <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
+        <div class="flex space-x-4 items-center">
+          <a
+            href="{% url 'feature-not-implemented' %}"
+            class="text-white hover:text-gray-300"
+          >
+            <i class="fab fa-twitter text-black"></i>
+          </a>
+          <a
+            href="{% url 'feature-not-implemented' %}"
+            class="text-white hover:text-gray-300"
+          >
+            <i class="fab fa-linkedin text-black"></i>
+          </a>
+          <a
+            href="{% url 'feature-not-implemented' %}"
+            class="text-white hover:text-gray-300"
+          >
+            <i class="fab fa-facebook text-black"></i>
+          </a>
+          <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
+        </div>
+        <div class="text-sm ">
+                        
+          <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300"
+            >Privacy Policy
+            </a
+          >
+          
+          <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
+        </div>
+      </div>
+    </footer>
 {% endblock %}
