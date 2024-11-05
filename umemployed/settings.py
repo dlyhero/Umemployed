@@ -235,7 +235,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 
 CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-afec951f7ec7.herokuapp.com', 'http://127.0.0.1:8000', 'https://umemployed-development-8475c5e1c4b7.herokuapp.com',]
 
-SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', False)
 
 
 SOCIAL_AUTH_PIPELINE = (
