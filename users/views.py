@@ -63,7 +63,7 @@ def set_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important, to update the session with the new password
             messages.success(request, 'Your password has been set successfully!')
-            return redirect('index')  # Redirect to the index page or any other page
+            return redirect('switch_account')  # Redirect to the index page or any other page
     else:
         form = CustomSetPasswordForm(user=request.user)
     return render(request, 'users/set_password.html', {'form': form})
@@ -285,6 +285,10 @@ def logout_user(request):
     return redirect('index')  # Update the target name to match the appropriate URL name
 
 def switch_account(request):
+    if request.user.is_authenticated and not request.user.has_usable_password():
+        messages.warning(request, 'Please set a password to secure your account.')
+        return redirect('set_password')
+    
     return render(request,'users/accountType.html')
 
 
