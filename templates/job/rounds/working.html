@@ -292,7 +292,7 @@
 
         submitBtn.addEventListener("click", () => {
             saveResponses(() => {
-                window.location.href = '/job/complete'; // Redirect to completion page
+                window.location.href = `/job/answer/${jobId}/success/`;// Redirect to completion page
             });
         });
 
