@@ -89,15 +89,30 @@ def generate_mcqs_for_skill(skill_name, entry_level, job_title):
 #to send job emails to users
 
 
+
+from django.utils.html import strip_tags
+
 logger = logging.getLogger(__name__)
 
-@shared_task
 def send_new_job_email_task(email, full_name, job_title, job_link, job_description, company_name):
     subject = f"New Job Posted: {job_title}"
-    message = f"Hello {full_name},\n\nA new job has been posted at {company_name}.\n\nJob Title: {job_title}\nDescription: {job_description}\n\nYou can view the job here: {job_link}\n\nBest regards,\n{company_name}"
+    plain_job_description = strip_tags(job_description)
+    message = f"Hello {full_name},\n\nA new job has been posted at {company_name}.\n\nJob Title: {job_title}\nDescription: {plain_job_description}\n\nYou can view the job here: {job_link}\n\nBest regards,\n{company_name}"
+    html_message = f"""
+    <html>
+        <body>
+            <p>Hello {full_name},</p>
+            <p>A new job has been posted at {company_name}.</p>
+            <p><strong>Job Title:</strong> {job_title}</p>
+            <p><strong>Description:</strong> {job_description}</p>
+            <p>You can view the job <a href="{job_link}">here</a>.</p>
+            <p>Best regards,<br>UmEmployed!</p>
+        </body>
+    </html>
+    """
     from_email = settings.DEFAULT_FROM_EMAIL
 
     try:
-        send_mail(subject, message, from_email, [email])
+        send_mail(subject, message, from_email, [email], html_message=html_message)
     except Exception as e:
         logger.error(f"An error occurred while sending email to {email}: {e}")

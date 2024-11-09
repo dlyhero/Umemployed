@@ -213,7 +213,8 @@ def select_skills(request):
                         job_link = request.build_absolute_uri(job_instance.get_absolute_url())
                         
                         # Schedule email sending task with a 2-minute delay
-                        users = User.objects.all()
+                        users = User.objects.filter(skills__in=selected_extracted_skills).distinct()
+                        print(f"Users found with matching skills: {[user.email for user in users]}")
                         for user in users:
                             send_new_job_email_task.apply_async(
                                 args=[user.email, user.get_full_name(), job_instance.title, job_link, job_description, company.name],
@@ -224,8 +225,7 @@ def select_skills(request):
                         message = f"A new job has been posted: {job_instance.title}. Check it out!"
                         notification_type = 'new_job_posted'
                         
-                        # Fetch all users
-                        users = User.objects.all()
+                        # Fetch users with matching skills
                         for u in users:
                             notify_user(u, message, notification_type)
 

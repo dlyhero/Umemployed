@@ -23,6 +23,8 @@ urlpatterns = [
     path('feature-not-implemented/', views.feature_not_implemented, name='feature-not-implemented'),
 
     path('resume/<int:user_id>/', views.user_resume, name='user_resume'),
+    path('set-password/', views.set_password, name='set_password'),
+
 
 
 ]

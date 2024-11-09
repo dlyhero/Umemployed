@@ -19,20 +19,26 @@ from django.contrib.auth import login
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from job.models import SavedJob
 from urllib.parse import urlencode
+from .forms import CustomSetPasswordForm
+from django.contrib.auth import update_session_auth_hash
+
+
 
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
 def index(request):
     user = request.user
+    if request.user.is_authenticated and not request.user.has_usable_password():
+        messages.warning(request, 'Please set a password to secure your account.')
+        return redirect('set_password')
+    
     recent_jobs = Job.objects.order_by('-created_at')[:10]
     job_count = Job.objects.count()
 
     # Get the IDs of jobs the user has applied for
-    # If user is authenticated, get their applied jobs
     applied_job_ids = []
     if request.user.is_authenticated:
         applied_job_ids = Application.objects.filter(user=request.user).values_list('job_id', flat=True)
-
         saved_job_ids = SavedJob.objects.filter(user=request.user).values_list('job_id', flat=True)
     else:
         saved_job_ids = []
@@ -43,11 +49,24 @@ def index(request):
         'job_count': job_count,
         'recent_jobs': recent_jobs,
         'featured_companies': featured_companies,
-        'applied_job_ids': applied_job_ids ,
+        'applied_job_ids': applied_job_ids,
         'saved_jobs': saved_job_ids
     }
 
     return render(request, 'website/index.html', context)
+
+@login_required
+def set_password(request):
+    if request.method == 'POST':
+        form = CustomSetPasswordForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important, to update the session with the new password
+            messages.success(request, 'Your password has been set successfully!')
+            return redirect('index')  # Redirect to the index page or any other page
+    else:
+        form = CustomSetPasswordForm(user=request.user)
+    return render(request, 'users/set_password.html', {'form': form})
 
 
 def home(request):
