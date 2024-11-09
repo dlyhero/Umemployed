@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function() {
         showLoader("Submitting your responses, please wait...");
         saveResponses(() => {
             hideLoader();
-            window.location.href = '/job/complete'; // Redirect to completion page
+            window.location.href = `/job/answer/${jobId}/success/`; // Redirect to completion page
         });
     });
 

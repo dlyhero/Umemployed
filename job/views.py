@@ -463,7 +463,7 @@ def save_video(request):
     return JsonResponse({'success': False, 'error': 'Invalid request'})
 
 
-
+@login_required(login_url='/login')
 def get_questions_for_skill(request, skill_id):
     user = request.user  # Assuming user is authenticated
 
@@ -484,14 +484,15 @@ def get_questions_for_skill(request, skill_id):
     except Application.DoesNotExist:
         return JsonResponse({'error': 'No active job application found for this job'}, status=400)
 
-    # Fetch questions for the specified skill
-    questions = SkillQuestion.objects.filter(skill=skill)
-
-    # Check if the user has completed this skill for this job
+    # Check if the user has completed this skill for the current job
     completed_skills = CompletedSkills.objects.filter(user=user, job=job, skill=skill).exists()
 
+    # If the skill is already completed for this job, return empty questions list
     if completed_skills:
         return JsonResponse({'questions': []})  # Return empty list if skill is already completed
+
+    # Fetch questions for the specified skill
+    questions = SkillQuestion.objects.filter(skill=skill)
 
     # Serialize questions data
     serialized_questions = [
@@ -504,9 +505,8 @@ def get_questions_for_skill(request, skill_id):
     ]
 
     return JsonResponse({'questions': serialized_questions})
-logger = logging.getLogger(__name__)
 
-
+@login_required(login_url='/login')
 def save_responses(request):
     if request.method == 'POST':
         try:

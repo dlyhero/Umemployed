@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let questionSetIndex = 0;
   let timer;
   let timeRemaining = 300; // 5 minutes in seconds
+  let timerExpired = false; // Flag to handle timer expiration
 
   const skillButtons = document.querySelectorAll(".skill-btn");
   const questionSection = document.getElementById("question-section");
@@ -25,17 +26,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  nextBtn.addEventListener("click", () => {
-    questionSetIndex++;
-    if (questionSetIndex < 2) {
-      displayQuestions();
-    } else {
-      nextBtn.classList.add("hidden");
-      submitBtn.classList.remove("hidden");
-    }
+  submitBtn.addEventListener("click", () => {
+    timerExpired = true; // Stop timer-based submission
+    clearInterval(timer); // Stop the timer immediately
+    submitForm(false); // Direct manual submission without alert
   });
-
-  submitBtn.addEventListener("click", submitForm);
 
   function displayQuestions() {
     if (!currentSkill) return;
@@ -65,13 +60,15 @@ document.addEventListener("DOMContentLoaded", function () {
   function resetTimer() {
     clearInterval(timer);
     timeRemaining = 300; // 5 minutes in seconds
+    timerExpired = false; // Reset expiration flag for new skill
     updateTimerDisplay();
     timer = setInterval(() => {
       timeRemaining--;
       updateTimerDisplay();
-      if (timeRemaining <= 0) {
+      if (timeRemaining <= 0 && !timerExpired) {
+        // Only submit if timer runs out without manual submission
         clearInterval(timer);
-        submitForm();
+        submitForm(true); // Timer-based submission
       }
     }, 1000);
   }
@@ -84,8 +81,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }${seconds}`;
   }
 
-  function submitForm() {
-    alert("Time's up! Submitting the responses.");
+  function submitForm(isTimerTriggered = false) {
+    if (isTimerTriggered) {
+      alert("Time's up! Submitting the responses.");
+    }
     questionForm.submit();
   }
 
