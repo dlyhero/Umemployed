@@ -111,3 +111,21 @@ class CreateCompanyForm(forms.ModelForm):
                 ('10001+', '10001+ employees'),
             ]),
         }
+
+    def clean_contact_email(self):
+        email = self.cleaned_data.get('contact_email')
+        if not email:
+            raise forms.ValidationError('This field is required.')
+        return email
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if not name:
+            raise forms.ValidationError('This field is required.')
+        return name
+
+    def clean_logo(self):
+        logo = self.cleaned_data.get('logo')
+        if not logo:
+            raise forms.ValidationError('This field is required.')
+        return logo

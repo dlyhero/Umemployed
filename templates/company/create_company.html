@@ -5,7 +5,7 @@
 {% block content %}
 
 <!-- Main Container -->
-<main class="container rounded-lg mx-auto p-6 grid lg:grid-cols-2 gap-14">
+<main class="container rounded-lg mx-auto p-6">
     <div>
         <img src="{% static 'new_design/icons/company.jpg' %}" alt="">
         <div class="text-center mb-4">
@@ -17,20 +17,18 @@
             <!-- Page Identity Section -->
             <section class="mb-8">
                 <h2 class="text-xl font-medium text-gray-700 mb-4">Page Identity</h2>
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                        <label for="companyName" class="block text-gray-800 mb-2">Company Name</label>
-                        <input type="text" id="companyName" name="name" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter company name">
-                    </div>
-                    <div class="md:mt-6">
-                        <label for="companyLogo" class="block text-gray-800 mb-2">Company Logo</label>
-                        <div class="relative">
-                            <input type="file" id="companyLogo" name="logo" class="hidden" required>
-                            <label for="companyLogo" class="cursor-pointer bg-blue-100 text-[#1e90ff] px-4 py-2 rounded-full font-semibold hover:bg-[#1a78d6] transition-colors">
-                                Choose File
-                            </label>
-                            <span id="file-chosen" class="ml-3 text-gray-800">No file chosen</span>
-                        </div>
+                <div class="mb-4">
+                    <label for="companyName" class="block text-gray-800 mb-2">Company Name</label>
+                    <input type="text" id="companyName" name="name" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter company name">
+                </div>
+                <div class="mb-4">
+                    <label for="companyLogo" class="block text-gray-800 mb-2">Company Logo</label>
+                    <div class="relative">
+                        <input type="file" id="companyLogo" name="logo" class="hidden" required>
+                        <label for="companyLogo" class="cursor-pointer bg-blue-100 text-[#1e90ff] px-4 py-2 rounded-full font-semibold hover:bg-[#1a78d6] transition-colors">
+                            Choose File
+                        </label>
+                        <span id="file-chosen" class="ml-3 text-gray-800">No file chosen</span>
                     </div>
                 </div>
             </section>
@@ -40,41 +38,39 @@
             <!-- Company Details Section -->
             <section class="mb-8">
                 <h2 class="text-xl font-medium text-gray-700 mb-4">Company Details</h2>
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                        <label for="industry" class="block text-gray-800 mb-2">Category</label>
-                        <select id="industry" name="industry" required class="w-full p-3 border border-gray-300 rounded-md">
-                            <option value="">Select Industry</option>
-                            <option value="Technology">Technology</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Healthcare">Healthcare</option>
-                            <option value="Education">Education</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="specialty" class="block text-gray-800 mb-2">Specialty</label>
-                        <select id="specialty" name="specialty" required class="w-full p-3 border border-gray-300 rounded-md">
-                            <option value="">Select Specialty</option>
-                            <option value="Technology">Technology</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Healthcare">Healthcare</option>
-                            <option value="Education">Education</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="companySize" class="block text-gray-800 mb-2">Company Size</label>
-                        <select id="companySize" name="size" required class="w-full p-3 border border-gray-300 rounded-md">
-                            <option value="">Select Company Size</option>
-                            <option value="1-10">1-10 employees</option>
-                            <option value="11-50">11-50 employees</option>
-                            <option value="51-200">51-200 employees</option>
-                            <option value="201-500">201-500 employees</option>
-                            <option value="501-1000">501-1000 employees</option>
-                            <option value="1001-5000">1001-5000 employees</option>
-                            <option value="5001-10000">5001-10000 employees</option>
-                            <option value="10001+">10001+ employees</option>
-                        </select>
-                    </div>
+                <div class="mb-4">
+                    <label for="industry" class="block text-gray-800 mb-2">Category</label>
+                    <select id="industry" name="industry" required class="w-full p-3 border border-gray-300 rounded-md">
+                        <option value="">Select Industry</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Education">Education</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="specialty" class="block text-gray-800 mb-2">Specialty</label>
+                    <select id="specialty" name="specialty" required class="w-full p-3 border border-gray-300 rounded-md">
+                        <option value="">Select Specialty</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Education">Education</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="companySize" class="block text-gray-800 mb-2">Company Size</label>
+                    <select id="companySize" name="size" required class="w-full p-3 border border-gray-300 rounded-md">
+                        <option value="">Select Company Size</option>
+                        <option value="1-10">1-10 employees</option>
+                        <option value="11-50">11-50 employees</option>
+                        <option value="51-200">51-200 employees</option>
+                        <option value="201-500">201-500 employees</option>
+                        <option value="501-1000">501-1000 employees</option>
+                        <option value="1001-5000">1001-5000 employees</option>
+                        <option value="5001-10000">5001-10000 employees</option>
+                        <option value="10001+">10001+ employees</option>
+                    </select>
                 </div>
             </section>
 
@@ -83,53 +79,43 @@
             <!-- Profile Details Section -->
             <section class="mb-8">
                 <h2 class="text-xl font-medium text-gray-700 mb-4">Profile Details</h2>
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                        <label for="contactPerson" class="block text-gray-800 mb-2">Contact Person</label>
-                        <input type="text" id="contactPerson" name="contact_person" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter contact person's name">
-                    </div>
-                    <div>
-                        <label for="contactEmail" class="block text-gray-800 mb-2">Contact Email</label>
-                        <input type="email" id="contactEmail" name="contact_email" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter contact email">
-                    </div>
+                <div class="mb-4">
+                    <label for="contactPerson" class="block text-gray-800 mb-2">Contact Person</label>
+                    <input type="text" id="contactPerson" name="contact_person" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter contact person's name">
                 </div>
-            </section>
-    </div>
-
-    <div class="lg:mt-16">
-        <!-- Continuation of Profile Details Section -->
-        <section class="mb-8">
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
+                <div class="mb-4">
+                    <label for="contactEmail" class="block text-gray-800 mb-2">Contact Email</label>
+                    <input type="email" id="contactEmail" name="contact_email" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter contact email">
+                </div>
+                <div class="mb-4">
                     <label for="contactPhone" class="block text-gray-800 mb-2">Contact Phone</label>
                     <input type="tel" id="contactPhone" name="contact_phone" required class="w-full p-3 border border-gray-300 rounded-md" placeholder="Enter contact phone number">
                 </div>
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <div class="mb-4">
                     <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
                     <div class="relative mt-2">
                         {{ form.country }}
                     </div>
                 </div>
+            </section>
+
+            <hr class="my-5">
+
+            <!-- Page Overview Section -->
+            <section class="mb-8">
+                <h2 class="text-xl font-medium text-gray-700 mb-4">Page Overview</h2>
+                <div class="bg-gray-50 p-4 border border-gray-200 rounded-md">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Summary:</h3>
+                    <p class="text-gray-800">Fill in all the required fields to create a new company profile. Ensure all details are accurate and up-to-date. Once completed, click 'Save' to create the company profile or 'Cancel' to discard the changes.</p>
+                </div>
+            </section>
+
+            <hr class="my-5">
+
+            <!-- Buttons -->
+            <div class="mt-8 flex justify-end">
+                <button type="submit" class="bg-[#1e90ff] text-white px-4 py-2 font-semibold w-[30%] rounded-full">Save</button>
             </div>
-        </section>
-
-        <hr class="my-5">
-
-        <!-- Page Overview Section -->
-        <section class="mb-8">
-            <h2 class="text-xl font-medium text-gray-700 mb-4">Page Overview</h2>
-            <div class="bg-gray-50 p-4 border border-gray-200 rounded-md">
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Summary:</h3>
-                <p class="text-gray-800">Fill in all the required fields to create a new company profile. Ensure all details are accurate and up-to-date. Once completed, click 'Save' to create the company profile or 'Cancel' to discard the changes.</p>
-            </div>
-        </section>
-
-        <hr class="my-5">
-
-        <!-- Buttons -->
-        <div class="mt-8 flex justify-end">
-            <button type="submit" class="bg-[#1e90ff] text-white px-4 py-2 font-semibold w-[30%] rounded-full">Save</button>
-        </div>
         </form>
     </div>
 </main>
