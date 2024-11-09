@@ -154,6 +154,11 @@
                     </div>
                 </div>
             </header>
+            <div id="loader" class="hidden">
+    <div class="spinner"></div> <!-- You can style this or add an image -->
+    <p id="loader-message"></p>
+</div>
+
             
 
             <!-- Content Section -->
@@ -228,17 +233,19 @@
     </div>
     </main>
     
-    <script src="{% static 'assets_testing/JS/testing.js' %}"></script>
 
-    <script>
+   <script>
     const jobId = "{{ job.id }}"; // Add job_id to JavaScript
-    document.addEventListener("DOMContentLoaded", function() {
+
+document.addEventListener("DOMContentLoaded", function() {
     const skillButtons = document.querySelectorAll(".skill-btn");
     const nextBtn = document.getElementById("next-btn");
     const submitBtn = document.getElementById("submit-btn");
     const completedSkillModal = document.getElementById("completedSkillModal");
     const nextSkillBtn = document.getElementById("next-skill");
     const closeModalBtn = document.getElementById("close-modal");
+    const loader = document.getElementById("loader");
+    const loaderMessage = document.getElementById("loader-message");
     let currentSkillIndex = 0;
 
     // Retrieve the last skill ID and remaining skills count from the context
@@ -246,7 +253,7 @@
     const remainingSkillsCount = parseInt("{{ remaining_skills_count }}", 10);
 
     // Initialize button visibility based on remainingSkillsCount
-    updateButtonVisibility(remainingSkillsCount);
+    updateButtonVisibility();
 
     // Event listener for each skill button
     skillButtons.forEach((button, index) => {
@@ -263,10 +270,8 @@
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Questions fetched:', data);
                 displayQuestions(data.questions);
-                // Check if the current skill is the last skill
-                showNextOrSubmit(skill === lastSkillId);
+                showNextOrSubmit(); // Update the button visibility based on the current skill index
             })
             .catch(error => console.error('Error fetching questions:', error));
     }
@@ -274,6 +279,11 @@
     // Display questions in the container
     function displayQuestions(questions) {
         const questionsContainer = document.getElementById("questions-container");
+        if (!questionsContainer) {
+            console.error('Questions container not found');
+            return;
+        }
+        
         questionsContainer.innerHTML = questions.map(question => `
             <fieldset class="mb-2">
                 <legend class="font-semibold mb-2">${question.question}</legend>
@@ -287,40 +297,29 @@
         `).join("");
     }
 
-    // Update button visibility based on the remaining skills count
-    function updateButtonVisibility(count) {
-        if (count === 0) {
-            submitBtn.classList.remove("hidden");
-            nextBtn.classList.add("hidden");
-        } else {
-            nextBtn.classList.remove("hidden");
-            submitBtn.classList.add("hidden");
-        }
+    // Update button visibility
+    function updateButtonVisibility() {
+        showNextOrSubmit();
     }
 
     // Show 'Next' or 'Submit' button based on whether it is the last skill
-    function showNextOrSubmit(isLastSkill) {
-        console.log('isLastSkill:', isLastSkill); // Debugging
+    function showNextOrSubmit() {
+        const isLastSkill = currentSkillIndex === skillButtons.length - 1;
         if (isLastSkill) {
-            // For the last skill, show 'Next' button initially
+            nextBtn.classList.add("hidden");
+            submitBtn.classList.remove("hidden");
+        } else {
             nextBtn.classList.remove("hidden");
             submitBtn.classList.add("hidden");
-        } else {
-            // For other skills, update visibility based on remaining skills count
-            updateButtonVisibility(remainingSkillsCount);
         }
     }
 
     // Handle 'Next' button click
     nextBtn.addEventListener("click", () => {
+        showLoader("Saving your responses, please wait...");
         saveResponses(() => {
-            if (skillButtons[currentSkillIndex].getAttribute("data-skill") === lastSkillId) {
-                // For the last skill, switch to 'Submit' button
-                updateButtonVisibility(0);
-            } else {
-                // For other skills, show the completed skill modal
-                completedSkillModal.classList.remove("hidden");
-            }
+            hideLoader();
+            completedSkillModal.classList.remove("hidden");
         });
     });
 
@@ -328,7 +327,9 @@
     nextSkillBtn.addEventListener("click", () => {
         completedSkillModal.classList.add("hidden");
         if (currentSkillIndex < skillButtons.length - 1) {
-            skillButtons[currentSkillIndex + 1].click();
+            currentSkillIndex++;
+            skillButtons[currentSkillIndex].click();
+            showNextOrSubmit();
         }
     });
 
@@ -339,10 +340,24 @@
 
     // Handle 'Submit' button click
     submitBtn.addEventListener("click", () => {
+        showLoader("Submitting your responses, please wait...");
         saveResponses(() => {
+            hideLoader();
             window.location.href = '/job/complete'; // Redirect to completion page
         });
     });
+
+    // Show loader with a message
+    function showLoader(message) {
+        loader.classList.remove("hidden");
+        loaderMessage.textContent = message;
+    }
+
+    // Hide loader
+    function hideLoader() {
+        loader.classList.add("hidden");
+        loaderMessage.textContent = "";
+    }
 
     // Save responses and invoke callback
     function saveResponses(callback) {
@@ -358,7 +373,6 @@
 
         const skillId = skillButtons[currentSkillIndex].getAttribute("data-skill");
         const csrftoken = getCookie('csrftoken');
-        console.log('CSRF Token:', csrftoken); // Debugging
 
         fetch('/job/save_responses/', {
             method: 'POST',
@@ -371,7 +385,6 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('Responses saved successfully');
                 callback();
             } else {
                 console.error('Error saving responses:', data.error);
@@ -391,8 +404,10 @@
     // Initialize the default questions and timer on page load
     skillButtons[0].click();
 });
-
 </script>
+
+
+
 <script>
   // Function to start the camera feed
   function startCamera() {
@@ -440,6 +455,7 @@
     checkCameraPermission();
   };
 </script>
+<script src="{% static 'assets_testing/JS/testing.js' %}"></script>
 
 </body>
 
