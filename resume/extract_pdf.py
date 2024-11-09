@@ -51,6 +51,9 @@ def upload_resume(request):
 
             # Redirect to the extract_text view
             return redirect(redirect_url)
+        else:
+            messages.error(request, 'Invalid form submission. Please try again.')
+            return redirect('upload')
     else:
         form = ResumeForm()
     return render(request, 'resume/upload_resume.html', {'form': form})
