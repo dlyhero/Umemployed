@@ -94,6 +94,7 @@ from django.utils.html import strip_tags
 
 logger = logging.getLogger(__name__)
 
+@shared_task
 def send_new_job_email_task(email, full_name, job_title, job_link, job_description, company_name):
     subject = f"New Job Posted: {job_title}"
     plain_job_description = strip_tags(job_description)
