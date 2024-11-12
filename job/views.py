@@ -50,7 +50,7 @@ from django.shortcuts import render, redirect
 from .forms import JobDescriptionForm
 from .models import Job
 
-from .tasks import send_new_job_email_task
+from .tasks import send_new_job_email_task, send_recruiter_job_confirmation_email_task
 from notifications.utils import notify_user
 
 
@@ -228,6 +228,17 @@ def select_skills(request):
                         # Fetch users with matching skills
                         for u in users:
                             notify_user(u, message, notification_type)
+                            
+                        # Notify the recruiter about the job creation
+                        recruiter_email = request.user.email
+                        send_recruiter_job_confirmation_email_task.apply_async(
+                            args=[recruiter_email, request.user.get_full_name(), job_instance.title, company.name],
+                            countdown=120  # 2 minutes delay
+                        )
+
+                        # Mark the job as complete after all stages are done
+                        job_instance.job_creation_is_complete = True
+                        job_instance.save()
 
                         # Redirect to the next phase (e.g., generate questions)
                         entry_level = form.cleaned_data['level']

@@ -112,6 +112,7 @@ class Job(models.Model):
     shifts = models.CharField(max_length=255, choices=SHIFT_CHOICES, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    job_creation_is_complete = models.BooleanField(default=False)# to check if job creation has been done in all stages
 
     def get_absolute_url(self):
         return reverse('job:job_details', args=[str(self.id)])

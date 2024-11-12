@@ -117,3 +117,23 @@ def send_new_job_email_task(email, full_name, job_title, job_link, job_descripti
         send_mail(subject, message, from_email, [email], html_message=html_message)
     except Exception as e:
         logger.error(f"An error occurred while sending email to {email}: {e}")
+        
+@shared_task
+def send_recruiter_job_confirmation_email_task(email, full_name, job_title, company_name):
+    subject = f"Job Created Successfully: {job_title}"
+    message = f"Hello {full_name},\n\nYour job '{job_title}' has been successfully created and is now available on the platform at {company_name}.\n\nBest regards,\n{company_name}"
+    html_message = f"""
+    <html>
+        <body>
+            <p>Hello {full_name},</p>
+            <p>Your job '<strong>{job_title}</strong>' has been successfully created and is now available on the platform at {company_name}.</p>
+            <p>Best regards,<br>UmEmployed!</p>
+        </body>
+    </html>
+    """
+    from_email = settings.DEFAULT_FROM_EMAIL
+
+    try:
+        send_mail(subject, message, from_email, [email], html_message=html_message)
+    except Exception as e:
+        logger.error(f"An error occurred while sending email to {email}: {e}")

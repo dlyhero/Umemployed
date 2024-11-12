@@ -26,14 +26,15 @@ from django.contrib.auth import update_session_auth_hash
 
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
+@login_required
 def index(request):
     user = request.user
     if request.user.is_authenticated and not request.user.has_usable_password():
         messages.warning(request, 'Please set a password to secure your account.')
         return redirect('set_password')
     
-    recent_jobs = Job.objects.order_by('-created_at')[:10]
-    job_count = Job.objects.count()
+    recent_jobs = Job.objects.filter(job_creation_is_complete=True).order_by('-created_at')[:10]
+    job_count = Job.objects.filter(job_creation_is_complete=True).count()
 
     # Get the IDs of jobs the user has applied for
     applied_job_ids = []
@@ -74,8 +75,8 @@ def home(request):
     matching_jobs = []
     non_matching_jobs = []
 
-    # Step 1: Retrieve all jobs
-    all_jobs = Job.objects.all()
+    # Step 1: Retrieve all complete jobs
+    all_jobs = Job.objects.filter(job_creation_is_complete=True)
 
     # If the user is authenticated, retrieve applied job IDs
     if user.is_authenticated:
