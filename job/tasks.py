@@ -9,6 +9,7 @@ import dotenv
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from .models import Job
 
 dotenv.load_dotenv()
 api_key = os.environ.get('OPENAI_API_KEY')
@@ -95,7 +96,7 @@ from django.utils.html import strip_tags
 logger = logging.getLogger(__name__)
 
 @shared_task
-def send_new_job_email_task(email, full_name, job_title, job_link, job_description, company_name):
+def send_new_job_email_task(email, full_name, job_title, job_link, job_description, company_name, job_id):
     subject = f"New Job Posted: {job_title}"
     plain_job_description = strip_tags(job_description)
     message = f"Hello {full_name},\n\nA new job has been posted at {company_name}.\n\nJob Title: {job_title}\nDescription: {plain_job_description}\n\nYou can view the job here: {job_link}\n\nBest regards,\n{company_name}"
@@ -107,7 +108,7 @@ def send_new_job_email_task(email, full_name, job_title, job_link, job_descripti
             <p><strong>Job Title:</strong> {job_title}</p>
             <p><strong>Description:</strong> {job_description}</p>
             <p>You can view the job <a href="{job_link}">here</a>.</p>
-            <p>Best regards,<br>UmEmployed!</p>
+            <p>Best regards,<br>{company_name}</p>
         </body>
     </html>
     """
@@ -115,11 +116,15 @@ def send_new_job_email_task(email, full_name, job_title, job_link, job_descripti
 
     try:
         send_mail(subject, message, from_email, [email], html_message=html_message)
+        # Mark the job as complete after sending the email
+        job_instance = Job.objects.get(id=job_id)
+        job_instance.job_creation_is_complete = True
+        job_instance.save()
     except Exception as e:
         logger.error(f"An error occurred while sending email to {email}: {e}")
-        
+
 @shared_task
-def send_recruiter_job_confirmation_email_task(email, full_name, job_title, company_name):
+def send_recruiter_job_confirmation_email_task(email, full_name, job_title, company_name, job_id):
     subject = f"Job Created Successfully: {job_title}"
     message = f"Hello {full_name},\n\nYour job '{job_title}' has been successfully created and is now available on the platform at {company_name}.\n\nBest regards,\n{company_name}"
     html_message = f"""
@@ -127,7 +132,7 @@ def send_recruiter_job_confirmation_email_task(email, full_name, job_title, comp
         <body>
             <p>Hello {full_name},</p>
             <p>Your job '<strong>{job_title}</strong>' has been successfully created and is now available on the platform at {company_name}.</p>
-            <p>Best regards,<br>UmEmployed!</p>
+            <p>Best regards,<br>UmEmployed Team</p>
         </body>
     </html>
     """
@@ -135,5 +140,9 @@ def send_recruiter_job_confirmation_email_task(email, full_name, job_title, comp
 
     try:
         send_mail(subject, message, from_email, [email], html_message=html_message)
+        # Mark the job as complete after sending the email
+        job_instance = Job.objects.get(id=job_id)
+        job_instance.job_creation_is_complete = True
+        job_instance.save()
     except Exception as e:
         logger.error(f"An error occurred while sending email to {email}: {e}")

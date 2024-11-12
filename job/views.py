@@ -217,7 +217,7 @@ def select_skills(request):
                         print(f"Users found with matching skills: {[user.email for user in users]}")
                         for user in users:
                             send_new_job_email_task.apply_async(
-                                args=[user.email, user.get_full_name(), job_instance.title, job_link, job_description, company.name],
+                                args=[user.email, user.get_full_name(), job_instance.title, job_link, job_description, company.name, job_instance.id],
                                 countdown=120  # 2 minutes delay
                             )
 
@@ -232,13 +232,9 @@ def select_skills(request):
                         # Notify the recruiter about the job creation
                         recruiter_email = request.user.email
                         send_recruiter_job_confirmation_email_task.apply_async(
-                            args=[recruiter_email, request.user.get_full_name(), job_instance.title, company.name],
+                            args=[recruiter_email, request.user.get_full_name(), job_instance.title, company.name, job_instance.id],
                             countdown=120  # 2 minutes delay
                         )
-
-                        # Mark the job as complete after all stages are done
-                        job_instance.job_creation_is_complete = True
-                        job_instance.save()
 
                         # Redirect to the next phase (e.g., generate questions)
                         entry_level = form.cleaned_data['level']
