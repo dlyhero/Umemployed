@@ -28,12 +28,7 @@
             <span class="air3-tab-btn-text">Candidates</span>
           </a>
         </li>
-        <li>
-          <a href="{% url 'job:shortlisted' user_company.id %}" onclick="showTab('shortlist')"
-            class="text-gray-600 hover:text-gray-800 py-1 px-4 md:px-6 rounded-full border-b-4 border-transparent hover:border-gray-300 transition-all duration-300">
-            <span class="air3-tab-btn-text">Shortlisted</span>
-          </a>
-        </li>
+        
         <li>
           <a href="{% url 'feature-not-implemented' %}" onclick="showTab('archived')"
             class="text-gray-600 hover:text-gray-800 py-1 px-4 md:px-6 rounded-full border-b-4 border-transparent hover:border-gray-300 transition-all duration-300">
@@ -76,9 +71,9 @@
 
     <section class="cards rounded-lg text-sm  border container">
       <div class="candidates-wrap  flex flex-col">
-        {% if top_5_applications %}
-        <h2 class="text-xl font-semibold mb-4 mt-4 ml-4 border-b-4 border-green-400 w-fit">Top 5 Candidates:</h2>
-        {% for application in top_5_applications %}
+         {% if shortlisted_applications %}
+        <h2 class="text-xl font-semibold mb-4 mt-4 ml-4 border-b-4 border-green-400 w-fit">Shortlisted Candidates:</h2>
+        {% for application in shortlisted_applications %}
         <div id="card" data-application-id="{{ application.id }}" class="hover:bg-gray-100 px-3 py-4 overflow-x-auto Whitespace-nowrap border-b">
           <div class="md:flex Whitespace-nowrap container ">
             <div class="flex md:flex-col mr-5 md:w-[50%] lg:w-[28%]">
@@ -99,7 +94,6 @@
                 </div>
               </div>
               <div class="flex p-2 w-fit items-start space-x-2 md:mt-4">
-                
                 <button class="bg-gray-300 text-gray-700 rounded-full p-2" onclick="declineCandidate({{ application.job.id }}, {{ application.user.id }})">
                   <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -107,9 +101,8 @@
                       d="M5 15h3v2.5c0 1.17.64 2.2 1.62 2.73A4.992 4.992 0 0012 21v-3.5l2.905-3.08A3 3 0 0016 12V4a1 1 0 00-.999-1H6.265a.997.997 0 00-.998.75l-2.206 8.76a2.003 2.003 0 001.08 2.298c.277.131.58.197.886.193z" />
                   </svg>
                 </button>
-
                 <a href="{% url 'job:shortlist_candidate' application.job.id application.user.id %}">
-                <button class="bg-gray-300 text-gray-700 rounded-full p-2" onclick="shortlistCandidate()">
+                <button class="bg-gray-300 text-gray-700 rounded-full p-2">
                   <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2}
@@ -157,97 +150,6 @@
                 </div>
               </div>
               <div class="w-full lg:hidden flex mt-2 gap-2">
-                <a href="{% url 'messaging:start_chat' application.user.id %}">
-                <button
-                  class="md:hidden flex-1 border border-[#1e90ff] font-semibold text-[#1e90ff] rounded-full px-4 py-2"
-                  onclick="messageCandidate()">Message</button>
-                </a>
-                <button class="md:hidden flex-1 bg-[#1e90ff] font-semibold text-white rounded-full px-4 py-2"
-                  onclick="viewDetails()">View Details</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-        {% endif %}
-
-        {% if waiting_list_applications %}
-        <h2 class="text-xl font-semibold mt-8 mb-4 ml-4 border-b-4 border-yellow-400 w-fit">Waiting List:</h2>
-        {% for application in waiting_list_applications %}
-        <div id="card" data-application-id="{{ application.id }}" class="hover:bg-gray-100 px-3 py-4 overflow-x-auto Whitespace-nowrap border-b">
-          <div class="md:flex Whitespace-nowrap container ">
-            <div class="flex md:flex-col mr-5 md:w-[50%] lg:w-[28%]">
-              <div>
-                <div class="flex gap-x-4 flex-noshrink">
-                  <div class="relative mr-2">
-                    <img
-                        src="{% if application.user.resume.profile_image %}{{ application.user.resume.profile_image.url }}{% else %}{% static 'new_design/icons/default.jpg' %}{% endif %}"
-                        alt="{{ application.user.first_name }}" class="w-16 h-16 rounded-full" />
-                    <span
-                        class="absolute bottom-[2px] right-0 bg-gray-400 rounded-full w-4 h-4 border-2 border-white"></span>
-                </div>
-                  <div class="flex-1 flex flex-col gap-1">
-                    <span class="text-lg font-semibold">{{application.user.first_name}} {{ application.user.last_name}}</span>
-                    <div class="text-gray-500">{{ application.user.location }}</div>
-                    <div class="text-gray-600  line-clamp-2 text-wrap">{{application.user.resume.job_title}}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex p-2 w-fit items-start space-x-2 md:mt-4">
-                <button class="bg-gray-300 text-gray-700 rounded-full p-2" onclick="archiveCandidate()">
-                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2}
-                      d="M5 15h3v2.5c0 1.17.64 2.2 1.62 2.73A4.992 4.992 0 0012 21v-3.5l2.905-3.08A3 3 0 0016 12V4a1 1 0 00-.999-1H6.265a.997.997.0 00-.998.75l-2.206 8.76a2.003 2.003 0 001.08 2.298c.277.131.58.197.886.193z" />
-                  </svg>
-                </button>
-                <button class="bg-gray-300 text-gray-700 rounded-full p-2">
-                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2}
-                      d="M19 9h-3.23V6.54A3.88 3.88 0 0012 3v3.61L9.09 9.69A3 3 0 008 12v8a1 1 0 001 1h8.76a1 1 0 001-.75l2.21-8.76A1.999 1.999 0 0019 9z" />
-                  </svg>
-                </button>
-                <a href="{% url 'messaging:start_chat' application.user.id %}">
-                <button
-                  class="hidden md:block border border-[#1e90ff] font-semibold text-[#1e90ff]  rounded-full px-4 py-2"
-                  >Message</button>
-                </a>
-                <button class="hidden md:block bg-[#1e90ff] font-semibold text-white rounded-full px-4 py-2 text-nowrap"
-                  onclick="viewDetails()">View
-                  Details</button>
-              </div>
-            </div>
-
-            <div class="md:flex md:justify-evenly gap-4 md:w-[80%]">
-              <div class="space-y-4 w-[250px]">
-                <div class="flex justify-between md:flex-col">
-                  <span class="text-lg font-semibold truncate">Assessment Score: {{ application.matching_percentage }}% </span>
-                  <span class="text-gray-600">Quiz Score: {{ application.quiz_score }}</span>
-                </div>
-              </div>
-              <div class="space-y-4">
-                <div class="text-base font-semibold">About Candidate:</div>
-                <div class="text-gray-700 line-clamp-2 w-[300px] text-wrap">
-                  {{ application.user.resume.description|truncatewords:15 }}...
-                </div>
-              </div>
-              <div>
-                <div class="text-base font-semibold">Qualifications:</div>
-                <div class="flex flex-wrap gap-2 mt-2">
-                  {% if application.user.skills_list|length > 3 %}
-                        {% for skill in application.user.skills_list|slice:":3" %}
-                            <span class="bg-blue-100 text-[#1e90ff] rounded-full px-3 py-1 text-sm text-nowrap">{{ skill }}</span>
-                        {% endfor %}
-                        <span class="bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm text-nowrap">...and {{ application.user.skills_list|length|add:"-5" }} more</span>
-                    {% else %}
-                        {% for skill in application.user.skills_list %}
-                            <span class="bg-blue-100 text-[#1e90ff] rounded-full px-3 py-1 text-sm text-nowrap">{{ skill }}</span>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-              </div>
-              <div class="w-full lg:hidden flex mt-2 gap-2">
                 <button
                   class="md:hidden flex-1 border border-[#1e90ff] font-semibold text-[#1e90ff] rounded-full px-4 py-2"
                   onclick="messageCandidate()">Message</button>
@@ -260,7 +162,9 @@
         {% endfor %}
         {% endif %}
 
-        {% if not top_5_applications and not waiting_list_applications %}
+        
+
+        {% if not shortlisted_applications %}
         <div class="flex justify-center items-center h-[200px]">
           <p class="text-gray-500">No candidates found.</p>
         </div>
@@ -495,11 +399,6 @@ function closeModal() {
     function shortlistCandidate() {
       alert("Candidate has been shortlisted.");
     }
-    function declineCandidate(jobId, candidateId) {
-        if (confirm("Are you sure you want to decline this candidate?")) {
-            window.location.href = `/job/jobs/${jobId}/decline/${candidateId}/`;
-        }
-    }
 
     function messageCandidate() {
       alert("Opening message window for candidate...");
@@ -511,6 +410,12 @@ function closeModal() {
 
     function closeModal() {
       document.getElementById("detailsModal").classList.add("hidden");
+    }
+
+    function declineCandidate(jobId, candidateId) {
+        if (confirm("Are you sure you want to decline this candidate?")) {
+            window.location.href = `/job/jobs/${jobId}/decline/${candidateId}/`;
+        }
     }
   </script>
 <br><br><br><br>

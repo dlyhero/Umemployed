@@ -380,3 +380,4 @@ def company_jobs_list_view(request, company_id):
 def company_list_view(request):
     companies = Company.objects.annotate(available_jobs=Count('job'))
     return render(request, 'company/company_list.html', {'companies': companies})
+

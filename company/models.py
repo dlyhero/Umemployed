@@ -73,3 +73,5 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name if self.name else "Unnamed Company"
+
+

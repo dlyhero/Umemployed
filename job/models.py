@@ -102,7 +102,7 @@ class Job(models.Model):
     ideal_candidate = RichTextField()
     is_available = models.BooleanField(default=False)
     description = RichTextField(max_length=2000, default='We are looking for ...')
-    responsibilities = RichTextField(max_length=1000, default="You will be in charge of ...")
+    responsibilities = RichTextField(max_length=2000, default="You will be in charge of ...")
     benefits = RichTextField(default="...")
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default=BEGINNER)
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, default=1)
@@ -326,3 +326,12 @@ class SavedJob(models.Model):
 
     class Meta:
         unique_together = ('user', 'job')
+        
+class Shortlist(models.Model):
+    recruiter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recruiter_shortlists')
+    candidate = models.ForeignKey(User, on_delete=models.CASCADE, related_name='candidate_shortlists')
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    shortlisted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.recruiter} shortlisted {self.candidate} for {self.job}"

@@ -27,7 +27,7 @@ from .job_description_algorithm import extract_technical_skills
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Job, MCQ, ApplicantAnswer,SkillQuestion
+from .models import Job, MCQ, ApplicantAnswer,SkillQuestion,Shortlist
 from .forms import ApplicantAnswerForm
 from django.db.models import F
 from django.db.models import Q
@@ -240,7 +240,7 @@ def select_skills(request):
                         entry_level = form.cleaned_data['level']
                         selected_skill_names = [skill.name for skill in selected_extracted_skills]
                         redirect_url = f'/job/generate-questions/?job_title={job_instance.title}&entry_level={entry_level}&selected_skills={",".join(selected_skill_names)}'
-                        messages.info(request, "You have successfully created the job.")
+                        messages.info(request, "Your job has been successfully created, please be patient while we process the job assessment!")
                         return redirect(redirect_url)
                 else:
                     form = SkillForm(job_instance=job_instance)
@@ -998,3 +998,125 @@ def success_page(request):
 
 def fail_page(request):
     return render(request, "job/compiler/fail.html")
+
+
+@login_required  
+def shortlist_candidate(request, job_id, candidate_id):  
+    job = get_object_or_404(Job, id=job_id)  
+    candidate = get_object_or_404(User, id=candidate_id)  
+    recruiter = request.user  
+
+    # Determine the company associated with the recruiter  
+    # Assuming a one-to-one relationship between User and Company  
+    company = get_object_or_404(Company, user=recruiter)  
+
+    # Check if the candidate is already shortlisted for the job  
+    if Shortlist.objects.filter(recruiter=recruiter, candidate=candidate, job=job).exists():  
+        messages.warning(request, "Candidate is already shortlisted for this job.")  
+    else:  
+        Shortlist.objects.create(recruiter=recruiter, candidate=candidate, job=job)  
+        messages.success(request, "Candidate has been shortlisted successfully.")  
+    
+    # Redirecting to a URL that takes company_id as a parameter  
+    return redirect('job:shortlisted', company_id=company.id)
+
+from resume.models import Resume
+from job.utils import calculate_skill_match
+@login_required(login_url='login')
+def shortlisted_candidates(request, company_id):
+    # Check if the current user is the owner of the company
+    current_user = request.user
+    company = Company.objects.get(id=company_id)
+    
+    if company.user != current_user:
+        return HttpResponse("You are not authorized to view this page.")
+    
+    jobs = Job.objects.filter(company=company)
+    job_applications = {}
+
+    for job in jobs:
+        applications = Application.objects.filter(job=job)
+        job_applications[job] = applications
+
+    # List to store shortlisted applications
+    shortlisted_applications = []
+
+    # Calculate match percentage for each application
+    for job, applications in job_applications.items():
+        for application in applications:
+            user = application.user
+            resume = Resume.objects.filter(user=user).first()  # Use filter() to avoid DoesNotExist error
+            
+            if resume:
+                applicant_skills = set(resume.skills.all())
+                job_skills = set(job.requirements.all())
+                match_percentage, missing_skills = calculate_skill_match(applicant_skills, job_skills)
+                application.matching_percentage = match_percentage
+
+                quiz_score = application.quiz_score
+                overall_score = match_percentage * 0.7 + (quiz_score / 10) * 0.3
+                application.overall_score = overall_score
+
+                application.user.skills_list = list(resume.skills.all())
+                application.user.resume = resume
+            else:
+                application.matching_percentage = 0
+                application.overall_score = application.quiz_score / 10 * 0.3  # Only quiz score
+                application.user.skills_list = []
+
+            # Add the application to shortlisted list
+            shortlisted_applications.append(application)
+
+    context = {
+        'company': company,
+        'shortlisted_applications': shortlisted_applications,
+    }
+    
+    return render(request, 'company/shortlisted.html', context)
+
+from django.core.mail import send_mail
+from notifications.utils import notify_user
+from django.conf import settings
+from notifications.models import Notification
+@login_required
+def decline_candidate(request, job_id, candidate_id):
+    job = get_object_or_404(Job, id=job_id)
+    candidate = get_object_or_404(User, id=candidate_id)
+    recruiter = request.user
+
+    # Check if the recruiter is associated with the job
+    company = get_object_or_404(Company, user=recruiter)
+    if job.company != company:
+        messages.error(request, "You are not authorized to decline this candidate.")
+        return redirect(request.META.get('HTTP_REFERER', 'job:job_applications'))
+
+    # Get the application object
+    application = get_object_or_404(Application, job=job, user=candidate)
+
+    # Delete the application object
+    application.delete()
+
+    # Send notification to the candidate
+    notify_user(candidate, f"Your application for the job '{job.title}' has been declined.", Notification.JOB_APPLICATION)
+
+    # Send email to the candidate
+    subject = "Application Declined"
+    message = f"""
+                Dear {candidate.get_full_name()},
+
+                Thank you for your interest in the {job.title} position at {company.name}. After careful consideration, we regret to inform you that we will not be moving forward with your application at this time.
+
+                We truly appreciate the effort you put into your application and encourage you to apply for future opportunities that align with your qualifications. Thank you again for your time and interest in joining our team.
+
+                Wishing you the very best in your job search.
+
+                Warm regards,  
+                {company.name}
+                """
+    from_email = settings.DEFAULT_FROM_EMAIL
+    send_mail(subject, message, from_email, [candidate.email])
+
+    messages.success(request, "Candidate has been declined successfully.")
+    
+    # Redirect to the previous page (using HTTP_REFERER) or a default fallback if it's not available
+    return redirect(request.META.get('HTTP_REFERER', 'job:job_applications'))
