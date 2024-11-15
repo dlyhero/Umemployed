@@ -1075,7 +1075,7 @@ def shortlisted_candidates(request, company_id):
     return render(request, 'company/shortlisted.html', context)
 
 from django.core.mail import send_mail
-from notifications.utils import notify_user
+from notifications.utils import notify_user_declined
 from django.conf import settings
 from notifications.models import Notification
 @login_required
@@ -1097,7 +1097,7 @@ def decline_candidate(request, job_id, candidate_id):
     application.delete()
 
     # Send notification to the candidate
-    notify_user(candidate, f"Your application for the job '{job.title}' has been declined.", Notification.JOB_APPLICATION)
+    notify_user_declined(candidate, f"Your application for the job '{job.title}' has been declined.", Notification.JOB_APPLICATION)
 
     # Send email to the candidate
     subject = "Application Declined"
