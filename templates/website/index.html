@@ -101,7 +101,7 @@
         <p class="mb-6 text-lg text-gray-700">
           Unlock new opportunities with our platform. Connect with leading companies, grow your career, and realize your potential.
         </p>
-        {% if user.is_authenticated and user.is_recruiter %}
+        {% if user.is_authenticated and user.is_recruiter and user_company%}
         <a
           href="{% url 'company_dashboard' user_company.id %}"
           class="cta-button flex items-center lg:px-10 w-fit py-4 lg:bg-gradient-to-r from-[#1e90ff] to-[#005b8c] text-[#1e90ff] lg:text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"

@@ -22,11 +22,22 @@ from urllib.parse import urlencode
 from .forms import CustomSetPasswordForm
 from django.contrib.auth import update_session_auth_hash
 
+from django.http import HttpResponseRedirect
+from django.core.mail import send_mail
+from django.conf import settings
+
+from allauth.account.models import EmailAddress
+import logging
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+from django.urls import reverse  # Import reverse
+from resume.models import ResumeDoc
+from django.contrib.auth import get_backends
 
 
 def handling_404(request, exception):
     return render(request, '404.html', status=404)
-@login_required
+
 def index(request):
     user = request.user
     if request.user.is_authenticated and not request.user.has_usable_password():
@@ -201,8 +212,6 @@ def home(request):
     return render(request, 'website/home.html', context)
 
 
-# login a user
-from django.http import HttpResponseRedirect
 
 def login_user(request):
     if request.method == 'POST':
@@ -224,8 +233,6 @@ def login_user(request):
         return render(request, 'users/login.html', {'next': next_url})
 
 
-# views.py
-from django.contrib.auth import get_backends
 def register_applicant(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
@@ -285,6 +292,7 @@ def logout_user(request):
     logout(request)
     return redirect('index')  # Update the target name to match the appropriate URL name
 
+@login_required(login_url='/')
 def switch_account(request):
     if request.user.is_authenticated and not request.user.has_usable_password():
         messages.warning(request, 'Please set a password to secure your account.')
@@ -300,8 +308,8 @@ def change_account_type(request):
 
     return render(request, 'users/changeAccountType.html')
 
-from django.urls import reverse  # Import reverse
-from resume.models import ResumeDoc
+
+
 @login_required
 def switch_account_type(request):
     new_role = request.GET.get('new_role', None)
@@ -362,10 +370,6 @@ def user_dashboard(request):
 
 
 # view to request unverified users to verify emails
-from django.contrib.auth import get_user_model
-from allauth.account.models import EmailAddress
-from django.http import HttpResponse
-
 
 def send_verification_to_unverified_users(request):
     User = get_user_model()
@@ -395,14 +399,7 @@ class CustomConfirmEmailView(ConfirmEmailView):
         return redirect('switch_account')  # Change to your desired URL name or path
 
 
-from django.core.mail import send_mail
-from django.conf import settings
 
-from allauth.account.models import EmailAddress
-from allauth.account.utils import send_email_confirmation
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
-import logging
 
 logger = logging.getLogger(__name__)
 

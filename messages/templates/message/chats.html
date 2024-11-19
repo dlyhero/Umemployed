@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chats</title>
+    {% include 'tailwind.html' %}
+  </head>
+  <body class="bg-slate-100 flex flex-col  "> 
+        <div class="bg-slate-100 flex flex-col p-10 mt-2 ">
+            {% include 'navbar.html' %}
+            <form action="" class="flex grow self-center mt-20">
+                <input
+                  type="text"
+                  name="q"
+                  id="q"
+                  value="{{q}}"
+                  placeholder="Search"
+                  class="p-3 rounded-l-lg outline-none text-xl"
+                  required
+                />
+                <hr />
+                <button type="submit" class="px-2 rounded-r-lg bg-slate-50">
+                  <i class="fa-solid fa-magnifying-glass right-0 text-2xl"></i>
+                </button>
+              </form>
+              <h3 class="text-3xl font-medium">{{chats|length}} chats</h3>
+            <div class="flex flex-col mt-10"></div>
+                <div class="w-full flex" id="options">
+                    <div class=" hidden md:block w-1/3 pr-10">
+                        
+                    </div>
+                <div class="w-2/3 space-y-6" id="options">
+                   
+                    {% for key, value in chats.items %}
+                <div class="flex space-y-6">
+                    
+                   
+                    <label for="user">
+                        <a href="{% url 'chat' key.id %}" class="flex items-center  gap-3">
+                            <img
+                          src="{{key.image.url}}"
+                          alt="{{key.username|capfirst}}"
+                          class="w-20 h-20 rounded-full"
+                        />
+                        <div class="flex flex-col overflow-hidden">
+                            
+                                {% if value.receiver == request.user and value.read == False %}
+                                <h4 class="font-semibold">
+                                    {{key.username|capfirst}}
+                                </h4>
+                                <p class="font-semibold"> "{{value.text}}" 
+                                    <small>
+                                        {{value.created|timesince}} ago
+                                    </small> 
+                                </p>
+                                {% else %}
+                                <h4>
+                                    {{key.username|capfirst}} 
+                                </h4>
+                                <p > "{{value.text}}" 
+                                    <small>
+                                    {{value.created|timesince}} ago
+                                    </small> 
+                                </p>
+                                {% endif %}
+                        </div>
+                        
+                    </a>
+                    </label>
+                </div>
+                {% endfor %}
+                </div>
+                </div>
+                
+                 </div> 
+
+    <script src="https://kit.fontawesome.com/bef6373e3c.js" crossorigin="anonymous"></script>
+</body>
+</html>

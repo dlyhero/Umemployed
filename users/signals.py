@@ -1,5 +1,3 @@
-# signals.py
-
 import logging
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
@@ -26,10 +24,8 @@ def handle_user_login(sender, request, user, **kwargs):
         logger.info('User logged in after a long time')
         send_login_email(user.email, user.first_name)
 
-@receiver(user_logged_out)
-def handle_user_logout(sender, request, user, **kwargs):
-    logger.info('User logged out')
-    send_logout_email(user.email, user.first_name)
+# @receiver(user_logged_out)
+# def handle_user_logout(sender, request, user, **kwargs):
+#     logger.info('User logged out')
+#     send_logout_email(user.email, user.first_name)
 
-# For password reset, you may need to use a custom view or signal.
-# Ensure you handle the reset process and call `send_password_reset_email` accordingly.

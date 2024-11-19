@@ -2,152 +2,123 @@
 {% load static %}
 {% block search_bar %}
 {% endblock search_bar %}
- {% block custom_css %}
-     <script src="https://cdn.tailwindcss.com"></script>
-
- <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+{% block custom_css %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    
-  {% endblock %}
-{% block content %}
-<div class="h-[90vh]  flex flex-col justify-around">
-      <main class="w-full">
-      <div
-        class="bg-white sm:border border-gray-200 rounded-lg py-2 px-3 max-w-lg mx-auto"
-      >
-        <div class="flex flex-col items-center text-center">
-          <div class="text-green-500 text-5xl mb-4">
-            <i class="fas fa-file-alt"></i>
-          </div>
-          <h1 class="text-xl font-semibold text-gray-800 mb-4">
-            Welcome to Your Job Test
-          </h1>
-          <p class="text-gray-600 mb-4 text-wrap text-center">
-            Welcome to your job test. This assessment is designed to evaluate
-            your skills and suitability for the role. Please review the test
-            details and proceed when you are ready
-            <p>Note: You won't be able to modify your responses for a skill after you have submitted!</p>
-          </p>
-
-          <div class="bg-gray-50 p-4 rounded-lg shadow-sm w-full mb-4">
-            <h2 class="text-lg font-semibold text-gray-700 mb-3">
-              Test Details
-            </h2>
-            <div class="flex flex-col space-y-3">
-              <div class="bg-white p-4 rounded-lg border border-gray-200">
-                <ul>
-                  <li>Duration: 5 minutes</li>
-                  <li>Multiple choice and coding exercises</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <a
-            href="{% url 'job:apply_job' job_id=job.id %}"
-            class="bg-[#1e90ff] hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 mb-2"
-          >
-            Start Test
-          </a>
-        </div>
-      </div>  
-    </main>
-    {% block footers %}
-    
-    
-    {% endblock %}
-    <footer class="text-gray-800 text-center p-3">
-      <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
-        <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
-        <div class="flex space-x-4 items-center">
-          <a
-            href="https://twitter.com/UmEmployed"
-            class="text-white hover:text-gray-300"
-          >
-            <i class="fab fa-twitter text-black"></i>
-          </a>
-          <a
-            href="https://linkedin.com/company/umemployed"
-            class="text-white hover:text-gray-300"
-          >
-            <i class="fab fa-linkedin text-black"></i>
-          </a>
-          <a
-            href="https://facebook.com/UmEmployed"
-            class="text-white hover:text-gray-300"
-          >
-            <i class="fab fa-facebook text-black"></i>
-          </a>
-        </div>
-        <div class="text-sm">
-          <a href="/privacy-policy" class="hover:text-gray-300"
-            >Privacy Policy</a
-          >
-          |
-          <a href="/contact-us" class="hover:text-gray-300">Contact Us</a>
-        </div>
-      </div>
-    </footer>
-  </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const optionBtn = document.getElementById('option-btn');
-            const dropdownMenu = document.getElementById('dropdown-menu');
-
-            optionBtn.addEventListener('click', function(event) {
-                event.stopPropagation();
-                dropdownMenu.classList.toggle('show');
-                dropdownMenu.classList.remove('hide');
-            });
-
-            document.addEventListener('click', function(event) {
-                if (!dropdownMenu.contains(event.target) && !optionBtn.contains(event.target)) {
-                    dropdownMenu.classList.remove('show');
-                    dropdownMenu.classList.add('hide');
-                }
-            });
-        });
-
-   document.addEventListener('DOMContentLoaded', function() {
-    const jobOptions = document.querySelectorAll('.job-options');
-    const dropdowns = document.querySelectorAll('.dropdown-ellipse');
-
-    jobOptions.forEach((option, index) => {
-        option.addEventListener('click', function(event) {
-            event.stopPropagation();
-            dropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
-            dropdowns[index].classList.toggle('hidden');
-        });
-    });
-
-    document.addEventListener('click', function() {
-        dropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
-    });
-
-    dropdowns.forEach(dropdown => {
-        dropdown.addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-    });
-});
-
-    </script>
-    <script src="{% static 'jobs/asset/job_listing.js' %}"></script>
-    <script src="{% static 'scripts/dashboard.js' %}"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const alerts = document.querySelectorAll('.primary .alert');
-            alerts.forEach(alert => {
-                setTimeout(() => {
-                    alert.style.display = 'none';
-                }, 10000); // 10 seconds
-            });
-        });
-    </script>
-  </body>
-</html>
-{% block footer %}
 {% endblock %}
+{% block content %}
+<div class="h-[90vh] flex flex-col justify-around">
+    <main class="w-full">
+        <div
+            class="bg-white sm:border border-gray-200 rounded-lg py-2 px-3 max-w-3xl mx-auto"
+        >
+            <div class="flex flex-col items-center text-center">
+                <div class="text-green-500 text-5xl mb-4">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                                <h1 class="text-xl font-semibold text-gray-800 mb-4">
+                    Welcome to Your Job Test
+                </h1>
+                <p class="text-gray-600 mb-4 text-wrap text-center">
+                    Welcome to your job test designed to evaluate your skills for the role. Review the test details and begin when ready.
+                </p>
+                <p class="text-red-500 font-bold mb-4">Attention: Read Carefully Before Starting</p>
+                <p class="text-gray-600 mb-4">
+                    Complete the test in one sitting without pausing or exiting. By starting, you agree to these terms. Good luck!
+                </p>
+                <p class="text-yellow-600 font-semibold mb-4">
+                    Important: Camera Use During Assessments
+                </p>
+                <p class="text-gray-600 mb-4">
+                    Your device's camera will be used to ensure fairness and prevent cheating during this test. The camera will only be active to monitor academic integrity. We value your privacy and cooperation.
+                </p>
+
+                <div class="bg-gray-50 p-4 rounded-lg shadow-sm w-full mb-4">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-3">
+                        Test Details
+                    </h2>
+                    <div class="flex flex-col space-y-3">
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
+                            <ul>
+                                <li>Duration: 20 minutes</li>
+                                <li>Multiple choice and technical exercises</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <button
+                    id="startTestBtn"
+                    class="bg-[#1e90ff] hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 mb-2"
+                >
+                    Start Test
+                </button>
+            </div>
+        </div>  
+    </main>
+    {% block footer %}
+    {% endblock footer %}
+    <footer class="text-gray-800 text-center p-3">
+        <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
+            <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
+            <div class="flex space-x-4 items-center">
+                <a href="https://twitter.com/UmEmployed" class="text-white hover:text-gray-300">
+                    <i class="fab fa-twitter text-black"></i>
+                </a>
+                <a href="https://linkedin.com/company/umemployed" class="text-white hover:text-gray-300">
+                    <i class="fab fa-linkedin text-black"></i>
+                </a>
+                <a href="https://facebook.com/UmEmployed" class="text-white hover:text-gray-300">
+                    <i class="fab fa-facebook text-black"></i>
+                </a>
+            </div>
+            <div class="text-sm">
+                <a href="/privacy-policy" class="hover:text-gray-300">Privacy Policy</a> |
+                <a href="/contact-us" class="hover:text-gray-300">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Modal for Camera and Sound Permissions -->
+<div id="permissionModal" class="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4 sm:mx-auto">
+        <h3 class="text-lg font-semibold mb-4">Allow Camera and Microphone Access</h3>
+        <p class="text-gray-600 mb-4">
+            We require your camera and microphone for the duration of the test to ensure fairness and integrity.
+            Please grant us permission to proceed.
+        </p>
+        <div class="flex justify-end space-x-4">
+            <button id="noPermissionBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded">No</button>
+            <button id="yesPermissionBtn" class="bg-[#1e90ff] hover:bg-blue-500 text-white px-4 py-2 rounded">Yes</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const startTestBtn = document.getElementById('startTestBtn');
+        const permissionModal = document.getElementById('permissionModal');
+        const noPermissionBtn = document.getElementById('noPermissionBtn');
+        const yesPermissionBtn = document.getElementById('yesPermissionBtn');
+
+        startTestBtn.addEventListener('click', function() {
+            permissionModal.classList.remove('hidden');
+        });
+
+        noPermissionBtn.addEventListener('click', function() {
+            permissionModal.classList.add('hidden');
+            alert("To proceed, you must accept to use the camera.");
+        });
+
+        yesPermissionBtn.addEventListener('click', function() {
+            permissionModal.classList.add('hidden');
+            window.location.href = "{% url 'job:apply_job' job_id=job.id %}";
+        });
+    });
+</script>
 
 {% endblock %}

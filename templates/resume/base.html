@@ -156,10 +156,12 @@
    
            </a>
           </div>
-           <ul class="hidden md:flex items-center gap-8">
-             <li><a href="{% url 'company-list' %}" class="font-semibold">Companies</a></li>
-             <li><a href="#" class="font-semibold">Find Talent</a></li>
-           </ul>
+            <ul class="hidden md:flex items-center gap-8">
+              <li><a href="{% url 'company-list' %}" class="font-semibold">Companies</a></li>
+              {% if not user.is_authenticated %}
+              <li><a href="#" class="font-semibold">Hire Talent</a></li>
+            {% endif %}
+            </ul>
          </div>
    
 
@@ -193,25 +195,65 @@
 
         <div id="right-section">
           <ul class="flex gap-4 items-center">
-            {% if user.is_authenticated %}   {% if user.is_applicant %}
-            <li
+            {% if user.is_authenticated %}
+          {% if user.is_applicant %}
+          <li
+            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+          >
+            <a href="{% url 'upload' %}">Resume</a>
+          </li>
+          <li
+            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+          >
+            <a href="{% url 'home' %}"> Jobs</a>
+          </li>
+          <li
               class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
             >
-              <a href="{% url 'upload' %}">Resume</a>
+              <a href="{% url 'update_profile' %}"> Settings</a>
+              
             </li>
-            <li
+          
+          <li
+            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+          >
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+          </li>
+          
+          {% elif user.is_recruiter and user.has_company and user_company %}
+          
+          <li
+            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+          >
+            <i>Logged as Recruiter</i>
+          </li>
+          <li
               class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
             >
-              <a href="{% url 'home' %}">Browse jobs</a>
+              <a href="{% url 'update_company' user_company.id %}"> Settings</a>
+              
             </li>
-            {% elif user.is_recruiter and user.has_company and user_company%}
-            <li
-              class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-            >
-              <i>Logged as Recruiter</i>
-            </li>
-            {% endif %} 
-            {% endif %}
+          <li
+            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+          >
+            <a href="{% url 'company_dashboard' user_company.id %}">Dashboard</a>
+          </li>
+          {% elif user.is_recruiter and not user.has_company %}
+          <li
+            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+          >
+            <i>Logged as Recruiter, No company created</i>
+          </li>
+          
+          <li
+            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
+          >
+            <a href="{% url 'create_company' %}">Create Company</a>
+          </li>
+          {% else %}
+
+          {% endif %}
+          {% endif %}
             <li></li>
             <li>
               {% if user.is_authenticated %}
@@ -261,11 +303,8 @@
               </a>
               {% endif %} 
               {% else %}
-              <a
-                href="{% url 'register-applicant' %}"
-                class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full"
-              >
-                Sign Up
+              <a href="{% url 'login' %}" class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full">
+                Sign In
               </a>
               {% endif %}
             </li>
@@ -294,6 +333,7 @@
                   >
                     <i class="fas fa-building"></i> Resume
                   </a>
+               
                   <a
                     href="{% url 'home' %}"
                     class="menu-item flex items-center gap-2 font-semibold md:hidden hover:text-[#1e90ff]"
@@ -338,14 +378,41 @@
                   >
                     <i class="fas fa-envelope"></i> Messages
                   </a>
+                  {% if user.is_applicant %}
+                  <a
+                  href="{% url 'update-resume' %}"
+                  class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
+                >
+                  <i class="fas fa-cog"></i> Settings
+                </a>
+                {% elif user.is_recruiter and user.has_company and user_company%}
+                    <a
+                  href="{% url 'update_company' user_company.id %}"
+                  class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
+                >
+                  <i class="fas fa-cog"></i> Settings
+                </a>
+                {% endif %}
                 </div>
                 <div class="authentication flex flex-col gap-4">
+                {% if user.is_applicant %}
+                <a
+                  href="{% url 'dashboard' %}"
+                  class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
+                >
+                <i class="fas fa-tachometer-alt"></i> Dashboard  
+
+                </a>
+                {% elif user.is_recruiter and user.has_company and user_company%}
                   <a
-                    href="{% url 'change_account_type' %}"
-                    class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
-                  >
-                    <i class="fas fa-user-plus"></i> Switch Role
-                  </a>
+                  href="{% url 'company_dashboard' user_company.id %}"
+                  class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
+                >
+                <i class="fas fa-tachometer-alt"></i> Dashboard  
+
+                </a>
+                {% else %}
+                {% endif %}
                   <a
                     href="{% url 'logout' %}"
                     class="w-full bg-[#1e90ff] text-white px-6 py-3 rounded-full text-center font-semibold"
@@ -571,8 +638,7 @@ viewBox="0 0 466 511.98">
         <a
           href="{% url 'notifications:user_notifications' %}"
           class="menu-item flex items-center gap-2 font-semibold p-2 border-b"
-          ><i class="fas f </ul>a-plus-circle"></i> Notifications</a
-        >
+          ><i class="fas fa-bell"></i> Notifications  </a>
         <a
           href="{% url 'messaging:inbox' %}"
           class="menu-item flex items-center gap-2 font-semibold p-2 border-b"
@@ -582,11 +648,24 @@ viewBox="0 0 466 511.98">
       <div
         class="authentication flex flex-col gap-4 absolute bottom-10 right-4 left-4"
       >
-        <a
-          href="{% url 'change_account_type' %}"
-          class="w-full bg-transparent text-[#1e90ff] border px-6 py-3 rounded-full text-center font-semibold"
-          ><i class="fas fa-user-plus"></i> Switch Role</a
-        >
+        {% if user.is_applicant %}
+                <a
+                  href="{% url 'dashboard' %}"
+                  class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
+                >
+                <i class="fas fa-tachometer-alt"></i> Dashboard  
+
+                </a>
+                {% elif user.is_recruiter and user.has_company and user_company%}
+                  <a
+                  href="{% url 'company_dashboard' user_company.id %}"
+                  class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
+                >
+                <i class="fas fa-tachometer-alt"></i> Dashboard  
+
+                </a>
+                {% else %}
+                {% endif %}
         <a
           href="{% url 'logout' %}"
           class="w-full bg-[#1e90ff] text-white px-6 py-3 rounded-full text-center font-semibold"

@@ -1,5 +1,4 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from django.contrib import messages
 from .models import Job, Application
 from .forms import CreateJobForm , UpdateJobForm,SkillForm
 from resume.views import get_matching_jobs
@@ -12,12 +11,8 @@ from .jdoodle_api import execute_code
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import render
 from django.contrib import messages
-from django.shortcuts import redirect, render
-from django.shortcuts import render, redirect
-from django.contrib import messages
 from .models import Job, MCQ
 from .forms import CreateJobForm
-from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .models import Skill, SkillQuestion, CompletedSkills
 from .forms import JobDescriptionForm
@@ -26,7 +21,6 @@ import requests
 from .job_description_algorithm import extract_technical_skills
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from .models import Job, MCQ, ApplicantAnswer,SkillQuestion,Shortlist
 from .forms import ApplicantAnswerForm
 from django.db.models import F
@@ -34,24 +28,22 @@ from django.db.models import Q
 import random
 from django.http import HttpResponseBadRequest
 from .models import ApplicantAnswer
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.contrib import messages
 from .models import Job, Application, SkillQuestion, ApplicantAnswer
 
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Application, SkillQuestion, ApplicantAnswer, CompletedSkills, Job, Skill
 from .forms import ApplicantAnswerForm  # Make sure this form is updated as necessary
-from django.shortcuts import render, redirect
 from .forms import JobDescriptionForm
-from .models import Job
 
 from .tasks import send_new_job_email_task, send_recruiter_job_confirmation_email_task
 from notifications.utils import notify_user
+from django.core.mail import send_mail
+from notifications.utils import notify_user_declined
+from django.conf import settings
+from notifications.models import Notification
 
 
 import json
@@ -1074,10 +1066,6 @@ def shortlisted_candidates(request, company_id):
     
     return render(request, 'company/shortlisted.html', context)
 
-from django.core.mail import send_mail
-from notifications.utils import notify_user_declined
-from django.conf import settings
-from notifications.models import Notification
 @login_required
 def decline_candidate(request, job_id, candidate_id):
     job = get_object_or_404(Job, id=job_id)

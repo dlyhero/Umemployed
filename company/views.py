@@ -51,6 +51,7 @@ def create_company(request):
                 company = form.save(commit=False)
                 company.user = request.user
                 company.save()
+                request.user.is_applicant = False
                 request.user.has_company = True
                 request.user.is_recruiter = True
                 request.user.has_resume = True
