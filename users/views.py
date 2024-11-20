@@ -175,15 +175,27 @@ def home(request):
 
     matching_jobs = sorted(matching_jobs, key=lambda x: x[1], reverse=True)
 
-    paginator = Paginator(non_matching_jobs, 6)
+    # Paginate matching jobs
+    matching_paginator = Paginator(matching_jobs, 6)
+    matching_page = request.GET.get('matching_page')
+
+    try:
+        matching_jobs_paginated = matching_paginator.page(matching_page)
+    except PageNotAnInteger:
+        matching_jobs_paginated = matching_paginator.page(1)
+    except EmptyPage:
+        matching_jobs_paginated = matching_paginator.page(matching_paginator.num_pages)
+
+    # Paginate non-matching jobs
+    non_matching_paginator = Paginator(non_matching_jobs, 6)
     page = request.GET.get('page')
 
     try:
-        jobs = paginator.page(page)
+        jobs = non_matching_paginator.page(page)
     except PageNotAnInteger:
-        jobs = paginator.page(1)
+        jobs = non_matching_paginator.page(1)
     except EmptyPage:
-        jobs = paginator.page(paginator.num_pages)
+        jobs = non_matching_paginator.page(non_matching_paginator.num_pages)
 
     # Create a dictionary for the URL parameters
     params = {
@@ -204,12 +216,13 @@ def home(request):
 
     context = {
         'jobs': jobs,
-        'matching_jobs': matching_jobs,
+        'matching_jobs': matching_jobs_paginated,
         'applied_job_ids': applied_job_ids,
         'query_string': query_string,
         'saved_jobs': saved_job_ids,
     }
     return render(request, 'website/home.html', context)
+
 
 
 
