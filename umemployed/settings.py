@@ -93,7 +93,7 @@ import time
 import redis  
 
 # Function to get Redis URL with retry logic  
-def get_redis_url(retries=10, delay=3):  
+def get_redis_url(retries=10, delay=5):  
     for attempt in range(retries):  
         try:  
             redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')  

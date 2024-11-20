@@ -1,484 +1,521 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block custom_css %}
+{% extends 'base.html' %} {% load static %} {% block custom_css %}
 <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+/>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="{% static 'css/jobs.css' %}" />
 <link rel="stylesheet" href="{% static 'css/general.css' %}" />
 
-
 <style>
   @media (min-width: 1024px) {
-    body{
-    height: 100vh;
-    overflow: hidden;
-  }
-  }
-  header{
-    margin-top: 10px;
-   
-  }
- /* Sidebar styling */
-#sidebar {
-    display: none; /* Hidden by default */
-}
-
-/* Show sidebar on large screens */
-@media (min-width: 1024px) {
-    #sidebar {
-        display: block;
+    body {
+      height: 100vh;
+      overflow: hidden;
     }
-}
+  }
+  header {
+    margin-top: 10px;
+  }
+  /* Sidebar styling */
+  #sidebar {
+    display: none; /* Hidden by default */
+  }
 
-/* Loading animation styling */
-.loading {
+  /* Show sidebar on large screens */
+  @media (min-width: 1024px) {
+    #sidebar {
+      display: block;
+    }
+  }
+
+  /* Loading animation styling */
+  .loading {
     display: flex;
     align-items: center;
     justify-content: center;
-}
+  }
 
-.loading .dot {
+  .loading .dot {
     width: 10px;
     height: 10px;
     margin: 0 5px;
     border-radius: 50%;
     background-color: #1e90ff;
     animation: dotPulse 1.5s infinite ease-in-out;
-}
+  }
 
-@keyframes dotPulse {
-    0%, 100% {
-        transform: scale(1);
+  @keyframes dotPulse {
+    0%,
+    100% {
+      transform: scale(1);
     }
     50% {
-        transform: scale(1.5);
+      transform: scale(1.5);
     }
-}
-
+  }
 </style>
 
-
-{% endblock %}
-{% block content %}
-
+{% endblock %} {% block content %}
 
 <main class="flex-1">
-      <div class="bg-white h-full flex flex-col lg:flex-row py-2 lg:py-0">
-        <!-- Sidebar -->
-        <aside
-          id="sidebar" 
-          class="lg:w-1/4 overflow-y-auto lg:block hidden lg:py-4"
-        >
-
-        <div id="loading" class="loading hidden">
-          <div class="dot"></div>
-          <div class="dot"></div>
-          <div class="dot"></div>
-        </div>
-          <!-- Content will be dynamically inserted here -->
-        </aside>
-
-        <div class="hidden lg:block">
-          <div class="h-full border-l lg:ml-2 border-gray-300 mx-auto"></div>
-        </div>
-        <!-- Main Content -->
+  <div class="bg-white h-full flex flex-col lg:flex-row py-2 lg:py-0">
+   
+    <!-- Main Content -->
+    <div
+      id="main-content"
+      class="bg-gray-50  flex-1 px-4 lg:pb-2 lg:px-10"
+    >
+      <section class="container my-8 lg:hidden">
         <div
-          id="main-content"
-          class="bg-gray-50 overflow-y-auto flex-1 px-4 lg:pb-2"
+          class="search-wrapper max-w-xl flex flex-1 mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none"
         >
-          <section class="container my-8">
-            <div
-              class="search-wrapper max-w-xl lg:hidden flex flex-1 mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none"
-            >
-            <form method="get" action="{% url 'home' %}" class="flex flex-1">
-              <input
-                class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
-                type="text"
-                 name="search_query"
-                id="search"
-                placeholder="Search jobs, companies, or keywords"
-              />
-              <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
-              <div class="button-wrap">
-                <button
-                  type="submit" class="text-white bg-[#1e90ff] font-semibold rounded-full py-2 px-4"
-                >
-                  Search
-                </button>
-                </form>
-              </div>
-            </div>
-          </section>
-          <!-- Filters Dropdown Section for mobile -->
-          <div
-            class="container relative mb-6 lg:hidden flex items-center justify-end"
-          >
-            <!-- Filter Button -->
-            <button
-              id="filterButtonMobile"
-              class="bg-blue-50 text-gray-900 font-bold px-2 rounded-lg py-2"
-            >
-              <span>Filters</span>
-              <i class="fas fa-filter ml-2"></i>
-            </button>
-
-            <!-- Dropdown Menu -->
-            <div
-              id="filterMenuMobile"
-              class="absolute top-full left-0 mt-2 w-full lg:w-80 bg-white border border-gray-300 rounded-lg shadow-lg hidden lg:block"
-            >
-              <div class="p-4">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Filters</h3>
-
-                <!-- Job Type Filter -->
-                <div class="mb-4">
-                  <label
-                    class="text-gray-700 font-semibold mb-2 block"
-                    for="jobType"
-                    >Job Type</label
-                  >
-                  <select
-                    id="jobType"
-                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="all">All</option>
-                    <option value="full-time">Full-time</option>
-                    <option value="part-time">Part-time</option>
-                    <option value="contract">Contract</option>
-                    <option value="remote">Remote</option>
-                  </select>
-                </div>
-
-                <!-- Location Filter -->
-                <div class="mb-4">
-                  <label
-                    class="text-gray-700 font-semibold mb-2 block"
-                    for="location"
-                    >Location</label
-                  >
-                  <input
-                    type="text"
-                    id="location"
-                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter location"
-                  />
-                </div>
-
-                <!-- Salary Range Filter -->
-                <div class="mb-4">
-                  <label
-                    class="text-gray-700 font-semibold mb-2 block"
-                    for="salaryRange"
-                    >Salary Range</label
-                  >
-                  <div class="flex flex-col gap-2 lg:flex-row lg:gap-4">
-                    <input
-                      type="number"
-                      id="salaryRangeMin"
-                      class="w-full lg:w-1/2 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Min Salary"
-                    />
-                    <input
-                      type="number"
-                      id="salaryRangeMax"
-                      class="w-full lg:w-1/2 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Max Salary"
-                    />
-                  </div>
-                </div>
-
-                <!-- Apply Filters Button -->
-                <button
-                  class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-500 transition-colors w-full"
-                >
-                  Apply Flters
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!--for desktop-->
-          <section
-            class="container mx-auto lg:flex justify-between items-center hidden"
-          >
-            <h2 class="text-2xl hidden lg:block font-bold text-gray-800 mb-6">
-              Available Job Listings
-            </h2>
-            <h2 class="text-2xl lg:hidden font-bold text-gray-800 lg:mt-4 mb-6">
-              Jobs
-            </h2>
-            <div class="relative flex justify-end mb-6">
+          <form method="get" action="{% url 'home' %}" class="flex flex-1">
+            <input
+              class="pl-2 focus:outline-none overflow-hidden text-ellipsis"
+              type="text"
+              name="search_query"
+              id="search"
+              placeholder="Search jobs, companies"
+            />
+            <div class="button-wrap">
               <button
-                id="filterButton"
-                class="bg-blue-100 lg:mt-6 text-gray-900 font-bold py-2 px-4 rounded-lg w-fit lg:w-auto flex items-center transition-colors duration-300"
+                type="submit"
+                class="text-white bg-[#1e90ff] font-semibold rounded-full py-2 px-3"
               >
-                <span>Filters</span>
-                <i class="fas fa-filter ml-2"></i>
+                <i class="fas fa-search"></i>
               </button>
             </div>
-          </section>
-          <section id="jobs-wrapp" class="container mx-auto">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% if matching_jobs %}
-                {% for job, match_percentage in matching_jobs %}
-              <!-- Job Card 1 -->
-<div
-  class="job-card bg-white border rounded-lg p-6 cursor-pointer relative"
-  data-job="1"
->
-  <div class="flex items-center justify-between mb-4">
-    <img
-      class="w-12 h-12 rounded-full"
-      src="{{ job.company.logo.url }}"
-      alt="Company Logo"
-    />
-    <div>
-      <span class="text-sm text-gray-500">{{ job.job_type }}</span>
-    </div>
-  </div>
-  <div class="mb-4">
-    <h3 class="text-xl font-semibold text-gray-800">
-      {{ job.title }}
-    </h3>
-    <div class="flex items-center gap-2">
-      <span class="text-gray-600">{{ job.company.name }}</span>
-      <span class="text-sm text-gray-500">{{ job.created_at|timesince }} ago</span>
-    </div>
-  </div>
-  <p
-    class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
-  >
-    <i class="fas fa-map-marker-alt mr-2"></i> {{ job.location.name }}
-  </p>
-  {% if job.id in applied_job_ids %}
-  <span style="color: green;">(Already Applied)</span>
-  <button
-    class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"
-    data-job="{{ job.id }}"
-  >
-    View Details
-  </button>
-  {% else %}
-  <button
-    class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"
-    data-job="{{ job.id }}"
-  >
-    View Details
-  </button>
-  {% endif %}
+          </form>
+        </div>
+      </section>
+      <!-- Filters Dropdown Section for mobile -->
+      <div
+        class="container relative mb-6 lg:hidden flex items-center justify-end"
+      >
+        <!-- Filter Button -->
+        <button
+          id="filterButtonMobile"
+          class="bg-blue-50 text-gray-900 font-bold px-2 rounded-lg py-2"
+        >
+          <span>Filters</span>
+          <i class="fas fa-filter ml-2"></i>
+        </button>
 
-  <!-- Bookmark Icon Aligned Bottom Right -->
-  <div class="absolute bottom-20 right-4">
-    {% if job.id in saved_jobs %}
-    <a class="bookmark-job" data-job-id="{{ job.id }}">
-      <i class="fas fa-bookmark text-[#1e90ff] text-xl"></i>  <!-- Filled Bookmark Icon -->
-    </a>
-    {% else %}
-    <a class="bookmark-job" data-job-id="{{ job.id }}">
-      <i class="far fa-bookmark text-gray-500 text-xl hover:text-[#1e90ff]"></i>  <!-- Empty Bookmark Icon -->
-    </a>
-    {% endif %}
-  </div>
-</div>
+        <!-- Dropdown Menu -->
+        <div
+          id="filterMenuMobile"
+          class="absolute top-full left-0 mt-2 w-full lg:w-80 bg-white border border-gray-300 rounded-lg shadow-lg hidden lg:block"
+        >
+          <div class="p-4">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Filters</h3>
 
-
-              <!-- Repeat the Job Cards multiple times as needed -->
-                {% endfor %}
-                {% elif jobs %}
-                {% for job in jobs %}
-                <!-- Job Card 1 -->
-              <div
-                class="job-card bg-white border rounded-lg p-6 cursor-pointer"
-                data-job="1"
+            <!-- Job Type Filter -->
+            <div class="mb-4">
+              <label
+                class="text-gray-700 font-semibold mb-2 block"
+                for="jobType"
+                >Job Type</label
               >
-                <div class="flex items-center justify-between mb-4">
-                  <img
-                    class="w-12 h-12 rounded-full"
-                    src="{{ job.company.logo.url }}"
-                    alt="Company Logo"
-                  />
-                  <div>
-                    <span class="text-sm text-gray-500">{{job.job_type}}</span>
-                  </div>
-                </div>
-                <div class="mb-4">
-                  <h3 class="text-xl font-semibold text-gray-800 truncate">
-                    {{job.title}}
-                  </h3>
-                  <div class="flex items-center gap-2 truncate">
-                    <span class="text-gray-600">{{job.company.name}}</span>
-                    <span class="text-gray-500 " style="font-size: 16px;">{{ job.created_at|timesince }} ago</span>
-                  </div>
-                </div>
-                <p
-                  class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
-                >
-                  <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
-                </p>
-                <button
-                  class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"
-                  data-job="{{job.id}}"
-                >
-                  View Details
-                </button>
+              <select
+                id="jobType"
+                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">All</option>
+                <option value="full-time">Full-time</option>
+                <option value="part-time">Part-time</option>
+                <option value="contract">Contract</option>
+                <option value="remote">Remote</option>
+              </select>
+            </div>
+
+            <!-- Location Filter -->
+            <div class="mb-4">
+              <label
+                class="text-gray-700 font-semibold mb-2 block"
+                for="location"
+                >Location</label
+              >
+              <input
+                type="text"
+                id="location"
+                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter location"
+              />
+            </div>
+
+            <!-- Salary Range Filter -->
+            <div class="mb-4">
+              <label
+                class="text-gray-700 font-semibold mb-2 block"
+                for="salaryRange"
+                >Salary Range</label
+              >
+              <div class="flex flex-col gap-2 lg:flex-row lg:gap-4">
+                <input
+                  type="number"
+                  id="salaryRangeMin"
+                  class="w-full lg:w-1/2 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Min Salary"
+                />
+                <input
+                  type="number"
+                  id="salaryRangeMax"
+                  class="w-full lg:w-1/2 p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Max Salary"
+                />
               </div>
-                {% endfor %}
-                
-                {% else %}  
-                <div class="text-center text-gray-500 text-lg">No jobs found</div>
-                {% endif %}
-              <!-- Add more job cards as needed -->
             </div>
 
-            <!-- Pagination Controls -->
-            <div class="flex gap-4 items-center justify-center mt-6">
-            
-            <!-- Previous Button with Icon -->
-            {% if jobs.has_previous %}
-            <a href="?page=1" 
-                class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center">
-                <i class="fas fa-angle-double-left mr-2"></i> First
-            </a>
-            <a href="?page={{ jobs.previous_page_number }}" 
-                class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center">
-                <i class="fas fa-chevron-left mr-2"></i> Previous
-            </a>
-            {% endif %}
-
-           
-
-            <!-- Next Button with Icon -->
-            {% if jobs.has_next %}
-            <a href="?page={{ jobs.next_page_number }}" 
-                class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center">
-                Next <i class="fas fa-chevron-right ml-2"></i>
-            </a>
-             <!-- "1 out of X" Pagination Text -->
-            <div id="pagination-info" class="text-gray-700 text-sm">
-                Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
-            </div>
-            <a href="?page={{ jobs.paginator.num_pages }}" 
-                class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center">
-                Last <i class="fas fa-angle-double-right ml-2"></i>
-            </a>
-            {% endif %}
-            </div>
-
-          </section>
-          <!-- Footer Section -->
-          <footer class="text-gray-500 py-4 mt-8">
-            <div
-              class="container mx-auto px-4 flex justify-between items-center"
+            <!-- Apply Filters Button -->
+            <button
+              class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-500 transition-colors w-full"
             >
-              <!-- Footer Left (Links) -->
-              <div class="text-sm">
-                <a href="{% url 'feature-not-implemented' %}" class="hover:text-white transition-colors mr-4"
-                  >About Us</a
-                >
-                <a href="{% url 'feature-not-implemented' %}" class="hover:text-white transition-colors mr-4"
-                  >Privacy Policy</a
-                >
-                <a href="{% url 'feature-not-implemented' %}" class="hover:text-white transition-colors"
-                  >Contact</a
-                >
-              </div>
-
-              <!-- Footer Right (Copyright) -->
-              <div class="text-sm">
-                &copy; 2024 UmEmployed. All Rights Reserved.
-              </div>
-            </div>
-          </footer>
+              Apply Flters
+            </button>
+          </div>
         </div>
       </div>
-      
-    </main>
 
-    
+      <!--for desktop-->
+      <section
+        class="container mx-auto lg:flex justify-between items-center hidden "
+      >
+        <h2 class="text-2xl hidden lg:block font-bold text-gray-800 mb-6">
+          Available Job Listings
+        </h2>
+        <h2 class="text-2xl lg:hidden font-bold text-gray-800 lg:mt-4 mb-6">
+          Jobs
+        </h2>
+        <div class="relative flex justify-end mb-6">
+          <button
+            id="filterButton"
+            class="bg-blue-100 lg:mt-6 text-gray-900 font-bold py-2 px-4 rounded-lg w-fit lg:w-auto flex items-center transition-colors duration-300"
+          >
+            <span>Filters</span>
+            <i class="fas fa-filter ml-2"></i>
+          </button>
+        </div>
+      </section>
+      <section id="jobs-wrapp" class="container mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% if matching_jobs %} {% for job, match_percentage in matching_jobs%}
+          <!-- Job Card 1 -->
+          <div
+            class="job-card bg-white border rounded-lg p-6 cursor-pointer relative"
+            data-job="1"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <img
+                class="w-12 h-12 rounded-full"
+                src="{{ job.company.logo.url }}"
+                alt="Company Logo"
+              />
+              <div>
+                <span class="text-sm text-gray-500">{{ job.job_type }}</span>
+              </div>
+            </div>
+            <div class="mb-4">
+              <h3 class="text-xl font-semibold text-gray-800">
+                {{ job.title }}
+              </h3>
+              <div class="flex items-center gap-2">
+                <span class="text-gray-600">{{ job.company.name }}</span>
+                <span class="text-sm text-gray-500"
+                  >{{ job.created_at|timesince }} ago</span
+                >
+              </div>
+            </div>
+            <p
+              class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
+            >
+              <i class="fas fa-map-marker-alt mr-2"></i> {{ job.location.name }}
+            </p>
+            {% if job.id in applied_job_ids %}
+            <span style="color: green" class="py-2">(Already Applied)</span>
+            <span class="py-5 "></span>
+            <div class="flex items-center  gap-10 mt-2">
+              <button
+                class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"
+                data-job="{{ job.id }}"
+              >
+                View Details
+              </button>
+               <div class=" right-4">
+              {% if job.id in saved_jobs %}
+              <a class="bookmark-job" data-job-id="{{ job.id }}">
+                <i class="fas fa-bookmark text-[#1e90ff] text-xl"></i>
+                <!-- Filled Bookmark Icon -->
+              </a>
+              {% else %}
+              <a class="bookmark-job" data-job-id="{{ job.id }}">
+                <i
+                  class="far fa-bookmark text-gray-500 text-xl hover:text-[#1e90ff]"
+                ></i>
+                <!-- Empty Bookmark Icon -->
+              </a>
+              {% endif %}
+            </div>
+            </div>
+            {% else %}
+            <span style="color: green" class="py-2">-</span>
+            <div class="flex items-center  gap-10 mt-2">
+              <button
+                class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"
+                data-job="{{ job.id }}"
+              >
+                View Details
+              </button>
+               <div class=" right-4">
+              {% if job.id in saved_jobs %}
+              <a class="bookmark-job" data-job-id="{{ job.id }}">
+                <i class="fas fa-bookmark text-[#1e90ff] text-xl"></i>
+                <!-- Filled Bookmark Icon -->
+              </a>
+              {% else %}
+              <a class="bookmark-job" data-job-id="{{ job.id }}">
+                <i
+                  class="far fa-bookmark text-gray-500 text-xl hover:text-[#1e90ff]"
+                ></i>
+                <!-- Empty Bookmark Icon -->
+              </a>
+              {% endif %}
+            </div>
+            </div>
+            {% endif %}
+
+        
+          </div>
+
+          <!-- Repeat the Job Cards multiple times as needed -->
+          {% endfor %} {% elif jobs %} {% for job in jobs %}
+          <!-- Job Card 1 -->
+          <div
+            class="job-card bg-white border rounded-lg p-6 cursor-pointer"
+            data-job="1"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <img
+                class="w-12 h-12 rounded-full"
+                src="{{ job.company.logo.url }}"
+                alt="Company Logo"
+              />
+              <div>
+                <span class="text-sm text-gray-500">{{job.job_type}}</span>
+              </div>
+            </div>
+            <div class="mb-4">
+              <h3 class="text-xl font-semibold text-gray-800 truncate">
+                {{job.title}}
+              </h3>
+              <div class="flex items-center gap-2 truncate">
+                <span class="text-gray-600">{{job.company.name}}</span>
+                <span class="text-gray-500" style="font-size: 16px"
+                  >{{ job.created_at|timesince }} ago</span
+                >
+              </div>
+            </div>
+            <p
+              class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
+            >
+              <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
+            </p>
+            <button
+              class="text-[#1e90ff] bg-white border border-[#1e90ff] rounded-full py-2 px-4 w-full view-details-btn"
+              data-job="{{job.id}}"
+            >
+              View Details
+            </button>
+          </div>
+          {% endfor %} {% else %}
+          <div class="text-center text-gray-500 text-lg">No jobs found</div>
+          {% endif %}
+          <!-- Add more job cards as needed -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="flex gap-4 items-center justify-center mt-6">
+          <!-- Previous Button with Icon -->
+          {% if jobs.has_previous %}
+          <a
+            href="?page=1"
+            class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center"
+          >
+            <i class="fas fa-angle-double-left mr-2"></i> First
+          </a>
+          <a
+            href="?page={{ jobs.previous_page_number }}"
+            class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center"
+          >
+            <i class="fas fa-chevron-left mr-2"></i> Previous
+          </a>
+          {% endif %}
+
+          <!-- Next Button with Icon -->
+          {% if jobs.has_next %}
+          <a
+            href="?page={{ jobs.next_page_number }}"
+            class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center"
+          >
+            Next <i class="fas fa-chevron-right ml-2"></i>
+          </a>
+          <!-- "1 out of X" Pagination Text -->
+          <div id="pagination-info" class="text-gray-700 text-sm">
+            Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
+          </div>
+          <a
+            href="?page={{ jobs.paginator.num_pages }}"
+            class="bg-white border border-gray-300 rounded-full py-2 px-4 text-gray-500 hover:bg-gray-100 flex items-center"
+          >
+            Last <i class="fas fa-angle-double-right ml-2"></i>
+          </a>
+          {% endif %}
+        </div>
+      </section>
+      <!-- Footer Section -->
+      <footer class="text-gray-500 py-4 mt-8">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+          <!-- Footer Left (Links) -->
+          <div class="text-sm">
+            <a
+              href="{% url 'feature-not-implemented' %}"
+              class="hover:text-white transition-colors mr-4"
+              >About Us</a
+            >
+            <a
+              href="{% url 'feature-not-implemented' %}"
+              class="hover:text-white transition-colors mr-4"
+              >Privacy Policy</a
+            >
+            <a
+              href="{% url 'feature-not-implemented' %}"
+              class="hover:text-white transition-colors"
+              >Contact</a
+            >
+          </div>
+
+          <!-- Footer Right (Copyright) -->
+          <div class="text-sm">
+            &copy; 2024 UmEmployed. All Rights Reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
+     <!-- Sidebar -->
+
+     <div class="hidden lg:block">
+      <div class="h-full border-l lg:ml-2 border-gray-300 mx-auto"></div>
+    </div>
+    <aside
+      id="sidebar"
+      class="lg:w-1/4 overflow-y-auto lg:block hidden lg:py-4"
+    >
+      <div id="loading" class="loading hidden">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <!-- Content will be dynamically inserted here -->
+    </aside>
+  </div>
+</main>
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () {
     const sidebar = document.getElementById("sidebar");
     const loading = document.getElementById("loading");
-    
 
     // Function to fetch job details from the backend
     async function fetchJobDetails(jobId) {
-        if (!jobId) {
-            console.error('Invalid jobId:', jobId);
-            return null;
+      if (!jobId) {
+        console.error("Invalid jobId:", jobId);
+        return null;
+      }
+
+      const url = `/job/job-details/${jobId}/`;
+      console.log("Fetching job details from URL:", url);
+
+      // Show loading animation
+      loading.classList.remove("hidden");
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const url = `/job/job-details/${jobId}/`;
-        console.log('Fetching job details from URL:', url);
-
-        // Show loading animation
-        loading.classList.remove('hidden');
-
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Job details fetched:', data);
-            return data;
-        } catch (error) {
-            console.error('Error fetching job details:', error);
-            return null;
-        } finally {
-            // Hide loading animation after fetch is complete
-            loading.classList.add('hidden');
-        }
+        const data = await response.json();
+        console.log("Job details fetched:", data);
+        return data;
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+        return null;
+      } finally {
+        // Hide loading animation after fetch is complete
+        loading.classList.add("hidden");
+      }
     }
 
     // Function to display job details in the sidebar
     function displayJobDetails(data) {
-        if (!data || !data.job) {
-            console.error('Invalid data received for job details:', data);
-            return;
-        }
+      if (!data || !data.job) {
+        console.error("Invalid data received for job details:", data);
+        return;
+      }
 
-        const job = data.job;
-        const company = data.company || {}; // Handle missing company data
+      const job = data.job;
+      const company = data.company || {}; // Handle missing company data
 
-        console.log('Displaying job details for:', job.title);
+      console.log("Displaying job details for:", job.title);
 
-        // Dynamically create the job details URL
-        const jobDetailsUrl = `/job/details/${job.id}/`;
-        var companyLogoUrl = job.company && job.company.logo ? job.company.logo : '';
-        var fallbackLogoUrl = "{% static 'new_design/icons/8546719_apple_pay_icon.svg' %}";
+      // Dynamically create the job details URL
+      const jobDetailsUrl = `/job/details/${job.id}/`;
+      var companyLogoUrl =
+        job.company && job.company.logo ? job.company.logo : "";
+      var fallbackLogoUrl =
+        "{% static 'new_design/icons/8546719_apple_pay_icon.svg' %}";
 
-        // Clear the sidebar and display job details
-        sidebar.innerHTML = `
+      // Clear the sidebar and display job details
+      sidebar.innerHTML = `
             <div class="job-card bg-white p-6 cursor-pointer">
                 <div class="flex items-center justify-between mb-4">
                     <img
                         class="w-12 h-12 rounded-full"
                         src="${companyLogoUrl || fallbackLogoUrl}"
-                        alt="${job.company.name || 'Company Logo'}"
+                        alt="${job.company.name || "Company Logo"}"
                     />
-                    <div><span class="text-sm text-gray-500">${job.job_type || 'N/A'}</span></div>
+                    <div><span class="text-sm text-gray-500">${
+                      job.job_type || "N/A"
+                    }</span></div>
                 </div>
                 <div class="mb-4">
-                    <h3 class="text-xl font-semibold text-gray-800">${job.title || 'Job Title'}</h3>
+                    <h3 class="text-xl font-semibold text-gray-800">${
+                      job.title || "Job Title"
+                    }</h3>
                     <div class="flex items-center gap-2">
-                        <span class="text-gray-600">${job.company.name || 'Company Name'}</span>
-                        <span class="text-sm text-gray-500">${job.created_at || 'Date Posted'}</span>
+                        <span class="text-gray-600">${
+                          job.company.name || "Company Name"
+                        }</span>
+                        <span class="text-sm text-gray-500">${
+                          job.created_at || "Date Posted"
+                        }</span>
                     </div>
                 </div>
             <p class="my-4">
-              ${job.description ? job.description.split(' ').slice(0, 150).join(' ') + '...' : 'No description available.'}
+              ${
+                job.description
+                  ? job.description.split(" ").slice(0, 150).join(" ") + "..."
+                  : "No description available."
+              }
             </p>                
             <p class="text-[#1e90ff] mt-4 font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center">
-                <i class="fas fa-map-marker-alt mr-2"></i> ${job.location.name || 'Location'}
+                <i class="fas fa-map-marker-alt mr-2"></i> ${
+                  job.location.name || "Location"
+                }
             </p>
             <p class="text-gray-800 mb-4 flex items-center">
-                $(${job.salary_range || 'Salary not specified'})
+                $(${job.salary_range || "Salary not specified"})
             </p>
             <a href="${jobDetailsUrl}">
             <button
@@ -490,47 +527,46 @@ document.addEventListener("DOMContentLoaded", function () {
         </a>
         </div>
     `;
-        console.log('Job details rendered in the sidebar.');
+      console.log("Job details rendered in the sidebar.");
     }
 
     // Function to add event listeners to the "View Details" buttons
-      function addEventListenersToButtons() {
-          const viewDetailsButtons = document.querySelectorAll(".view-details-btn");
-          console.log("View Details buttons found:", viewDetailsButtons.length);
-          const sidebar = document.getElementById("sidebar");
+    function addEventListenersToButtons() {
+      const viewDetailsButtons = document.querySelectorAll(".view-details-btn");
+      console.log("View Details buttons found:", viewDetailsButtons.length);
+      const sidebar = document.getElementById("sidebar");
 
-          viewDetailsButtons.forEach((button) => {
-              button.addEventListener("click", async function () {
-                  const jobId = this.getAttribute("data-job");
-                  console.log("View Details button clicked. Job ID is:", jobId);
+      viewDetailsButtons.forEach((button) => {
+        button.addEventListener("click", async function () {
+          const jobId = this.getAttribute("data-job");
+          console.log("View Details button clicked. Job ID is:", jobId);
 
-                  // Define the URL for job details
-                  const jobDetailsUrl = `/job/details/${jobId}/`; // Adjust URL pattern if needed
+          // Define the URL for job details
+          const jobDetailsUrl = `/job/details/${jobId}/`; // Adjust URL pattern if needed
 
-                  // Check if the sidebar is visible
-                  const isSidebarVisible = sidebar && window.getComputedStyle(sidebar).display !== 'none';
+          // Check if the sidebar is visible
+          const isSidebarVisible =
+            sidebar && window.getComputedStyle(sidebar).display !== "none";
 
-                  if (!isSidebarVisible) {
-                      // If sidebar is not visible, redirect to job details page
-                      window.location.href = jobDetailsUrl;
-                  } else {
-                      // If sidebar is visible, fetch job details and display in sidebar
-                      const jobDetails = await fetchJobDetails(jobId);
-                      if (jobDetails) {
-                          displayJobDetails(jobDetails); // Switch the sidebar content to job details
-                      }
-                  }
-              });
-          });
-      }
+          if (!isSidebarVisible) {
+            // If sidebar is not visible, redirect to job details page
+            window.location.href = jobDetailsUrl;
+          } else {
+            // If sidebar is visible, fetch job details and display in sidebar
+            const jobDetails = await fetchJobDetails(jobId);
+            if (jobDetails) {
+              displayJobDetails(jobDetails); // Switch the sidebar content to job details
+            }
+          }
+        });
+      });
+    }
 
-
-
-     // Function to display the filter menu
+    // Function to display the filter menu
     function displayFilterMenu() {
-        console.log("Displaying filter menu.");
+      console.log("Displaying filter menu.");
 
-        sidebar.innerHTML = `<div id="filterMenu" class="max-w-5xl mx-auto p-6 bg-white rounded-lg">
+      sidebar.innerHTML = `<div id="filterMenu" class="max-w-5xl mx-auto p-6 bg-white rounded-lg">
                               <h2 class="text-xl font-semibold mb-4">Filter Jobs</h2>
                               <form id="filterForm" class="flex flex-col gap-6">
                                   <!-- Keyword Search -->
@@ -607,107 +643,104 @@ document.addEventListener("DOMContentLoaded", function () {
                               </form>
                             </div>`;
 
-        addEventListenersToButtons(); // Reapply event listeners after rendering filter menu
+      addEventListenersToButtons(); // Reapply event listeners after rendering filter menu
     }
 
     // Function to handle form submission
     function handleFormSubmission(event) {
-        event.preventDefault(); // Prevent default form submission
+      event.preventDefault(); // Prevent default form submission
 
-        const form = event.target;
-        const formData = new FormData(form);
-        const queryParams = new URLSearchParams();
+      const form = event.target;
+      const formData = new FormData(form);
+      const queryParams = new URLSearchParams();
 
-        // Iterate over form data and add non-empty fields to queryParams
-        for (const [key, value] of formData.entries()) {
-            if (value) {
-                queryParams.append(key, value);
-            }
+      // Iterate over form data and add non-empty fields to queryParams
+      for (const [key, value] of formData.entries()) {
+        if (value) {
+          queryParams.append(key, value);
         }
+      }
 
-        // Redirect to the URL with query parameters
-        window.location.href = `${form.action}?${queryParams.toString()}`;
+      // Redirect to the URL with query parameters
+      window.location.href = `${form.action}?${queryParams.toString()}`;
     }
 
     // Initial setup for the page
     function setupInitialView() {
-        console.log("Setting up the initial view.");
-        displayFilterMenu(); // Show filter by default
-        addEventListenersToButtons(); // Add listeners to "View Details" buttons
+      console.log("Setting up the initial view.");
+      displayFilterMenu(); // Show filter by default
+      addEventListenersToButtons(); // Add listeners to "View Details" buttons
 
-        // Add event listener to the form
-        const filterForm = document.getElementById("filterForm");
-        if (filterForm) {
-            filterForm.addEventListener("submit", handleFormSubmission);
-        }
+      // Add event listener to the form
+      const filterForm = document.getElementById("filterForm");
+      if (filterForm) {
+        filterForm.addEventListener("submit", handleFormSubmission);
+      }
     }
 
     // Display Filter Menu on Button Click
     const filterButton = document.getElementById("filterButton");
     if (filterButton) {
-        filterButton.addEventListener("click", function () {
-            console.log("Filter button clicked.");
-            displayFilterMenu(); // Redisplay filter menu when the filter button is clicked
-        });
+      filterButton.addEventListener("click", function () {
+        console.log("Filter button clicked.");
+        displayFilterMenu(); // Redisplay filter menu when the filter button is clicked
+      });
     }
 
     // Initial setup
     setupInitialView(); // Show filter menu by default and set up buttons
-});
-
+  });
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <!-- Include the CSRF token in a meta tag -->
-<meta name="csrf-token" content="{{ csrf_token }}">
+<meta name="csrf-token" content="{{ csrf_token }}" />
 
-    <script>
-$(document).on('click', '.bookmark-job', function(e) {
-    e.preventDefault();  // Prevent the default action of the anchor tag
-    const jobId = $(this).data('job-id');
-    const bookmarkIcon = $(this).find('i');  // Find the icon inside the clicked element
+<script>
+  $(document).on("click", ".bookmark-job", function (e) {
+    e.preventDefault(); // Prevent the default action of the anchor tag
+    const jobId = $(this).data("job-id");
+    const bookmarkIcon = $(this).find("i"); // Find the icon inside the clicked element
 
-    console.log("Attempting to bookmark job ID:", jobId);  // Debugging output
+    console.log("Attempting to bookmark job ID:", jobId); // Debugging output
 
     $.ajax({
-        url: '/job/save-job/' + jobId + '/',
-        type: 'POST',
-        headers: {
-            'X-CSRFToken': $('meta[name="csrf-token"]').attr('content'),  // Use the CSRF token from meta tag
-        },
-        success: function(response) {
-            console.log(response);  // Log the response
+      url: "/job/save-job/" + jobId + "/",
+      type: "POST",
+      headers: {
+        "X-CSRFToken": $('meta[name="csrf-token"]').attr("content"), // Use the CSRF token from meta tag
+      },
+      success: function (response) {
+        console.log(response); // Log the response
 
-            // Toggle bookmark icon based on the action
-            if (response.action === 'saved') {
-                bookmarkIcon.removeClass('far fa-bookmark text-gray-500').addClass('fas fa-bookmark text-[#1e90ff]');
-            } else if (response.action === 'removed') {
-                bookmarkIcon.removeClass('fas fa-bookmark text-[#1e90ff]').addClass('far fa-bookmark text-gray-500');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error occurred:', status, error);  // Log the error
-            alert('An error occurred while saving or removing the job.');
+        // Toggle bookmark icon based on the action
+        if (response.action === "saved") {
+          bookmarkIcon
+            .removeClass("far fa-bookmark text-gray-500")
+            .addClass("fas fa-bookmark text-[#1e90ff]");
+        } else if (response.action === "removed") {
+          bookmarkIcon
+            .removeClass("fas fa-bookmark text-[#1e90ff]")
+            .addClass("far fa-bookmark text-gray-500");
         }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error occurred:", status, error); // Log the error
+        alert("An error occurred while saving or removing the job.");
+      },
     });
-});
+  });
 
-const subHeader = document.getElementById('sub-header');
+  const subHeader = document.getElementById("sub-header");
 
-function header() {
-  subHeader.classList.remove('container');
-}
+  function header() {
+    subHeader.classList.remove("container");
+  }
 
-header();
+  header();
 </script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <br />
-{% block footer %}
-
-{% endblock %}
-{% endblock %}
+{% block footer %} {% endblock %} {% endblock %}
