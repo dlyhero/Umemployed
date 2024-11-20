@@ -335,3 +335,13 @@ class Shortlist(models.Model):
 
     def __str__(self):
         return f"{self.recruiter} shortlisted {self.candidate} for {self.job}"
+    
+    
+class RetakeRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    reason = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Retake request by {self.user.username} for job {self.job.id}'

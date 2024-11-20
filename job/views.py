@@ -21,7 +21,7 @@ import requests
 from .job_description_algorithm import extract_technical_skills
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .models import Job, MCQ, ApplicantAnswer,SkillQuestion,Shortlist
+from .models import Job, MCQ, ApplicantAnswer,SkillQuestion,Shortlist,RetakeRequest
 from .forms import ApplicantAnswerForm
 from django.db.models import F
 from django.db.models import Q
@@ -328,9 +328,17 @@ logger = logging.getLogger(__name__)
 
 from django.db import transaction
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import transaction
+from .models import Job, Application, CompletedSkills, SkillQuestion, ApplicantAnswer
+import logging
+
+logger = logging.getLogger(__name__)
+
 @login_required(login_url='/login')
 def answer_job_questions(request, job_id):
-
     # Fetch the job and user
     job = get_object_or_404(Job, id=job_id)
     user = request.user
@@ -340,6 +348,14 @@ def answer_job_questions(request, job_id):
 
     # Get or create an application instance
     application, created = Application.objects.get_or_create(user=user, job=job)
+
+    # Check if the user has already accessed this view
+    if request.session.get(f'has_accessed_{job_id}', False):
+        messages.warning(request, "You have already attempted the application for this job. Please contact the admins if you need further assistance.")
+        return redirect('job:report_test', job_id=job_id)
+
+    # Mark the session as accessed
+    request.session[f'has_accessed_{job_id}'] = True
 
     # Check if the quiz has already been completed
     if application.has_completed_quiz:
@@ -437,6 +453,30 @@ def answer_job_questions(request, job_id):
         }
 
         return render(request, 'job/rounds/round1.html', context)
+    
+@login_required(login_url='/login')
+def report_test(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+
+    if request.method == 'POST':
+        reason = request.POST.get('reason')
+        retake_request = RetakeRequest.objects.create(user=request.user, job=job, reason=reason)
+
+        # Send email to superusers
+        superusers = User.objects.filter(is_superuser=True)
+        superuser_emails = [user.email for user in superusers]
+        send_mail(
+            'New Retake Request',
+            f'User {request.user.username} has requested to retake the test for job {job.id}.\n\nReason:\n{reason}',
+            'Assessment-Issue',
+            superuser_emails,
+            fail_silently=False,
+        )
+
+        return redirect('home')
+
+    context = {'job': job}
+    return render(request, 'job/request_retake.html', context)
 
 
 
