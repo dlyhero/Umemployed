@@ -195,6 +195,7 @@ class Application(models.Model):
     total_scores = models.JSONField(default=dict)
     video_file = models.FileField(upload_to='videos/', null=True, blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    has_started = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

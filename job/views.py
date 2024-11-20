@@ -350,12 +350,13 @@ def answer_job_questions(request, job_id):
     application, created = Application.objects.get_or_create(user=user, job=job)
 
     # Check if the user has already accessed this view
-    if request.session.get(f'has_accessed_{job_id}', False):
+    if application.has_started:
         messages.warning(request, "You have already attempted the application for this job. Please contact the admins if you need further assistance.")
         return redirect('job:report_test', job_id=job_id)
 
-    # Mark the session as accessed
-    request.session[f'has_accessed_{job_id}'] = True
+    # Mark the application as started
+    application.has_started = True
+    application.save()
 
     # Check if the quiz has already been completed
     if application.has_completed_quiz:
