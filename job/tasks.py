@@ -16,45 +16,49 @@ api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 logger = logging.getLogger(__name__)
 
-@shared_task
-def generate_questions_task(job_title, entry_level, skill_name, questions_per_skill):
-    questions = []
-    serialized_questions = []
+@shared_task  
+def generate_questions_task(job_title, entry_level, skill_name, questions_per_skill):  
+    questions = []  
+    serialized_questions = []  
     
-    try:
-        question_data_list = generate_mcqs_for_skill(skill_name, entry_level, job_title)
-        
-        if question_data_list and isinstance(question_data_list, list):
-            for question_data in question_data_list[:questions_per_skill]:
-                skill = Skill.objects.get(name=skill_name)
-                skill_question = SkillQuestion.objects.create(
-                    question=question_data['question'],
-                    option_a=question_data['options'].get('A', ''),
-                    option_b=question_data['options'].get('B', ''),
-                    option_c=question_data['options'].get('C', ''),
-                    option_d=question_data['options'].get('D', ''),
-                    correct_answer=question_data['correct_answer'],
-                    skill=skill,
-                    entry_level=entry_level,
-                    area=question_data['area']  # Save the area of expertise
-                )
-                questions.append(skill_question)
-                serialized_questions.append({
-                    'question': skill_question.question,
-                    'option_a': skill_question.option_a,
-                    'option_b': skill_question.option_b,
-                    'option_c': skill_question.option_c,
-                    'option_d': skill_question.option_d,
-                    'correct_answer': skill_question.correct_answer,
-                    'skill': skill_question.skill.name,
-                    'entry_level': skill_question.entry_level,
-                    'area': skill_question.area
-                })
-        else:
-            logger.error("Failed to generate question for skill: %s", skill_name)
+    try:  
+        question_data_list = generate_mcqs_for_skill(skill_name, entry_level, job_title)  
+
+        # Assuming you also have a Job object to retrieve. Make sure you have this instance:  
+        job_instance = Job.objects.get(title=job_title)  # Modify based on how you're identifying Jobs  
+
+        if question_data_list and isinstance(question_data_list, list):  
+            for question_data in question_data_list[:questions_per_skill]:  
+                skill = Skill.objects.get(name=skill_name)  
+                skill_question = SkillQuestion.objects.create(  
+                    question=question_data['question'],  
+                    option_a=question_data['options'].get('A', ''),  
+                    option_b=question_data['options'].get('B', ''),  
+                    option_c=question_data['options'].get('C', ''),  
+                    option_d=question_data['options'].get('D', ''),  
+                    correct_answer=question_data['correct_answer'],  
+                    skill=skill,  
+                    entry_level=entry_level,  
+                    job=job_instance,  # Assign the job instance here  
+                    area=question_data['area']  # Save the area of expertise  
+                )  
+                questions.append(skill_question)  
+                serialized_questions.append({  
+                    'question': skill_question.question,  
+                    'option_a': skill_question.option_a,  
+                    'option_b': skill_question.option_b,  
+                    'option_c': skill_question.option_c,  
+                    'option_d': skill_question.option_d,  
+                    'correct_answer': skill_question.correct_answer,  
+                    'skill': skill_question.skill.name,  
+                    'entry_level': skill_question.entry_level,  
+                    'area': skill_question.area  
+                })  
+        else:  
+            logger.error("Failed to generate questions for skill: %s", skill_name)  
     
-    except Exception as e:
-        logger.error(f"An error occurred while generating questions for skill {skill_name}: {e}")
+    except Exception as e:  
+        logger.error(f"An error occurred while generating questions for skill {skill_name}: {e}")  
     
     return serialized_questions
 
