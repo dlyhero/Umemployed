@@ -129,7 +129,7 @@ class MCQ(models.Model):
     option_c = models.CharField(max_length=100)
     option_d = models.CharField(max_length=100)
     correct_answer = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
-    job_title = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, related_name='mcq_questions')
+    job_title = models.ForeignKey(SkillCategory, on_delete=models.SET_NULL, related_name='mcq_questions', null=True)
 
     def __str__(self):
         return self.question
@@ -145,7 +145,7 @@ class SkillQuestion(models.Model):
     correct_answer = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
     entry_level = models.CharField(max_length=100, blank=True, null=True)  # Assuming entry level is a string field
-    job = models.ForeignKey(Job, on_delete=models.CASCADE,null=True, related_name='skill_questions')
+    job = models.ForeignKey(Job, on_delete=models.SET_NULL,null=True, related_name='skill_questions')
     area = models.CharField(max_length=255, blank=True, null=True)  # New field for area of expertise
 
     def __str__(self):
@@ -340,7 +340,7 @@ class Shortlist(models.Model):
     
 class RetakeRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True)
     reason = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
