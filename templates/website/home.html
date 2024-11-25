@@ -55,6 +55,38 @@
       transform: scale(1.5);
     }
   }
+  * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%; /* Full height for the page */
+        }
+  .main {
+            min-height: calc(100vh - 60px); /* Adjust height based on header */
+            overflow-y: auto; /* Scrollable if content exceeds the available space */
+            background-color: #f4f4f4;
+            padding: 10px; /* Optional padding for content */
+        }
+
+      @media (max-width: 600px) {
+            
+
+            .main {
+                min-height: calc(100vh - 50px); /* Adjust content height */
+            }
+        }
+
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+          
+
+            .main {
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+        }
 </style>
 
 {% endblock %} {% block content %}
