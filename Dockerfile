@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.10.12
 
 # Install dependencies
 RUN apt-get update && apt-get install -y libmagic1 dnsutils
@@ -16,5 +16,8 @@ COPY . /app/
 # Set environment variables
 ENV REDIS_SSL_CERT_REQS=none
 
+# Collect static files
+RUN python manage.py collectstatic --no-input
+
 # Run the application
-CMD ["python", "manage.py", "collectstatic", "--no-input"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
