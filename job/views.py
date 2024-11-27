@@ -432,8 +432,9 @@ def answer_job_questions(request, job_id):
     else:
         # Render the quiz form
         mcqs = SkillQuestion.objects.filter(
-                    Q(skill=current_skill) & Q(entry_level=job.level)
-                )
+            Q(skill=current_skill) & Q(entry_level=job.level) &
+            ~Q(option_a='') & ~Q(option_b='') & ~Q(option_c='') & ~Q(option_d='')
+        )[:5]
         logger.debug(f"Current skill questions: {mcqs}")
 
         # Check if there are questions to render
@@ -533,8 +534,11 @@ def get_questions_for_skill(request, skill_id):
     if completed_skills:
         return JsonResponse({'questions': [], 'message': 'You have already completed this skill for the current job.'})  # Return empty list if skill is already completed
 
-    # Fetch questions for the specified skill
-    questions = SkillQuestion.objects.filter(skill=skill)
+    # Fetch questions for the specified skill and entry level, excluding those with all options missing
+    questions = SkillQuestion.objects.filter(
+        Q(skill=skill) & Q(entry_level=job.level) &
+        ~Q(option_a='') & ~Q(option_b='') & ~Q(option_c='') & ~Q(option_d='')
+    )[:5]
 
     # Serialize questions data
     serialized_questions = [
