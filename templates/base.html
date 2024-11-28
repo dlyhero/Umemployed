@@ -5,10 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="hgoEDxU3UqU3tK5FENOid11dW2LbHup6eJPnP4-H1SE" />
-    {% block title %}
-
-
-    {% endblock title %}
+    {% block title %}{% endblock title %}
     <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
     <link rel="stylesheet" href="{% static 'new_design/styles/index.css' %}" />
     <link
@@ -22,12 +19,18 @@
       href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Nerko+One&family=Pirata+One&display=swap"
       rel="stylesheet"
     />
-
-   
-
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-    
+    body {
+        font-family: "Nunito", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: normal;
+        font-style: normal;
+      }
+      header {
+     
+        background-color: White;
+      }
       /* styles for messages*/
       @keyframes slideFadeIn {
     0% {
@@ -42,7 +45,13 @@
         opacity: 1;
     }
 }
-
+#mobileMenu{
+        background-color: white;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        z-index: 100;
+      }
 @keyframes slideFadeOut {
     0% {
         opacity: 1;
@@ -134,7 +143,7 @@ header {
     <!-- Add this CSS -->
   </head>
 
-  <body>
+  <body id="main-body">
     <header >
      <div id="sub-header" class="container  mx-auto px-2 py-4 bg-[#fff] lg:p-6 flex items-center justify-between">
       <div id="left-section" class="flex items-center">

@@ -22,7 +22,7 @@ const mobileMenuButton = document.getElementById("mobileMenuButton");
 const removeMobileMenu = document.getElementById("removeMobileMenu-btn");
 
 mobileMenuButton.addEventListener("click", () => {
-  console.log("hello")
+  console.log("hello this is a test to debug")
   mobileMenu.classList.add("show");
   document.documentElement.style.overflow = "hidden";// Prevent scrolling
 });
