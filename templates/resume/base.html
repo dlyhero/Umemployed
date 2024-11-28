@@ -711,36 +711,8 @@ viewBox="0 0 466 511.98">
     </div>
     {% endblock %}
 
-    <script>
-      let currentSlide = 0;
-      const slides = document.querySelectorAll("#carousel > div");
-      const dots = document.querySelectorAll(".dot");
+   
 
-      function setCurrentSlide(index) {
-        currentSlide = index;
-        updateCarousel();
-      }
-
-      function updateCarousel() {
-        const offset = -currentSlide * 100;
-        document.getElementById(
-          "carousel"
-        ).style.transform = `translateX(${offset}%)`;
-
-        dots.forEach((dot, index) => {
-          dot.classList.toggle("bg-gray-900", index === currentSlide);
-          dot.classList.toggle("bg-gray-300", index !== currentSlide);
-        });
-      }
-
-      // Auto-play carousel (optional)
-      setInterval(() => {
-        currentSlide = (currentSlide + 1) % slides.length;
-        updateCarousel();
-      }, 5000);
-
-      updateCarousel(); // Initialize carousel
-    </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const optionBtn = document.getElementById("option-btn");
@@ -758,7 +730,7 @@ viewBox="0 0 466 511.98">
         });
       });
 
-      document.querySelector(".year").textContent = new Date().getFullYear();
+    
       const optionBtn = document.getElementById("option-btn");
       const optionMenu = document.getElementById("option-menu");
       const backdropMenu = document.getElementById("backdrop-menu");
