@@ -22,11 +22,12 @@ const mobileMenuButton = document.getElementById("mobileMenuButton");
 const removeMobileMenu = document.getElementById("removeMobileMenu-btn");
 
 mobileMenuButton.addEventListener("click", () => {
+  console.log("hello")
   mobileMenu.classList.add("show");
-  document.body.classList.add("overflow-hidden"); // Prevent scrolling
+  document.documentElement.style.overflow = "hidden";// Prevent scrolling
 });
 
 removeMobileMenu.addEventListener("click", () => {
   mobileMenu.classList.remove("show");
-  document.body.classList.remove("overflow-hidden"); // Re-enable scrolling
+ document.documentElement.style.overflow = "auto"; // Re-enable scrolling
 });
