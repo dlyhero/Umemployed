@@ -15,11 +15,9 @@
     <link rel="icon" href="{% static 'build/logo/logo-color.png' %}" />
     <link rel="stylesheet" href="{% static 'new_design/styles/index.css' %}" />
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      integrity="sha384-whateverTheHashIs"
-      crossorigin="anonymous"
-    />
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
     <link
       rel="stylesheet"
       href="{% static 'new_design/styles/general.css' %}"
@@ -713,36 +711,8 @@ viewBox="0 0 466 511.98">
     </div>
     {% endblock %}
 
-    <script>
-      let currentSlide = 0;
-      const slides = document.querySelectorAll("#carousel > div");
-      const dots = document.querySelectorAll(".dot");
+   
 
-      function setCurrentSlide(index) {
-        currentSlide = index;
-        updateCarousel();
-      }
-
-      function updateCarousel() {
-        const offset = -currentSlide * 100;
-        document.getElementById(
-          "carousel"
-        ).style.transform = `translateX(${offset}%)`;
-
-        dots.forEach((dot, index) => {
-          dot.classList.toggle("bg-gray-900", index === currentSlide);
-          dot.classList.toggle("bg-gray-300", index !== currentSlide);
-        });
-      }
-
-      // Auto-play carousel (optional)
-      setInterval(() => {
-        currentSlide = (currentSlide + 1) % slides.length;
-        updateCarousel();
-      }, 5000);
-
-      updateCarousel(); // Initialize carousel
-    </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const optionBtn = document.getElementById("option-btn");
@@ -760,7 +730,7 @@ viewBox="0 0 466 511.98">
         });
       });
 
-      document.querySelector(".year").textContent = new Date().getFullYear();
+    
       const optionBtn = document.getElementById("option-btn");
       const optionMenu = document.getElementById("option-menu");
       const backdropMenu = document.getElementById("backdrop-menu");
