@@ -8,7 +8,7 @@ from company.models import Company
 from company.views import create_company
 from django.contrib.auth.decorators import login_required
 from job.models import Job,Application
-from .filters import OrderFilter
+from .filters import JobFilter
 from django.db.models import Q,Count
 from job.models import calculate_skill_match 
 from allauth.account.utils import send_email_confirmation
