@@ -21,7 +21,7 @@
         flex-direction: column;
         height: 100vh;
         justify-content: space-between;
-        overflow: hidden;
+        overflow: auto;
         background-color: white;
     }
     /* Main Container Styles */
@@ -138,7 +138,7 @@
 
 <body class="text-sm" data-job="{{ job.id }}" style>
     
-    <main class="flex flex-col p-6 bg-white sm:bg-transparent">
+    <main class="container mx-auto flex-col p-6 bg-white sm:bg-transparent">
         
     <div class="main-camera-container flex flex-col sm:flex-row justify-between items-start">
         <div class="main-container w-full max-w-7xl mr-0 mx-auto bg-white rounded-lg p-2 sm:p-8 sm:border border-gray-300 flex flex-col">
@@ -209,8 +209,8 @@
             </div>
         </div>
         <!-- Camera box beside the main-container -->
-        <div id="camera-box" class="w-32 h-24 border border-gray-300 rounded-lg ml-6 hidden">
-        <video id="camera-stream" autoplay></video>
+        <div id="camera-box" class=" mx-auto lg:w-32 l:h-24 border border-gray-300 rounded-lg ml-6 hidden lg:block">
+        <video id="camera-stream" autoplay class="hidden lg:block "></video>
         </div>
 
         <!-- Modal Structure -->
@@ -232,6 +232,44 @@
         </div>
     </div>
     </main>
+
+    {% block footer %}
+    
+    
+    {% endblock footer %}
+    <footer class="text-gray-800 text-center p-3 mt-[5%]">
+      <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
+        <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
+        <div class="flex space-x-4 items-center">
+          <a
+            href="{% url 'feature-not-implemented' %}"
+            class="text-white hover:text-gray-300"
+          >
+            <i class="fab fa-twitter text-black"></i>
+          </a>
+          <a
+            href="{% url 'feature-not-implemented' %}"
+            class="text-white hover:text-gray-300"
+          >
+            <i class="fab fa-linkedin text-black"></i>
+          </a>
+          <a
+            href="{% url 'feature-not-implemented' %}"
+            class="text-white hover:text-gray-300"
+          >
+            <i class="fab fa-facebook text-black"></i>
+          </a>
+         <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
+        </div>
+        <div class="text-sm">
+          <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300"
+            >Privacy Policy</a
+          >
+          |
+          <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
+        </div>
+      </div>
+    </footer>
     
 
    <script>
