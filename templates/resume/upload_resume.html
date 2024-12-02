@@ -89,8 +89,7 @@
 
     /* Progress bar styles */
     .progress-container {
-        display: flex;
-        justify-content: center;
+        
         margin-top: 20px;
     }
 
@@ -99,7 +98,6 @@
         text-align: center;
         padding: 10px;
         margin: 0 5px;
-        background-color: #f0f8ff;
     }
 
     .progress-bar {
@@ -124,7 +122,7 @@
     </div>
   </section>
   <section class="h-fit drop-section gap-x-20 gap-y-5 mb-10">
-    <div class="md:border-2 md:shadow-xl md:bg-slate-50 border-[#1e90ff] rounded-xl h-fit md:h-[300px] flex flex-col items-center justify-center">
+    <div class="md:border-2 border-[#1e80ff] mb-4 rounded-xl h-fit md:h-[300px] flex flex-col items-center justify-center">
       <div class="text-center md:p-[30px]">
         <p class="mb-6 md:mb-4">
            <span id="user-name" class="font-bold"> {{user.first_name}}!!</span>, Please finish sign-up process
@@ -169,17 +167,17 @@
   </section>
   <br><br>
  <!-- Progress Bar Section -->
-        <div class="progress-container mx-auto mt-10">
+        <div class="progress-container flex flex-col sm:flex-row justify-center mx-auto mt-10">
             <div class="progress-tab">
-                <div class="progress-bar" style="background-color: #4CAF50; height: 20px;"></div>
+                <div class="progress-bar h-[20px] bg-blue-300" ></div>
                 <p>Upload will take about 1 minute</p>
             </div>
             <div class="progress-tab">
-                <div class="progress-bar" style="background-color: #4CAF50; height: 20px;"></div>
+                <div class="progress-bar h-[20px] bg-blue-400"></div>
                 <p>Please wait while we process your resume</p>
             </div>
             <div class="progress-tab">
-                <div class="progress-bar" style="background-color: #4CAF50; height: 20px;"></div>
+                <div class="progress-bar h-[20px] bg-[#1e80fa]"></div>
                 <p>Thank you for your patience</p>
             </div>
         </div>
