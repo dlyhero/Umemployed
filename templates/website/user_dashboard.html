@@ -27,241 +27,155 @@
 
 
 
-    <!-- Main Content -->
-    <div
-      class="flex flex-col lg:flex-row container mx-auto py-6 space-y-6 lg:space-y-0 lg:space-x-4"
-    >
-      <!-- Left Sidebar -->
-      <aside class="bg-white w-full lg:w-[30%] h-fit order-2 lg:order-1">
-        <div class="p-4">
-          <div
-            class="search-wrapper max-w-xl hidden lg:flex flex-1 max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-lg shadow sm:shadow-none"
-          >
-            <input
-              class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
-              type="text"
-              name="search"
-              id="search"
-              placeholder="Search jobs, companies, or keywords"
-            />
-            <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
-            <div class="button-wrap">
-              <button
-                class="text-white bg-[#1e90ff] font-semibold rounded-lg py-2 px-4"
-              >
-                Search
-              </button>
-            </div>
-          </div>
+   <!-- Main Content -->
+<div class="flex flex-col lg:flex-row container mx-auto py-6 space-y-6 lg:space-y-0 lg:space-x-4">
+  <!-- Left Sidebar -->
+  <aside class="bg-white w-full lg:w-[30%] h-fit order-2 lg:order-1">
+    <div class="p-4">
+      <div class="search-wrapper max-w-xl hidden lg:flex flex-1 max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-lg shadow sm:shadow-none">
+        <input
+          class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
+          type="text"
+          name="search"
+          id="search"
+          placeholder="Search jobs, companies, or keywords"
+        />
+        <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
+        <div class="button-wrap">
+          <button class="text-white bg-[#1e90ff] font-semibold rounded-lg py-2 px-4">Search</button>
         </div>
-        <nav class="grid grid-cols-2 md:grid-cols-1 gap-4 p-4">
-          {% if user.has_resume %}
-          <a
-            href="{% url 'user_dashboard' %}"
-            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
-          >
-            <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
-            <span class="text-gray-700 font-semibold">Dashboard Overview</span>
-          </a>
-          {% else %}
-          <a
-            href="{% url 'upload' %}"
-            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
-          >
-            <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
-            <span class="text-gray-700 font-semibold">Upload your resume to get a higher chance</span>
-          </a>
-
-          {% endif %}
-          <a
-            href="{% url 'job:saved_jobs' %}"
-            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
-          >
-            <i class="fas fa-bookmark text-[#1e90ff] text-2xl mr-3"></i>
-            <span class="text-gray-700 font-semibold">Saved Jobs</span>
-          </a>
-          <a
-            href="{% url 'job:applied_jobs' %}"
-            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
-          >
-            <i class="fas fa-file-alt text-[#1e90ff] text-2xl mr-3"></i>
-            <span class="text-gray-700 font-semibold">Applications</span>
-          </a>
-          <a
-            href="{% url 'career_resources' %}"
-            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
-          >
-            <i class="fas fa-briefcase text-[#1e90ff] text-2xl mr-3"></i>
-            <span class="text-gray-700 font-semibold">Career Resources</span>
-          </a>
-          <a
-            href="{% url 'feature-not-implemented' %}"
-            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
-          >
-            <i class="fas fa-graduation-cap text-[#1e90ff] text-2xl mr-3"></i>
-            <span class="text-gray-700 font-semibold">Skill Development</span>
-          </a>
-          <a
-            href="{% url 'update-resume' %}"
-            class="flex sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition"
-          >
-            <i class="fas fa-cog text-[#1e90ff] text-2xl mr-3"></i>
-            <span class="text-gray-700 font-semibold">Settings</span>
-          </a>
-        </nav>
-      </aside>
-
-      <!-- Main Dashboard Area -->
-      <main class="flex-1 space-y-6 lg:space-y-0 order-1 lg:order-2 rounded-lg">
-        <!-- Search Bar for Mobile -->
-        <section id="search-ctn-mobile" class="mb-5 lg:hidden">
-          <div
-            class="search-wrapper flex max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none"
-          >
-            <input
-              class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
-              type="text"
-              name="search"
-              id="search"
-              placeholder="Search jobs, companies, or keywords"
-            />
-            <div class="border-l border-gray-300 mx-2 hidden sm:block"></div>
-            <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
-            <div class="button-wrap">
-              <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4">
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Welcome Banner -->
-        <section class="px-6 pb-6">
-          <div>
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold">
-              Welcome, {{user.first_name}}!
-            </h2>
-            <p class="mt-2">
-              Here's your personalized dashboard to help you land your dream
-              job.
-            </p>
-          </div>
-        </section>
-
-        <hr />
-
-          <!-- Profile Completion Bar -->
-        <section class="bg-white p-6">
-          <h2 class="font-semibold mb-4 text-xl md:text-2xl">
-            Complete Your Profile
-          </h2>
-          <div class="w-full bg-gray-200 rounded-full h-4">
-            <div class="bg-[#1e9] h-4 rounded-full" style="width: {{ completion_percentage }}%"></div>
-          </div>
-          <p class="mt-2 text-gray-600">
-            {% if completion_percentage == 100 %}
-              Congratulations! Your profile is fully complete.
-            {% else %}
-              {{ completion_percentage }}% Complete - Add your skills and work experience to improve your chances.
-            {% endif %}
-          </p>
-        </section>
-
-        <hr />
-
-        <!-- Recommended Jobs Section -->
-        <section class="container px-4 mx-auto py-12">
-          <!-- Section Header -->
-          <div class="mb-8">
-            <h2 class="text-xl md:text-2xl font-bold text-gray-900">
-              Recommended Jobs
-            </h2>
-            <p class="text-gray-600 text-xl">
-              Find the best jobs tailored to your skills and preferences.
-            </p>
-          </div>
-
-          <!-- Navigation Buttons -->
-          <div
-            class="hidden lg:flex justify-end gap-4 lg:mr-10 items-center mb-4"
-          >
-            <button
-              class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300"
-              id="scrollLeft"
-            >
-              <i class="fas fa-chevron-left text-gray-600"></i>
-            </button>
-            <button
-              class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300"
-              id="scrollRight"
-            >
-              <i class="fas fa-chevron-right text-gray-600"></i>
-            </button>
-          </div>
-
-          <!-- Job Cards Scrollable Container -->
-          <div
-            class="flex gap-6 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory"
-            id="jobCardsContainer"
-          >
-          {% if recommended_jobs %}
-          {% for job in recommended_jobs %}
-            <!-- Job Card 1 -->
-          <a href="{% url 'job:job_details' job.id %}">
-
-            <div
-              class="min-w-[100%] sm:min-w-[50%] lg:min-w-[32%] bg-white border rounded-lg p-6 snap-start"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <img
-                  class="w-12 h-12 rounded-full mr-4"
-                  src="{% static 'new_design/icons/294675_google_icon.svg' %}"
-                  alt="Company Logo"
-                />
-                <div>
-                  <span class="text-sm text-gray-500">{{job.job_type}}</span>
-                </div>
-              </div>
-              <div class="mb-4">
-                <h3 class="text-xl font-semibold text-gray-800">
-                  {{job.title}}
-                </h3>
-                <div class="flex items-center gap-2">
-                  <span class="text-gray-600">{{job.company.name}}</span>
-                  <span class="text-sm text-gray-500">{{job.created_at}}</span>
-                </div>
-              </div>
-              <p
-                class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
-              >
-                <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
-              </p>
-              <p class="text-gray-800 mb-4 flex items-center">
-                ${{job.salary}} / year
-              </p>
-              {% if job.id in applied_job_ids %}
-                <span style="color: green;">(Already Applied)</span>
-                {% else %}
-              <div class="mt-4">
-                <a href="{% url 'job:job_details' job.id %}">
-                <button
-                  class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full"
-                >
-                  Apply Now
-                </button>
-            </a>
-              </div>
-              {% endif %}
-            </a>
-            </div>
-            
-            {% endfor %}
-            {% endif %}
-
-           </div>
-        </section>
-      </main>
+      </div>
     </div>
+    <nav class="grid grid-cols-2 md:grid-cols-1 gap-4 p-4">
+      {% if user.has_resume %}
+        <a href="{% url 'user_dashboard' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+          <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
+          <span class="text-gray-700 font-semibold">Dashboard Overview</span>
+        </a>
+      {% else %}
+        <a href="{% url 'upload' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+          <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
+          <span class="text-gray-700 font-semibold text-center">Upload resume</span>
+        </a>
+      {% endif %}
+      <a href="{% url 'job:saved_jobs' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-bookmark text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Saved Jobs</span>
+      </a>
+      <a href="{% url 'job:applied_jobs' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-file-alt text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Applications</span>
+      </a>
+      <a href="{% url 'career_resources' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-briefcase text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Career Resources</span>
+      </a>
+      <a href="{% url 'feature-not-implemented' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-graduation-cap text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Skill Development</span>
+      </a>
+      <a href="{% url 'update-resume' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-cog text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Dashboard Area -->
+  <main class="flex-1 space-y-6 lg:w-[70%]  lg:space-y-0 order-1 lg:order-2 rounded-lg">
+    <!-- Search Bar for Mobile -->
+    <section id="search-ctn-mobile" class="mb-5 lg:hidden">
+      <div class="search-wrapper flex max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none">
+        <input
+          class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
+          type="text"
+          name="search"
+          id="search"
+          placeholder="Search jobs, companies, or keywords"
+        />
+        <div class="button-wrap">
+          <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Welcome Banner -->
+    <section class="px-6 pb-6">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Welcome, {{ user.first_name }}!</h2>
+      <p class="mt-2">Here's your personalized dashboard to help you land your dream job.</p>
+    </section>
+
+    <hr />
+
+    <!-- Profile Completion Bar -->
+    <section class="container mx-auto  bg-white p-6">
+      <h2 class="font-semibold mb-4 text-xl md:text-2xl">Complete Your Profile</h2>
+      <div class="w-full bg-gray-200 rounded-full h-4">
+        <div class="bg-[#1e9] h-4 rounded-full " style="width: {{ completion_percentage }}%"></div>
+      </div>
+      <p class="mt-2 text-gray-600">
+        {% if completion_percentage == 100 %}
+          Congratulations! Your profile is fully complete.
+        {% else %}
+          {{ completion_percentage }}% Complete - Add your skills and work experience to improve your chances.
+        {% endif %}
+      </p>
+    </section>
+
+    <hr />
+
+    <!-- Recommended Jobs Section -->
+    <section class="container px-4 mx-auto py-12">
+      <div class="mb-8">
+        <h2 class="text-xl md:text-2xl font-bold text-gray-900">Recommended Jobs</h2>
+        <p class="text-gray-600 text-xl">Find the best jobs tailored to your skills and preferences.</p>
+      </div>
+      <div class="hidden lg:flex justify-end gap-4 lg:mr-10 items-center mb-4">
+        <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300" id="scrollLeft">
+          <i class="fas fa-chevron-left text-gray-600"></i>
+        </button>
+        <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300" id="scrollRight">
+          <i class="fas fa-chevron-right text-gray-600"></i>
+        </button>
+      </div>
+      <div class="flex gap-6 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory" id="jobCardsContainer">
+        {% if recommended_jobs %}
+          {% for job in recommended_jobs %}
+            <a href="{% url 'job:job_details' job.id %}">
+              <div class="min-w-[100%] sm:min-w-[50%] lg:min-w-[32%] bg-white border rounded-lg p-6 snap-start">
+                <div class="flex items-center justify-between mb-4">
+                  <img class="w-12 h-12 rounded-full mr-4" src="{% static 'new_design/icons/294675_google_icon.svg' %}" alt="Company Logo" />
+                  <div><span class="text-sm text-gray-500">{{ job.job_type }}</span></div>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800">{{ job.title }}</h3>
+                <div class="flex items-center gap-2">
+                  <span class="text-gray-600">{{ job.company.name }}</span>
+                  <span class="text-sm text-gray-500">{{ job.created_at }}</span>
+                </div>
+                <p class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center">
+                  <i class="fas fa-map-marker-alt mr-2"></i> {{ job.location.name }}
+                </p>
+                <p class="text-gray-800 mb-4 flex items-center">${{ job.salary }} / year</p>
+                {% if job.id in applied_job_ids %}
+                  <span style="color: green;">(Already Applied)</span>
+                {% else %}
+                  <div class="mt-4">
+                    <a href="{% url 'job:job_details' job.id %}">
+                      <button class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full">Apply Now</button>
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+            </a>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </section>
+  </main>
+</div>
+
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
