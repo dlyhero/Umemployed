@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -88,58 +88,34 @@ import os
 import ssl
 
 
-import os  
-import time  
-import redis  
+# Load environment variables
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 
-# Function to get Redis URL with retry logic  
-def get_redis_url(retries=10, delay=5):  
-    for attempt in range(retries):  
-        try:  
-            redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')  
-            # Attempt to connect to Redis to validate the URL  
-            r = redis.from_url(redis_url)  
-            r.ping()  # This will raise an error if the connection fails  
-            print("Connected to Redis!")  
-            return redis_url  
-        except redis.ConnectionError as e:  
-            print(f"Connection failed: {e}. Retrying in {delay} seconds...")  
-            time.sleep(delay)  
-    print("Max retries reached. Unable to connect to Redis.")  
-    return None  # Return None if connection fails  
+# Channels configuration
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [REDIS_URL],
+        },
+    },
+}
 
-# Load environment variables with retry logic  
-REDIS_URL = get_redis_url()  
-
-# Ensure that Redis connection was successful  
-if REDIS_URL is None:  
-    raise Exception("Failed to connect to Redis. Please check your configuration.")  
-
-# Channels configuration  
-CHANNEL_LAYERS = {  
-    'default': {  
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',  
-        'CONFIG': {  
-            "hosts": [REDIS_URL],  
-        },  
-    },  
-}  
-
-# Caching setup using Redis  
-CACHES = {  
-    'default': {  
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',  
-        'LOCATION': REDIS_URL,  
-        'OPTIONS': {  
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',  
-            'SOCKET_CONNECT_TIMEOUT': 10,  # in seconds  
-            'SOCKET_TIMEOUT': 10,  
-            'CONNECTION_POOL_CLASS_KWARGS': {  
-                'ssl': False,  # Disable SSL  
-            },  
-        },  
-    }  
-}  
+# Caching setup using Redis
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'SOCKET_CONNECT_TIMEOUT': 10,  # in seconds
+            'SOCKET_TIMEOUT': 10,
+            'CONNECTION_POOL_CLASS_KWARGS': {
+                'ssl': False,  # Disable SSL
+            },
+        },
+    }
+}
 
 # Celery configuration
 CELERY_BROKER_URL = REDIS_URL
@@ -283,10 +259,10 @@ ACCOUNT_LOGOUT_REDIRECT_URL='/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
 EMAIL_HOST = 'smtp.gmail.com' #new
 EMAIL_PORT = 587 #new
-EMAIL_HOST_USER = 'amandeepjaswal@umemployed.com'  #new
-EMAIL_HOST_PASSWORD = "efyr xswi tguz cevf" #new
+EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
+EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
 EMAIL_USE_TLS = True #new
-DEFAULT_FROM_EMAIL = 'amandeepjaswal@umemployed.com'
+DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
 # EMAIL_HOST = 'mail.umemployed.com' #new
