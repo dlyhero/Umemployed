@@ -506,52 +506,62 @@ def save_video(request):
     return JsonResponse({'success': False, 'error': 'Invalid request'})
 
 
-@login_required(login_url='/login')
-def get_questions_for_skill(request, skill_id):
-    user = request.user  # Assuming user is authenticated
+@login_required(login_url='/login')  
+def get_questions_for_skill(request, skill_id):  
+    user = request.user  # Assuming user is authenticated  
 
-    # Fetch skill based on skill_id
-    skill = get_object_or_404(Skill, id=skill_id)
+    # Fetch skill based on skill_id  
+    skill = get_object_or_404(Skill, id=skill_id)  
+    print(f"Skill fetched: {skill.name}")  # Print the name of the fetched skill  
 
-    # Fetch job_id from query parameters
-    job_id = request.GET.get('job_id')
-    if not job_id:
-        return JsonResponse({'error': 'job_id parameter is missing'}, status=400)
+    # Fetch job_id from query parameters  
+    job_id = request.GET.get('job_id')  
+    if not job_id:  
+        return JsonResponse({'error': 'job_id parameter is missing'}, status=400)  
 
-    # Fetch job based on job_id
-    job = get_object_or_404(Job, id=job_id)
+    # Fetch job based on job_id  
+    job = get_object_or_404(Job, id=job_id)  
+    print(f"Job fetched: {job.title}")  # Print the title of the fetched job  
 
-    # Check if there's an application for the specified job and user
-    try:
-        current_application = Application.objects.get(user=user, job=job, has_completed_quiz=False)
-    except Application.DoesNotExist:
-        return JsonResponse({'error': 'No active job application found for this job'}, status=400)
+    # Check if there's an application for the specified job and user  
+    try:  
+        current_application = Application.objects.get(user=user, job=job, has_completed_quiz=False)  
+        print(f"Current application found for job: {job.title}")  # Log successful application retrieval  
+    except Application.DoesNotExist:  
+        return JsonResponse({'error': 'No active job application found for this job'}, status=400)  
 
-    # Check if the user has completed this skill for the current job
-    completed_skills = CompletedSkills.objects.filter(user=user, job=job, skill=skill).exists()
+    # Check if the user has completed this skill for the current job  
+    completed_skills = CompletedSkills.objects.filter(user=user, job=job, skill=skill).exists()  
 
-    # If the skill is already completed for this job, return empty questions list
-    if completed_skills:
-        return JsonResponse({'questions': [], 'message': 'You have already completed this skill for the current job.'})  # Return empty list if skill is already completed
+    # If the skill is already completed for this job, return empty questions list  
+    if completed_skills:  
+        print(f"User has already completed skill: {skill.name} for job: {job.title}")  # Log completion  
+        return JsonResponse({'questions': [], 'message': 'You have already completed this skill for the current job.'})  
 
-    # Fetch questions for the specified skill and entry level, excluding those with any empty options
-    questions = SkillQuestion.objects.filter(
-        Q(skill=skill) & Q(entry_level=job.level) &
-        ~Q(option_a='') & ~Q(option_b='') & ~Q(option_c='') & ~Q(option_d='')
-    ).order_by('?')[:5] # Randomize and limit to 5 questions
+    # Fetch questions for the specified skill and entry level, excluding those with any empty options  
+    questions = SkillQuestion.objects.filter(  
+        Q(skill=skill) & Q(entry_level=job.level) &  
+        ~Q(option_a='') & ~Q(option_b='') & ~Q(option_c='') & ~Q(option_d='')  
+    ).order_by('?')[:5]  # Randomize and limit to 5 questions  
 
-    # Serialize questions data
-    serialized_questions = [
-        {
-            'id': q.id,
-            'question': q.question,
-            'options': [q.option_a, q.option_b, q.option_c, q.option_d]
-        }
-        for q in questions
-    ]
+    # Log the number of questions fetched  
+    print(f"Number of questions fetched for skill {skill.name}: {questions.count()}")  
 
-    return JsonResponse({'questions': serialized_questions})
+    # Serialize questions data  
+    serialized_questions = [  
+        {  
+            'id': q.id,  
+            'question': q.question,  
+            'options': [q.option_a, q.option_b, q.option_c, q.option_d]  
+        }  
+        for q in questions  
+    ]  
 
+    # Log the serialized questions  
+    for question in serialized_questions:  
+        print(f"Question ID: {question['id']}, Question: {question['question']}, Options: {question['options']}")  
+
+    return JsonResponse({'questions': serialized_questions})  
 
 
 @login_required(login_url='/login')

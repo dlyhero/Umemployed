@@ -164,11 +164,12 @@
     </div>
 
     <!-- Job Cards Scrollable Container 
-     -->
+    -->
     <div
-      class="flex gap-2 sm:gap-4 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory"
-      id="jobCardsContainer"
+    class="flex gap-2 sm:gap-4 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory"
+    id="jobCardsContainer"
     >
+    {% if user.is_authenticated and not user.is_recruiter %}
       {% if recent_jobs %} {% for job in recent_jobs %}
       <!-- Repeat the Job Cards multiple times as needed -->
       <a href="{% url 'job:job_details' job.id %}">
@@ -245,6 +246,84 @@
         </div>
       </a>
       {% endfor %} {% endif %}
+      {% elif not user.is_authenticated %}
+      {% if recent_jobs %} {% for job in recent_jobs %}
+      <!-- Repeat the Job Cards multiple times as needed -->
+      <a href="{% url 'job:job_details' job.id %}">
+        <div
+          class="min-w-[100%] sm:min-w-[50%] lg:min-w-[22.99%] bg-white border rounded-lg p-6 snap-start"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <img
+              class="w-12 h-12 rounded-full mr-4"
+              src="{{job.company.logo.url}}"
+              alt="Company Logo"
+            />
+            <div>
+              <span class="text-md text-gray-500">{{job.job_type}}</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h3 class="text-xl font-semibold text-gray-800 truncate">
+              {{ job.title }}
+            </h3>
+            <div class="flex items-center gap-2 truncate">
+              <span class="text-gray-600">{{job.company.name}}</span>
+              <span class="text-gray-500" style="font-size: 16px"
+                >{{ job.created_at|timesince }} ago</span
+              >
+            </div>
+          </div>
+
+          <p
+            class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center"
+          >
+            <i class="fas fa-map-marker-alt mr-2"></i> {{job.location.name}}
+          </p>
+
+          <p class="text-gray-800 mb-4 flex items-center">
+            ${{job.salary_range}} / year
+          </p>
+
+          <!-- Bookmark Icon -->
+          <div class="flex items-center justify-between">
+            {% if job.id in saved_jobs %}
+            <!-- Show filled bookmark if the job is saved -->
+            <a class="bookmark-job flex-1" data-job-id="{{ job.id }}">
+              <i
+                class="fas fa-bookmark text-[#1e90ff] text-xl order-start"
+              ></i>
+              <!-- Filled Bookmark Icon -->
+            </a>
+            {% else %}
+            <a class="bookmark-job flex-1" data-job-id="{{ job.id }}">
+              <i
+                class="far fa-bookmark text-gray-500 text-xl hover:text-[#1e90ff]"
+              ></i>
+              <!-- Empty Bookmark Icon -->
+            </a>
+            {% endif %}
+
+            <!-- Apply Now Button or Already Applied -->
+            {% if job.id in applied_job_ids %}
+            <span style="color: green">(Already Applied)</span>
+            {% else %}
+            <div class="w-[70%]">
+              <a href="{% url 'job:job_details' job.id %}">
+                <button
+                  class="bg-[#1e90ff] text-white font-bold py-2 px-2 rounded-full hover:bg-blue-400 w-full"
+                >
+                  Apply Now
+                </button>
+              </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %} {% endif %}
+      {% endif %}
     </div>
   </section>
 
