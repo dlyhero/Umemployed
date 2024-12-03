@@ -100,10 +100,10 @@ def home(request):
     # Get filtering parameters from the GET request
     salary_range = request.GET.get('salary_range')
     job_type = request.GET.getlist('job_type')
-    experience_levels = request.GET.getlist('experience_levels')
+    level = request.GET.getlist('level')
     location_query = request.GET.get('location_query')
     search_query = request.GET.get('search_query')
-    remote = request.GET.get('remote')
+    job_location_type = request.GET.get('job_location_type')
     applicants = request.GET.get('applicants')
 
     # Initialize an empty Q object for OR conditions
@@ -111,17 +111,13 @@ def home(request):
 
     # Apply OR filters based on user input
     if salary_range:
-        try:
-            min_salary, max_salary = map(int, salary_range.split('-'))
-            query |= Q(salary__gte=min_salary) & Q(salary__lte=max_salary)
-        except ValueError:
-            pass  # Invalid salary range provided, skip this filter
+        query |= Q(salary_range=salary_range)
 
     if job_type:
         query |= Q(job_type__in=job_type)
 
-    if experience_levels:
-        query |= Q(experience_levels__in=experience_levels)
+    if level:
+        query |= Q(level__in=level)
 
     if search_query:
         query |= Q(
@@ -133,8 +129,8 @@ def home(request):
     if location_query:
         query |= Q(location__icontains=location_query)
 
-    if remote == 'on':
-        query |= Q(job_location_type__icontains='remote')
+    if job_location_type:
+        query |= Q(job_location_type=job_location_type)
 
     if applicants:
         all_jobs = all_jobs.annotate(applicant_count=Count('application'))
@@ -203,8 +199,8 @@ def home(request):
         'location_query': location_query,
         'job_type': job_type if job_type else None,
         'salary_range': salary_range,
-        'experience_levels': experience_levels if experience_levels else None,
-        'remote': remote,
+        'level': level if level else None,
+        'job_location_type': job_location_type,
         'applicants': applicants,
     }
 
@@ -222,8 +218,6 @@ def home(request):
         'saved_jobs': saved_job_ids,
     }
     return render(request, 'website/home.html', context)
-
-
 
 
 def login_user(request):
