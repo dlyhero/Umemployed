@@ -5,7 +5,8 @@ from django.contrib.auth import get_user_model
 from django_countries.fields import CountryField
 from ckeditor.fields import RichTextField
 from django.conf import settings
-
+import random
+import string
 
 User = get_user_model()
 
@@ -75,3 +76,28 @@ class Company(models.Model):
         return self.name if self.name else "Unnamed Company"
 
 
+
+
+import pytz
+
+class Interview(models.Model):
+    candidate = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField()
+    time = models.TimeField()
+    timezone = models.CharField(max_length=50, default='UTC')
+    meeting_link = models.URLField()
+    room_id = models.CharField(max_length=8, unique=True, editable=False)
+    note = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.room_id:
+            self.room_id = self.generate_room_id()
+        super().save(*args, **kwargs)
+
+    def generate_room_id(self):
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+    def __str__(self):
+        return f"Interview with {self.candidate.username} on {self.date} at {self.time} ({self.timezone})"
