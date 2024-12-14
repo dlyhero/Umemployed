@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     
     'ckeditor',
     'ckeditor_uploader',
+    'videochat',
 ]
 
 ASGI_APPLICATION = 'umemployed.asgi.application'

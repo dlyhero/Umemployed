@@ -17,6 +17,7 @@ urlpatterns = [
     path('info/<int:pk>/', views.company_detail_view, name='company-detail'),
     path('<int:company_id>/jobs/', views.company_jobs_list_view, name='company-jobs-list'),
     path('companies/', views.company_list_view, name='company-list'),
+    path('create_interview/', views.create_interview, name='create_interview'),  
 
 
 

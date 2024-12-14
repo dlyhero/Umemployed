@@ -11,15 +11,29 @@
     />
         <script src="https://cdn.tailwindcss.com"></script> 
         
+<style>
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
 
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
 
 {% endblock %}
 {% block content %}
 
   
-   <main class="container  mx-auto p-2 md:p-4 rounded-lg flex flex-col items-center ">
+<main class="container mx-auto p-2 md:p-4 rounded-lg flex flex-col items-center ">
 
-    <section class="w-full container  p-2">
+    <section class="w-full container p-2">
       <!-- Professional Tab List -->
       <ul class="flex flex-wrap justify-start space-x-2 bg-white rounded-lg border-b p-[4.5px] border-gray-200">
         <li>
@@ -38,8 +52,8 @@
       </ul>
     </section>
 
-    <section class=" w-full container  mt-7">
-      <div class="mb-4 ">
+    <section class="w-full container mt-7">
+      <div class="mb-4">
         <div class="flex items-center gap-1 bg-white w-full">
           <form name="titleFilterForm" class="w-[70%] md:w-[55%]">
             <div class="relative">
@@ -56,7 +70,7 @@
             </div>
           </form>
           <button id="desktop-filter-btn" type="button"
-            class="flex items-center  text-[#1e90ff] gap-2 px-4 py-2 rounded-lg " onclick="toggleFilterSection()">
+            class="flex items-center text-[#1e90ff] gap-2 px-4 py-2 rounded-lg" onclick="toggleFilterSection()">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6">
               <path vector-effect="non-scaling-stroke" stroke="currentColor" stroke-linecap="round"
                 stroke-linejoin="round" stroke-width="1.5"
@@ -69,109 +83,153 @@
       </div>
     </section>
 
-    <section class="cards rounded-lg text-sm  border container">
-      <div class="candidates-wrap  flex flex-col">
-         {% if shortlisted_applications %}
+    <section class="cards rounded-lg text-sm border container">
+    <div class="candidates-wrap flex flex-col">
+        {% if shortlisted_applications %}
         <h2 class="text-xl font-semibold mb-4 mt-4 ml-4 border-b-4 border-green-400 w-fit">Shortlisted Candidates:</h2>
         {% for application in shortlisted_applications %}
         <div id="card" data-application-id="{{ application.id }}" class="hover:bg-gray-100 px-3 py-4 overflow-x-auto Whitespace-nowrap border-b">
-          <div class="md:flex Whitespace-nowrap container ">
-            <div class="flex md:flex-col mr-5 md:w-[50%] lg:w-[28%]">
-              <div>
-                <div class="flex gap-x-4 flex-noshrink">
-                  <div class="relative mr-2">
-                    <img
-                        src="{% if application.user.resume.profile_image %}{{ application.user.resume.profile_image.url }}{% else %}{% static 'new_design/icons/default.jpg' %}{% endif %}"
-                        alt="{{ application.user.first_name }}" class="w-16 h-16 rounded-full" />
-                    <span
-                        class="absolute bottom-[2px] right-0 bg-green-400 rounded-full w-4 h-4 border-2 border-white"></span>
+            <div class="md:flex Whitespace-nowrap container">
+                <div class="flex md:flex-col mr-5 md:w-[50%] lg:w-[28%]">
+                    <div>
+                        <div class="flex gap-x-4 flex-noshrink">
+                            <div class="relative mr-2">
+                                <img src="{% if application.user.resume.profile_image %}{{ application.user.resume.profile_image.url }}{% else %}{% static 'new_design/icons/default.jpg' %}{% endif %}" alt="{{ application.user.first_name }}" class="w-16 h-16 rounded-full" />
+                                <span class="absolute bottom-[2px] right-0 bg-green-400 rounded-full w-4 h-4 border-2 border-white"></span>
+                            </div>
+                            <div class="flex-1 flex flex-col gap-1">
+                                <span class="text-lg font-semibold">{{application.user.first_name}} {{ application.user.last_name}}</span>
+                                <div class="text-gray-500">{{ application.user.location }}</div>
+                                <div class="text-gray-600 line-clamp-2 text-wrap">{{application.user.resume.job_title}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex p-2 w-fit items-start space-x-2 md:mt-4">
+                        <button class="bg-gray-300 text-gray-700 rounded-full p-2" onclick="declineCandidate({{ application.job.id }}, {{ application.user.id }})">
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M5 15h3v2.5c0 1.17.64 2.2 1.62 2.73A4.992 4.992 0 0012 21v-3.5l2.905-3.08A3 3 0 0016 12V4a1 1 0 00-.999-1H6.265a.997.997 0 00-.998.75l-2.206 8.76a2.003 2.003 0 001.08 2.298c.277.131.58.197.886.193z" />
+                            </svg>
+                        </button>
+                        <a href="{% url 'job:shortlist_candidate' application.job.id application.user.id %}">
+                            <button class="bg-gray-300 text-gray-700 rounded-full p-2">
+                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M19 9h-3.23V6.54A3.88 3.88 0 0012 3v3.61L9.09 9.69A3 3 0 008 12v8a1 1 0 001 1h8.76a1 1 0 001-.75l2.21-8.76A1.999 1.999 0 0019 9z" />
+                                </svg>
+                            </button>
+                        </a>
+                        <a href="{% url 'messaging:start_chat' application.user.id %}">
+                            <button class="hidden md:block border border-[#1e90ff] font-semibold text-[#1e90ff] rounded-full px-4 py-2">Message</button>
+                        </a>
+                        <button class="hidden md:block bg-[#1e90ff] font-semibold text-white rounded-full px-4 py-2 text-nowrap" onclick="viewDetails()">View Details</button>
+                        <button class="hidden md:block bg-green-500 font-semibold text-white rounded-full px-4 py-2 text-nowrap" onclick="openScheduleModal({{ application.user.id }}, '{{ application.job.title }}')">Schedule Interview</button>
+                    </div>
                 </div>
-                  <div class="flex-1 flex flex-col gap-1">
-                    <span class="text-lg font-semibold">{{application.user.first_name}} {{ application.user.last_name}}</span>
-                    <div class="text-gray-500">{{ application.user.location }}</div>
-                    <div class="text-gray-600  line-clamp-2 text-wrap">{{application.user.resume.job_title}}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex p-2 w-fit items-start space-x-2 md:mt-4">
-                <button class="bg-gray-300 text-gray-700 rounded-full p-2" onclick="declineCandidate({{ application.job.id }}, {{ application.user.id }})">
-                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2}
-                      d="M5 15h3v2.5c0 1.17.64 2.2 1.62 2.73A4.992 4.992 0 0012 21v-3.5l2.905-3.08A3 3 0 0016 12V4a1 1 0 00-.999-1H6.265a.997.997 0 00-.998.75l-2.206 8.76a2.003 2.003 0 001.08 2.298c.277.131.58.197.886.193z" />
-                  </svg>
-                </button>
-                <a href="{% url 'job:shortlist_candidate' application.job.id application.user.id %}">
-                <button class="bg-gray-300 text-gray-700 rounded-full p-2">
-                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2}
-                      d="M19 9h-3.23V6.54A3.88 3.88 0 0012 3v3.61L9.09 9.69A3 3 0 008 12v8a1 1 0 001 1h8.76a1 1 0 001-.75l2.21-8.76A1.999 1.999 0 0019 9z" />
-                  </svg>
-                </button>
-                </a>
-                <a href="{% url 'messaging:start_chat' application.user.id %}">
-                <button
-                  class="hidden md:block border border-[#1e90ff] font-semibold text-[#1e90ff]  rounded-full px-4 py-2"
-                  >Message</button>
-                </a>
-                <button class="hidden md:block bg-[#1e90ff] font-semibold text-white rounded-full px-4 py-2 text-nowrap"
-                  onclick="viewDetails()">View
-                  Details</button>
-              </div>
-            </div>
 
-            <div class="md:flex md:justify-evenly gap-4 md:w-[80%]">
-              <div class="space-y-4 w-[250px]">
-                <div class="flex justify-between md:flex-col">
-                  <span class="text-lg font-semibold truncate">Assessment Score: {{ application.overall_match_percentage }}% </span>
-                  <span class="text-gray-600">Quiz Score: {{ application.quiz_score }}</span>
-                </div>
-              </div>
-              <div class="space-y-4">
-                <div class="text-base font-semibold">About Candidate:</div>
-                <div class="text-gray-700 line-clamp-2 w-[300px] text-wrap">
-                  {{ application.user.resume.description|truncatewords:15 }}...
-                </div>
-              </div>
-              <div>
-                <div class="text-base font-semibold">Qualifications:</div>
-                <div class="flex flex-wrap gap-2 mt-2">
-                  {% if application.user.skills_list|length > 3 %}
-                        {% for skill in application.user.skills_list|slice:":3" %}
+                <div class="md:flex md:justify-evenly gap-4 md:w-[80%]">
+                    <div class="space-y-4 w-[250px]">
+                        <div class="flex justify-between md:flex-col">
+                            <span class="text-lg font-semibold truncate">Assessment Score: {{ application.overall_match_percentage }}% </span>
+                            <span class="text-gray-600">Quiz Score: {{ application.quiz_score }}</span>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="text-base font-semibold">About Candidate:</div>
+                        <div class="text-gray-700 line-clamp-2 w-[300px] text-wrap">
+                            {{ application.user.resume.description|truncatewords:15 }}...
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-base font-semibold">Qualifications:</div>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            {% if application.user.skills_list|length > 3 %}
+                            {% for skill in application.user.skills_list|slice:":3" %}
                             <span class="bg-blue-100 text-[#1e90ff] rounded-full px-3 py-1 text-sm text-nowrap">{{ skill }}</span>
-                        {% endfor %}
-                        <span class="bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm text-nowrap">...and {{ application.user.skills_list|length|add:"-5" }} more</span>
-                    {% else %}
-                        {% for skill in application.user.skills_list %}
+                            {% endfor %}
+                            <span class="bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm text-nowrap">...and {{ application.user.skills_list|length|add:"-5" }} more</span>
+                            {% else %}
+                            {% for skill in application.user.skills_list %}
                             <span class="bg-blue-100 text-[#1e90ff] rounded-full px-3 py-1 text-sm text-nowrap">{{ skill }}</span>
-                        {% endfor %}
-                    {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="w-full lg:hidden flex mt-2 gap-2">
+                        <button class="md:hidden flex-1 border border-[#1e90ff] font-semibold text-[#1e90ff] rounded-full px-4 py-2" onclick="messageCandidate()">Message</button>
+                        <button class="md:hidden flex-1 bg-[#1e90ff] font-semibold text-white rounded-full px-4 py-2" onclick="viewDetails()">View Details</button>
+                    </div>
                 </div>
-              </div>
-              <div class="w-full lg:hidden flex mt-2 gap-2">
-                <button
-                  class="md:hidden flex-1 border border-[#1e90ff] font-semibold text-[#1e90ff] rounded-full px-4 py-2"
-                  onclick="messageCandidate()">Message</button>
-                <button class="md:hidden flex-1 bg-[#1e90ff] font-semibold text-white rounded-full px-4 py-2"
-                  onclick="viewDetails()">View Details</button>
-              </div>
             </div>
-          </div>
         </div>
         {% endfor %}
         {% endif %}
 
-        
-
         {% if not shortlisted_applications %}
         <div class="flex justify-center items-center h-[200px]">
-          <p class="text-gray-500">No candidates found.</p>
+            <p class="text-gray-500">No candidates found.</p>
         </div>
         {% endif %}
-      </div>
-    </section>
+    </div>
+</section>
 </main>
+
+<!-- Schedule Interview Modal -->
+<div id="scheduleModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Schedule Interview</h3>
+            <div class="mt-2 px-7 py-3">
+                <form id="scheduleForm">
+                    <input type="hidden" id="candidateId" name="candidate_id">
+                    <input type="hidden" id="jobTitle" name="job_title">
+                    <div class="mb-4">
+                        <label for="interviewDate" class="block text-gray-700 text-sm font-bold mb-2">Date:</label>
+                        <input type="date" id="interviewDate" name="date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label for="interviewTime" class="block text-gray-700 text-sm font-bold mb-2">Time:</label>
+                        <input type="time" id="interviewTime" name="time" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label for="timezone" class="block text-gray-700 text-sm font-bold mb-2">Timezone:</label>
+                        <select id="timezone" name="timezone" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <option value="UTC">UTC (Coordinated Universal Time)</option>
+                            <option value="EST">EST (Eastern Standard Time)</option>
+                            <option value="CST">CST (Central Standard Time)</option>
+                            <option value="MST">MST (Mountain Standard Time)</option>
+                            <option value="PST">PST (Pacific Standard Time)</option>
+                            <option value="GMT">GMT (Greenwich Mean Time)</option>
+                            <option value="CET">CET (Central European Time)</option>
+                            <option value="EET">EET (Eastern European Time)</option>
+                            <option value="IST">IST (India Standard Time)</option>
+                            <option value="CST">CST (China Standard Time)</option>
+                            <option value="JST">JST (Japan Standard Time)</option>
+                            <!-- Add more timezones as needed -->
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="additionalNotes" class="block text-gray-700 text-sm font-bold mb-2">Additional Notes:</label>
+                        <textarea id="additionalNotes" name="note" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                    </div>
+                    <div class="flex justify-center">
+                        <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md" onclick="submitScheduleForm()">Submit</button>
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-md ml-2" onclick="closeScheduleModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loader -->
+<div id="loader" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="loader"></div>
+</div>
+
+<!-- Success Tick -->
+<div id="successTick" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="text-green-500 text-6xl">&#10003;</div>
+</div>
+
 
 
 <!-- Modal -->
@@ -418,5 +476,62 @@ function closeModal() {
         }
     }
   </script>
+<script>
+function openScheduleModal(candidateId, jobTitle) {
+    document.getElementById('candidateId').value = candidateId;
+    document.getElementById('jobTitle').value = jobTitle;
+    document.getElementById('scheduleModal').classList.remove('hidden');
+}
+
+function closeScheduleModal() {
+    document.getElementById('scheduleModal').classList.add('hidden');
+}
+
+function showLoader() {
+    document.getElementById('loader').classList.remove('hidden');
+}
+
+function hideLoader() {
+    document.getElementById('loader').classList.add('hidden');
+}
+
+function showSuccessTick() {
+    document.getElementById('successTick').classList.remove('hidden');
+    setTimeout(() => {
+        document.getElementById('successTick').classList.add('hidden');
+    }, 2000);
+}
+
+function submitScheduleForm() {
+    const form = document.getElementById('scheduleForm');
+    const formData = new FormData(form);
+
+    showLoader();
+
+    fetch("{% url 'create_interview' %}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoader();
+        if (data.message) {
+            showSuccessTick();
+            closeScheduleModal();
+        } else {
+            alert('An error occurred. Please try again.');
+        }
+    })
+    .catch(error => {
+        hideLoader();
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
+}
+</script>
+
 <br><br><br><br>
 {% endblock %}

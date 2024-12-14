@@ -54,7 +54,8 @@ urlpatterns = [
     path('accounts/email-verification-sent/', email_verification_sent, name='account_email_verification_sent'),
 
     path('accounts/resend-verification-email/', views.resend_verification_email, name='resend_verification_email'),
-
+    #for video chat
+    path('chat/', include('videochat.urls')),
     
 ]
 
