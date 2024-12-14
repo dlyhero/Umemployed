@@ -21,6 +21,18 @@ from resume.models import  Resume,ContactInfo, UserProfile, ResumeDoc, WorkExper
 from job.models import Application
 
 from django.db.models import Count
+from django.http import JsonResponse
+
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from users.models import User
+from django.http import HttpResponse
+from .models import Interview
+import random
+import string
+from django.template.loader import render_to_string
+
+from django.contrib.sites.shortcuts import get_current_site
 
 
 # Configure logging
@@ -382,3 +394,93 @@ def company_list_view(request):
     companies = Company.objects.annotate(available_jobs=Count('job'))
     return render(request, 'company/company_list.html', {'companies': companies})
 
+
+
+def generate_meeting_link():
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+
+
+
+def create_interview(request):
+    if request.method == 'POST':
+        candidate_id = request.POST.get('candidate_id')
+        job_title = request.POST.get('job_title')
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        timezone = request.POST.get('timezone')
+        note = request.POST.get('note')
+        
+        candidate = User.objects.get(id=candidate_id)
+        recruiter = request.user
+
+        # Assuming job_title is unique and can be used to retrieve the job instance
+        job = Job.objects.get(title=job_title)
+        company_name = job.company.name  # Assuming the Company model has a 'name' field
+
+        # Create the interview instance to get the room_id
+        interview = Interview.objects.create(
+            candidate=candidate,
+            date=date,
+            time=time,
+            timezone=timezone,
+            note=note
+        )
+
+        # Generate the meeting link using the room_id
+        current_site = get_current_site(request)
+        base_url = f"http://{current_site.domain}"
+        meeting_link = f"{base_url}/chat/"
+        room_id = interview.room_id
+        interview.meeting_link = meeting_link
+        interview.save()
+
+        # Render email templates
+        candidate_email_content = render_to_string('emails/candidate_interview_email.html', {
+            'candidate': candidate,
+            'job_title': job_title,
+            'date': date,
+            'time': time,
+            'timezone': timezone,
+            'meeting_link': meeting_link,
+            'room_id': room_id,
+            'note': note,
+            'company_name': company_name
+        })
+
+        recruiter_email_content = render_to_string('emails/recruiter_interview_email.html', {
+            'recruiter': recruiter,
+            'candidate': candidate,
+            'job_title': job_title,
+            'date': date,
+            'time': time,
+            'timezone': timezone,
+            'meeting_link': meeting_link,
+            'room_id': room_id,
+            'note': note,
+            'company_name': company_name
+        })
+
+        # Send email to candidate
+        send_mail(
+            'Interview Scheduled',
+            candidate_email_content,
+            'from@example.com',
+            [candidate.email],
+            fail_silently=False,
+            html_message=candidate_email_content
+        )
+
+        # Send email to recruiter
+        send_mail(
+            'Interview Scheduled',
+            recruiter_email_content,
+            'from@example.com',
+            [recruiter.email],
+            fail_silently=False,
+            html_message=recruiter_email_content
+        )
+
+        return JsonResponse({'message': 'Interview created successfully.'})
+
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
