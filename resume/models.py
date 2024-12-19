@@ -5,16 +5,31 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 import magic
 import uuid
+import os
 
-ext_validator = FileExtensionValidator(['pdf',])
+ext_validator = FileExtensionValidator(['pdf', 'docx', 'txt'])  
 
 def validate_file_mime_type(file):
-    accept = ['application/pdf']
+    accept = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain', 'application/zip']
+    
+    # Read first 1024 bytes to detect MIME type
     file_mime_type = magic.from_buffer(file.read(1024), mime=True)
-    print('file_mime_type')
+    print(f'File MIME type: {file_mime_type}')
+    
+    # Reset file pointer after reading for MIME type detection
+    file.seek(0)
+    
+    # Extract file extension
+    ext = os.path.splitext(file.name)[1].lower()
+    
+    # Allow application/zip for .docx files
+    if ext == '.docx' and file_mime_type == 'application/zip':
+        file_mime_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    
+    # Raise validation error if MIME type is not allowed
     if file_mime_type not in accept:
-        raise ValidationError("Unsupported file type")
-
+        raise ValidationError("Unsupported file type")  
+    
 class SkillCategory(models.Model):
     name = models.CharField(max_length=100)
 
@@ -37,12 +52,13 @@ class Education(models.Model):
     resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     institution_name = models.CharField(max_length=100)
-    field_of_study = models.CharField(max_length=255, null=True, blank=True)
-    degree = models.CharField(max_length=100)
+    field_of_study = models.CharField(max_length=255, null=True, blank=True, default='Not specified') 
+    degree = models.CharField(max_length=100, default='Not specified')  
     graduation_year = models.IntegerField()
 
     def __str__(self):
         return self.institution_name
+
 
 class Experience(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, related_name='experiences')
@@ -99,7 +115,7 @@ class Resume(models.Model):
 class ResumeDoc(models.Model):
     id = models.AutoField(primary_key=True) 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='resumes/')
+    file = models.FileField(upload_to='resumes/', validators=[ext_validator, validate_file_mime_type])  
     extracted_text = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='resume_extracted_skills')
