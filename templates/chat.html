@@ -5,17 +5,18 @@
 {% endblock title %}
 {% block custom_css %}
 <style>
-  /* Updated chat container for professional look */
-  .chat-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  body{
     display: flex;
     flex-direction: column;
-    height: 80vh;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Updated chat container for professional look */
+  .chat-container {
+
+
+   flex-grow: 1;
   }
 
   .chat-header {
@@ -66,28 +67,6 @@
     bottom: 0;
   }
 
-  #chat-message-input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-right: 10px;
-    font-size: 16px;
-  }
-
-  #chat-message-submit {
-    padding: 12px 24px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-
-  #chat-message-submit:hover {
-    background-color: #0056b3;
-  }
 
   /* Remove page scroll */
   html, body {
@@ -119,27 +98,65 @@
 {% endblock messagess %}
 {% block content %}
 
-<div class="chat-container">
-  <h2 class="chat-header">Chat with 
-    {% if conversation.participant2 == request.user %}
-        {{ conversation.participant1 }}
-    {% else %}
-        {{ conversation.participant2 }}
-    {% endif %}
+<div class="chat-container container mx-auto bg-white  flex flex-col">
+  <h2 class="chat-header rounded-full text-xl font-bold text-gray-800 bg-gray-100 p-4 border-b flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <!-- Use Font Awesome Icon as a placeholder for the profile picture -->
+      <i class="fas fa-user w-10 h-10 rounded-full bg-blue-200 text-blue-600 flex items-center justify-center text-xl"></i>
+      <span class="truncate w-[200px] md:w-full">
+        Chat with 
+        {% if conversation.participant2 == request.user %}
+          {{ conversation.participant1 }}
+        {% else %}
+          {{ conversation.participant2 }}
+        {% endif %}
+      </span>
+    </div>
+    <span class="text-sm text-gray-500">{{ conversation.last_updated|date:"M d, Y h:i A" }}</span>
   </h2>
 
-  <div id="messagess">
+  <div id="messagess" class="flex-1 overflow-y-auto p-4 space-y-4 ">
     {% for message in messagess %}
-      <div class="message {% if message.sender == request.user %}message-sent{% else %}message-received{% endif %}">
-        <strong>{{ message.sender.first_name }}:</strong> {{ message.text }}
+      <div class="message {% if message.sender == request.user %}message-sent self-end bg-blue-100 text-blue-800{% else %}message-received self-start bg-gray-100 text-gray-800{% endif %} rounded-lg p-3 max-w-[70%]">
+        <div class="flex items-start space-x-3">
+          <!-- Use Font Awesome Icon as a placeholder for the sender's profile picture -->
+          <i class="fas fa-user w-8 h-8 rounded-full bg-blue-200 text-blue-600 flex items-center justify-center text-xl"></i>
+          <div>
+            <strong class="block text-sm font-semibold">{{ message.sender.first_name }}:</strong>
+            <p class="text-sm">{{ message.text }}</p>
+            {% if message.attachment %}
+              <a href="{{ message.attachment.url }}" class="text-blue-500 text-sm underline">Attachment</a>
+            {% endif %}
+            <span class="block text-xs text-gray-400 mt-1">{{ message.timestamp|date:"h:i A" }}</span>
+          </div>
+        </div>
       </div>
     {% endfor %}
   </div>
 
-  <form id="chat-form" method="post" action="{% url 'messaging:send_message' conversation.id %}">
+  <form id="chat-form" method="post" action="{% url 'messaging:send_message' conversation.id %}" class="w-full flex items-center border-t bg-gray-50 p-4">
     {% csrf_token %}
-    <input type="text" id="chat-message-input" name="text" placeholder="Type your message...">
-    <button type="submit" id="chat-message-submit">Send</button>
+    <button type="button" class="text-gray-500 mr-3" aria-label="Attach File">
+      <i class="fas fa-paperclip text-xl"></i>
+    </button>
+    <button type="button" class="text-gray-500 mr-3" aria-label="Add Emoji">
+      <i class="fas fa-smile text-xl"></i>
+    </button>
+    <input 
+      type="text" 
+      id="chat-message-input" 
+      name="text" 
+      placeholder="Type your message..." 
+      class="flex-1 px-4 py-2 mr-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      aria-label="Message Input">
+    <button 
+      type="submit" 
+      
+      class=" text-[#1e90ff]"
+      aria-label="Send Message"
+    >
+    <i class="fas fa-paper-plane text-3xl"></i> 
+    </button>
   </form>
 </div>
 
