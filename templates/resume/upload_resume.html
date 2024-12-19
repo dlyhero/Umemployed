@@ -10,11 +10,11 @@
 
 <!-- Loader CSS -->
 <style>
-    .loader .logo img {
+    .loader .loader-logo img {
         width: 150px;
         height: 150px;
         border-radius: 50%;
-        object-fit: cover;
+        object-fit: resize;
         margin: 0 auto;
     }
 
@@ -27,7 +27,7 @@
 
         25%,
         75% {
-            opacity: 0;
+            opacity: 0;s
         }
     }
 
@@ -134,7 +134,7 @@
        <!-- Loader HTML -->
         <div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-2 flex items-center justify-center z-50">
             <div class="loader">
-                <div class="logo blinking">
+                <div class="loader-logo blinking">
                     <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
                 </div>
                 <br>
@@ -151,6 +151,11 @@
                         Choose files to upload <br />
                         <span class="hidden md:block">or drag and drop here</span>
                     </p>
+                    {% if resume_doc %}  
+                        <p><strong>Last Updated:</strong> {{ resume_doc.updated_at }}</p>  
+                    {% else %}  
+                        <p>No resume uploaded yet.</p>  
+                    {% endif %}  
                     <input id="input-file" type="file" name="file" class="hidden">
                 </div>
             </label>
@@ -294,51 +299,66 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Preview the file content
-    function previewFile(file) {
-        const reader = new FileReader();
+    // Preview the file content  
+function previewFile(file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const fileType = file.type;
 
-        reader.onload = function(e) {
-            const fileType = file.type;
-
-            if (fileType === 'application/pdf') {
-                // Use PDF.js to render the first page of the PDF
-                const pdfData = new Uint8Array(e.target.result);
-                pdfjsLib.getDocument({ data: pdfData }).promise.then(function(pdf) {
-                    pdf.getPage(1).then(function(page) {
-                        const scale = 1.5;
-                        const viewport = page.getViewport({ scale: scale });
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        cvPreview.innerHTML = ''; // Clear previous content
-                        cvPreview.appendChild(canvas);
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        page.render(renderContext);
-                    });
-                }).catch(function(error) {
-                    console.error('Error rendering PDF:', error);
-                    cvPreview.innerHTML = 'Error rendering PDF preview.';
+        // Check if it's a PDF
+        if (fileType === 'application/pdf') {
+            const pdfData = new Uint8Array(e.target.result);
+            pdfjsLib.getDocument({ data: pdfData }).promise.then(function (pdf) {
+                pdf.getPage(1).then(function (page) {
+                    const scale = 1.5;
+                    const viewport = page.getViewport({ scale: scale });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    cvPreview.innerHTML = ''; // Clear previous content
+                    cvPreview.appendChild(canvas);
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    page.render(renderContext);
                 });
-            } else if (fileType.startsWith('text/') || fileType === 'application/msword' || fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-                // Preview text or Word document content
-                const textContent = e.target.result;
-                cvPreview.innerHTML = `<pre>${textContent}</pre>`;
-            } else {
-                cvPreview.innerHTML = 'Preview not available for this file type.';
-            }
-        };
+            }).catch(function (error) {
+                console.error('Error rendering PDF:', error);
+                cvPreview.innerHTML = 'Error rendering PDF preview.';
+            });
 
-        if (file.type === 'application/pdf') {
-            reader.readAsArrayBuffer(file);
+        // Check if it's a DOCX file
+        } else if (fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+                   fileType === 'application/msword') {
+            mammoth.convertToHtml({ arrayBuffer: e.target.result })
+            .then(function (result) {
+                const docxContent = result.value; // The extracted HTML content
+                cvPreview.innerHTML = docxContent; // Display DOCX content
+            })
+            .catch(function (error) {
+                console.error('Error processing DOCX:', error);
+                cvPreview.innerHTML = 'Error rendering DOCX preview.';
+            });
+
+        // Handle text or unsupported file types
         } else {
-            reader.readAsText(file);
+            cvPreview.innerHTML = 'Preview not available for this file type.';
         }
+    };
+
+    // Read the file based on its type
+    if (file.type === 'application/pdf') {
+        reader.readAsArrayBuffer(file);  // PDF files need ArrayBuffer
+    } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+               file.type === 'application/msword') {
+        reader.readAsArrayBuffer(file);  // DOCX files also need ArrayBuffer
+    } else {
+        reader.readAsText(file);  // For plain text or other text types
     }
+}
+
 
     // Accept file and trigger form submission with loader
     acceptButton.addEventListener('click', function () {
@@ -364,6 +384,8 @@ document.getElementById('input-file').addEventListener('change', function(event)
 </script>
 <!-- Include PDF.js library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/6.2.0/docx.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

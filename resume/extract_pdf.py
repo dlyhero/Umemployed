@@ -56,7 +56,12 @@ def upload_resume(request):
             return redirect('upload')
     else:
         form = ResumeForm()
-    return render(request, 'resume/upload_resume.html', {'form': form})
+    # Pass the resume_doc instance to the template if it exists  
+    try:  
+        resume_doc = ResumeDoc.objects.get(user=request.user)  
+    except ResumeDoc.DoesNotExist:  
+        resume_doc = None  
+    return render(request, 'resume/upload_resume.html', {'form': form, 'resume_doc': resume_doc})  
 
 def clean_text(text):
     """Remove invalid characters from the extracted text."""
@@ -75,9 +80,11 @@ from django.contrib import messages
 from azure.storage.blob import BlobServiceClient
 
 
+from docx import Document
+
 def extract_text(request, file_path):
     """
-    Extracts text from a PDF resume file stored in Azure Blob Storage and saves it to the database.
+    Extracts text from a resume file (PDF, DOCX, TXT) stored in Azure Blob Storage and saves it to the database.
     """
     account_name = os.getenv('AZURE_ACCOUNT_NAME')
     account_key = os.getenv('AZURE_ACCOUNT_KEY')
@@ -97,33 +104,61 @@ def extract_text(request, file_path):
         # Log the size of the file stream to ensure it's being read correctly
         print(f"File stream size: {len(file_stream)} bytes")
 
-        # Use pdfplumber for text extraction
-        try:
-            with pdfplumber.open(io.BytesIO(file_stream)) as pdf:
-                if pdf.pages:
-                    page = pdf.pages[0]
-                    extracted_text = page.extract_text() or ""
-                    print(f"Extracted text: {extracted_text[:500]}")  # Log the first 500 characters of the extracted text
-                    extracted_text = clean_text(extracted_text)  # Clean the extracted text
-                else:
-                    extracted_text = ""
-                    print("No pages found in the PDF.")
-        except Exception as e:
-            print(f"Error reading PDF with pdfplumber: {e}")
-            extracted_text = "Unable to extract text"
+        # Determine file type by checking extension
+        file_extension = os.path.splitext(blob_name)[1].lower()
 
-        # Process extracted text
+        extracted_text = ""
+
+        # PDF extraction
+        if file_extension == '.pdf':
+            try:
+                with pdfplumber.open(io.BytesIO(file_stream)) as pdf:
+                    if pdf.pages:
+                        page = pdf.pages[0]
+                        extracted_text = page.extract_text() or ""
+                        print(f"Extracted text from PDF: {extracted_text[:500]}")  # Log first 500 chars
+                    else:
+                        print("No pages found in the PDF.")
+            except Exception as e:
+                print(f"Error reading PDF with pdfplumber: {e}")
+                extracted_text = "Unable to extract text from PDF"
+
+        # DOCX extraction
+        elif file_extension == '.docx':
+            try:
+                doc = Document(io.BytesIO(file_stream))
+                extracted_text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
+                print(f"Extracted text from DOCX: {extracted_text[:500]}")  # Log first 500 chars
+            except Exception as e:
+                print(f"Error reading DOCX: {e}")
+                extracted_text = "Unable to extract text from DOCX"
+
+        # TXT extraction
+        elif file_extension == '.txt':
+            try:
+                extracted_text = file_stream.decode('utf-8')  # Decode byte stream to string
+                print(f"Extracted text from TXT: {extracted_text[:500]}")  # Log first 500 chars
+            except Exception as e:
+                print(f"Error reading TXT: {e}")
+                extracted_text = "Unable to extract text from TXT"
+
+        else:
+            print(f"Unsupported file extension: {file_extension}")
+            return HttpResponse("Unsupported file type", status=400)
+
+        # Clean extracted text and process it
+        extracted_text = clean_text(extracted_text)
         try:
             extracted_details = extract_resume_details(request, extracted_text)
             print("Extracted Details:", extracted_details)
         except json.JSONDecodeError as e:
-            print(f"An error occurred while extracting resume details: {e}")
+            print(f"Error occurred while extracting resume details: {e}")
             print(f"Extracted text content: {extracted_text}")
             extracted_details = {}
-        
+
         parse_and_save_details(extracted_details, request.user)
 
-        # Attempt to get the associated Resume
+        # Handle saving extracted text and associated details
         try:
             resume = Resume.objects.get(user=request.user)
             job_title = resume.job_title
@@ -154,6 +189,7 @@ def extract_text(request, file_path):
         print("Error during file extraction:", str(e))
         messages.error(request, "An error occurred while processing the resume. Please try again.")
         return HttpResponse("Error: Could not process the file", status=500)
+
 
 
 
