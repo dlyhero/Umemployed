@@ -26,7 +26,7 @@
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
   }
 
   .chat-header {
@@ -44,7 +44,7 @@
   .chat-list li {
     background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 50px;
     margin-bottom: 10px;
     padding: 15px;
     transition: background-color 0.3s ease, transform 0.3s ease;
@@ -97,50 +97,53 @@
 {% block content %}
 <div class="wrapper">
   <div class="content">
-    <div class="chat-container">
-      <h2 class="chat-header">Preciously Messaged</h2>
-      <ul class="chat-list">
+    <div class="chat-container border-b bg-white container max-w-5xl overflow-auto h-[70vh]">
+      <div class="header mb-5 p-4 border-b flex flex-col sm:flex-row items-center sm:justify-between gap-4">
+        <h2 class="text-xl font-bold text-gray-700">Chats</h2>
+        <div class="relative w-full sm:max-w-md">
+          <input 
+            type="text" 
+            placeholder="Search chats..." 
+            class="w-full px-6 py-4 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+          <i class="fas fa-search absolute top-5 right-4 text-gray-400"></i>
+        </div>
+      </div>
+      <ul class="chat-list divide-y divide-gray-200">
         {% for room in rooms %}
-          <li>
-            <a href="{% url 'messaging:chat' room.id %}">
-              <i class="fas fa-comments"></i>
-              Chat with 
+        <li class="p-6 hover:bg-gray-50 transition">
+          <a href="{% url 'messaging:chat' room.id %}" class="flex items-center space-x-4 text-gray-700 hover:text-blue-600">
+            <div class="w-12 h-11 flex justify-center items-center bg-blue-100 rounded-full">
+              <i class="fa fa-user text-blue-500 ml-2"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-lg">
                 {% if room.participant2 == request.user %}
-                    {{ room.participant1.first_name }} {{ room.participant1.last_name }}
+                  {{ room.participant1.first_name }} {{ room.participant1.last_name }}
                 {% else %}
-                    {{ room.participant2.first_name }} {{ room.participant2.last_name }}
+                  {{ room.participant2.first_name }} {{ room.participant2.last_name }}
                 {% endif %}
-
-            </a>
-          </li>
+              </p>
+              <p class="text-sm text-gray-500 truncate">This is the last message from the chat. It gives an idea of what was discussed.</p>
+            </div>
+            <div class="text-sm text-gray-400 whitespace-nowrap">
+              Dec 18, 2024 10:45 AM
+            </div>
+          </a>
+        </li>
         {% empty %}
-          <li class="no-chats">No chat rooms available.</li>
+          <li class="text-center py-16 text-gray-500">
+            <i class="fas fa-inbox text-3xl text-gray-400 mb-4"></i>
+            <p>No chat rooms available.</p>
+          </li>
         {% endfor %}
       </ul>
     </div>
+    
   </div>
+  
   {% block footer %}
   {% endblock footer %}
-  <footer class="text-gray-800 text-center p-3">
-    <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
-      <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
-      <div class="flex space-x-4 items-center">
-        <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300">
-          <i class="fab fa-twitter text-black"></i>
-        </a>
-        <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300">
-          <i class="fab fa-linkedin text-black"></i>
-        </a>
-        <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300">
-          <i class="fab fa-facebook text-black"></i>
-        </a>
-        <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
-      </div>
-      <div class="text-sm">
-        <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Privacy Policy</a>
-        <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
-      </div>
-    </div>
-  </footer>
+ 
 </div>
 {% endblock content %}
