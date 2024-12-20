@@ -246,7 +246,7 @@
                 alt="Company Logo"
               />
               <div>
-                <span class="text-sm text-gray-500">{{ job.job_type }}</span>
+                <span class="text-sm text-gray-500 capitalize">{{ job.job_location_type }}</span>
               </div>
             </div>
             <div class="mb-4">
@@ -335,7 +335,7 @@
                 alt="Company Logo"
               />
               <div>
-                <span class="text-sm text-gray-500">{{job.job_type}}</span>
+                <span class="text-sm text-gray-500 capitalize">{{job.job_location_type}}</span>
               </div>
             </div>
             <div class="mb-4">
@@ -518,8 +518,8 @@
                         src="${companyLogoUrl || fallbackLogoUrl}"
                         alt="${job.company.name || "Company Logo"}"
                     />
-                    <div><span class="text-sm text-gray-500">${
-                      job.job_type || "N/A"
+                    <div><span class="text-sm text-gray-500 capitalize">${
+                      job.job_location_type || "N/A"
                     }</span></div>
                 </div>
                 <div class="mb-4">
