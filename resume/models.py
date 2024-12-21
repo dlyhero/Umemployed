@@ -131,7 +131,7 @@ class ContactInfo(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=254)
     phone = models.CharField(max_length=20)
-    country = CountryField(default='CM')  # Default to 'CM' for Cameroon
+    country = CountryField(default='US')  # Default to 'CM' for Cameroon
     # job_title = models.CharField(max_length=100, default='')
     job_title = models.ForeignKey(SkillCategory, on_delete=models.SET_NULL, null=True, blank=True)
 
