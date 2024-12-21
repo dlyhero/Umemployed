@@ -345,24 +345,28 @@ from .forms import EducationForm  # Define this form in forms.py
 
 def save_education(request):
     if request.method == 'POST':
-        form = EducationForm(request.POST)
-        if form.is_valid():
-            education_id = form.cleaned_data.get('id')
-            if education_id:
-                # Update existing record
-                education = get_object_or_404(Education, id=education_id, user=request.user)
+        education_id = request.POST.get('education_id')
+        if education_id:
+            try:
+                education = Education.objects.get(id=education_id, user=request.user)
                 form = EducationForm(request.POST, instance=education)
+            except Education.DoesNotExist:
+                return JsonResponse({'error': 'Education not found'}, status=404)
+        else:
+            form = EducationForm(request.POST)
+
+        if form.is_valid():
+            if request.user.is_authenticated:
+                # Save the instance with the user field populated
+                education = form.save(commit=False)
+                education.user = request.user  # Assign the logged-in user
+                education.save()
+                return redirect('user_dashboard')
             else:
-                # Create new record
-                form.instance.user = request.user  # Set the current user
-                form.instance.resume = None  # If you need to set a resume, handle it accordingly
-
-            form.save()
-            return redirect('user_dashboard')
-
-        return JsonResponse({'success': False, 'errors': form.errors})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request'})
+                return JsonResponse({'error': 'User is not authenticated'}, status=403)
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 def delete_education(request, id):
     if request.method == 'DELETE':
         education = get_object_or_404(Education, id=id)
@@ -384,7 +388,16 @@ from .forms import WorkExperienceForm
 
 def save_experience(request):
     if request.method == 'POST':
-        form = WorkExperienceForm(request.POST)
+        experience_id = request.POST.get('experience_id')
+        if experience_id:
+            try:
+                experience = WorkExperience.objects.get(id=experience_id, user=request.user)
+                form = WorkExperienceForm(request.POST, instance=experience)
+            except WorkExperience.DoesNotExist:
+                return JsonResponse({'error': 'Experience not found'}, status=404)
+        else:
+            form = WorkExperienceForm(request.POST)
+
         if form.is_valid():
             if request.user.is_authenticated:
                 # Save the instance with the user field populated

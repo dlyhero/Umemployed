@@ -750,7 +750,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <hr class="mb-4">
           <form id="experience-form-id" method="post" action="{% url 'save_experience' %}" class="space-y-4">
               {% csrf_token %}
-              <input type="hidden" id="experience-id" name="id">
+              <input type="hidden" id="experience-id" name="experience_id">
               <div>
                   <label for="company_name" class="block font-medium">Company Name:</label>
                   <input type="text" id="company_name" name="company_name" class="w-full p-2 border rounded" required>
@@ -867,7 +867,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <hr class="my-2">
           <form id="education-form-id" method="post" action="{% url 'save_education' %}" class="space-y-4">
               {% csrf_token %}
-              <input type="hidden" id="education-id" name="id">
+              <input type="hidden" id="education-id" name="education_id">
               <div>
                   <label for="institution_name" class="block font-semibold">Institution Name:</label>
                   <input type="text" id="institution_name" name="institution_name" required class="w-full border rounded p-2">

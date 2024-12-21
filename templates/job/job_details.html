@@ -27,7 +27,7 @@
               src="{{ job.company.logo.url }}"
               alt="{{job.company.name}} Logo"
             />
-            <div><span class="text-sm text-gray-500">{{job.job_type}}</span></div>
+            <div><span class="text-sm text-gray-500 capitalize">{{job.job_location_type}}</span></div>
           </div>
 
           <!-- Job Title, Company, and Post Time -->
@@ -171,7 +171,7 @@
                     <img class="w-12 h-12 rounded-full mr-4"
                          src="{{job.company.logo.url}}" alt="Company Logo" />
                     <div>
-                        <span class="text-sm text-gray-500">{{job.job_type}}</span>
+                        <span class="text-sm text-gray-500 capitalize">{{job.job_location_type}}</span>
                     </div>
                 </div>
                 <div class="mb-2">
