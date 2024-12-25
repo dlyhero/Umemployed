@@ -2,9 +2,20 @@
 {% load static %}
 {% block title %}
     <title>Inbox | UmEmployed</title>
+    <link rel="stylesheet" href="./m.css">
 {% endblock title %}
 {% block custom_css %}
+
 <style>
+  .conversation-area {
+ border-right: 1px solid var(--border-color);
+ overflow-y: auto;
+ overflow-x: hidden;
+ display: flex;
+ flex-direction: column;
+ position: relative;
+}
+
   html, body {
     height: 100%;
     margin: 0;
@@ -24,10 +35,157 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+
   }
+
+  .msg-profile {
+ width: 44px;
+ height: 44px;
+ border-radius: 50%;
+ object-fit: cover;
+ margin-right: 15px;
+ &.group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--border-color);
+
+  svg {
+   width: 60%;
+  }
+ }
+}
+
+.msg-detail {
+ overflow: hidden;
+}
+
+.msg-content {
+ font-weight: 500;
+ font-size: 13px;
+ display: flex;
+}
+
+.msg-message {
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ color: var(--msg-message);
+}
+
+.msg-date {
+ font-size: 14px;
+ color: var(--msg-date);
+ margin-left: 3px;
+ &:before {
+  content: "•";
+  margin-right: 2px;
+ }
+}
+.msg-username {
+ margin-bottom: 4px;
+ font-weight: 600;
+ font-size: 15px;
+}
+
+.msg {
+ display: flex;
+ align-items: center;
+ padding: 20px;
+ cursor: pointer;
+ transition: 0.2s;
+ position: relative;
+ &:hover {
+  background-color: var(--msg-hover-bg);
+ }
+ &.active {
+  background: var(--active-conversation-bg);
+  border-left: 4px solid var(--theme-color);
+ }
+ &.online:before {
+  content: "";
+  position: absolute;
+  background-color: #23be7e;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--theme-bg-color);
+  left: 50px;
+  bottom: 19px;
+ }
+}
+
+.header {
+ height: 80px;
+ width: 100%;
+ border-bottom: 1px solid var(--border-color);
+ display: flex;
+ align-items: center;
+ padding: 0 20px;
+}
+
+.logo {
+ color: var(--theme-color);
+ width: 38px;
+ flex-shrink: 0;
+
+ svg {
+  width: 100%;
+ }
+}
+
+.search-bar {
+ height: 80px;
+ z-index: 3;
+ position: relative;
+ margin-left: 280px;
+
+ input {
+  height: 100%;
+  width: 100%;
+  display: block;
+  background-color: transparent;
+  border: none;
+  color: var(--body-color);
+  padding: 0 54px;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56.966 56.966' fill='%23c1c7cd'%3e%3cpath d='M55.146 51.887L41.588 37.786A22.926 22.926 0 0046.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 00.083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: 16px;
+  background-position: 25px 48%;
+  font-family: var(--body-font);
+  font-weight: 600;
+  font-size: 15px;
+  &::placeholder {
+   color: var(--input-chat-color);
+  }
+ }
+}
+
+
+.user-settings {
+ display: flex;
+ align-items: center;
+ cursor: pointer;
+ margin-left: auto;
+ flex-shrink: 0;
+ & > * + * {
+  margin-left: 14px;
+ }
+}
+
+.settings {
+ color: var(--settings-icon-color);
+ width: 22px;
+ height: 22px;
+ flex-shrink: 0;
+}
+
+.user-profile {
+ width: 40px;
+ height: 40px;
+ border-radius: 50%;
+}
 
   .chat-header {
     font-size: 24px;
@@ -43,10 +201,9 @@
 
   .chat-list li {
     background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 1px solid #f1f1f1;
+     border-radius: 8px;
     margin-bottom: 10px;
-    padding: 15px;
     transition: background-color 0.3s ease, transform 0.3s ease;
   }
 
@@ -97,9 +254,40 @@
 {% block content %}
 <div class="wrapper">
   <div class="content">
-    <div class="chat-container">
-      <h2 class="chat-header">Preciously Messaged</h2>
-      <ul class="chat-list">
+    <div class="chat-container ">
+      <h2 class="chat-header flex justify-between px-4 py-6 rounded-lg bg-slate-50">
+        <button><i class="fas fa-less-than text-gray-700 "></i></button>
+        <div class="text-gray-700">Messages</div>
+        <button><i class="fas fa-user-plus text-gray-700 "></i></button>
+      </h2>
+      <div class="conversation-area">
+        <ul class="chat-list">
+          {% for room in rooms %}
+          <li>
+            <a class="msg online" href="{% url 'messaging:chat' room.id %}">
+              <img class="msg-profile" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
+              <div class="msg-detail">
+               <div class="msg-username">   {% if room.participant2 == request.user %}
+                {{ room.participant1.first_name }} {{ room.participant1.last_name }}
+            {% else %}
+                {{ room.participant2.first_name }} {{ room.participant2.last_name }}
+            {% endif %}</div>
+               <div class="msg-content">
+                <span class="msg-message">What time was our meet Lorem ipsum dolor sit amet consectetur, adipisicing elit. Soluta, iste.</span>
+                <span class="msg-date">20m</span>
+               </div>
+              </div>
+             </a>
+          </li>
+          {% empty %}
+          <li class="no-chats">No chat rooms available.</li>
+        {% endfor %}
+        </ul>
+
+        <button class="add"></button>
+        <div class="overlay"></div>
+       </div>
+  <!--ul class="chat-list">
         {% for room in rooms %}
           <li>
             <a href="{% url 'messaging:chat' room.id %}">
@@ -116,7 +304,7 @@
         {% empty %}
           <li class="no-chats">No chat rooms available.</li>
         {% endfor %}
-      </ul>
+      </ul> -->
     </div>
   </div>
   {% block footer %}
