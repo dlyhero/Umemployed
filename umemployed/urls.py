@@ -19,7 +19,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/user/', include('users.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('jobs',views.home, name = 'home'),
+    path('jobs/',views.home, name = 'home'),
     path('',views.index, name = 'index'),
     
     path('accounts/', include('allauth.urls')),
