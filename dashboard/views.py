@@ -188,7 +188,10 @@ def dashboard(request):
             job_skills = job.requirements.values_list('name', flat=True)
             match_percentage, _ = calculate_skill_match(user_resume_skills, job_skills)
             if match_percentage >= 10.0:  # Assuming a threshold of 10%
-                matching_jobs.append(job)
+                matching_jobs.append((job, match_percentage))
+
+    # Sort matching jobs by match percentage in descending order
+    matching_jobs = sorted(matching_jobs, key=lambda x: x[1], reverse=True)
 
     # Context to be passed to the template
     context = {
@@ -207,7 +210,7 @@ def dashboard(request):
         'user_languages': user_languages,
         'country_name': country_name,
         'top_jobs': top_jobs,
-        'matching_jobs': matching_jobs,
+        'matching_jobs': [job for job, _ in matching_jobs],  # Only pass the job objects
     }
 
     return render(request, 'dashboard/dashboard.html', context)

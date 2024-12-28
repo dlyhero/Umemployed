@@ -89,15 +89,15 @@
 
           <!-- Apply Button -->
           {% if job.id in applied_job_ids %}
-                <span style="color: green;">(Already Applied)</span>
-                <a href="{% url 'job:confirm_evaluation' job.id %}">
-            {% comment %} <button
-              class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 transition-colors"
-            >
-              Apply
-            </button> {% endcomment %}
-          </a>
-                
+                <div class="text-center">  
+                    <span style="color: green;">(Already Applied)</span>  
+                    <p class="text-lg mt-2">Did you have an issue? If so, please click to submit:</p>  
+                    <a href="{% url 'job:report_test' job.id %}"   
+                      class="text-[#1e90ff] font-bold underline hover:text-blue-400 transition-colors">  
+                      Submit Request  
+                    </a>  
+                </div>
+                                
                 {% else %}
           <div class="mt-4 flex justify-end gap-4"> 
             {% if user.is_authenticated %}

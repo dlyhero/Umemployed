@@ -54,6 +54,30 @@
   transform: translateY(0); /* Move to original position */
 }
 
+#notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  background-color: #1e90ff; /* Blue color */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+#notification.hidden {
+  display: none;
+}
+
+#notification button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 </style>
 {% endblock %} {% block content %}
 
@@ -326,6 +350,11 @@
       {% endif %}
     </div>
   </section>
+  <!-- Notification Pop-up -->
+  <div id="notification" class="hidden fixed top-4 right-4 p-4 bg-blue-500 text-white rounded-md shadow-md">
+    <span id="notification-message"></span>
+    <button id="close-notification" class="ml-4 text-white">&times;</button>
+  </div>
 
   <section class="bg-slate-50 sm:bg-white  py-16">
    <div class="container 
@@ -1530,38 +1559,81 @@
 
 <script>
   $(document).on("click", ".bookmark-job", function (e) {
-    e.preventDefault(); // Prevent the default action of the anchor tag
-    const jobId = $(this).data("job-id");
-    const bookmarkIcon = $(this).find("i"); // Find the icon inside the clicked element
+  e.preventDefault(); // Prevent the default action of the anchor tag
+  const jobId = $(this).data("job-id");
+  const bookmarkIcon = $(this).find("i"); // Find the icon inside the clicked element
 
-    console.log("Attempting to bookmark job ID:", jobId); // Debugging output
+  console.log("Attempting to bookmark job ID:", jobId); // Debugging output
 
-    $.ajax({
-      url: "/job/save-job/" + jobId + "/",
-      type: "POST",
-      headers: {
-        "X-CSRFToken": $('meta[name="csrf-token"]').attr("content"), // Use the CSRF token from meta tag
-      },
-      success: function (response) {
-        console.log(response); // Log the response
+  $.ajax({
+    url: "/job/save-job/" + jobId + "/",
+    type: "POST",
+    headers: {
+      "X-CSRFToken": $('meta[name="csrf-token"]').attr("content"), // Use the CSRF token from meta tag
+    },
+    success: function (response) {
+      console.log("Response received: ", response); // Log the response
 
+      // Check if bookmark icon is found
+      if (bookmarkIcon.length > 0) {
         // Toggle bookmark icon based on the action
         if (response.action === "saved") {
           bookmarkIcon
             .removeClass("far fa-bookmark text-gray-500")
             .addClass("fas fa-bookmark text-[#1e90ff]");
+          console.log("Bookmark saved. Updating UI.");
+          showNotification("Job saved successfully!"); // Show pop-up notification
         } else if (response.action === "removed") {
           bookmarkIcon
             .removeClass("fas fa-bookmark text-[#1e90ff]")
             .addClass("far fa-bookmark text-gray-500");
+          console.log("Bookmark removed. Updating UI.");
+          showNotification("Job removed from saved!"); // Show pop-up notification
         }
-      },
-      error: function (xhr, status, error) {
-        console.error("Error occurred:", status, error); // Log the error
-        alert("An error occurred while saving or removing the job.");
-      },
-    });
+
+        // If the job is applied, ensure the bookmark is filled in real-time
+        if (response.is_applied) {
+          bookmarkIcon
+            .removeClass("far fa-bookmark text-gray-500")
+            .addClass("fas fa-bookmark text-[#1e90ff]");
+          console.log("Job is applied, updating to filled bookmark.");
+        }
+      } else {
+        console.error("Bookmark icon not found.");
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error occurred:", status, error); // Log the error
+      alert("An error occurred while saving or removing the job.");
+    },
   });
+});
+
+// Function to display a pop-up notification
+function showNotification(message) {
+  const notification = $("#notification");
+  const messageElement = $("#notification-message");
+
+  // Check if notification element exists
+  if (notification.length > 0) {
+    messageElement.text(message);
+    notification.fadeIn(); // Show the notification
+
+    // Auto-hide after 5 seconds
+    setTimeout(function () {
+      notification.fadeOut();
+    }, 5000);
+
+    // Allow manual closing
+    $("#close-notification").on("click", function () {
+      notification.fadeOut();
+    });
+  } else {
+    console.error("Notification element not found.");
+  }
+}
+
+
   const phrases = ["Career Starts Here!"];
   const typingSpeed = 100; // Speed of typing
   const deletingSpeed = 50; // Speed of deleting
