@@ -10,7 +10,6 @@ import dotenv
 dotenv.load_dotenv()
 logger = logging.getLogger(__name__)
 
-@csrf_exempt
 def generate_questions_view(request):
     """
     Generates and stores multiple-choice questions for selected skills based on job title and entry level.

@@ -487,7 +487,6 @@ def report_test(request, job_id):
 from django.core.files.storage import default_storage
 from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
 def save_video(request):
     if request.method == 'POST' and request.FILES.get('video') and request.POST.get('application_id'):
         video = request.FILES['video']

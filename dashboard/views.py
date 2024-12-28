@@ -43,7 +43,6 @@ def get_suggested_skills(request):
 
 
 @require_POST
-@csrf_exempt
 def update_user_skills(request):
     if request.method == 'POST':
         try:
