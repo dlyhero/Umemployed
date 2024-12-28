@@ -142,29 +142,29 @@
             </div>
         </div>
 
-      <form id="upload-form" method="post" enctype="multipart/form-data" class="w-full h-full">
-            {% csrf_token %}
-            <label id="drop-area" for="input-file" class="w-full text-white h-full border flex flex-col justify-center items-center px-[20px] py-[10px] md:p-[30px] text-center bg-blue-500 rounded-xl">
-                <div id="file-view" class="w-full h-full rounded-xl md:border-2 md:border-dashed md:bg-blue-400 md:p-[20px]">
-                    <img class="hidden md:block w-24 mt-6 mx-auto" src="{% static 'build/img/upload.svg' %}" alt="" />
-                    <p>
-                        Choose files to upload <br />
-                        <span class="hidden md:block">or drag and drop here</span>
-                    </p>
+        <form id="upload-form" method="post" enctype="multipart/form-data" class="w-full h-full flex flex-col items-center">  
+            {% csrf_token %}  
+            <label id="drop-area" for="input-file" class="w-full text-white h-full border flex flex-col justify-center items-center px-4 py-4 md:p-8 text-center bg-blue-500 rounded-xl mb-4">  
+                <div id="file-view" class="w-full h-full rounded-xl md:border-2 md:border-dashed md:bg-blue-400 md:p-6 flex flex-col justify-center items-center">  
+                    <img class="hidden md:block w-24 mt-6 mb-4" src="{% static 'build/img/upload.svg' %}" alt="" />  
+                    <p class="text-lg">  
+                        Choose files to upload <br />  
+                        <span class="hidden md:block">or drag and drop here</span>  
+                    </p>  
                     {% if resume_doc %}  
-                        <p><strong>Last Updated:</strong> {{ resume_doc.updated_at }}</p>  
+                        <p class="mt-0" style="font-size: 12px; font-style: italic;"><strong>Current File:</strong> {{ resume_doc.file.name }}</p> <!-- Display the uploaded filename -->  
+                        <p class="mt-0" style="font-size: 12px; font-style: italic;"><strong>Last Updated:</strong> {{ resume_doc.updated_at }}</p>  
                     {% else %}  
-                        <p>No resume uploaded yet.</p>  
+                        <p class="mt-2">No resume uploaded yet.</p>  
                     {% endif %}  
-                    <input id="input-file" type="file" name="file" class="hidden">
-                </div>
-            </label>
-            <p id="file-name" class="mt-2 text-white text-center"></p> <!-- Filename Display -->
-            <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-4 transition-all">
-                Upload
-            </button>
-            <br>
-        </form>
+                    <input id="input-file" type="file" name="file" class="hidden">  
+                </div>  
+            </label>  
+            <p id="file-name" class="mt-2 text-white text-center"></p> <!-- Filename Display -->  
+            <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-4 transition-all">  
+                Upload  
+            </button>  
+        </form>  
 
         
 
