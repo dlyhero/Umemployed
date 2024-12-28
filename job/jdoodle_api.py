@@ -13,8 +13,8 @@ def execute_code(script, language, version_index):
     Returns:
         str: Output of the code execution.
     """
-    client_id = "c531a51504fda77d3bd97d4dce3d17b3"  # client ID
-    client_secret = "fc14913ecdfda745506f613f4a92c807e01395240bd19fc1390d7e2d6a756583"  # client Secret
+    client_id = ""  # client ID
+    client_secret = ""  # client Secret
 
     url = "https://api.jdoodle.com/v1/execute"
     headers = {"Content-Type": "application/json"}

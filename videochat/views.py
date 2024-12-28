@@ -32,7 +32,6 @@ def getToken(request):
 
     return JsonResponse({'token': token, 'uid': uid}, safe=False)
 
-
 @csrf_exempt
 def createMember(request):
     data = json.loads(request.body)
