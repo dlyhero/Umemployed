@@ -91,11 +91,11 @@
           {% if job.id in applied_job_ids %}
                 <span style="color: green;">(Already Applied)</span>
                 <a href="{% url 'job:confirm_evaluation' job.id %}">
-            <button
+            {% comment %} <button
               class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 transition-colors"
             >
               Apply
-            </button>
+            </button> {% endcomment %}
           </a>
                 
                 {% else %}
