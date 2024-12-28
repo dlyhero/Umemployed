@@ -42,7 +42,7 @@
         let room = e.target.room.value.toUpperCase()
         let name = e.target.name.value
 
-        let response = await fetch(`/chat/get_token/?channel=${room}`)
+        let response = await fetch(`/meet/get_token/?channel=${room}`)
         let data = await response.json()
 
         let UID = data.uid
@@ -53,7 +53,7 @@
         sessionStorage.setItem('room', room)
         sessionStorage.setItem('name', name)
 
-        window.open('/chat/room/', '_self')
+        window.open('/meet/room/', '_self')
     }
 
 

@@ -13,7 +13,6 @@ api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
 logger = logging.getLogger(__name__)
 
-@csrf_exempt
 def generate_questions_view(request):
     """
     Generates and stores multiple-choice questions for selected skills based on job title and entry level.
