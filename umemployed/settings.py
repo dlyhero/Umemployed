@@ -23,7 +23,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['umemployed-app-afec951f7ec7.herokuapp.com',]
+ALLOWED_HOSTS = ['umemployed-app-afec951f7ec7.herokuapp.com','localhost',]
 
 SITE_ID = 3
 

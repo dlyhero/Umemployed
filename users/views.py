@@ -169,6 +169,7 @@ def home(request):
     else:
         non_matching_jobs = list(filtered_jobs)
 
+    # Sort matching jobs by match percentage in descending order
     matching_jobs = sorted(matching_jobs, key=lambda x: x[1], reverse=True)
 
     # Paginate matching jobs
