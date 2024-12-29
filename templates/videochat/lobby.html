@@ -2,64 +2,109 @@
 {% load static %}
 {% block content %}
 
-<main>
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <section id="form-container">
+<script src="https://cdn.tailwindcss.com"></script>
 
-        <img id="logo" src="{% static 'videochat/images/chat-icon.png' %}"/>
+<style>
+    .playwrite {
+     
+  font-family: 'Cormorant Garamond', serif;
 
-        <div id="welcome-message">
-            <h1>UmEmployed</h1>
-            <p>You're about to join your meeting!</p>
+}
+
+.bgImg{
+    background-image: url(../../static/videochat/images/bg.svg);
+}
+
+@media (min-width: 768px) {
+    .bgImg {
+        background-image: url(../../static/videochat/images/bg.svg);
+    }
+}
+
+/* Media query for mobile */
+@media (max-width: 767px) {
+    .bgImg {
+        background-image: none;
+    }
+}
+
+</style>
+
+<main 
+    class="h-screen bg-contain bg-no-repeat bg-start  bgImg flex items-center justify-center lg:justify-end bg-white"
+>
+    <section  class="bg-white md:border rounded-lg p-8 w-[90%]  max-w-md md:mr-[13%]">
+        <img id="logo" src="{% static 'img/logo/logo-color.png' %}" class="block w-24 mx-auto mb-6 rounded-lg" />
+         <div class="playwrite my-4 font-semibold text-center text-3xl">UmEmployed</div>
+        <div id="welcome-message" class="text-center my-6">
+            <p class="text-gray-600 playwrite text-2xl">You're about to join your meeting!</p>
         </div>
 
-        <form id="form">
-            <div class="field-wrapper">
-
-                <div class="form-field">
-                    <label>Room ID:</label>
-                    <input name="room" placeholder="Enter room id as sent on email"  style="text-transform:uppercase"/>
+        <form id="form" class="space-y-6">
+            <div class="space-y-2">
+                <label class="block text-gray-700">Room ID:</label>
+                <div class="relative">
+                    <i class="fas fa-key absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                    <input 
+                        name="room" 
+                        placeholder="Enter room id as sent on email" 
+                        class="w-full border-gray-300 border-b focus:rounded-lg text-gray-700 pl-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase" 
+                    />
                 </div>
+            </div>
 
-                <div class="form-field">
-                    <label>Name:</label>
-                    <input name="name" placeholder="Enter your name..."  style="text-transform:uppercase"/>
+            <div class="space-y-2">
+                <label class="block text-gray-700">Name:</label>
+                <div class="relative">
+                    <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                    <input 
+                        name="name" 
+                        placeholder="Enter your name..." 
+                        class="w-full border-gray-300 border-b focus:rounded-lg text-gray-700 pl-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase"
+                    />
                 </div>
+            </div>
 
-                <div class="form-field">
-                    <input type="submit" value="Join Stream" />
-                </div>
+            <div>
+                <input 
+                    type="submit" 
+                    value="Join Stream" 
+                    class="w-full bg-[#1e90ff] text-white py-2 rounded-full cursor-pointer hover:bg-blue-700"
+                />
             </div>
         </form>
     </section>
 </main>
 
 <script>
-    let form = document.getElementById('form')
+    let form = document.getElementById('form');
 
     let handleSubmit = async (e) => {
-        e.preventDefault()
-        let room = e.target.room.value.toUpperCase()
-        let name = e.target.name.value
+        e.preventDefault();
+        let room = e.target.room.value.toUpperCase();
+        let name = e.target.name.value;
 
-        let response = await fetch(`/meet/get_token/?channel=${room}`)
-        let data = await response.json()
+        let response = await fetch(`/meet/get_token/?channel=${room}`);
+        let data = await response.json();
 
-        let UID = data.uid
-        let token = data.token
+        let UID = data.uid;
+        let token = data.token;
 
-        sessionStorage.setItem('UID', UID)
-        sessionStorage.setItem('token', token)
-        sessionStorage.setItem('room', room)
-        sessionStorage.setItem('name', name)
+        sessionStorage.setItem('UID', UID);
+        sessionStorage.setItem('token', token);
+        sessionStorage.setItem('room', room);
+        sessionStorage.setItem('name', name);
 
-        window.open('/meet/room/', '_self')
-    }
+        window.open('/meet/room/', '_self');
+    };
 
-
-
-    form.addEventListener('submit', handleSubmit)
+    form.addEventListener('submit', handleSubmit);
 </script>
 
 {% endblock content %}
-

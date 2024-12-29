@@ -2,12 +2,116 @@
 {% load static %}
 {% block content %}
 
+<style>
+    /* ----------------- Room Styling ------------------ */
+    #room-name-wrapper {
+        text-align: center;
+        font-size: 18px;
+    }
+
+    #video-streams {
+        display: grid;
+        grid-auto-flow: column;
+        gap: 2px;
+        width: 95%;
+        height: 85vh;
+        margin: 0 auto;
+    }
+
+    .video-container {
+        max-height: 100%;
+        min-height: 350px;
+        border: 1px solid rgb(75, 93, 172);
+        border-radius: 5px;
+        background-color: rgba(198, 202, 219, 1);
+        position: relative;
+    }
+
+    .video-player {
+        height: 100%;
+        width: 100%;
+    }
+
+    .video-player > * {
+        border-radius: 5px;
+    }
+
+    .username-wrapper {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 9999;
+        background-color: rgba(0, 0, 0, 0.3);
+        width: fit-content;
+        padding: 10px;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 14px;
+    }
+
+    @media screen and (max-width: 1650px) {
+        .video-container {
+            flex-basis: 300px;
+            min-height: 200px;
+        }
+    }
+
+    /* ----------------- Room Styling | Controls ------------------ */
+    #controls-wrapper {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        column-gap: 1em;
+        position: fixed;
+        bottom: 20px;
+    }
+
+    .control-icon {
+        height: 20px;
+        width: 20px;
+        background-color: #fff;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    #leave-btn {
+        background-color: rgb(255, 80, 80, 1);
+    }
+</style>
+
+<script>
+    const container = document.getElementById("video-streams");
+
+    function updateGridLayout() {
+        const children = container.children.length;
+
+        if (children === 1) {
+            container.style.gridTemplateColumns = "1fr";
+            container.style.gridTemplateRows = "auto";
+        } else {
+            container.style.gridTemplateColumns = "repeat(auto-fit, minmax(300px, 1fr))";
+            container.style.gridAutoFlow = "column";
+        }
+    }
+
+    // Call on load
+    updateGridLayout();
+
+    // Add a MutationObserver to dynamically adjust layout when content changes
+    const observer = new MutationObserver(updateGridLayout);
+
+    observer.observe(container, {
+        childList: true,
+    });
+</script>
+
 <main>
     <section id="room-name-wrapper">
         <p>Room ID: <span id="room-name"></span></p>
     </section>
 
-    <section id="video-streams"></section>
+    <section id="video-streams" class=""></section>
 
     <section id="controls-wrapper">
         <div class="icon-wrapper">
@@ -23,7 +127,6 @@
         </div>
     </section>
 </main>
-
 
 <script type="text/javascript" src="{% static 'videochat/assets/AgoraRTC_N-4.8.0.js' %}"></script>
 <script type="text/javascript" src="{% static 'videochat/js/streams.js' %}" ></script>
