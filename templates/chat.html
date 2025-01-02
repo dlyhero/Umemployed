@@ -118,7 +118,7 @@
           </div>
         </div>
 
-        <div class="chat-container chat-room z-0 h-full py-24 overflow-y-auto relative">
+        <div class="chat-container chat-room z-0 h-full py-24 overflow-y-auto relative" id="chatContainer">
           <div class="p-4 flex flex-col space-y-5" id="messagess">
             {% for date, messages in messages_by_date.items %}
               <div class="today-date flex items-center gap-2">
@@ -263,7 +263,7 @@
     
     // Function to scroll to the bottom of the messages container
     function scrollToBottom() {
-      var messageContainer = document.getElementById('messagess')
+      var messageContainer = document.getElementById('chatContainer')
       messageContainer.scrollTop = messageContainer.scrollHeight
     }
     
@@ -315,6 +315,8 @@
       });
     });
   });
+  
+
 </script>
 
   {% block footer %}
