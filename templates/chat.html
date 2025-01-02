@@ -85,7 +85,7 @@
         <div class="contacts rounded h-[90vh] lg:h-[80vh] overflow-y-auto mt-28 bg-white px-2 py-6 border-y flex flex-col gapx-2 gap-y-5">
           {% for room in rooms %}
             <a href="{% url 'messaging:chat' room.id %}">
-              <div class="contact border hover:bg-blue-50 p-2 rounded-lg flex items-center gap-2" onclick="openChatRoom()">
+              <div class="contact border hover:bg-blue-50 p-2 rounded-lg flex items-center gap-2">
                 <div class="image-wrap p-3 rounded-full bg-gray-100">
                   {% if room.participant2 == request.user %}
                     <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ room.participant1.resume.profile_image.url }}" alt="" />
@@ -279,26 +279,43 @@
     })
   </script>
   <script>
-    function openChatRoom() {
-      const inbox = document.querySelector('.inbox')
-      const chat = document.querySelector('.chat')
-    
-      if (chat) {
-        inbox.style.display = 'none' // Hide the inbox
-        chat.classList.add('show') // Show the chat
-      }
+  function openChatRoom() {
+    const inbox = document.querySelector('.inbox');
+    const chat = document.querySelector('.chat');
+
+    if (chat) {
+      inbox.style.display = 'none'; // Hide inbox
+      chat.classList.remove('hidden'); // Show chat
+      chat.classList.add('show'); // Add 'show' class
     }
-    
-    function backToInbox() {
-      const inbox = document.querySelector('.inbox')
-      const chat = document.querySelector('.chat')
-    
-      if (chat) {
-        chat.classList.remove('show') // Hide the chat
-        inbox.style.display = 'block' // Show the inbox
-      }
+  }
+
+  function backToInbox() {
+    const inbox = document.querySelector('.inbox');
+    const chat = document.querySelector('.chat');
+
+    if (chat) {
+      chat.classList.remove('show'); // Hide chat
+      chat.classList.add('hidden'); // Add 'hidden' class
+      inbox.style.display = 'block'; // Show inbox
     }
-  </script>
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const isMobile = window.innerWidth <= 768; // Check if the device is mobile
+    if (isMobile) {
+      openChatRoom(); // Show chat view by default on mobile
+    }
+
+    const contacts = document.querySelectorAll(".contact");
+    contacts.forEach(contact => {
+      contact.addEventListener("click", function (event) {
+        if (isMobile) {
+        }
+      });
+    });
+  });
+</script>
 
   {% block footer %}
 
