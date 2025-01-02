@@ -1,122 +1,123 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-    <title>Message | UmEmployed</title>
-{% endblock title %}
+  <title>Message | UmEmployed</title>
+{% endblock %}
 {% block custom_css %}
-<style>
-  header{
-    border-bottom: 1px solid gray;
-  }
-  .chat-body{
+  <style>
+    header {
+      border-bottom: 1px solid gray;
+    }
+    .chat-body {
       height: 100vh;
       margin-bottom: 0;
       padding: 0;
       overflow: hidden;
-  }
-
-  /* Mobile Layout Adjustments */
-  @media (max-width: 768px) {
-    .inbox {
-      display: block;  /* Ensure inbox is shown */
     }
-    .chat {
-      display: none;  /* Hide chat initially */
+    
+    /* Mobile Layout Adjustments */
+    @media (max-width: 768px) {
+      .inbox {
+        display: block; /* Ensure inbox is shown */
+      }
+      .chat {
+        display: none; /* Hide chat initially */
+      }
+      .chat.show {
+        display: block; /* Show chat when contact is clicked */
+      }
     }
-    .chat.show {
-      display: block;  /* Show chat when contact is clicked */
+    
+    /* Desktop Layout: Inbox and Chat side by side */
+    @media (min-width: 768px) {
+      .inbox {
+        display: block; /* Show inbox */
+      }
+      .chat {
+        display: block; /* Show chat */
+      }
     }
-  }
-
-  /* Desktop Layout: Inbox and Chat side by side */
-  @media (min-width: 768px) {
-    .inbox {
-      display: block;  /* Show inbox */
+    
+    .msg-profile {
+      border-radius: 50%;
+      object-fit: cover;
     }
-    .chat {
-      display: block;  /* Show chat */
+    
+    .bubble.send::before {
+      top: -8px;
+      left: 10px;
+      border-bottom: 10px solid #e7e5e5;
     }
-  }
-
-  .msg-profile {
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .bubble.send::before {
-    top: -8px;
-    left: 10px;
-    border-bottom: 10px solid #e7e5e5;
-  }
-
-  .bubble.receive::before {
-    border-bottom: 10px solid #1e90ff;
-    top: -8px;
-    right: 10px;
-  }
-
-  .bubble::before {
-    content: '';
-    position: absolute;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-  }
-
-  .bubble {
-    position: relative;
-    border-radius: 10px;
-  }
-
-  .bubble p {
-    margin: 0;
-  }v
-
-  .message {
-    word-wrap: break-word;
-  }
-</style>
-{% endblock custom_css %}
+    
+    .bubble.receive::before {
+      border-bottom: 10px solid #1e90ff;
+      top: -8px;
+      right: 10px;
+    }
+    
+    .bubble::before {
+      content: '';
+      position: absolute;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+    }
+    
+    .bubble {
+      position: relative;
+      border-radius: 10px;
+    }
+    
+    .bubble p {
+      margin: 0;
+    }
+    v .message {
+      word-wrap: break-word;
+    }
+  </style>
+{% endblock %}
 {% block content %}
-<div class="chat-body">
+  <div class="chat-body">
     <div class="Chat-wrapper container mx-auto h-screen flex border rounded">
       <div class="inbox relative bg-gray-50 w-full lg:w-[40%]">
         <div class="header border text-xl font-semibold p-7 bg-white text-center absolute top-0 left-0 right-0 border-b">
           <h1>Messages</h1>
         </div>
         <div class="contacts rounded h-[90vh] lg:h-[80vh] overflow-y-auto mt-28 bg-white px-2 py-6 border-y flex flex-col gapx-2 gap-y-5">
-    {% for room in rooms %}
-        <a href="{% url 'messaging:chat' room.id %}">
-            <div class="contact border hover:bg-blue-50 p-2 rounded-lg flex items-center gap-2" onclick="openChatRoom()">
+          {% for room in rooms %}
+            <a href="{% url 'messaging:chat' room.id %}">
+              <div class="contact border hover:bg-blue-50 p-2 rounded-lg flex items-center gap-2" onclick="openChatRoom()">
                 <div class="image-wrap p-3 rounded-full bg-gray-100">
-                    {% if room.participant2 == request.user %}
-                        <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ room.participant1.resume.profile_image.url }}" alt="" />
-                    {% else %}
-                        <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ room.participant2.resume.profile_image.url }}" alt="" />
-                    {% endif %}
+                  {% if room.participant2 == request.user %}
+                    <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ room.participant1.resume.profile_image.url }}" alt="" />
+                  {% else %}
+                    <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ room.participant2.resume.profile_image.url }}" alt="" />
+                  {% endif %}
                 </div>
                 <div class="contact-name text-[18px] font-semibold text-gray-800">
-                    {% if room.participant2 == request.user %}
-                        {{ room.participant1.first_name }} {{ room.participant1.last_name }}
-                    {% else %}
-                        {{ room.participant2.first_name }} {{ room.participant2.last_name }}
-                    {% endif %}
+                  {% if room.participant2 == request.user %}
+                    {{ room.participant1.first_name }} {{ room.participant1.last_name }}
+                  {% else %}
+                    {{ room.participant2.first_name }} {{ room.participant2.last_name }}
+                  {% endif %}
                 </div>
-            </div>
-        </a>
-    {% empty %}
-        <div class="text-center text-gray-600 text-lg">No conversations found.</div>
-    {% endfor %}
-</div>
+              </div>
+            </a>
+          {% empty %}
+            <div class="text-center text-gray-600 text-lg">No conversations found.</div>
+          {% endfor %}
+        </div>
       </div>
       <div class="chat hidden lg:block border-l w-full lg:w-[60%] h-full relative">
-        <div class="chat-header bg-white absolute z-50 left-0 right-0 top-0 border p-2 flex flex-col gap-2">
+        <div class="chat-header bg-white absolute z-50 left-0 right-0 top-0 border p-2 flex items-center gap-2">
+          <button onclick="backToInbox()" class="text-gray-600 hover:text-gray-800"><i class="fas fa-arrow-left text-lg"></i></button>
           <div class="contact flex items-center gap-2">
             <div class="image-wrap p-3 rounded-full bg-gray-100">
-              <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{other_user.resume.profile_image.url}}" alt="" />
+              <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ user.resume.profile_image.url }}" alt="" />
             </div>
             <div class="contact-name text-[18px] font-semibold text-gray-800">{{ other_user.first_name }} {{ other_user.last_name }}</div>
           </div>
         </div>
+
         <div class="chat-container chat-room z-0 h-full py-24 overflow-y-auto relative">
           <div class="p-4 flex flex-col space-y-5" id="messagess">
             {% for date, messages in messages_by_date.items %}
@@ -127,9 +128,13 @@
               </div>
               {% for message in messages %}
                 <div class="{% if message.sender == request.user %}
+                    
                     sender flex space-x-2 flex justify-end
+
                   {% else %}
+                    
                     receiver flex space-x-2
+
                   {% endif %}">
                   {% if message.sender == request.user %}
                     <div class="sender-msg bubble receive flex flex-col p-2 bg-[#1e90ff] text-white min-w-[100px] w-fit w-[80%]">
@@ -180,102 +185,122 @@
           <div id="sticker-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
             <div class="bg-white rounded-lg p-6">
               <h3 class="text-xl font-semibold mb-4">Pick a Sticker</h3>
-              <div class="grid grid-cols-4 gap-4">
-                
-              </div>
+              <div class="grid grid-cols-4 gap-4"></div>
               <button type="button" id="close-sticker" class="p-2 bg-gray-300 text-black rounded-full hover:bg-gray-400 transition-all mt-4">Close</button>
             </div>
           </div>
         </form>
       </div>
     </div>
-    </div>
-    <script>
-      const conversationId = '{{ conversation.id }}'
-      let chatSocket
-      
-      function connectWebSocket() {
-        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
-        chatSocket = new WebSocket(protocol + window.location.host + '/ws/chat/' + conversationId + '/')
-      
-        chatSocket.onmessage = function (e) {
-  const data = JSON.parse(e.data);
-  const messageDiv = document.createElement('div');
-  
-  if (data.sender === '{{ request.user.username }}') {
-    messageDiv.className = 'sender flex space-x-2 justify-end';
-    messageDiv.innerHTML = `
-      <div class="sender-msg bubble receive flex flex-col p-2 bg-[#1e90ff] text-white min-w-[100px] w-fit w-[80%]">
-        <div class="message text">${data.message}</div>
-        <div class="date text-right">${new Date().toLocaleTimeString()}</div>
-      </div>
-    `;
-  } else {
-    messageDiv.className = 'receiver flex space-x-2';
-    messageDiv.innerHTML = `
-      <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ other_user.resume.profile_image.url }}" alt="" />
-      <div class="receiver-msg mt-8 bubble send flex flex-col p-2 bg-gray-100 text-gray-700 min-w-[100px] w-fit w-[80%]">
-        <div class="message">${data.message}</div>
-        <div class="date text-right text-gray-500">${new Date().toLocaleTimeString()}</div>
-      </div>
-    `;
-  }
+  </div>
+  <script>
+    const conversationId = '{{ conversation.id }}'
+    let chatSocket
+    
+    function connectWebSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
+      chatSocket = new WebSocket(protocol + window.location.host + '/ws/chat/' + conversationId + '/')
+    
+      chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data)
+        const messageDiv = document.createElement('div')
+    
+        if (data.sender === '{{ request.user.username }}') {
+          messageDiv.className = 'sender flex space-x-2 justify-end'
+          messageDiv.innerHTML = `
+          <div class="sender-msg bubble receive flex flex-col p-2 bg-[#1e90ff] text-white min-w-[100px] w-fit w-[80%]">
+            <div class="message text">${data.message}</div>
+            <div class="date text-right">${new Date().toLocaleTimeString()}</div>
+          </div>
+        `
+        } else {
+          messageDiv.className = 'receiver flex space-x-2'
+          messageDiv.innerHTML = `
+          <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ other_user.resume.profile_image.url }}" alt="" />
+          <div class="receiver-msg mt-8 bubble send flex flex-col p-2 bg-gray-100 text-gray-700 min-w-[100px] w-fit w-[80%]">
+            <div class="message">${data.message}</div>
+            <div class="date text-right text-gray-500">${new Date().toLocaleTimeString()}</div>
+          </div>
+        `
+        }
+    
+        const messagesContainer = document.querySelector('#messagess')
+        messagesContainer.appendChild(messageDiv)
+        messagesContainer.scrollTop = messagesContainer.scrollHeight
+      }
+    
+      chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly. Reconnecting...')
+        setTimeout(connectWebSocket, 1000) // Retry connection after 1 second
+      }
+    }
+    
+    connectWebSocket()
+    
+    document.querySelector('#chat-message-input').focus()
+    document.querySelector('#chat-message-input').onkeyup = function (e) {
+      if (e.keyCode === 13) {
+        // Enter key
+        document.querySelector('#chat-message-submit').click()
+      }
+    }
+    
+    document.querySelector('#chat-message-submit').onclick = function (e) {
+      e.preventDefault()
+      const messageInputDom = document.querySelector('#chat-message-input')
+      const message = messageInputDom.value.trim()
+    
+      if (message) {
+        chatSocket.send(
+          JSON.stringify({
+            message: message,
+            sender: '{{ request.user.username }}'
+          })
+        )
+        messageInputDom.value = ''
+      }
+    }
+    
+    // Function to scroll to the bottom of the messages container
+    function scrollToBottom() {
+      var messageContainer = document.getElementById('messagess')
+      messageContainer.scrollTop = messageContainer.scrollHeight
+    }
+    
+    // Scroll to the bottom when the page is loaded
+    window.onload = function () {
+      scrollToBottom()
+    }
+    
+    // Optionally, you can trigger this function after new messages are sent
+    const chatForm = document.getElementById('chat-form')
+    chatForm.addEventListener('submit', function () {
+      setTimeout(scrollToBottom, 100) // Scroll after message submission
+    })
+  </script>
+  <script>
+    function openChatRoom() {
+      const inbox = document.querySelector('.inbox')
+      const chat = document.querySelector('.chat')
+    
+      if (chat) {
+        inbox.style.display = 'none' // Hide the inbox
+        chat.classList.add('show') // Show the chat
+      }
+    }
+    
+    function backToInbox() {
+      const inbox = document.querySelector('.inbox')
+      const chat = document.querySelector('.chat')
+    
+      if (chat) {
+        chat.classList.remove('show') // Hide the chat
+        inbox.style.display = 'block' // Show the inbox
+      }
+    }
+  </script>
 
-  const messagesContainer = document.querySelector('#messagess');
-  messagesContainer.appendChild(messageDiv);
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
-};
-      
-        chatSocket.onclose = function (e) {
-          console.error('Chat socket closed unexpectedly. Reconnecting...')
-          setTimeout(connectWebSocket, 1000) // Retry connection after 1 second
-        }
-      }
-      
-      connectWebSocket()
-      
-      document.querySelector('#chat-message-input').focus()
-      document.querySelector('#chat-message-input').onkeyup = function (e) {
-        if (e.keyCode === 13) {
-          // Enter key
-          document.querySelector('#chat-message-submit').click()
-        }
-      }
-      
-      document.querySelector('#chat-message-submit').onclick = function (e) {
-        e.preventDefault()
-        const messageInputDom = document.querySelector('#chat-message-input')
-        const message = messageInputDom.value.trim()
-      
-        if (message) {
-          chatSocket.send(
-            JSON.stringify({
-              message: message,
-              sender: '{{ request.user.username }}'
-            })
-          )
-          messageInputDom.value = ''
-        }
-      }
-      
-      // Function to scroll to the bottom of the messages container
-      function scrollToBottom() {
-        var messageContainer = document.getElementById('messagess')
-        messageContainer.scrollTop = messageContainer.scrollHeight
-      }
-      
-      // Scroll to the bottom when the page is loaded
-      window.onload = function () {
-        scrollToBottom()
-      }
-      
-      // Optionally, you can trigger this function after new messages are sent
-      const chatForm = document.getElementById('chat-form')
-      chatForm.addEventListener('submit', function () {
-        setTimeout(scrollToBottom, 100) // Scroll after message submission
-      })
-    </script>
+  {% block footer %}
 
-{% block footer %}
-{% endblock footer %}
-{% endblock content %}
+  {% endblock %}
+{% endblock %}
