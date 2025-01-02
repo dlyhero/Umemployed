@@ -5,142 +5,167 @@
 {% endblock title %}
 {% block custom_css %}
 <style>
-  html, body {
-    height: 100%;
+  header{
+    border-bottom: 1px solid gray;
+  }
+  body{
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+  }
+
+  /* Mobile Layout Adjustments */
+  @media (max-width: 768px) {
+    .inbox {
+      display: block;  /* Ensure inbox is shown */
+    }
+    .chat {
+      display: none;  /* Hide chat initially */
+    }
+    .chat.show {
+      display: block;  /* Show chat when contact is clicked */
+    }
+  }
+
+  /* Desktop Layout: Inbox and Chat side by side */
+  @media (min-width: 768px) {
+    .inbox {
+      display: block;  /* Show inbox */
+    }
+    .chat {
+      display: block;  /* Show chat */
+    }
+  }
+
+  .msg-profile {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .bubble.send::before {
+    top: -8px;
+    left: 10px;
+    border-bottom: 10px solid #e7e5e5;
+  }
+
+  .bubble.receive::before {
+    border-bottom: 10px solid #1e90ff;
+    top: -8px;
+    right: 10px;
+  }
+
+  .bubble::before {
+    content: '';
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+
+  .bubble {
+    position: relative;
+    border-radius: 10px;
+  }
+
+  .bubble p {
     margin: 0;
-  }
+  }v
 
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: 85vh;
-  }
-
-  .content {
-    flex: 1;
-  }
-
-  .chat-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .chat-header {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  .chat-list {
-    list-style: none;
-    padding: 0;
-  }
-
-  .chat-list li {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    padding: 15px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-  }
-
-  .chat-list li:hover {
-    background-color: #f1f1f1;
-    transform: translateY(-2px);
-  }
-
-  .chat-list a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-  }
-
-  .chat-list a i {
-    margin-right: 10px;
-    color: #1e90ff;
-  }
-
-  .no-chats {
-    text-align: center;
-    color: #888;
-    font-size: 18px;
-    margin-top: 20px;
-  }
-
-  @media (max-width: 600px) {
-    .chat-container {
-      padding: 10px;
-    }
-
-    .chat-header {
-      font-size: 20px;
-    }
-
-    .chat-list li {
-      padding: 10px;
-    }
-
-    .no-chats {
-      font-size: 16px;
-    }
+  .message {
+    word-wrap: break-word;
   }
 </style>
 {% endblock custom_css %}
 {% block content %}
 <div class="wrapper">
-  <div class="content">
-    <div class="chat-container">
-      <h2 class="chat-header">Preciously Messaged</h2>
-      <ul class="chat-list">
-        {% for room in rooms %}
-          <li>
-            <a href="{% url 'messaging:chat' room.id %}">
-              <i class="fas fa-comments"></i>
-              Chat with 
-                {% if room.participant2 == request.user %}
-                    {{ room.participant1.first_name }} {{ room.participant1.last_name }}
-                {% else %}
-                    {{ room.participant2.first_name }} {{ room.participant2.last_name }}
-                {% endif %}
+  <div class="Chat-wrapper cborder mx-auto h-[91vh] md:h-[85vh] flex rounded">
+    <div class="inbox relative bg-gray-50 w-full lg:w-[40%]">
+        <div class="header border text-xl font-semibold p-7 bg-white text-center absolute top-0 left-0 right-0 border-b">
+            <h1>Inbox</h1>
+        </div>
+        <div class="contacts rounded h-[90vh] lg:h-[80vh] overflow-y-auto mt-28 bg-white px-2 py-6 border-y flex flex-col gapx-2 gap-y-5">
+          {% for room in rooms %}
+        <a href="{% url 'messaging:chat' room.id %}">
+            <div class="contact border hover:bg-blue-50 p-2 rounded-lg flex items-center gap-2" onclick="openChatRoom()">
+                <div class="image-wrap p-3 rounded-full bg-gray-100">
+                    {% if room.participant2 == request.user %}
+                        <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ room.participant1.resume.profile_image.url }}" alt="" />
+                    {% else %}
+                        <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ room.participant2.resume.profile_image.url }}" alt="" />
+                    {% endif %}
+                </div>
+                <div class="contact-name text-[18px] font-semibold text-gray-800">
+                    {% if room.participant2 == request.user %}
+                        {{ room.participant1.first_name }} {{ room.participant1.last_name }}
+                    {% else %}
+                        {{ room.participant2.first_name }} {{ room.participant2.last_name }}
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+    {% empty %}
+        <div class="text-center text-gray-600 text-lg">No conversations found.</div>
+    {% endfor %}
+        </div>
+    </div>
 
-            </a>
-          </li>
-        {% empty %}
-          <li class="no-chats">No chat rooms available.</li>
-        {% endfor %}
-      </ul>
+    <div class="chat hidden lg:block border-l w-full lg:w-[60%] h-full relative">
+        <div class="chat-header bg-white absolute z-50 left-0 right-0 top-0 border-b p-2 flex flex-col gap-2">
+            <div class="contact flex items-center gap-2">
+                <div class="image-wrap p-3 rounded-full bg-gray-100">
+                    <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{user.resume.profile_image.url}}" alt="" />
+                </div>
+                <div class="contact-name text-[18px] font-semibold text-gray-800">{{user.first_name}} {{user.last_name}}</div>
+            </div>
+        </div>
+        <div class="chat-room z-0 h-full py-24 overflow-y-auto relative">
+          <div class="p-4 flex flex-col space-y-5" id="messages-container">
+            <div class="text-center text-gray-600 text-lg">Click on a chat to start messaging.</div>
+          </div>
+        </div>
     </div>
   </div>
-  {% block footer %}
-  {% endblock footer %}
-  <footer class="text-gray-800 text-center p-3">
-    <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
-      <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
-      <div class="flex space-x-4 items-center">
-        <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300">
-          <i class="fab fa-twitter text-black"></i>
-        </a>
-        <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300">
-          <i class="fab fa-linkedin text-black"></i>
-        </a>
-        <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300">
-          <i class="fab fa-facebook text-black"></i>
-        </a>
-        <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
-      </div>
-      <div class="text-sm">
-        <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Privacy Policy</a>
-        <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
-      </div>
-    </div>
-  </footer>
 </div>
+
+<script>
+  // Function to toggle inbox and chat visibility on mobile
+  function openChatRoom() {
+      const inbox = document.querySelector('.inbox');
+      const chat = document.querySelector('.chat');
+      
+      // On mobile, hide inbox and show chat
+      if (window.innerWidth <= 768) {
+          inbox.style.display = 'none';  // Hide inbox
+          chat.classList.add('show');  // Show chat by adding the 'show' class
+      }
+  }
+
+  // Handle sending a message
+  document.getElementById('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const messageInput = document.getElementById('chat-message-input');
+      const messageText = messageInput.value.trim();
+      
+      if (messageText) {
+          const chatRoom = document.querySelector('.chat-room');
+          const messageDiv = document.createElement('div');
+          messageDiv.classList.add('sender', 'flex', 'space-x-2', 'justify-end', 'p-4');
+          
+          messageDiv.innerHTML = `
+              <div class="sender-msg mt-8 bubble receive flex flex-col p-2 bg-[#1e90ff] text-white w-fit min-w-[100px] max-w-[80%]">
+                  <div class="message">${messageText}</div>
+                  <div class="date text-right text-white">Just Now</div>
+              </div>
+          `;
+          chatRoom.appendChild(messageDiv);
+          chatRoom.scrollTop = chatRoom.scrollHeight;  // Scroll to bottom
+          messageInput.value = '';  // Clear input
+      }
+  });
+  
+</script>
+
+{% block footer %}
+{% endblock footer %}
 {% endblock content %}
