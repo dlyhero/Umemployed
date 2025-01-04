@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentSkill = "python"; // Default skill
   let questionSetIndex = 0;
   let timer;
-  let timeRemaining = 1200; // 5 minutes in seconds
+  let timeRemaining = totalTime; // dynamic time as calculated in views
 
   const skillButtons = document.querySelectorAll(".skill-btn");
   const questionSection = document.getElementById("question-section");
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function resetTimer() {
     clearInterval(timer);
-    timeRemaining = 1200; // 20 minutes in seconds
+    timeRemaining = totalTime; 
     updateTimerDisplay();
     timer = setInterval(() => {
       timeRemaining--;

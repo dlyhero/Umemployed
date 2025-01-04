@@ -284,15 +284,20 @@ def update_job(request, job_id):
     
 @login_required(login_url='login')
 def confirm_evaluation(request, job_id):
-    # Get the job object based on the job_id
     job = Job.objects.get(id=job_id)
+    
+    # Calculate the number of skills for the job
+    skills = job.requirements.all()
+    num_skills = skills.count()
+    
+    time_per_skill = 3 #minutes
+    total_time = num_skills * time_per_skill  
 
-    # Create a context dictionary with the data you want to pass to the template
     context = {
         'job': job,
+        'total_time': total_time,  
     }
 
-    # Render the confirmation template with the provided context
     return render(request, 'onboarding/confirm.html', context)
 
 @login_required(login_url='login')
@@ -345,6 +350,11 @@ def answer_job_questions(request, job_id):
     skills = job.requirements.all()
     last_skill = skills.last()  # Get the last skill based on the current ordering
     last_skill_id = last_skill.id if last_skill else None
+    
+    # Calculate the number of skills for the job
+    num_skills = skills.count()
+    time_per_skill = 3 * 60 
+    total_time = num_skills * time_per_skill  
 
     # Get or create an application instance
     application, created = Application.objects.get_or_create(user=user, job=job)
@@ -454,6 +464,7 @@ def answer_job_questions(request, job_id):
             'skills': skills,
             'job_id': job.id,
             'last_skill_id': last_skill_id,
+            'total_time': total_time,
         }
 
         return render(request, 'job/rounds/round1.html', context)
