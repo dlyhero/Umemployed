@@ -83,6 +83,8 @@
     .skill-btn:hover {
         opacity: 0.9;
     }
+    .skill-btn.active {
+        background: linear-gradient(to right, #4caf50, #388e3c);    }
 
     /* Modal Styles */
     .modal-overlay {
@@ -131,6 +133,44 @@
       object-fit: cover;
     }
    
+    /*for the scroller */
+    #questions-container {
+        max-height: 450px; /* Default height */
+        overflow-y: auto;
+    }
+
+    #questions-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #questions-container::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 4px;
+    }
+
+    #questions-container::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+    }
+
+    /* Adjust max-height for larger screens */
+    @media (min-height: 800px) {
+        #questions-container {
+            max-height: 450px;
+        }
+    }
+
+    @media (min-height: 1000px) {
+        #questions-container {
+            max-height: 500px;
+        }
+    }
+
+    /* Adjust max-height for smaller screens */
+    @media (max-height: 600px) {
+        #questions-container {
+            max-height: 300px;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -273,7 +313,8 @@
     
 
    <script>
-    const jobId = "{{ job.id }}"; // Add job_id to JavaScript
+    const jobId = "{{ job.id }}"; 
+    var totalTime = {{ total_time }};
 
 document.addEventListener("DOMContentLoaded", function() {
     const skillButtons = document.querySelectorAll(".skill-btn");
@@ -293,12 +334,19 @@ document.addEventListener("DOMContentLoaded", function() {
     // Initialize button visibility based on remainingSkillsCount
     updateButtonVisibility();
 
+    // Set the first skill button as active initially
+        skillButtons[0].classList.add("active");
+
     // Event listener for each skill button
     skillButtons.forEach((button, index) => {
         button.addEventListener("click", () => {
             currentSkillIndex = index;
             const skill = button.getAttribute("data-skill");
             fetchQuestionsForSkill(skill);
+
+            // Update active class
+            skillButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
         });
     });
 
@@ -310,6 +358,10 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(data => {
                 displayQuestions(data.questions);
                 showNextOrSubmit(); // Update the button visibility based on the current skill index
+
+                // Update active class
+                skillButtons.forEach(btn => btn.classList.remove("active"));
+                skillButtons[currentSkillIndex].classList.add("active");
             })
             .catch(error => console.error('Error fetching questions:', error));
     }
