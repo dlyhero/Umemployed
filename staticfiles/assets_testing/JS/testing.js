@@ -2,7 +2,11 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentSkill = "python"; // Default skill
   let questionSetIndex = 0;
   let timer;
+<<<<<<< HEAD
   let timeRemaining = 1200; // 5 minutes in seconds
+=======
+  let timeRemaining = totalTime; // dynamic time as calculated in views
+>>>>>>> 8765c97 (Merge pull request #99 from dlyhero/chat)
 
   const skillButtons = document.querySelectorAll(".skill-btn");
   const questionSection = document.getElementById("question-section");
@@ -64,7 +68,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function resetTimer() {
     clearInterval(timer);
+<<<<<<< HEAD
     timeRemaining = 1200; // 20 minutes in seconds
+=======
+    timeRemaining = totalTime; 
+>>>>>>> 8765c97 (Merge pull request #99 from dlyhero/chat)
     updateTimerDisplay();
     timer = setInterval(() => {
       timeRemaining--;

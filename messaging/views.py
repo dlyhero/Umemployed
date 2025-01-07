@@ -50,11 +50,48 @@ def inbox_view(request):
         'users': users
     }
     return render(request, 'inbox.html', context)
+<<<<<<< HEAD
 @login_required
 def chat_view(request, conversation_id):
     conversation = get_object_or_404(Conversation, id=conversation_id)
     messagess = ChatMessage.objects.filter(conversation=conversation).order_by('timestamp')
     return render(request, 'chat.html', {'conversation': conversation, 'messagess': messagess})
+=======
+from collections import defaultdict
+from django.utils import timezone
+
+@login_required
+def chat_view(request, conversation_id):
+    conversation = get_object_or_404(Conversation, id=conversation_id)
+    messages = ChatMessage.objects.filter(conversation=conversation).order_by('timestamp')
+    
+    # Get existing chat rooms
+    rooms = Conversation.objects.filter(participant1=request.user) | Conversation.objects.filter(participant2=request.user)
+    
+    # Get all users except the current user
+    users = User.objects.exclude(id=request.user.id)
+    
+    # Determine the other user in the conversation
+    if conversation.participant1 == request.user:
+        other_user = conversation.participant2
+    else:
+        other_user = conversation.participant1
+    
+    # Group messages by date
+    messages_by_date = defaultdict(list)
+    for message in messages:
+        message_date = message.timestamp.date()
+        messages_by_date[message_date].append(message)
+    
+    context = {
+        'conversation': conversation,
+        'messages_by_date': dict(messages_by_date),
+        'rooms': rooms,
+        'users': users,
+        'other_user': other_user
+    }
+    return render(request, 'chat.html', context)
+>>>>>>> 8765c97 (Merge pull request #99 from dlyhero/chat)
 
 
 from asgiref.sync import async_to_sync

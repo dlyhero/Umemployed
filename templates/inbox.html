@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}
     <title>Inbox | UmEmployed</title>
+<<<<<<< HEAD
     <link rel="stylesheet" href="./m.css">
 {% endblock title %}
 {% block custom_css %}
@@ -248,11 +249,85 @@
     .no-chats {
       font-size: 16px;
     }
+=======
+{% endblock title %}
+{% block custom_css %}
+<style>
+  header{
+    border-bottom: 1px solid gray;
+  }
+  body{
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+  }
+
+  /* Mobile Layout Adjustments */
+  @media (max-width: 768px) {
+    .inbox {
+      display: block;  /* Ensure inbox is shown */
+    }
+    .chat {
+      display: none;  /* Hide chat initially */
+    }
+    .chat.show {
+      display: block;  /* Show chat when contact is clicked */
+    }
+  }
+
+  /* Desktop Layout: Inbox and Chat side by side */
+  @media (min-width: 768px) {
+    .inbox {
+      display: block;  /* Show inbox */
+    }
+    .chat {
+      display: block;  /* Show chat */
+    }
+  }
+
+  .msg-profile {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .bubble.send::before {
+    top: -8px;
+    left: 10px;
+    border-bottom: 10px solid #e7e5e5;
+  }
+
+  .bubble.receive::before {
+    border-bottom: 10px solid #1e90ff;
+    top: -8px;
+    right: 10px;
+  }
+
+  .bubble::before {
+    content: '';
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+
+  .bubble {
+    position: relative;
+    border-radius: 10px;
+  }
+
+  .bubble p {
+    margin: 0;
+  }v
+
+  .message {
+    word-wrap: break-word;
+>>>>>>> 8765c97 (Merge pull request #99 from dlyhero/chat)
   }
 </style>
 {% endblock custom_css %}
 {% block content %}
 <div class="wrapper">
+<<<<<<< HEAD
   <div class="content">
     <div class="chat-container ">
       <h2 class="chat-header flex justify-between px-4 py-6 rounded-lg bg-slate-50">
@@ -332,3 +407,96 @@
   </footer>
 </div>
 {% endblock content %}
+=======
+  <div class="Chat-wrapper cborder mx-auto h-[91vh] md:h-[85vh] flex rounded">
+    <div class="inbox relative bg-gray-50 w-full lg:w-[40%]">
+        <div class="header border text-xl font-semibold p-7 bg-white text-center absolute top-0 left-0 right-0 border-b">
+            <h1>Inbox</h1>
+        </div>
+        <div class="contacts rounded h-[90vh] lg:h-[80vh] overflow-y-auto mt-28 bg-white px-2 py-6 border-y flex flex-col gapx-2 gap-y-5">
+          {% for room in rooms %}
+        <a href="{% url 'messaging:chat' room.id %}">
+            <div class="contact border hover:bg-blue-50 p-2 rounded-lg flex items-center gap-2" onclick="openChatRoom()">
+                <div class="image-wrap p-3 rounded-full bg-gray-100">
+                    {% if room.participant2 == request.user %}
+                        <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ room.participant1.resume.profile_image.url }}" alt="" />
+                    {% else %}
+                        <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{ room.participant2.resume.profile_image.url }}" alt="" />
+                    {% endif %}
+                </div>
+                <div class="contact-name text-[18px] font-semibold text-gray-800">
+                    {% if room.participant2 == request.user %}
+                        {{ room.participant1.first_name }} {{ room.participant1.last_name }}
+                    {% else %}
+                        {{ room.participant2.first_name }} {{ room.participant2.last_name }}
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+    {% empty %}
+        <div class="text-center text-gray-600 text-lg">No conversations found.</div>
+    {% endfor %}
+        </div>
+    </div>
+
+    <div class="chat hidden lg:block border-l w-full lg:w-[60%] h-full relative">
+        <div class="chat-header bg-white absolute z-50 left-0 right-0 top-0 border-b p-2 flex flex-col gap-2">
+            <div class="contact flex items-center gap-2">
+                <div class="image-wrap p-3 rounded-full bg-gray-100">
+                    <img class="msg-profile w-[34px] h-[34px] md:w-[44px] md:h-[44px]" src="{{user.resume.profile_image.url}}" alt="" />
+                </div>
+                <div class="contact-name text-[18px] font-semibold text-gray-800">{{user.first_name}} {{user.last_name}}</div>
+            </div>
+        </div>
+        <div class="chat-room z-0 h-full py-24 overflow-y-auto relative">
+          <div class="p-4 flex flex-col space-y-5" id="messages-container">
+            <div class="text-center text-gray-600 text-lg">Click on a chat to start messaging.</div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Function to toggle inbox and chat visibility on mobile
+  function openChatRoom() {
+      const inbox = document.querySelector('.inbox');
+      const chat = document.querySelector('.chat');
+      
+      // On mobile, hide inbox and show chat
+      if (window.innerWidth <= 768) {
+          inbox.style.display = 'none';  // Hide inbox
+          chat.classList.add('show');  // Show chat by adding the 'show' class
+      }
+  }
+
+  // Handle sending a message
+  document.getElementById('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const messageInput = document.getElementById('chat-message-input');
+      const messageText = messageInput.value.trim();
+      
+      if (messageText) {
+          const chatRoom = document.querySelector('.chat-room');
+          const messageDiv = document.createElement('div');
+          messageDiv.classList.add('sender', 'flex', 'space-x-2', 'justify-end', 'p-4');
+          
+          messageDiv.innerHTML = `
+              <div class="sender-msg mt-8 bubble receive flex flex-col p-2 bg-[#1e90ff] text-white w-fit min-w-[100px] max-w-[80%]">
+                  <div class="message">${messageText}</div>
+                  <div class="date text-right text-white">Just Now</div>
+              </div>
+          `;
+          chatRoom.appendChild(messageDiv);
+          chatRoom.scrollTop = chatRoom.scrollHeight;  // Scroll to bottom
+          messageInput.value = '';  // Clear input
+      }
+  });
+  
+</script>
+
+{% block footer %}
+{% endblock footer %}
+{% endblock content %}
+>>>>>>> 8765c97 (Merge pull request #99 from dlyhero/chat)
