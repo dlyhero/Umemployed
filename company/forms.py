@@ -13,6 +13,7 @@ from django import forms
 from django_countries.fields import CountryField  # Make sure to import CountryField
 from .models import Company  # Adjust the import based on your structure
 
+from job.models import Rating
 class UpdateCompanyForm(forms.ModelForm):
     country = CountryField().formfield()  # Include this if using CountryField
 
@@ -129,3 +130,12 @@ class CreateCompanyForm(forms.ModelForm):
         if not logo:
             raise forms.ValidationError('This field is required.')
         return logo
+#for recruiter rating a candidate    
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['stars', 'review']
+        widgets = {
+            'stars': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
+            'review': forms.Textarea(attrs={'rows': 4}),
+        }

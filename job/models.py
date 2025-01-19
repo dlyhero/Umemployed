@@ -346,3 +346,15 @@ class RetakeRequest(models.Model):
 
     def __str__(self):
         return f'Retake request by {self.user.username} for job {self.job.id}'
+    
+#allow recruiters to rate a candidate
+class Rating(models.Model):
+    candidate = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
+    recruiter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_ratings')
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    stars = models.IntegerField()
+    review = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.stars} stars for {self.candidate} by {self.recruiter}'

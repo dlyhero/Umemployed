@@ -11,9 +11,9 @@ from resume.views import calculate_skill_match
 
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
-from job.models import Job, Application
+from job.models import Job, Application, Rating
 from resume.models import Resume
-from .forms import UpdateCompanyForm
+from .forms import UpdateCompanyForm, RatingForm
 from .models import Company
 import random
 import logging
@@ -484,3 +484,29 @@ def create_interview(request):
         return JsonResponse({'message': 'Interview created successfully.'})
 
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+
+@login_required(login_url='login')
+def rate_candidate(request, candidate_id, job_id):
+    candidate = get_object_or_404(User, id=candidate_id)
+    job = get_object_or_404(Job, id=job_id)
+    recruiter = request.user
+
+    if request.method == 'POST':
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.candidate = candidate
+            rating.recruiter = recruiter
+            rating.job = job
+            rating.save()
+            return redirect('some_view_name')  # Redirect to a success page or the candidate's profile
+    else:
+        form = RatingForm()
+
+    context = {
+        'form': form,
+        'candidate': candidate,
+        'job': job,
+    }
+    return render(request, 'reviews/rate_candidate.html', context) 
