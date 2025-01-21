@@ -1,4 +1,4 @@
-FROM python:3.10.12
+FROM python:3.14.0a4
 
 # Install dependencies
 RUN apt-get update && apt-get install -y libmagic1 dnsutils
