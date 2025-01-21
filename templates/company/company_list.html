@@ -9,35 +9,49 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
 <script src="https://cdn.tailwindcss.com"></script> 
+
+<style>
+    /* Hide scrollbar for a cleaner look */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+.scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+</style>
 {% endblock %}
 
 {% block content %}
 <!-- Main Content -->
 <main class="container mx-auto max-w-6xl p-4 lg:p-0 mb-10">
-    <section>
-        <ul class="flex justify-start space-x-6 bg-white rounded-lg border-b p-[8px] border-gray-200">
+    <section class="bg-white rounded-lg shadow-sm p-4 mb-10">
+        <ul class="flex justify-start space-x-4 border-b border-gray-200 overflow-x-auto scrollbar-hide">
             <li>
                 <a href="{% url 'company-list' %}" target="_self"
-                    class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-[#1e90ff] transition-all duration-300">
-                    <span class="air3-tab-btn-text">All Companies</span>
+                    class="inline-block text-gray-800 font-medium py-2 px-6  border-b-4 border-blue-600 transition-all duration-300 hover:border-blue-800  truncate">
+                    All Companies
                 </a>
             </li>
             {% if user.is_authenticated %}
             <li>
                 <a href="{% url 'job:saved_jobs' %}" target="_self"
-                    class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-transparent hover:border-[#1e90ff] transition-all duration-300">
-                    <span class="air3-tab-btn-text">Saved</span>
+                    class="inline-block text-gray-600 font-medium py-2 px-6  border-b-4 border-transparent transition-all duration-300 hover:border-blue-600 ">
+                    Saved
                 </a>
             </li>
             <li>
                 <a href="{% url 'job:applied_jobs' %}" target="_self"
-                    class="text-gray-800 font-medium py-2 px-6 rounded-full border-b-4 border-transparent hover:border-[#1e90ff] transition-all duration-300">
-                    <span class="air3-tab-btn-text">Applied</span>
+                    class="inline-block text-gray-600 font-medium py-2 px-6  border-b-4 border-transparent transition-all duration-300 hover:border-blue-600 ">
+                    Applied
                 </a>
             </li>
             {% endif %}
         </ul>
     </section>
+    
+    
 
     <section id="search-ctn-mobile" class="my-5 lg:hidden p-2">
         <div class="search-wrapper flex mx-auto bg-white px-2 py-2 border rounded-full shadow sm:shadow-none">
@@ -58,74 +72,84 @@
         </div>
     </section>
 
-    <section class="my-10">
-        <div role="group" class="container mx-auto mb-6 md:mb-0">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0 w-full sm:w-fit">
-                    <h2 class="text-2xl font-bold mb-2 md:text-3xl">All Companies</h2>
-                </div>
-            </div>
-        </div>
+    <section class="text-center py-10 bg-blue-50 rounded-lg shadow-sm mb-12">
+        <h1 class="text-4xl font-extrabold text-blue-800 mb-4">Explore Top Companies</h1>
+        <p class="text-lg text-gray-600">Discover opportunities with leading organizations.</p>
     </section>
 
-    <section id="company-section">
-        <div class="company-list md:p-6 lg:p-2">
-            {% if companies %}
-                {% for company in companies %}
-                    <!-- Company Item -->
-                    <div class="company border-b py-4 relative bg-white shadow-md rounded-lg p-4 mb-4">
-                        <div class="flex flex-col md:flex-row justify-between items-start">
-                            <div class="flex-1">
-                                <div class="flex items-center mb-2">
-                                    <img class="w-12 h-12 rounded-full mr-4" src="{{company.logo.url}}" alt="{{company.name}} Logo" />
-                                    <div>
-                                        <h4 class="text-xl font-bold mb-1">
-                                            <a href="{% url 'company-detail' company.id %}" class="text-gray-800 hover:text-[#1e90ff] transition">
-                                                {{ company.name }}
-                                            </a>
-                                        </h4>
-                                        <p class="text-sm text-gray-500">{{ company.industry }}</p>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-gray-600">{{ company.location }}</p>
-                                <p class="text-sm text-gray-600">{{ company.size }} employees</p>
-                                <p class="text-sm text-gray-600 mt-1">{{ company.description|safe|truncatewords:20 }}</p>
-                                <p class="text-sm text-green-600 mt-1">{{ company.available_jobs }} available jobs</p>
-                            </div>
-                            <div class="flex justify-end items-start mt-2 md:mt-0 relative w-full sm:w-fit space-x-4">
-                                <!-- Additional buttons or actions can go here -->
-                            </div>
-                        </div>
-                        <div class="flex flex-row justify-end items-center mt-4 space-x-4">
-                            <a href="{% url 'company-detail' company.id %}">
-                                <button class="text-[#1e90ff] text-xs px-2 py-2 rounded-full border border-dotted border-[#1e90ff]">Explore Company</button>
-                            </a>
-                        </div>
+        <!-- Company Cards -->
+        <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Example Company Card -->
+            {% for company in companies %}
+            <div class="group relative bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
+                        <i class="fas fa-building text-blue-600 text-2xl"></i>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="flex justify-center items-center h-32">
-                    <p class="text-gray-600">No companies found, try revisiting any moment from now!</p>
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-800 group-hover:text-blue-600">{{ company.name }}</h2>
+                        <p class="text-sm text-gray-500">{{ company.location }}</p>
+                    </div>
                 </div>
-            {% endif %}
-
-            <!-- Pagination Controls -->
-            <div class="pagination flex justify-center items-center mt-6 space-x-2">
-                <button id="prev-page"
-                        class="pagination-btn flex items-center px-4 py-2 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                        disabled>
-                    Previous
-                </button>
-
-                <span class="text-gray-600">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
-
-                <button id="next-page"
-                        class="pagination-btn flex items-center px-4 py-2 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300">
-                    Next
-                </button>
+                <div class="mt-4 flex-1">
+                    <p class="text-sm text-gray-600 line-clamp-3">{{ company.description }}</p>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <span class="text-sm text-green-600 font-medium">{{ company.available_jobs }} Jobs Available</span>
+                    <a href="{% url 'company-detail' company.id %}" 
+                       class="text-blue-500 text-sm font-semibold hover:underline">
+                        Learn More
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
+            {% endfor %}
+        </section>
+
+        <section class="mt-12 flex items-center justify-center space-x-2 p-2">
+            <!-- Previous Button -->
+            <button 
+                class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        
+            <!-- Page Numbers -->
+            <ul class="flex items-center space-x-1">
+                <li>
+                    <button 
+                        class="w-10 h-10 flex items-center justify-center text-white bg-blue-600 rounded-lg font-semibold shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        1
+                    </button>
+                </li>
+                <li>
+                    <button 
+                        class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        2
+                    </button>
+                </li>
+                <li>
+                    <button 
+                        class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        3
+                    </button>
+                </li>
+                <li>
+                    <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+                </li>
+                <li>
+                    <button 
+                        class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        10
+                    </button>
+                </li>
+            </ul>
+        
+            <!-- Next Button -->
+            <button 
+                class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </section>
+        
 </main>
 
 <!-- JavaScript for Dropdowns -->
