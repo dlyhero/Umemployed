@@ -30,27 +30,26 @@
         <ul class="flex justify-start space-x-4 border-b border-gray-200 overflow-x-auto scrollbar-hide">
             <li>
                 <a href="{% url 'company-list' %}" target="_self"
-                    class="inline-block text-gray-800 font-medium py-2 px-6  border-b-4 border-[#1e90ff] transition-all duration-300 hover:border-blue-500  truncate">
+                    class="inline-block text-gray-800 font-medium py-2 px-6  border-b-4 border-[#1e90ff] transition-all duration-300 hover:border-blue-500 ">
                     All Companies
                 </a>
             </li>
             {% if user.is_authenticated %}
             <li>
                 <a href="{% url 'job:saved_jobs' %}" target="_self"
-                    class="inline-block text-gray-600 font-medium py-2 px-6  border-b-4 border-transparent transition-all duration-300 hover:border-[#1e90ff] ">
+                    class="inline-block text-gray-600 font-medium py-2 px-6  border-b-4 border-transparent transition-all duration-300 hover:biorder-[#1e90ff] ">
                     Saved
                 </a>
             </li>
             <li>
                 <a href="{% url 'job:applied_jobs' %}" target="_self"
-                    class="inline-block text-gray-600 font-medium py-2 px-6  border-b-4 border-transparent transition-all duration-300 hover:border-[#1e90ff] ">
+                    class="inline-block text-gray-600 font-medium py-2 px-6  border-b-4 border-transparent transition-all duration-300 hover:biorder-[#1e90ff] ">
                     Applied
                 </a>
             </li>
             {% endif %}
         </ul>
     </section>
-    
     
 
     <section id="search-ctn-mobile" class="my-5 lg:hidden p-2">
