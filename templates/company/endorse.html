@@ -11,14 +11,35 @@
     />
 <script src="https://cdn.tailwindcss.com"></script> 
 
+<style>
+    body{
+        background-color: #f9fafb;
+    }
+</style>
+
 
 {% endblock %}
 
 {% block content %}
-<main class=" min-h-screen">
-    <div class="max-w-7xl mx-auto p-6 lg:grid lg:grid-cols-12 gap-8">
-        <!-- Left Sidebar -->
-        <aside class="hidden lg:block lg:col-span-3 bg-white h-fit rounded-lg p-6 border border-gray-200">
+<main class="min-h-screen flex flex-col items-center  p-4 relative ">
+    <div id="star-rating-section" class="text-center self-center mt-auto mb-auto">
+        <h1 class="text-2xl font-semibold text-[#1e90ff] mb-4">Rate the Candidate</h1>
+        <div class="flex justify-center space-x-2 mb-6">
+            <i class="far fa-star text-[#FFD700] text-4xl cursor-pointer hover:text-[#1e90ff]" data-rating="1"></i>
+            <i class="far fa-star text-[#FFD700] text-4xl cursor-pointer hover:text-[#1e90ff]" data-rating="2"></i>
+            <i class="far fa-star text-[#FFD700] text-4xl cursor-pointer hover:text-[#1e90ff]" data-rating="3"></i>
+            <i class="far fa-star text-[#FFD700] text-4xl cursor-pointer hover:text-[#1e90ff]" data-rating="4"></i>
+            <i class="far fa-star text-[#FFD700] text-4xl cursor-pointer hover:text-[#1e90ff]" data-rating="5"></i>
+        </div>
+        <button id="proceed-button" class="hidden py-3 px-6 bg-[#1e90ff] text-white font-semibold rounded-full hover:bg-blue-600 transition">
+            Proceed
+        </button>
+    </div>
+
+    <div id="endorsement-section" class="hidden container max-w-xl-7xl mx-auto  h-fitmin-  w-full  sm:p-8 r border-gray-200 flex  gap-8">
+
+           <!-- Left Sidebar -->
+        <aside class="hidden lg:block w-[25%] bg-white h-fit rounded-lg p-6 border border-gray-200">
             <h2 class="text-xl font-semibold text-[#1e90ff] flex items-center gap-2 mb-4">
                 <i class="fas fa-info-circle"></i> Quick Links
             </h2>
@@ -46,61 +67,68 @@
             </ul>
         </aside>
 
-        <!-- Main Content -->
-        <section class="lg:col-span-6 bg-white h-fit p-2 md:p-8 md:border rounded-lg border-gray-200 w-full">
-            <h1 class="text-3xl font-semibold text-[#1e90ff] mb-6 text-center flex flex-col md:flex-row items-center justify-center gap-3">
-                <i class="fas fa-thumbs-up"></i> Endorse a Candidate
-            </h1>
-            <form action="/endorsement/submit" method="POST" class="space-y-6">
-                <!-- Candidate Name -->
-                <div>
-                    <label for="candidate-name" class="block text-gray-700 font-medium mb-2">Candidate Name</label>
-                    <input type="text" id="candidate-name" name="candidate_name" 
-                           placeholder="Enter the candidate's name"
-                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition" 
-                           required>
-                </div>
+        <div class="flex-1 sm:bg-white sm:border rounded-lg p-6">
+            <h1 class="text-2xl  sm:text-3xl font-semibold text-[#1e90ff] text-center mb-6">Endorse the Candidate</h1>
+        <form action="/endorsement/submit" method="POST" class="space-y-6">
+            <!-- Candidate and Endorser Info -->
+            <div>
+                <label for="candidate-name" class="block text-gray-700 font-medium mb-2">Candidate Name</label>
+                <input type="text" id="candidate-name" name="candidate_name" 
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-600" 
+                       value="{{ candidate_name }}" readonly>
+            </div>
+            <div>
+                <label for="endorser-name" class="block text-gray-700 font-medium mb-2">Your Name</label>
+                <input type="text" id="endorser-name" name="endorser_name" 
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-600" 
+                       value="{{ endorser_name }}" readonly>
+            </div>
 
-                <!-- Endorser Name -->
-                <div>
-                    <label for="endorser-name" class="block text-gray-700 font-medium mb-2">Your Name</label>
-                    <input type="text" id="endorser-name" name="endorser_name" 
-                           placeholder="Enter your name"
-                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition" 
-                           required>
-                </div>
+            <!-- Survey Questions -->
+            <div>
+                <label for="professionalism" class="block text-gray-700 font-medium mb-2">How would you rate the candidate's professionalism?</label>
+                <select id="professionalism" name="professionalism" 
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition">
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Average">Average</option>
+                    <option value="Below Average">Below Average</option>
+                </select>
+            </div>
 
-                <!-- Endorser Email -->
-                <div>
-                    <label for="endorser-email" class="block text-gray-700 font-medium mb-2">Your Email</label>
-                    <input type="email" id="endorser-email" name="endorser_email" 
-                           placeholder="Enter your email address"
-                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition" 
-                           required>
+            <div>
+                <label for="skills" class="block text-gray-700 font-medium mb-2">Does the candidate possess the necessary skills for the role?</label>
+                <div class="space-y-2">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="skills" value="Yes" class="form-radio text-[#1e90ff]">
+                        <span class="ml-2 text-gray-700">Yes</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="skills" value="No" class="form-radio text-[#1e90ff]">
+                        <span class="ml-2 text-gray-700">No</span>
+                    </label>
                 </div>
+            </div>
 
-                <!-- Endorsement Text -->
-                <div>
-                    <label for="endorsement" class="block text-gray-700 font-medium mb-2">Your Endorsement</label>
-                    <textarea id="endorsement" name="endorsement" 
-                              placeholder="Write your endorsement here..."
-                              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition resize-none h-36" 
-                              required></textarea>
-                    <p class="text-sm text-gray-500 mt-2">Max 500 characters.</p>
-                </div>
-                <hr class="my-2">
-                <!-- Submit Button -->
-                <div class="text-center">
-                    <button type="submit" 
-                            class="w-full py-3 bg-[#1e90ff] text-white font-medium rounded-full shadow hover:bg-blue-600 transition">
-                        <i class="fas fa-paper-plane"></i> Submit Endorsement
-                    </button>
-                </div>
-            </form>
-        </section>
+            <div>
+                <label for="additional-comments" class="block text-gray-700 font-medium mb-2">Additional Comments</label>
+                <textarea id="additional-comments" name="additional_comments" 
+                          class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition resize-none h-36" 
+                          placeholder="Write any additional comments about the candidate here..."></textarea>
+            </div>
 
-        <!-- Right Sidebar -->
-        <aside class="hidden lg:block lg:col-span-3 bg-white h-fit rounded-lg p-6 border border-gray-200">
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" 
+                        class="w-full py-3 bg-[#1e90ff] text-white font-semibold rounded-full hover:bg-blue-600 transition">
+                    Submit Endorsement
+                </button>
+            </div>
+        </form>
+        </div>
+
+           <!-- Right Sidebar -->
+           <aside class="hidden lg:block w-[25%] bg-white h-fit rounded-lg p-6 border border-gray-200">
             <h2 class="text-xl font-semibold text-[#1e90ff] flex items-center gap-2 mb-4">
                 <i class="fas fa-lightbulb"></i> Why Endorse?
             </h2>
@@ -122,8 +150,79 @@
                 </li>
             </ul>
         </aside>
+        
     </div>
+
+    <div class="text-gray-800 text-center p-3 lg:absolute bottom-0">
+        <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
+          <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
+          <div class="flex space-x-4 items-center">
+            <a
+              href="{% url 'feature-not-implemented' %}"
+              class="text-white hover:text-gray-300"
+            >
+              <i class="fab fa-twitter text-black"></i>
+            </a>
+            <a
+              href="{% url 'feature-not-implemented' %}"
+              class="text-white hover:text-gray-300"
+            >
+              <i class="fab fa-linkedin text-black"></i>
+            </a>
+            <a
+              href="{% url 'feature-not-implemented' %}"
+              class="text-white hover:text-gray-300"
+            >
+              <i class="fab fa-facebook text-black"></i>
+            </a>
+            <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
+          </div>
+          <div class="text-sm ">
+                          
+            <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300"
+              >Privacy Policy
+              </a
+            >
+            
+            <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
+          </div>
+        </div>
+      </div>
 </main>
+
+{% block footer %}
+{% endblock footer %}
+
+
+
+<script>
+    // JavaScript for Star Rating and Transition
+    const stars = document.querySelectorAll('[data-rating]');
+    const proceedButton = document.getElementById('proceed-button');
+    const starRatingSection = document.getElementById('star-rating-section');
+    const endorsementSection = document.getElementById('endorsement-section');
+
+    let selectedRating = 0;
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            selectedRating = star.getAttribute('data-rating');
+            stars.forEach(s => s.classList.replace('fas', 'far'));
+            for (let i = 0; i < selectedRating; i++) {
+                stars[i].classList.replace('far', 'fas');
+            }
+            proceedButton.classList.remove('hidden');
+        });
+    });
+
+    proceedButton.addEventListener('click', () => {
+        starRatingSection.classList.add('hidden');
+        endorsementSection.classList.remove('hidden');
+    });
+</script>
+
+
+
 
 
 
