@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-semibold text-[#1e90ff] mb-6">People Related to your Company</h1>
+    
+    <!-- Search Input -->
+    <div class="mb-6">
+        <input type="text" id="search-input" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition" placeholder="Search by name or email...">
+    </div>
+    
+    <div id="user-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for user in related_users %}
+        <div class="bg-white p-6 rounded-lg shadow-md user-card">
+            <h2 class="text-xl font-semibold mb-2">{{ user.get_full_name }}</h2>
+            <p class="text-gray-700 mb-4">{{ user.email }}</p>
+            <a href="{% url 'rate_candidate' user.id %}" class="py-2 px-4 bg-[#1e90ff] text-white font-semibold rounded-full hover:bg-blue-600 transition">Endorse</a>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-6">
+        <button id="see-more-button" class="py-2 px-4 bg-[#1e90ff] text-white font-semibold rounded-full hover:bg-blue-600 transition">See More</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userCards = document.querySelectorAll('.user-card');
+        const seeMoreButton = document.getElementById('see-more-button');
+        const searchInput = document.getElementById('search-input');
+        let visibleCount = 6; // Number of initially visible user cards
+
+        // Hide user cards beyond the initial visible count
+        userCards.forEach((card, index) => {
+            if (index >= visibleCount) {
+                card.style.display = 'none';
+            }
+        });
+
+        // Show more user cards when "See More" button is clicked
+        seeMoreButton.addEventListener('click', () => {
+            let hiddenCards = Array.from(userCards).filter(card => card.style.display === 'none');
+            for (let i = 0; i < 6 && i < hiddenCards.length; i++) {
+                hiddenCards[i].style.display = 'block';
+            }
+            if (hiddenCards.length <= 6) {
+                seeMoreButton.style.display = 'none';
+            }
+        });
+
+        // Filter user cards based on search input
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            let visibleCards = 0;
+
+            userCards.forEach(card => {
+                const name = card.querySelector('h2').textContent.toLowerCase();
+                const email = card.querySelector('p').textContent.toLowerCase();
+                if (name.includes(query) || email.includes(query)) {
+                    card.style.display = 'block';
+                    visibleCards++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update the visibility of the "See More" button
+            if (visibleCards > visibleCount) {
+                seeMoreButton.style.display = 'block';
+            } else {
+                seeMoreButton.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

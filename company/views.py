@@ -523,3 +523,26 @@ def rate_candidate(request, candidate_id):
         'candidate': candidate,
     }
     return render(request, 'reviews/rate_candidate.html', context)
+
+@login_required(login_url='login')
+def company_related_users(request):
+    current_user = request.user
+    user_companies = WorkExperience.objects.filter(user=current_user).values_list('company_name', flat=True)
+    current_user_email_domain = current_user.email.split('@')[-1]
+
+    related_users = User.objects.filter(
+        work_experiences__company_name__in=user_companies
+    ).distinct().exclude(id=current_user.id)
+
+    # Include users with matching email domains
+    related_users_by_email = User.objects.filter(
+        email__endswith=current_user_email_domain
+    ).distinct().exclude(id=current_user.id)
+
+    # Combine both querysets
+    related_users = related_users | related_users_by_email
+
+    context = {
+        'related_users': related_users.distinct(),
+    }
+    return render(request, 'company/related_users.html', context)
