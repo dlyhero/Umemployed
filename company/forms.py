@@ -134,8 +134,14 @@ class CreateCompanyForm(forms.ModelForm):
 class RatingForm(forms.ModelForm):
     class Meta:
         model = Rating
-        fields = ['stars', 'review']
+        fields = ['stars', 'review', 'professionalism', 'skills', 'communication', 'teamwork', 'reliability']
         widgets = {
             'stars': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
             'review': forms.Textarea(attrs={'rows': 4}),
+            'professionalism': forms.Select(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')]),
+            'skills': forms.RadioSelect(choices=[('Yes', 'Yes'), ('No', 'No')]),
+            'communication': forms.Select(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')]),
+            'teamwork': forms.Select(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')]),
+            'reliability': forms.Select(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')]),
         }
+ 

@@ -350,11 +350,15 @@ class RetakeRequest(models.Model):
 #allow recruiters to rate a candidate
 class Rating(models.Model):
     candidate = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
-    recruiter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_ratings')
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    endorser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_ratings')
     stars = models.IntegerField()
     review = models.TextField(blank=True, null=True)
+    professionalism = models.CharField(max_length=50, choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')])
+    skills = models.CharField(max_length=3, choices=[('Yes', 'Yes'), ('No', 'No')])
+    communication = models.CharField(max_length=50, choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')])
+    teamwork = models.CharField(max_length=50, choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')])
+    reliability = models.CharField(max_length=50, choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')])
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.stars} stars for {self.candidate} by {self.recruiter}'
+        return f'{self.stars} stars for {self.candidate} by {self.endorser}'

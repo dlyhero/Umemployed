@@ -486,27 +486,40 @@ def create_interview(request):
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
 
+from django.http import HttpResponseForbidden
+from resume.models import WorkExperience
+
+
 @login_required(login_url='login')
-def rate_candidate(request, candidate_id, job_id):
+def rate_candidate(request, candidate_id):
     candidate = get_object_or_404(User, id=candidate_id)
-    job = get_object_or_404(Job, id=job_id)
-    recruiter = request.user
+    endorser = request.user
+
+    # Ensure the endorser and candidate have a past relationship in a company or matching email domains
+    candidate_companies = WorkExperience.objects.filter(user=candidate).values_list('company_name', flat=True)
+    endorser_companies = WorkExperience.objects.filter(user=endorser).values_list('company_name', flat=True)
+    candidate_email_domain = candidate.email.split('@')[-1]
+    endorser_email_domain = endorser.email.split('@')[-1]
+
+    if not (set(candidate_companies).intersection(set(endorser_companies)) or candidate_email_domain == endorser_email_domain):
+        return HttpResponseForbidden("You are not allowed to rate this candidate.")
+
+    # Check if a rating already exists
+    rating = Rating.objects.filter(candidate=candidate, endorser=endorser).first()
 
     if request.method == 'POST':
-        form = RatingForm(request.POST)
+        form = RatingForm(request.POST, instance=rating)
         if form.is_valid():
             rating = form.save(commit=False)
             rating.candidate = candidate
-            rating.recruiter = recruiter
-            rating.job = job
+            rating.endorser = endorser
             rating.save()
-            return redirect('some_view_name')  # Redirect to a success page or the candidate's profile
+            return redirect('home')  # Redirect to a success page or the candidate's profile
     else:
-        form = RatingForm()
+        form = RatingForm(instance=rating)
 
     context = {
         'form': form,
         'candidate': candidate,
-        'job': job,
     }
-    return render(request, 'reviews/rate_candidate.html', context) 
+    return render(request, 'reviews/rate_candidate.html', context)
