@@ -360,4 +360,10 @@ GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
 PAYPAL_RECEIVER_EMAIL = 'business@umemployed.com' 
 PAYPAL_TEST = True  # Set to False for live transactions
+
+# Stripe API Keys
+STRIPE_SECRET_KEY = 'sk_test_51Qp1jhGhd6oP7C9jd2Ko1M4cBGRtIJwVjCfHtfLlElDFfIXR3qwwN46WkXblx25PbMI67N2lK7tTHehm8m44qaMY003HAg2l7p'  
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51Qp1jhGhd6oP7C9j9VJRInFSl15GCtu5vEwYsHY9D4W5xkx3VmRp5VknrbsMsotcWUVbD77Dj1l1BWyNbZwUW2ms00JGD8wxts'  
+STRIPE_WEBHOOK_SECRET = 'your-stripe-webhook-secret' 
+
 django_heroku.settings(locals())

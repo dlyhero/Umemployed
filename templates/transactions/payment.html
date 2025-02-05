@@ -1,14 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Make a Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .payment-container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        form {
+            margin-bottom: 1.5rem;
+        }
+
+        button {
+            display: inline-block;
+            background-color: #6772e5;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #5469d4;
+        }
+
+        .paypal-button {
+            background-color: #ffc439;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .paypal-button:hover {
+            background-color: #e6b800;
+        }
+
+        .notice {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Pay with PayPal</h1>
-<form method="post" action="https://www.sandbox.paypal.com/cgi-bin/webscr">
-    {% csrf_token %}
-    {{ form.render }}  <!-- This should render the form with PayPal-specific fields -->
-</form>
+
+    <div class="payment-container">
+        <h1>Choose Payment Method</h1>
+
+        <!-- PayPal Form -->
+        <form method="post" action="https://www.sandbox.paypal.com/cgi-bin/webscr">
+            {% csrf_token %}
+            {{ form.render }}  <!-- This should render the form with PayPal-specific fields -->
+            <button type="submit" class="paypal-button">Pay with PayPal</button>
+        </form>
+
+        <!-- Stripe Button -->
+        <button id="stripeCheckoutButton">Pay with Stripe</button>
+
+        <!-- Payment notice -->
+        <div class="notice">All transactions are secure and encrypted.</div>
+    </div>
+
+    <!-- Load the Stripe.js library BEFORE initializing Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script type="text/javascript">
+        var stripe = Stripe('pk_test_51Qp1jhGhd6oP7C9j9VJRInFSl15GCtu5vEwYsHY9D4W5xkx3VmRp5VknrbsMsotcWUVbD77Dj1l1BWyNbZwUW2ms00JGD8wxts');  // Use the publishable key from settings
+
+        document.getElementById('stripeCheckoutButton').addEventListener('click', function () {
+            fetch('/transactions/stripe-payment/')
+                .then(response => response.json())
+                .then(data => {
+                    return stripe.redirectToCheckout({ sessionId: data.sessionId });
+                })
+                .then(result => {
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                });
+        });
+    </script>
 
 </body>
 </html>

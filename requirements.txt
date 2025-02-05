@@ -51,6 +51,7 @@ django-haystack==3.3.0
 django-heroku==0.3.1
 django-jazzmin==3.0.1
 django-js-asset==3.0.1
+django-paypal==2.1
 django-sass-processor==1.4.1
 django-storages==1.14.4
 django-timezone-field==7.1
@@ -133,6 +134,7 @@ social-auth-app-django==5.4.2
 social-auth-core==4.5.4
 soupsieve==2.6
 sqlparse==0.5.0
+stripe==11.5.0
 tomli==2.2.1
 tqdm==4.67.1
 Twisted==24.11.0
