@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Make a Payment</title>
+</head>
+<body>
+    <h1>Pay with PayPal</h1>
+<form method="post" action="https://www.sandbox.paypal.com/cgi-bin/webscr">
+    {% csrf_token %}
+    {{ form.render }}  <!-- This should render the form with PayPal-specific fields -->
+</form>
+
+</body>
+</html>

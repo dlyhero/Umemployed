@@ -56,7 +56,8 @@ urlpatterns = [
     path('accounts/resend-verification-email/', views.resend_verification_email, name='resend_verification_email'),
     #for video chat
     path('meet/', include('videochat.urls')),
-    
+    path('transactions/', include('transactions.urls')),
+    path('',include('paypal.standard.ipn.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
