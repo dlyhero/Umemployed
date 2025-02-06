@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay for Endorsement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+</head>
+<body class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="bg-white p-6 rounded-lg border container mx-auto max-w-2xl">
+        <div class="flex justify-center">
+            <div class="rounded-lg p-4">
+                <i class="fas fa-coins text-yellow-500 fa-3x"></i>  <!-- Coins icon -->
+
+            </div>
+        </div>
+        <h2 class="text-xl font-bold text-center mb-4 text-gray-800">Get <span class="candidate-name text-2xl font-bold text-[#1e90ff]">Kinsman's</span> endorsement for Just $5</h2>
+        <p class="text-center mb-4 p-1">Pay $5 to receive a personalized endorsement. Once paid, you'll get access to your endorsement timeline.</p>
+        <button id="payButton" class="w-full text-white bg-[#1e90ff]  px-6 py-3 rounded-full font-semibold">Pay $5</button>
+    </kdiv>
+    <script>
+        document.getElementById('payButton').addEventListener('click', function () {
+            // Redirect to payment processing page (or integrate with payment system)
+            alert('Payment successful! You will now be redirected to your endorsement timeline.');
+            window.location.href = '/endorsement-timeline';  // Redirect to timeline page after payment
+        });
+    </script>
+</body>
+</html>
