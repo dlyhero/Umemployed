@@ -1,11 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Payment Success</title>
-</head>
-<body>
-    <h1>Payment Successful</h1>
-    <p>Thank you for your payment. Your transaction has been completed successfully.</p>
-    <a href="{% url 'transaction_history' %}">View Transaction History</a>
-</body>
-</html>
+{% extends "resume/base.html" %} 
+{% load static %}
+{% load crispy_forms_tags %} 
+{% block search_bar %}
+{% endblock search_bar %}
+{% block content %}
+<main class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg border text-center max-w-2xl mt-[-15%]">
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h1>
+        <div class="flex justify-center">
+            <i class="fa-solid fa-circle-check text-green-500 text-6xl mb-4"></i>
+
+        </div>
+        <p class="text-gray-600">Your payment has been processed successfully.</p>
+        <p class="text-gray-600">You can now view the candidate endorsements.</p>
+        <div class="bg-gray-100 p-4 rounded-lg text-left my-6">
+            <p class="text-sm text-gray-600"><span class="font-semibold">Transaction ID:</span> {{transaction.transaction_id}}</p>
+            <p class="text-sm text-gray-600"><span class="font-semibold">Amount:</span> USD {{transaction.amount}}.00</p>
+            <p class="text-sm text-gray-600"><span class="font-semibold">Date:</span> {{transaction.created_at}}</p>
+        </div>
+        <a href="{% url 'paypal-payment' %}" class="mt-6 block bg-[#1e90ff] text-white py-2 px-4 rounded-full hover:bg-blue-500 transition font-semibold">Go to TimeLine</a>
+    </div>
+    <script src="https://kit.fontawesome.com/YOUR_FA_KIT.js" crossorigin="anonymous"></script>
+</main>
+{% endblock %}

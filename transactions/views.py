@@ -40,6 +40,8 @@ class PayPalPaymentView(View):
                 payment_method='paypal',  # Payment method as PayPal  
                 status='pending',  # Status starts as 'Pending'  
             )  
+            # Store the transaction ID in the session
+            request.session['transaction_id'] = transaction_id
 
         return render(request, 'transactions/payment.html', {'form': form})  
 
@@ -70,13 +72,38 @@ def transaction_history(request):
     return render(request, 'transactions/history.html', {'transactions': transactions})  
 
 
+from django.http import Http404
+
 def payment_success(request):  
-    return render(request, 'transactions/success.html')  
+    try:
+        # Assuming you have stored the transaction ID in the session
+        transaction_id = request.session.get('transaction_id')
+        if not transaction_id:
+            raise Http404("Transaction ID not found in session")
+
+        transaction = Transaction.objects.get(transaction_id=transaction_id)
+        transaction.status = 'completed'
+        transaction.save()
+        context = {'transaction': transaction}
+        return render(request, 'transactions/success.html', context)
+    except Transaction.DoesNotExist:
+        raise Http404("Transaction does not exist")
 
 
 def payment_cancel(request):  
-    return render(request, 'transactions/cancel.html')  
+    try:
+        # Assuming you have stored the transaction ID in the session
+        transaction_id = request.session.get('transaction_id')
+        if not transaction_id:
+            raise Http404("Transaction ID not found in session")
 
+        transaction = Transaction.objects.get(transaction_id=transaction_id)
+        transaction.status = 'failed'
+        transaction.save()
+        context = {'transaction': transaction}
+        return render(request, 'transactions/cancel.html', context)
+    except Transaction.DoesNotExist:
+        raise Http404("Transaction does not exist")
 
 class StripePaymentView(View):  
     def get(self, request, *args, **kwargs):  
@@ -110,6 +137,8 @@ class StripePaymentView(View):
                 payment_method='stripe',  
                 status='pending',  
             )  
+            # Store the transaction ID in the session
+            request.session['transaction_id'] = transaction_id
 
         return JsonResponse({'sessionId': session.id})  
 
@@ -145,3 +174,15 @@ def stripe_webhook(request):
             print(f"Transaction not found for session ID: {session['id']}")  
 
     return JsonResponse({'status': 'success'})
+
+from job.models import Rating 
+from django.shortcuts import render, get_object_or_404
+from users.models import User
+def candidate_endorsements(request, candidate_id):
+    candidate = get_object_or_404(User, id=candidate_id)
+    endorsements = Rating.objects.filter(candidate=candidate)
+    context = {
+        'candidate': candidate,
+        'endorsements': endorsements,
+    }
+    return render(request, 'job/candidate_endorsements.html', context)

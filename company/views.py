@@ -546,3 +546,9 @@ def company_related_users(request):
         'related_users': related_users.distinct(),
     }
     return render(request, 'company/related_users.html', context)
+
+#view related to recruiter starting to view applicants endorsements
+@login_required(login_url='login')
+def start_payment_for_endorsement(request, candidate_id):
+    candidate = get_object_or_404(User, id=candidate_id)
+    return render(request, 'company/payments/start_payment.html', {'candidate': candidate})
