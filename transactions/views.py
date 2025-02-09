@@ -10,12 +10,17 @@ from django.contrib.auth.decorators import login_required
 import stripe  
 from django.http import JsonResponse  
 from django.views.decorators.csrf import csrf_exempt  
-
+from django.http import HttpResponse
 # Initialize Stripe API key  
 stripe.api_key = settings.STRIPE_SECRET_KEY  
 
 class PayPalPaymentView(View):  
     def get(self, request, *args, **kwargs):  
+        candidate_id = request.session.get('candidate_id')
+        if not candidate_id:
+            return HttpResponse("Candidate ID not found in session", status=400)
+        
+        candidate = get_object_or_404(User, id=candidate_id)
         transaction_id = str(uuid.uuid4())  
         
         paypal_dict = {  
@@ -24,8 +29,8 @@ class PayPalPaymentView(View):
             'item_name': 'Test Item',  # Description of the item  
             'invoice': transaction_id,  # Unique transaction/invoice ID  
             'notify_url': request.build_absolute_uri('/transactions/paypal-ipn/'),  # IPN URL  
-            'return': request.build_absolute_uri('/transactions/success/'),  # URL to redirect after payment  
-            'cancel_return': request.build_absolute_uri('/transactions/cancel/'),  # Cancel URL  
+            'return': request.build_absolute_uri(f'/transactions/success/?candidate_id={candidate_id}'),  # URL to redirect after payment  
+            'cancel_return': request.build_absolute_uri(f'/transactions/cancel/?candidate_id={candidate_id}'),  # Cancel URL  
             'currency_code': 'USD',  # Currency code  
         }  
 
@@ -35,6 +40,7 @@ class PayPalPaymentView(View):
         if request.user.is_authenticated:  
             Transaction.objects.create(  
                 user=request.user,  
+                candidate=candidate,
                 transaction_id=transaction_id,  
                 amount=paypal_dict['amount'],  
                 payment_method='paypal',  # Payment method as PayPal  
@@ -47,7 +53,7 @@ class PayPalPaymentView(View):
 
     def post(self, request, *args, **kwargs):  
         # Handle the payment submission, usually done by PayPal automatically  
-        return redirect('payment_success')  # Redirect to success page after form submission  
+        return redirect('payment_success')   
 
 
 # IPN (Instant Payment Notification) View for PayPal  
@@ -76,15 +82,16 @@ from django.http import Http404
 
 def payment_success(request):  
     try:
-        # Assuming you have stored the transaction ID in the session
+        # Assuming you have stored the transaction ID and candidate ID in the session
         transaction_id = request.session.get('transaction_id')
-        if not transaction_id:
-            raise Http404("Transaction ID not found in session")
+        candidate_id = request.session.get('candidate_id')
+        if not transaction_id or not candidate_id:
+            raise Http404("Transaction ID or Candidate ID not found in session")
 
         transaction = Transaction.objects.get(transaction_id=transaction_id)
         transaction.status = 'completed'
         transaction.save()
-        context = {'transaction': transaction}
+        context = {'transaction': transaction, 'candidate_id': candidate_id}
         return render(request, 'transactions/success.html', context)
     except Transaction.DoesNotExist:
         raise Http404("Transaction does not exist")
@@ -92,21 +99,27 @@ def payment_success(request):
 
 def payment_cancel(request):  
     try:
-        # Assuming you have stored the transaction ID in the session
+        # Assuming you have stored the transaction ID and candidate ID in the session
         transaction_id = request.session.get('transaction_id')
-        if not transaction_id:
-            raise Http404("Transaction ID not found in session")
+        candidate_id = request.session.get('candidate_id')
+        if not transaction_id or not candidate_id:
+            raise Http404("Transaction ID or Candidate ID not found in session")
 
         transaction = Transaction.objects.get(transaction_id=transaction_id)
         transaction.status = 'failed'
         transaction.save()
-        context = {'transaction': transaction}
+        context = {'transaction': transaction, 'candidate_id': candidate_id}
         return render(request, 'transactions/cancel.html', context)
     except Transaction.DoesNotExist:
         raise Http404("Transaction does not exist")
 
 class StripePaymentView(View):  
     def get(self, request, *args, **kwargs):  
+        candidate_id = request.session.get('candidate_id')
+        if not candidate_id:
+            return HttpResponse("Candidate ID not found in session", status=400)
+        
+        candidate = get_object_or_404(User, id=candidate_id)
         amount = 500  # Amount in cents for Stripe ($5.00)  
         
         # Create Stripe Checkout Session  
@@ -121,8 +134,8 @@ class StripePaymentView(View):
                 'quantity': 1,  
             }],  
             mode='payment',  
-            success_url=request.build_absolute_uri('/transactions/success/'),  
-            cancel_url=request.build_absolute_uri('/transactions/cancel/'),  
+            success_url=request.build_absolute_uri(f'/transactions/success/?candidate_id={candidate_id}'),  
+            cancel_url=request.build_absolute_uri(f'/transactions/cancel/?candidate_id={candidate_id}'),  
         )  
 
         # Use Stripe's session ID as the transaction ID  
@@ -132,6 +145,7 @@ class StripePaymentView(View):
         if request.user.is_authenticated:  
             Transaction.objects.create(  
                 user=request.user,  
+                candidate=candidate,
                 transaction_id=transaction_id,  
                 amount=amount / 100,  # Convert cents to dollars  
                 payment_method='stripe',  
@@ -140,8 +154,7 @@ class StripePaymentView(View):
             # Store the transaction ID in the session
             request.session['transaction_id'] = transaction_id
 
-        return JsonResponse({'sessionId': session.id})  
-
+        return JsonResponse({'sessionId': session.id})
 
 # Webhook handler for Stripe events  
 @csrf_exempt  
@@ -178,8 +191,22 @@ def stripe_webhook(request):
 from job.models import Rating 
 from django.shortcuts import render, get_object_or_404
 from users.models import User
+from django.http import HttpResponseForbidden
+
+@login_required(login_url='login')
 def candidate_endorsements(request, candidate_id):
     candidate = get_object_or_404(User, id=candidate_id)
+    
+    # Check if the user has a completed transaction for this candidate
+    has_paid = Transaction.objects.filter(
+        user=request.user,
+        candidate=candidate,
+        status='completed'
+    ).exists()
+
+    if not has_paid:
+        return HttpResponseForbidden("You need to make a payment to view this candidate's endorsements.")
+
     endorsements = Rating.objects.filter(candidate=candidate)
     context = {
         'candidate': candidate,

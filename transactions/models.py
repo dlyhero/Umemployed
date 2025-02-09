@@ -18,7 +18,8 @@ class Transaction(models.Model):
         ('refunded', 'Refunded'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
+    candidate = models.ForeignKey(User, on_delete=models.CASCADE, related_name='candidate_transactions')
     transaction_id = models.CharField(max_length=100, unique=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)

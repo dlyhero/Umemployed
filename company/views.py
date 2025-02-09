@@ -547,8 +547,24 @@ def company_related_users(request):
     }
     return render(request, 'company/related_users.html', context)
 
+from transactions.models import Transaction
+from users.models import User
 #view related to recruiter starting to view applicants endorsements
 @login_required(login_url='login')
 def start_payment_for_endorsement(request, candidate_id):
     candidate = get_object_or_404(User, id=candidate_id)
+    
+    # Check if the user has a completed transaction for this candidate
+    has_paid = Transaction.objects.filter(
+        user=request.user,
+        candidate=candidate,
+        status='completed'
+    ).exists()
+
+    if has_paid:
+        # Redirect to the endorsements page if the user has already paid
+        return redirect('candidate_endorsements', candidate_id=candidate_id)
+    
+    # Store the candidate ID in the session
+    request.session['candidate_id'] = candidate_id
     return render(request, 'company/payments/start_payment.html', {'candidate': candidate})

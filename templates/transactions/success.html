@@ -18,7 +18,7 @@
             <p class="text-sm text-gray-600"><span class="font-semibold">Amount:</span> USD {{transaction.amount}}.00</p>
             <p class="text-sm text-gray-600"><span class="font-semibold">Date:</span> {{transaction.created_at}}</p>
         </div>
-        <a href="{% url 'paypal-payment' %}" class="mt-6 block bg-[#1e90ff] text-white py-2 px-4 rounded-full hover:bg-blue-500 transition font-semibold">Go to TimeLine</a>
+        <a href="{% url 'candidate_endorsements' candidate_id %}" class="mt-6 block bg-[#1e90ff] text-white py-2 px-4 rounded-full hover:bg-blue-500 transition font-semibold">Go to TimeLine</a>
     </div>
     <script src="https://kit.fontawesome.com/YOUR_FA_KIT.js" crossorigin="anonymous"></script>
 </main>
