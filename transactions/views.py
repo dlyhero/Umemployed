@@ -72,10 +72,11 @@ valid_ipn_received.connect(paypal_ipn)
 
 
 # Transaction History View for authenticated users  
-@login_required  
-def transaction_history(request):  
-    transactions = Transaction.objects.filter(user=request.user)  
-    return render(request, 'transactions/history.html', {'transactions': transactions})  
+
+@login_required
+def transaction_history(request):
+    transactions = Transaction.objects.filter(user=request.user).order_by('-created_at')  # Order by most recent first
+    return render(request, 'transactions/history.html', {'transactions': transactions})
 
 
 from django.http import Http404
