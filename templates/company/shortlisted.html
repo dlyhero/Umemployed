@@ -1,5 +1,5 @@
 
- {% extends 'resume/base.html' %}
+{% extends 'resume/base.html' %}
 {% load static %}
 {% block title %}
 <title>Proposals|UmEmployed</title>
@@ -31,7 +31,7 @@
 {% block content %}
 
   
-<main class="container mx-auto p-2 md:p-4 rounded-lg flex flex-col items-center ">
+<main class="container max-w-7xl mx-auto p-2 md:p-4 rounded-lg flex flex-col items-center ">
 
     <section class="w-full container p-2">
       <!-- Professional Tab List -->
@@ -102,10 +102,13 @@
                                 <div class="text-gray-500">{{ application.user.location }}</div>
                                 <div class="text-gray-600 line-clamp-2 text-wrap">{{application.user.resume.job_title}}</div>
                             </div>
+                            
                         </div>
                     </div>
-                    <div class="flex p-2 w-fit items-start space-x-2 md:mt-4">
-                        <button class="bg-gray-300 text-gray-700 rounded-full p-2" onclick="declineCandidate({{ application.job.id }}, {{ application.user.id }})">
+                    <div class=" p-2 w-fit items-start  md:mt-4">
+                      <div class="flex flex-col">
+                        <div class="thumbs flex space-x-2 space-y-2">
+                           <button class="bg-gray-300 text-gray-700 rounded-full p-2" onclick="declineCandidate({{ application.job.id }}, {{ application.user.id }})">
                             <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M5 15h3v2.5c0 1.17.64 2.2 1.62 2.73A4.992 4.992 0 0012 21v-3.5l2.905-3.08A3 3 0 0016 12V4a1 1 0 00-.999-1H6.265a.997.997 0 00-.998.75l-2.206 8.76a2.003 2.003 0 001.08 2.298c.277.131.58.197.886.193z" />
                             </svg>
@@ -117,11 +120,21 @@
                                 </svg>
                             </button>
                         </a>
-                        <a href="{% url 'messaging:start_chat' application.user.id %}">
+                          <a href="{% url 'messaging:start_chat' application.user.id %}">
                             <button class="hidden md:block border border-[#1e90ff] font-semibold text-[#1e90ff] rounded-full px-4 py-2">Message</button>
                         </a>
                         <button class="hidden md:block bg-[#1e90ff] font-semibold text-white rounded-full px-4 py-2 text-nowrap" onclick="viewDetails()">View Details</button>
-                        <button class="hidden md:block bg-green-500 font-semibold text-white rounded-full px-4 py-2 text-nowrap" onclick="openScheduleModal({{ application.user.id }}, '{{ application.job.title }}')">Schedule Interview</button>
+                        </div>
+                        <div class="xtrabtn flex gap-3 mt-2">
+                          <a href="{% url 'pay_endorsement' application.user.id %}">
+                            <button class="bg-[#1e90ff] text-white font-semibold px-4 py-2 rounded-full">Endorsements</button>
+                          </a>
+                          <button class="hidden md:block bg-green-500 font-semibold text-white rounded-full px-4 py-2 text-nowrap" onclick="openScheduleModal({{ application.user.id }}, '{{ application.job.title }}')">Schedule Interview</button>
+
+                        </div>
+                      </div>
+                       
+                      
                     </div>
                 </div>
 

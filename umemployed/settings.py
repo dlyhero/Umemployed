@@ -23,7 +23,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['umemployed-app-afec951f7ec7.herokuapp.com','localhost',]
+ALLOWED_HOSTS = ['umemployed-app-afec951f7ec7.herokuapp.com','localhost','7eef-129-0-60-130.ngrok-free.app']
 
 SITE_ID = 3
 
@@ -68,6 +68,9 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'videochat',
+    
+    'paypal.standard.ipn',
+    'transactions',
 ]
 
 ASGI_APPLICATION = 'umemployed.asgi.application'
@@ -237,7 +240,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-afec951f7ec7.herokuapp.com', 'http://127.0.0.1:8000', 'https://umemployed-development-8475c5e1c4b7.herokuapp.com',]
+CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-afec951f7ec7.herokuapp.com', 'http://127.0.0.1:8000', 'https://umemployed-development-8475c5e1c4b7.herokuapp.com','https://7eef-129-0-60-130.ngrok-free.app']
 
 
 
@@ -355,5 +358,12 @@ OPENAI_API_KEY = config('OPENAI_API_KEY')
 SECRET_KEY = config('SECRET_KEY')
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+PAYPAL_RECEIVER_EMAIL = 'business@umemployed.com' 
+PAYPAL_TEST = True  # Set to False for live transactions
+
+# Stripe API Keys
+STRIPE_SECRET_KEY = 'sk_test_51Qp1jhGhd6oP7C9jd2Ko1M4cBGRtIJwVjCfHtfLlElDFfIXR3qwwN46WkXblx25PbMI67N2lK7tTHehm8m44qaMY003HAg2l7p'  
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51Qp1jhGhd6oP7C9j9VJRInFSl15GCtu5vEwYsHY9D4W5xkx3VmRp5VknrbsMsotcWUVbD77Dj1l1BWyNbZwUW2ms00JGD8wxts'  
+STRIPE_WEBHOOK_SECRET = 'your-stripe-webhook-secret' 
 
 django_heroku.settings(locals())

@@ -22,7 +22,8 @@ urlpatterns = [
     path('related-users/', views.company_related_users, name='company_related_users'),
 
 
-
+    #payments
+    path('pay-endorsement/<int:candidate_id>/', views.start_payment_for_endorsement, name='pay_endorsement'),
 
 
 ]

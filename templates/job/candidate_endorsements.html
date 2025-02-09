@@ -1,0 +1,35 @@
+<!-- filepath: /home/nyuydine/Documents/UM/Umemployed/templates/job/candidate_endorsements.html -->
+{% extends "resume/base.html" %} 
+{% load static %}
+{% load crispy_forms_tags %} 
+{% block search_bar %}
+{% endblock search_bar %}
+{% block content %}
+<main class="bg-gray-100 p-6">
+    <div class="max-w-3xl mx-auto">
+        <!-- Page Header -->
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Endorsement Timeline</h1>
+
+        <!-- Timeline Container -->
+        <div class="relative border-l-4 border-blue-600">
+            {% for endorsement in endorsements %}
+            <div class="mb-8 ml-6">
+                <div class="absolute -left-3.5 bg-blue-600 text-white p-2 rounded-full">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h2 class="font-semibold text-gray-800">{{ endorsement.candidate.username }} endorsed by {{ endorsement.endorser.username }}</h2>
+                    <p class="text-sm text-gray-600">{{ endorsement.review }}</p>
+                    <span class="block text-xs text-gray-500 mt-2">{{ endorsement.created_at|date:"F j, Y - g:i A" }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <p>No endorsements available for this candidate.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/YOUR_FA_KIT.js" crossorigin="anonymous"></script>
+</main>
+{% endblock %}
