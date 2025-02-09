@@ -348,7 +348,7 @@ header {
                   href="{% url 'notifications:user_notifications' %}"
                   class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
                 >
-                  <i class="fas fa-plus-circle"></i> Notifications
+                  <i class="fas fa-bell"></i> Notifications
                 </a>
                 <a
                   href="{% url 'messaging:inbox' %}"
@@ -381,6 +381,12 @@ header {
                   class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
                 >
                   <i class="fas fa-thumbs-up"></i> Endorsement
+                </a>
+                <a
+                  href="{% url 'transaction_history' %}"
+                  class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
+                >
+                  <i class="fas fa-file-invoice"></i> Transaction History
                 </a>
                 
                 {% endif %}
