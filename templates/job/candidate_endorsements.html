@@ -1,82 +1,204 @@
-{% extends "resume/base.html" %}   
-{% load static %}  
-{% load crispy_forms_tags %}   
-{% block search_bar %}  
-{% endblock search_bar %}  
-{% block content %}  
-<main class="bg-gray-100 py-10">  
-    <div class="max-w-3xl mx-auto">  
-        <!-- Page Header -->  
-        <h1 class="text-5xl font-extrabold text-gray-800 mb-8 text-center">Endorsement Timeline</h1>  
+{% extends "resume/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block search_bar %}
+{% endblock search_bar %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --timeline-color1: #7526CC;
+            --timeline-color2: #3D6AE5;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+        .main-timeline {
+            font-family: 'Poppins', sans-serif;
+        }
+        .main-timeline:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .main-timeline .timeline {
+            width: calc(50% + 1px);
+            padding: 0 75px 0 0;
+            float: left;
+        }
+        .main-timeline .timeline-content {
+            color: #fff;
+            background: linear-gradient(to right, var(--timeline-color1), var(--timeline-color2));
+            padding: 20px;
+            border-radius: 10px;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+        .main-timeline .timeline-content:hover {
+            text-decoration: none;
+        }
+        .main-timeline .timeline-icon {
+            font-size: 45px;
+            line-height: 45px;
+            margin: 0 0 10px;
+        }
+        .main-timeline .title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 0 0 5px 0;
+        }
+        .main-timeline .description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+        .main-timeline .timeline-year {
+            color: #999;
+            font-size: 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: center;
+            width: 150px;
+            border-bottom: 3px solid var(--timeline-color2);
+            transform: translateY(-50%);
+            position: absolute;
+            right: -150px;
+            top: 50%;
+        }
+        .main-timeline .timeline-year:before,
+        .main-timeline .timeline-year:after {
+            content: '';
+            background-color: var(--timeline-color2);
+            height: 8px;
+            width: 8px;
+            transform: rotate(45deg);
+            position: absolute;
+            left: -5px;
+            bottom: -5px;
+        }
+        .main-timeline .timeline-year:after {
+            border-radius: 50%;
+            left: auto;
+            right: -1px;
+        }
+        .main-timeline .timeline:nth-child(even) {
+            float: right;
+            padding: 0 0 0 75px;
+        }
+        .main-timeline .timeline:nth-child(even) .timeline-year {
+            left: -150px;
+            right: auto;
+            border-color: var(--timeline-color1);
+        }
+        .main-timeline .timeline:nth-child(even) .timeline-year:before,
+        .main-timeline .timeline:nth-child(even) .timeline-year:after {
+            background-color: var(--timeline-color1);
+            right: -5px;
+            left: auto;
+        }
+        .main-timeline .timeline:nth-child(even) .timeline-year:after {
+            right: auto;
+            left: 0;
+        }
+        .main-timeline .timeline:nth-child(4n+2) {
+            --timeline-color1: #EA0093;
+            --timeline-color2: #B207A1;
+        }
+        .main-timeline .timeline:nth-child(4n+3) {
+            --timeline-color1: #57c00c;
+            --timeline-color2: #1ac94e;
+        }
+        .main-timeline .timeline:nth-child(4n+4) {
+            --timeline-color1: #FE7F25;
+            --timeline-color2: #F9412B;
+        }
+        @media screen and (max-width:767px) {
+            .main-timeline .timeline,
+            .main-timeline .timeline:nth-child(even) {
+                width: 100%;
+                padding: 0 100px 0 0;
+                margin: 0 0 30px;
+            }
+            .main-timeline .timeline:nth-child(even) {
+                padding: 0 0 0 100px;
+            }
+            .main-timeline .timeline-year,
+            .main-timeline .timeline:nth-child(even) .timeline-year {
+                font-size: 25px;
+                width: 100px;
+                right: -100px;
+            }
+            .main-timeline .timeline:nth-child(even) .timeline-year {
+                left: -100px;
+            }
+        }
+        @media screen and (max-width:479px) {
+            .main-timeline .timeline {
+                padding: 0 40px 0 0;
+            }
+            .main-timeline .timeline:nth-child(even) {
+                padding: 0 0 0 40px;
+            }
+            .main-timeline .timeline-year {
+                border: none;
+                transform: translateY(-50%) rotate(90deg);
+                right: -70px;
+            }
+            .main-timeline .timeline:nth-child(even) .timeline-year {
+                left: -70px;
+            }
+            .main-timeline .timeline-year:before,
+            .main-timeline .timeline-year:after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<main class="bg-gray-100 mb-10">
+    <h1 class="text-4xl font-bold text-gray-800 mb-6 text-center my-10">Endorsement Timeline</h1>
 
-        <!-- Timeline Container -->  
-        <div class="relative border-l-4 border-blue-600">  
-            <div id="endorsement-container">  
-                {% for endorsement in endorsements %}  
-                <div class="endorsement mb-10 ml-6 hidden opacity-0 transition-opacity duration-500">  
-                    <!-- Timeline Icon -->  
-                    <div class="absolute -left-3.5 bg-blue-600 text-white p-3 rounded-full">  
-                        <i class="fa-solid fa-user-check text-lg"></i>  
-                    </div>  
-                    
-                    <!-- Endorsement Content -->  
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">  
-                        <h2 class="font-semibold text-xl text-gray-800 mb-2">{{ endorsement.candidate.first_name }} endorsed by @anonymous</h2>  
-                        <p class="text-base text-gray-600">{{ endorsement.review }}</p>  
-
-                        <!-- Rating Details -->  
-                        <div class="mt-4 space-y-1">  
-                            <p class="text-base text-gray-500">Professionalism: <span class="font-semibold">{{ endorsement.professionalism }}</span></p>  
-                            <p class="text-base text-gray-500">Skills: <span class="font-semibold">{{ endorsement.skills }}</span></p>  
-                            <p class="text-base text-gray-500">Communication: <span class="font-semibold">{{ endorsement.communication }}</span></p>  
-                            <p class="text-base text-gray-500">Teamwork: <span class="font-semibold">{{ endorsement.teamwork }}</span></p>  
-                            <p class="text-base text-gray-500">Reliability: <span class="font-semibold">{{ endorsement.reliability }}</span></p>  
-                        </div>  
-
-                        <!-- Endorsement Date -->  
-                        <span class="block text-sm text-gray-400 mt-4">{{ endorsement.created_at|date:"F j, Y - g:i A" }}</span>  
-                    </div>  
-                </div>  
-                {% empty %}  
-                <p class="text-center text-gray-500">No endorsements available for this candidate.</p>  
-                {% endfor %}  
-            </div>  
-        </div>  
-
-        <!-- Instructions for the user -->  
-        <div class="text-center mt-5">  
-            <p class="text-lg text-gray-700">Press any key to see more endorsements.</p>  
-        </div>  
-    </div>  
-    <!-- Footer -->  
-    {% block footer %}  
-    {% endblock footer %}  
-
-</main>  
-
-<!-- Font Awesome -->  
-<script src="https://kit.fontawesome.com/YOUR_FA_KIT.js" crossorigin="anonymous"></script>  
-
-<script>  
-    document.addEventListener('DOMContentLoaded', function () {  
-        const endorsements = document.querySelectorAll('.endorsement');  
-        let currentIndex = 0;  
-
-        function showNextEndorsement() {  
-            if (currentIndex < endorsements.length) {  
-                const endorsement = endorsements[currentIndex];  
-                endorsement.classList.remove('hidden');  
-                endorsement.classList.remove('opacity-0');  
-                endorsement.classList.add('opacity-100');  
-                currentIndex++;  
-            }  
-        }  
-
-        // Show the first endorsement initially, with fade effect  
-        showNextEndorsement();  
-
-        // Show next endorsement on key press  
-        document.addEventListener('keydown', showNextEndorsement);  
-    });  
-</script>  
+    <div class="container mx-auto px-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="main-timeline">
+                    {% for endorsement in endorsements %}
+                    <div class="timeline">
+                        <a href="#" class="timeline-content">
+                            <div class="timeline-icon">
+                                <img src="{{ endorsement.candidate.resume.profile_image.url }}" alt="Profile" class="w-16 h-16 rounded-full border-4 border-white">
+                            </div>
+                            <h3 class="title">@Anonymous</h3>
+                            <p class="description">
+                                {{ endorsement.review }}
+                            </p>
+                            <div class="timeline-year">{{ endorsement.created_at|date:"Y" }}</div>
+                            <div class="mt-4 space-y-1">
+                                <p class="text-base">Professionalism: <span class="font-semibold">{{ endorsement.professionalism }}</span></p>
+                                <p class="text-base">Skills Possession: <span class="font-semibold">{{ endorsement.skills }}</span></p>
+                                <p class="text-base">Communication: <span class="font-semibold">{{ endorsement.communication }}</span></p>
+                                <p class="text-base">Teamwork: <span class="font-semibold">{{ endorsement.teamwork }}</span></p>
+                                <p class="text-base">Reliability: <span class="font-semibold">{{ endorsement.reliability }}</span></p>
+                            </div>
+                            <span class="block text-sm text-gray-400 mt-4">{{ endorsement.created_at|date:"F j, Y - g:i A" }}</span>
+                        </a>
+                    </div>
+                    {% empty %}
+                    <p class="text-center text-gray-500">No endorsements available for this candidate.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}
