@@ -45,8 +45,11 @@ def upload_resume(request):
                     file=form.cleaned_data['file']
                 )
 
+            # Log the file path to ensure it's correct
+            file_path = resume_doc.file.name  # Use the relative file path
+            print(f"File path for extraction: {file_path}")
+
             # Generate the URL for the extract_text view with the file_path parameter
-            file_path = resume_doc.file.url.lstrip('/')
             redirect_url = reverse('extract_text', kwargs={'file_path': file_path})
 
             # Redirect to the extract_text view
@@ -61,7 +64,7 @@ def upload_resume(request):
         resume_doc = ResumeDoc.objects.get(user=request.user)  
     except ResumeDoc.DoesNotExist:  
         resume_doc = None  
-    return render(request, 'resume/upload_resume.html', {'form': form, 'resume_doc': resume_doc})  
+    return render(request, 'resume/upload_resume.html', {'form': form, 'resume_doc': resume_doc})
 
 def clean_text(text):
     """Remove invalid characters from the extracted text."""
@@ -276,6 +279,9 @@ def extract_resume_details(request, extracted_text):
 
 def get_case_insensitive(d, key, default=None):
     """ Helper function to perform case-insensitive key lookup in a dictionary. """
+    if not isinstance(d, dict):
+        print(f"Expected dictionary, but got {type(d)}: {d}")
+        return default
     return next((v for k, v in d.items() if k.lower() == key.lower()), default)
 
 from datetime import datetime, date
@@ -311,48 +317,57 @@ def parse_and_save_details(extracted_details, user):
 
     # Extract work experiences
     experiences = get_case_insensitive(extracted_details, 'Work Experience', [])
-    for exp in experiences:
-        if isinstance(exp, dict):
-            company_name = get_case_insensitive(exp, 'company_name', 'Unknown Company')
-            role = get_case_insensitive(exp, 'role', 'Unknown Position')
-            start_date = parse_date(exp.get('start_date'))
-            end_date = parse_date(exp.get('end_date')) if exp.get('end_date') else None
-            if start_date is None:
-                print(f"Invalid start date format for {company_name}. Please provide the date in YYYY-MM-DD format.")
-            
-            # Create WorkExperience instance
-            WorkExperience.objects.create(
-                user=user,
-                company_name=company_name,
-                role=role,
-                start_date=start_date,
-                end_date=end_date
-            )
-            print("Work Experience added - Company:", company_name, "Position:", role, "Start Date:", start_date, "End Date:", end_date)
-        else:
-            print("Invalid experience format:", exp)
+    if isinstance(experiences, list):
+        for exp in experiences:
+            if isinstance(exp, dict):
+                company_name = get_case_insensitive(exp, 'company_name', 'Unknown Company')
+                role = get_case_insensitive(exp, 'role', 'Unknown Position')
+                start_date = parse_date(exp.get('start_date'))
+                end_date = parse_date(exp.get('end_date')) if exp.get('end_date') else None
+                if start_date is None:
+                    print(f"Invalid start date format for {company_name}. Please provide the date in YYYY-MM-DD format.")
+                
+                # Create WorkExperience instance
+                WorkExperience.objects.create(
+                    user=user,
+                    company_name=company_name,
+                    role=role,
+                    start_date=start_date,
+                    end_date=end_date
+                )
+                print("Work Experience added - Company:", company_name, "Position:", role, "Start Date:", start_date, "End Date:", end_date)
+            else:
+                print("Invalid experience format:", exp)
+    else:
+        print("Invalid experiences format:", experiences)
 
     # Extract education details
     educations = get_case_insensitive(extracted_details, 'Education', [])
-    for edu in educations:
-        institution_name = get_case_insensitive(edu, 'institution_name', 'Unknown Institution')
-        degree = get_case_insensitive(edu, 'degree', 'Unknown Degree')
-        field_of_study = get_case_insensitive(edu, 'field_of_study', 'Unknown Field')
-        graduation_year = get_case_insensitive(edu, 'graduation_year')
-        if graduation_year is not None and str(graduation_year).isdigit():
-            graduation_year = int(graduation_year)
-        else:
-            graduation_year = date.today().year  # Set to the current year if 'graduation_year' is not clear
-        print("Institution Name:", institution_name)
-        print("Degree:", degree)
-        print("Field of Study:", field_of_study)
-        print("Graduation Year:", graduation_year)
-        # Create Education instance
-        Education.objects.create(
-            user=user,
-            institution_name=institution_name,
-            degree=degree,
-            field_of_study=field_of_study,
-            graduation_year=graduation_year
-        )
-        print("Education added - Institution:", institution_name, "Degree:", degree, "Field of Study:", field_of_study, "Graduation Year:", graduation_year)
+    if isinstance(educations, list):
+        for edu in educations:
+            if isinstance(edu, dict):
+                institution_name = get_case_insensitive(edu, 'institution_name', 'Unknown Institution')
+                degree = get_case_insensitive(edu, 'degree', 'Unknown Degree')
+                field_of_study = get_case_insensitive(edu, 'field_of_study', 'Unknown Field')
+                graduation_year = get_case_insensitive(edu, 'graduation_year')
+                if graduation_year is not None and str(graduation_year).isdigit():
+                    graduation_year = int(graduation_year)
+                else:
+                    graduation_year = date.today().year  # Set to the current year if 'graduation_year' is not clear
+                print("Institution Name:", institution_name)
+                print("Degree:", degree)
+                print("Field of Study:", field_of_study)
+                print("Graduation Year:", graduation_year)
+                # Create Education instance
+                Education.objects.create(
+                    user=user,
+                    institution_name=institution_name,
+                    degree=degree,
+                    field_of_study=field_of_study,
+                    graduation_year=graduation_year
+                )
+                print("Education added - Institution:", institution_name, "Degree:", degree, "Field of Study:", field_of_study, "Graduation Year:", graduation_year)
+            else:
+                print("Invalid education format:", edu)
+    else:
+        print("Invalid educations format:", educations)

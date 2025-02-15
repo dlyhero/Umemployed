@@ -111,7 +111,11 @@ class Resume(models.Model):
         else:
             return f"Your profile is {completion_percentage:.2f}% complete. Please complete the remaining fields."
         
-        
+from azure.storage.blob import BlobServiceClient
+import os      
+account_name = os.getenv('AZURE_ACCOUNT_NAME')
+account_key = os.getenv('AZURE_ACCOUNT_KEY')
+container_name = os.getenv('AZURE_CONTAINER')
 class ResumeDoc(models.Model):
     id = models.AutoField(primary_key=True) 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -121,6 +125,26 @@ class ResumeDoc(models.Model):
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='resume_extracted_skills')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Resume for {self.user.username}"
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Upload the file to Azure Blob Storage
+        account_name = os.getenv('AZURE_ACCOUNT_NAME')
+        account_key = os.getenv('AZURE_ACCOUNT_KEY')
+        container_name = os.getenv('AZURE_CONTAINER')
+
+        connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};AccountKey={account_key};EndpointSuffix=core.windows.net"
+        blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob=self.file.name)
+
+        try:
+            with open(self.file.path, 'rb') as data:
+                blob_client.upload_blob(data, overwrite=True)
+            print(f"File uploaded to Azure Blob Storage: {self.file.name}")
+        except Exception as e:
+            print(f"Error uploading file to Azure Blob Storage: {e}")
 
     def __str__(self):
         return f"Resume for {self.user.username}"
