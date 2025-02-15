@@ -2,7 +2,8 @@ import os
 import json
 import logging
 import dotenv
-from pypdf import PdfReader
+import pdfplumber
+import io
 from openai import OpenAI
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -14,9 +15,10 @@ from .models import *
 from resume.models import SkillCategory, Skill
 from job.models import Skill, SkillQuestion, Job
 from job.job_description_algorithm import save_skills_to_database 
-from . import views
 from datetime import datetime, date
 from django.contrib import messages
+from azure.storage.blob import BlobServiceClient
+from docx import Document
 
 dotenv.load_dotenv()
 api_key = os.environ.get('OPENAI_API_KEY')
@@ -25,70 +27,32 @@ logger = logging.getLogger(__name__)
 
 @login_required(login_url='login')
 def upload_resume(request):
-    """
-    Handles the upload of resumes.
-    """
     if request.method == 'POST':
         form = ResumeForm(request.POST, request.FILES)
         if form.is_valid():
-            # Check if a ResumeDoc already exists for the user
-            try:
-                resume_doc = ResumeDoc.objects.get(user=request.user)
-                resume_doc.file = form.cleaned_data['file']  # Update the file
-                resume_doc.extracted_text = ''  # Clear the extracted text
-                resume_doc.extracted_skills.clear()  # Clear the extracted skills
-                resume_doc.save()
-            except ResumeDoc.DoesNotExist:
-                # Create a new ResumeDoc if it does not exist
-                resume_doc = ResumeDoc.objects.create(
-                    user=request.user,
-                    file=form.cleaned_data['file']
-                )
+            resume_doc, created = ResumeDoc.objects.get_or_create(user=request.user)
+            resume_doc.file = form.cleaned_data['file']
+            resume_doc.extracted_text = ''
+            resume_doc.extracted_skills.clear()
+            resume_doc.save()
 
-            # Log the file path to ensure it's correct
-            file_path = resume_doc.file.name  # Use the relative file path
+            file_path = resume_doc.file.name
             print(f"File path for extraction: {file_path}")
 
-            # Generate the URL for the extract_text view with the file_path parameter
             redirect_url = reverse('extract_text', kwargs={'file_path': file_path})
-
-            # Redirect to the extract_text view
             return redirect(redirect_url)
         else:
             messages.error(request, 'Invalid form submission. Please try again.')
             return redirect('upload')
     else:
         form = ResumeForm()
-    # Pass the resume_doc instance to the template if it exists  
-    try:  
-        resume_doc = ResumeDoc.objects.get(user=request.user)  
-    except ResumeDoc.DoesNotExist:  
-        resume_doc = None  
+    resume_doc = ResumeDoc.objects.filter(user=request.user).first()
     return render(request, 'resume/upload_resume.html', {'form': form, 'resume_doc': resume_doc})
 
 def clean_text(text):
-    """Remove invalid characters from the extracted text."""
-    if text:
-        return text.replace('\x00', '')  # Remove null characters
-    return text
-
-
-import pdfplumber
-import io
-import boto3
-from django.http import HttpResponse
-from django.conf import settings
-from django.shortcuts import redirect
-from django.contrib import messages
-from azure.storage.blob import BlobServiceClient
-
-
-from docx import Document
+    return text.replace('\x00', '') if text else text
 
 def extract_text(request, file_path):
-    """
-    Extracts text from a resume file (PDF, DOCX, TXT) stored in Azure Blob Storage and saves it to the database.
-    """
     account_name = os.getenv('AZURE_ACCOUNT_NAME')
     account_key = os.getenv('AZURE_ACCOUNT_KEY')
     container_name = os.getenv('AZURE_CONTAINER')
@@ -104,88 +68,46 @@ def extract_text(request, file_path):
         blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
         file_stream = blob_client.download_blob().readall()
 
-        # Log the size of the file stream to ensure it's being read correctly
         print(f"File stream size: {len(file_stream)} bytes")
 
-        # Determine file type by checking extension
         file_extension = os.path.splitext(blob_name)[1].lower()
-
         extracted_text = ""
 
-        # PDF extraction
         if file_extension == '.pdf':
-            try:
-                with pdfplumber.open(io.BytesIO(file_stream)) as pdf:
-                    if pdf.pages:
-                        page = pdf.pages[0]
-                        extracted_text = page.extract_text() or ""
-                        print(f"Extracted text from PDF: {extracted_text[:500]}")  # Log first 500 chars
-                    else:
-                        print("No pages found in the PDF.")
-            except Exception as e:
-                print(f"Error reading PDF with pdfplumber: {e}")
-                extracted_text = "Unable to extract text from PDF"
-
-        # DOCX extraction
+            with pdfplumber.open(io.BytesIO(file_stream)) as pdf:
+                if pdf.pages:
+                    page = pdf.pages[0]
+                    extracted_text = page.extract_text() or ""
+                    print(f"Extracted text from PDF: {extracted_text[:500]}")
         elif file_extension == '.docx':
-            try:
-                doc = Document(io.BytesIO(file_stream))
-                extracted_text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
-                print(f"Extracted text from DOCX: {extracted_text[:500]}")  # Log first 500 chars
-            except Exception as e:
-                print(f"Error reading DOCX: {e}")
-                extracted_text = "Unable to extract text from DOCX"
-
-        # TXT extraction
+            doc = Document(io.BytesIO(file_stream))
+            extracted_text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
+            print(f"Extracted text from DOCX: {extracted_text[:500]}")
         elif file_extension == '.txt':
-            try:
-                extracted_text = file_stream.decode('utf-8')  # Decode byte stream to string
-                print(f"Extracted text from TXT: {extracted_text[:500]}")  # Log first 500 chars
-            except Exception as e:
-                print(f"Error reading TXT: {e}")
-                extracted_text = "Unable to extract text from TXT"
-
+            extracted_text = file_stream.decode('utf-8')
+            print(f"Extracted text from TXT: {extracted_text[:500]}")
         else:
             print(f"Unsupported file extension: {file_extension}")
             return HttpResponse("Unsupported file type", status=400)
 
-        # Clean extracted text and process it
         extracted_text = clean_text(extracted_text)
-        try:
-            extracted_details = extract_resume_details(request, extracted_text)
-            print("Extracted Details:", extracted_details)
-        except json.JSONDecodeError as e:
-            print(f"Error occurred while extracting resume details: {e}")
-            print(f"Extracted text content: {extracted_text}")
-            extracted_details = {}
-
+        extracted_details = extract_resume_details(request, extracted_text)
         parse_and_save_details(extracted_details, request.user)
 
-        # Handle saving extracted text and associated details
-        try:
-            resume = Resume.objects.get(user=request.user)
-            job_title = resume.job_title
-            print("Job title found:", job_title)
-        except Resume.DoesNotExist:
-            job_title = "Others"
-            print("Resume not found for extracted text:", extracted_text)
-            messages.warning(request, "This failed please try again!")
-
-        # Save the extracted text to the ResumeDoc
-        try:
-            print("Searching for ResumeDoc with file path:", blob_name)
-            resume_doc = ResumeDoc.objects.get(user=request.user)
-            print("ResumeDoc found:", resume_doc)
+        resume_doc = ResumeDoc.objects.filter(user=request.user).first()
+        if resume_doc:
             resume_doc.extracted_text = extracted_text
             resume_doc.save()
-            print("Extracted text saved to ResumeDoc")
+
+            # Fetch the job_title from the Resume model
+            resume = Resume.objects.filter(user=request.user).first()
+            job_title = resume.job_title if resume and resume.job_title else "Others"
 
             extract_technical_skills(request, extracted_text, job_title)
             return redirect('update-resume')
-
-        except ResumeDoc.DoesNotExist:
-            print("ResumeDoc not found for file path:", blob_name)
-            extract_technical_skills(request, extracted_text, job_title)
+        else:
+            # If ResumeDoc does not exist, use "Others" as the job_title
+            extract_technical_skills(request, extracted_text, "Others")
             return HttpResponse("Error: ResumeDoc not found")
 
     except Exception as e:
@@ -193,13 +115,7 @@ def extract_text(request, file_path):
         messages.error(request, "An error occurred while processing the resume. Please try again.")
         return HttpResponse("Error: Could not process the file", status=500)
 
-
-
-
 def extract_technical_skills(request, extracted_text, job_title):
-    """
-    Extracts technical skills from extracted text using GPT-4 and saves them to the database.
-    """
     conversation = [
         {
             "role": "user",
@@ -208,27 +124,23 @@ def extract_technical_skills(request, extracted_text, job_title):
     ]
 
     try:
-        # Call GPT-4 to generate technical skills based on resume data
         response = client.chat.completions.create(
             model="gpt-4",
             messages=conversation,
-            timeout=120  # Extended timeout to 120 seconds
+            timeout=120
         )
 
-        # Parse the response
         response_content = response.choices[0].message.content
         response_dict = json.loads(response_content)
-
-        # Extract the technical skills
         technical_skills = response_dict.get("Technical Skills", [])
         print(technical_skills)
-        for skill in technical_skills:
-            skill_obj, created = Skill.objects.get_or_create(name=skill)
-            # Access the extracted_skills attribute of the ResumeDoc instance associated with the current user
-            resume_doc = ResumeDoc.objects.get(user=request.user)  # Assuming there's only one ResumeDoc per user
-            resume_doc.extracted_skills.add(skill_obj)
+
+        resume_doc = ResumeDoc.objects.filter(user=request.user).first()
+        if resume_doc:
+            for skill in technical_skills:
+                skill_obj, created = Skill.objects.get_or_create(name=skill)
+                resume_doc.extracted_skills.add(skill_obj)
         
-        # Save the skills to the database
         save_skills_to_database(job_title, technical_skills)
         print('Skills saved to database:', technical_skills)
 
@@ -238,12 +150,7 @@ def extract_technical_skills(request, extracted_text, job_title):
         logger.error("An error occurred while extracting technical skills: %s", e)
         return []
 
-    
-
 def extract_resume_details(request, extracted_text):
-    """
-    Extracts contact information, work experience, and education details from the extracted text of a resume using ChatGPT.
-    """
     try:
         conversation = [
             {
@@ -269,53 +176,39 @@ def extract_resume_details(request, extracted_text):
 
         response_content = response.choices[0].message.content
         extracted_details = json.loads(response_content)
-        print("Extracted Details from GPT-4:", extracted_details)  # Log the extracted details
+        print("Extracted Details from GPT-4:", extracted_details)
         return extracted_details
 
     except (json.JSONDecodeError, Exception) as e:
         logger.error("An error occurred while extracting resume details: %s", e)
         return {}
 
-
 def get_case_insensitive(d, key, default=None):
-    """ Helper function to perform case-insensitive key lookup in a dictionary. """
     if not isinstance(d, dict):
         print(f"Expected dictionary, but got {type(d)}: {d}")
         return default
     return next((v for k, v in d.items() if k.lower() == key.lower()), default)
 
-from datetime import datetime, date
-# Function to parse dates with special values like "Present"
 def parse_date(date_str):
     if date_str is None:
         return None
     elif date_str.lower() == "present":
-        return None  # or you can return today's date: return date.today()
+        return None
     try:
         return datetime.strptime(date_str, '%Y-%m-%d').date()
     except ValueError:
-        return None  # Handle invalid date format gracefully
-
+        return None
 
 def parse_and_save_details(extracted_details, user):
-    # Extract basic information
     name = get_case_insensitive(extracted_details, 'Name', 'Your Name')
     email = get_case_insensitive(extracted_details, 'Email', 'example@email.com')
     phone = get_case_insensitive(extracted_details, 'Phone', '+123456677')
 
-    print("Extracted Name:", name)
-    print("Extracted Email:", email)
-    print("Extracted Phone:", phone)
-
-    # Create or update ContactInfo instance
     contact_info, created = ContactInfo.objects.update_or_create(
         user=user,
         defaults={'name': name, 'email': email, 'phone': phone}
     )
 
-    print("ContactInfo saved:", contact_info)
-
-    # Extract work experiences
     experiences = get_case_insensitive(extracted_details, 'Work Experience', [])
     if isinstance(experiences, list):
         for exp in experiences:
@@ -327,7 +220,6 @@ def parse_and_save_details(extracted_details, user):
                 if start_date is None:
                     print(f"Invalid start date format for {company_name}. Please provide the date in YYYY-MM-DD format.")
                 
-                # Create WorkExperience instance
                 WorkExperience.objects.create(
                     user=user,
                     company_name=company_name,
@@ -341,7 +233,6 @@ def parse_and_save_details(extracted_details, user):
     else:
         print("Invalid experiences format:", experiences)
 
-    # Extract education details
     educations = get_case_insensitive(extracted_details, 'Education', [])
     if isinstance(educations, list):
         for edu in educations:
@@ -353,12 +244,11 @@ def parse_and_save_details(extracted_details, user):
                 if graduation_year is not None and str(graduation_year).isdigit():
                     graduation_year = int(graduation_year)
                 else:
-                    graduation_year = date.today().year  # Set to the current year if 'graduation_year' is not clear
+                    graduation_year = date.today().year
                 print("Institution Name:", institution_name)
                 print("Degree:", degree)
                 print("Field of Study:", field_of_study)
                 print("Graduation Year:", graduation_year)
-                # Create Education instance
                 Education.objects.create(
                     user=user,
                     institution_name=institution_name,

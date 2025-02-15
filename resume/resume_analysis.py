@@ -10,7 +10,7 @@ import json
 import dotenv
 from openai import OpenAI
 import os
-
+import time
 import logging
 
 dotenv.load_dotenv()
@@ -46,7 +46,7 @@ def analyze_resume_view(request):
             resume_doc.refresh_from_db()  # Refresh to get the updated extracted_text
 
             # Analyze the resume text
-            analysis_results = analyze_resume(resume_doc.extracted_text)
+            analysis_results = analyze_resume(resume_doc.extracted_text,3)
 
             # Save the analysis results to the database
             ResumeAnalysis.objects.create(
@@ -63,11 +63,22 @@ def analyze_resume_view(request):
             return JsonResponse({'status': 'error', 'message': 'Invalid file format.'}, status=400)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
-    
-def analyze_resume(extracted_text):
+from .models import UserProfile
+import requests
+def analyze_resume(extracted_text,max_retries=3):
     """
     Analyzes the resume text based on the 15 criteria and returns the results.
     """
+    # Get the user's profile
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    # Check if the user has exceeded the limit
+    if user_profile.resume_analysis_attempts >= 19:
+        return redirect(reverse('paypal-payment'))  # Redirect to the payment page
+
+    # Increment the attempt counter
+    user_profile.resume_analysis_attempts += 1
+    user_profile.save()
     system_prompt = """YOU ARE A WORLD-CLASS RESUME ANALYST AND CAREER COACH, SPECIALIZED IN EVALUATING AND OPTIMIZING RESUMES TO MAXIMIZE THEIR IMPACT. YOUR TASK IS TO ANALYZE THE GIVEN RESUME TEXT BASED ON 15 CRUCIAL CRITERIA AND PROVIDE A DETAILED ASSESSMENT WITH AN OVERALL SCORE OUT OF 100.
 
                 ### INSTRUCTIONS ###
@@ -131,6 +142,9 @@ def analyze_resume(extracted_text):
                     "overall_impact_readability": "<SUGGESTIONS_FOR_IMPROVEMENT>"
                   }
                 }
+                ### IMPORTANT ###
+                - YOUR RESPONSE MUST BE IN VALID JSON FORMAT.
+                - ENSURE THE RESPONSE IS PROPERLY STRUCTURED AS SPECIFIED IN THE INSTRUCTIONS.
                 """
 
     conversation = [
@@ -138,26 +152,48 @@ def analyze_resume(extracted_text):
         {"role": "user", "content": f"Analyze the following resume text:\n\n{extracted_text}"}
     ]
 
-    try:
-        # Call GPT-4 to analyze the resume
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=conversation,
-            timeout=120
-        )
+    retries = 0
+    while retries < max_retries:
+        try:
+            # Call GPT-4 to analyze the resume
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=conversation,
+                timeout=120
+            )
 
-        # Parse the response
-        response_content = response.choices[0].message.content
-        analysis_results = json.loads(response_content)
-        return analysis_results
+            # Log the raw response for debugging
+            response_content = response.choices[0].message.content
+            print("Raw API Response:", response_content)  # Log the raw response
 
-    except Exception as e:
-        logger.error(f"Error analyzing resume: {e}")
-        return {
-            "overall_score": 0,
-            "criteria_scores": {},
-            "improvement_suggestions": {}
-        }
+            # Validate the response content
+            if not response_content.strip():
+                raise ValueError("Empty response from the API")
+
+            # Parse the response
+            analysis_results = json.loads(response_content)
+            return analysis_results
+
+        except json.JSONDecodeError as e:
+            logger.error(f"Error decoding JSON response (Attempt {retries + 1}): {e}")
+            logger.error(f"Raw API Response: {response_content}")  # Log the problematic response
+            retries += 1
+            time.sleep(2)  # Wait before retrying
+        except Exception as e:
+            logger.error(f"Error analyzing resume: {e}")
+            return {
+                "overall_score": 0,
+                "criteria_scores": {},
+                "improvement_suggestions": {}
+            }
+
+    logger.error("Max retries reached. Unable to analyze resume.")
+    return {
+        "overall_score": 0,
+        "criteria_scores": {},
+        "improvement_suggestions": {}
+    }
+
 
 @login_required(login_url='login')
 def resume_analysis(request):
