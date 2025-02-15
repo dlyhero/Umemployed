@@ -157,7 +157,7 @@ def analyze_resume(request,extracted_text,max_retries=3):
         try:
             # Call GPT-4 to analyze the resume
             response = client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-3.5-turbo",
                 messages=conversation,
                 timeout=120
             )
