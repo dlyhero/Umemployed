@@ -46,7 +46,7 @@ def analyze_resume_view(request):
             resume_doc.refresh_from_db()  # Refresh to get the updated extracted_text
 
             # Analyze the resume text
-            analysis_results = analyze_resume(resume_doc.extracted_text,3)
+            analysis_results = analyze_resume(request, resume_doc.extracted_text,3)
 
             # Save the analysis results to the database
             ResumeAnalysis.objects.create(
