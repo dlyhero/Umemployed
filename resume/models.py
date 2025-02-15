@@ -173,3 +173,14 @@ class UserLanguage(models.Model):
 
     def __str__(self):
         return f"{self.user_profile.user.username} - {self.language.name}"
+    
+class ResumeAnalysis(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='resume_analyses')
+    resume = models.ForeignKey(ResumeDoc, on_delete=models.CASCADE, related_name='analyses')
+    overall_score = models.FloatField()
+    criteria_scores = models.JSONField()  # Stores scores for each criterion
+    improvement_suggestions = models.JSONField()  # Stores improvement suggestions
+    analyzed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Resume Analysis for {self.user.username} on {self.analyzed_at}"

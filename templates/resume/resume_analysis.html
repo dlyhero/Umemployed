@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Resume Analysis | UmEmployed</title>
+{% endblock title %}
+{% block content %}
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">Resume Analysis Results</h1>
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-semibold mb-4">Overall Score: {{ analysis.overall_score }}%</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-xl font-semibold mb-2">Criteria Scores</h3>
+                <ul class="list-disc list-inside">
+                    {% for criterion, score in analysis.criteria_scores.items %}
+                        <li><strong>{{ criterion }}:</strong> {{ score }}/10</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold mb-2">Improvement Suggestions</h3>
+                <ul class="list-disc list-inside">
+                    {% for criterion, suggestion in analysis.improvement_suggestions.items %}
+                        <li><strong>{{ criterion }}:</strong> {{ suggestion }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -82,18 +82,30 @@ function handleSkillInput() {
     } else {
       filteredSkills.forEach((skill) => {
         const skillElement = document.createElement("div");
-        skillElement.innerHTML = `
-          <li data-id="${skill.id}" class="hover:bg-blue-500 hover:text-white mb-2 text-nowrap px-2 py-1 w-fit rounded-full suggested-skill">
-            <input type="checkbox" id="skill-${skill.id}" class="custom-checkbox" data-id="${skill.id}" value="${skill.name}">
-            <label for="skill-${skill.id}" class="custom-label">${skill.name}</label>
-          </li>`;
-        suggestedSkillsContainer.appendChild(skillElement);
+        skillElement.classList.add("suggested-skill");
+        
+        const skillLabel = document.createElement("label");
+        skillLabel.setAttribute("for", `skill-${skill.id}`);
+        skillLabel.classList.add("custom-label");
+        skillLabel.textContent = skill.name;
+
+        const skillCheckbox = document.createElement("input");
+        skillCheckbox.type = "checkbox";
+        skillCheckbox.id = `skill-${skill.id}`;
+        skillCheckbox.classList.add("custom-checkbox");
+        skillCheckbox.dataset.id = skill.id;
+        skillCheckbox.value = skill.name;
+
+        const listItem = document.createElement("li");
+        listItem.classList.add("hover:bg-blue-500", "hover:text-white", "mb-2", "text-nowrap", "px-2", "py-1", "w-fit", "rounded-full");
+        listItem.appendChild(skillCheckbox);
+        listItem.appendChild(skillLabel);
+
+        suggestedSkillsContainer.appendChild(listItem);
       });
     }
   }
 }
-
-
 
 document.getElementById('skills-form').addEventListener('submit', function (event) {
     event.preventDefault(); // Prevent the default form submission
@@ -115,20 +127,29 @@ document.getElementById('skills-form').addEventListener('submit', function (even
     this.submit();
 });
 
-
-
-
 // Initialize suggested skills
 function initializeSuggestedSkills() {
   suggestedSkillsContainer.innerHTML = "";
   suggestedSkills.forEach((skill) => {
     const skillElement = document.createElement("div");
-    skillElement.innerHTML = `
-      <li data-id="${skill.id}" class="hover:bg-blue-500 hover:text-white mb-2 text-nowrap px-2 py-1 w-fit rounded-full suggested-skill">
-        <input type="checkbox" id="skill-${skill.id}" class="custom-checkbox" data-id="${skill.id}" value="${skill.name}">
-        <label for="skill-${skill.id}" class="custom-label">${skill.name}</label>
-      </li>`;
-    suggestedSkillsContainer.appendChild(skillElement);
+    const skillLabel = document.createElement("label");
+    skillLabel.setAttribute("for", `skill-${skill.id}`);
+    skillLabel.classList.add("custom-label");
+    skillLabel.textContent = skill.name;
+
+    const skillCheckbox = document.createElement("input");
+    skillCheckbox.type = "checkbox";
+    skillCheckbox.id = `skill-${skill.id}`;
+    skillCheckbox.classList.add("custom-checkbox");
+    skillCheckbox.dataset.id = skill.id;
+    skillCheckbox.value = skill.name;
+
+    const listItem = document.createElement("li");
+    listItem.classList.add("hover:bg-blue-500", "hover:text-white", "mb-2", "text-nowrap", "px-2", "py-1", "w-fit", "rounded-full");
+    listItem.appendChild(skillCheckbox);
+    listItem.appendChild(skillLabel);
+
+    suggestedSkillsContainer.appendChild(listItem);
   });
 }
 
