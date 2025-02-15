@@ -65,7 +65,7 @@ def analyze_resume_view(request):
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 from .models import UserProfile
 import requests
-def analyze_resume(extracted_text,max_retries=3):
+def analyze_resume(request,extracted_text,max_retries=3):
     """
     Analyzes the resume text based on the 15 criteria and returns the results.
     """
