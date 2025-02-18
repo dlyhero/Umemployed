@@ -27,12 +27,30 @@ logger = logging.getLogger(__name__)
 
 @login_required(login_url='login')
 def upload_resume(request):
+    print("upload_resume view called")
     if request.method == 'POST':
+        print("POST request received")
         form = ResumeForm(request.POST, request.FILES)
+        selected_resume_id = request.POST.get('selected_resume')
+        print(f"Selected resume ID: {selected_resume_id}")
+
+        if selected_resume_id:
+            resume_doc = get_object_or_404(ResumeDoc, id=selected_resume_id, user=request.user)
+            file_path = resume_doc.file.name
+            print(f"Using previously uploaded file for extraction: {file_path}")
+
+            # Redirect to the next view with the existing extracted text
+            redirect_url = reverse('extract_text', kwargs={'file_path': file_path})
+            print(f"Redirecting to: {redirect_url}")
+            return redirect(redirect_url)
+
         if form.is_valid():
-            resume_doc, created = ResumeDoc.objects.get_or_create(user=request.user)
-            resume_doc.file = form.cleaned_data['file']
-            resume_doc.extracted_text = ''
+            print("Form is valid, creating new ResumeDoc")
+            resume_doc = ResumeDoc.objects.create(
+                user=request.user,
+                file=form.cleaned_data['file'],
+                extracted_text=''
+            )
             resume_doc.extracted_skills.clear()
             resume_doc.save()
 
@@ -40,14 +58,19 @@ def upload_resume(request):
             print(f"File path for extraction: {file_path}")
 
             redirect_url = reverse('extract_text', kwargs={'file_path': file_path})
+            print(f"Redirecting to: {redirect_url}")
             return redirect(redirect_url)
         else:
+            print("Form is invalid")
+            print(f"Form errors: {form.errors}")
             messages.error(request, 'Invalid form submission. Please try again.')
             return redirect('upload')
     else:
+        print("GET request received")
         form = ResumeForm()
-    resume_doc = ResumeDoc.objects.filter(user=request.user).first()
-    return render(request, 'resume/upload_resume.html', {'form': form, 'resume_doc': resume_doc})
+        resume_docs = ResumeDoc.objects.filter(user=request.user)
+        print(f"Found {resume_docs.count()} previously uploaded resumes")
+    return render(request, 'resume/upload_resume.html', {'form': form, 'resume_docs': resume_docs})
 
 def clean_text(text):
     return text.replace('\x00', '') if text else text
@@ -65,50 +88,50 @@ def extract_text(request, file_path):
     print(f"Trying to access file with blob name: {blob_name}")
 
     try:
-        blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
-        file_stream = blob_client.download_blob().readall()
-
-        print(f"File stream size: {len(file_stream)} bytes")
-
-        file_extension = os.path.splitext(blob_name)[1].lower()
-        extracted_text = ""
-
-        if file_extension == '.pdf':
-            with pdfplumber.open(io.BytesIO(file_stream)) as pdf:
-                if pdf.pages:
-                    page = pdf.pages[0]
-                    extracted_text = page.extract_text() or ""
-                    print(f"Extracted text from PDF: {extracted_text[:500]}")
-        elif file_extension == '.docx':
-            doc = Document(io.BytesIO(file_stream))
-            extracted_text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
-            print(f"Extracted text from DOCX: {extracted_text[:500]}")
-        elif file_extension == '.txt':
-            extracted_text = file_stream.decode('utf-8')
-            print(f"Extracted text from TXT: {extracted_text[:500]}")
+        resume_doc = ResumeDoc.objects.filter(user=request.user, file=file_path).first()
+        if resume_doc and resume_doc.extracted_text:
+            extracted_text = resume_doc.extracted_text
+            print(f"Using existing extracted text: {extracted_text[:500]}")
         else:
-            print(f"Unsupported file extension: {file_extension}")
-            return HttpResponse("Unsupported file type", status=400)
+            blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+            file_stream = blob_client.download_blob().readall()
 
-        extracted_text = clean_text(extracted_text)
-        extracted_details = extract_resume_details(request, extracted_text)
-        parse_and_save_details(extracted_details, request.user)
+            print(f"File stream size: {len(file_stream)} bytes")
 
-        resume_doc = ResumeDoc.objects.filter(user=request.user).first()
-        if resume_doc:
-            resume_doc.extracted_text = extracted_text
-            resume_doc.save()
+            file_extension = os.path.splitext(blob_name)[1].lower()
+            extracted_text = ""
 
-            # Fetch the job_title from the Resume model
-            resume = Resume.objects.filter(user=request.user).first()
-            job_title = resume.job_title if resume and resume.job_title else "Others"
+            if file_extension == '.pdf':
+                with pdfplumber.open(io.BytesIO(file_stream)) as pdf:
+                    if pdf.pages:
+                        page = pdf.pages[0]
+                        extracted_text = page.extract_text() or ""
+                        print(f"Extracted text from PDF: {extracted_text[:500]}")
+            elif file_extension == '.docx':
+                doc = Document(io.BytesIO(file_stream))
+                extracted_text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
+                print(f"Extracted text from DOCX: {extracted_text[:500]}")
+            elif file_extension == '.txt':
+                extracted_text = file_stream.decode('utf-8')
+                print(f"Extracted text from TXT: {extracted_text[:500]}")
+            else:
+                print(f"Unsupported file extension: {file_extension}")
+                return HttpResponse("Unsupported file type", status=400)
 
-            extract_technical_skills(request, extracted_text, job_title)
-            return redirect('update-resume')
-        else:
-            # If ResumeDoc does not exist, use "Others" as the job_title
-            extract_technical_skills(request, extracted_text, "Others")
-            return HttpResponse("Error: ResumeDoc not found")
+            extracted_text = clean_text(extracted_text)
+            extracted_details = extract_resume_details(request, extracted_text)
+            parse_and_save_details(extracted_details, request.user)
+
+            if resume_doc:
+                resume_doc.extracted_text = extracted_text
+                resume_doc.save()
+
+        # Fetch the job_title from the Resume model
+        resume = Resume.objects.filter(user=request.user).first()
+        job_title = resume.job_title if resume and resume.job_title else "Others"
+
+        extract_technical_skills(request, extracted_text, job_title)
+        return redirect('update-resume')
 
     except Exception as e:
         print("Error during file extraction:", str(e))

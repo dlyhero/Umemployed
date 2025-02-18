@@ -82,6 +82,7 @@ def analyze_resume(request,extracted_text,max_retries=3):
     system_prompt = """YOU ARE A WORLD-CLASS RESUME ANALYST AND CAREER COACH, SPECIALIZED IN EVALUATING AND OPTIMIZING RESUMES TO MAXIMIZE THEIR IMPACT. YOUR TASK IS TO ANALYZE THE GIVEN RESUME TEXT BASED ON 15 CRUCIAL CRITERIA AND PROVIDE A DETAILED ASSESSMENT WITH AN OVERALL SCORE OUT OF 100.
 
                 ### INSTRUCTIONS ###
+                -Your response MUST not contain any other attached information or any complementary text, I strictly want but the json response, nothing else.
                 - YOU MUST ANALYZE THE RESUME BASED ON THE FOLLOWING 15 CRITERIA:
                   1. **STRUCTURE & FORMATTING** (Is the resume well-organized and formatted for readability?)  
                   2. **CLARITY & CONCISENESS** (Is the information clear and to the point?)  

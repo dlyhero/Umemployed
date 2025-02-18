@@ -117,9 +117,9 @@ account_name = os.getenv('AZURE_ACCOUNT_NAME')
 account_key = os.getenv('AZURE_ACCOUNT_KEY')
 container_name = os.getenv('AZURE_CONTAINER')
 class ResumeDoc(models.Model):
-    id = models.AutoField(primary_key=True) 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='resumes/', validators=[ext_validator, validate_file_mime_type])  
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='resumes/', validators=[ext_validator, validate_file_mime_type])
     extracted_text = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='resume_extracted_skills')
@@ -128,6 +128,7 @@ class ResumeDoc(models.Model):
 
     def __str__(self):
         return f"Resume for {self.user.username}"
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         # Upload the file to Azure Blob Storage

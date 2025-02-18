@@ -1,29 +1,81 @@
-{% extends 'base.html' %}
+{% extends 'resume/base.html' %}
+
 {% block title %}
     <title>Resume Analysis | UmEmployed</title>
 {% endblock title %}
+{% block search_bar %}
+{% endblock search_bar %}
+<!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts for Professional Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .progress-bar {
+            height: 10px;
+            border-radius: 5px;
+            background-color: #e2e8f0;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 5px;
+            background-color: #1e90ff;
+            transition: width 0.5s ease-in-out;
+        }
+        .criteria-card {
+            border-left: 4px solid #1e90ff;
+            transition: transform 0.2s ease-in-out;
+        }
+        .criteria-card:hover {
+            transform: translateY(-2px);
+        }
+        .percentage{
+            color: #1e90ff;
+        }
+    </style>
+</head>
 {% block content %}
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6">Resume Analysis Results</h1>
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-semibold mb-4">Overall Score: {{ analysis.overall_score }}%</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <h3 class="text-xl font-semibold mb-2">Criteria Scores</h3>
-                <ul class="list-disc list-inside">
-                    {% for criterion, score in analysis.criteria_scores.items %}
-                        <li><strong>{{ criterion }}:</strong> {{ score }}/10</li>
-                    {% endfor %}
-                </ul>
+<div class="container mx-auto p-6 max-w-7xl">
+    <!-- Page Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">Resume Analysis Results</h1>
+        <p class="text-gray-600">Detailed breakdown of your resume analysis and improvement suggestions.</p>
+    </div>
+
+    <!-- Overall Score Section -->
+    <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Overall Score: <span class="percentage">{{ analysis.overall_score }}%</span></h2>
+        <div class="progress-bar">
+            <div class="progress-bar-fill" style="width: {{ analysis.overall_score }}%;"></div>
+        </div>
+    </div>
+
+    <!-- Criteria Scores Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {% for criterion, score in analysis.criteria_scores.items %}
+        <div class="criteria-card bg-white rounded-lg shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ criterion }}</h3>
+            <p class="text-gray-600 mb-2">{{ score }}/10</p>
+            <p class="text-sm text-gray-500">{{ analysis.improvement_suggestions.criterion }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Improvement Suggestions Section -->
+    <div class="bg-white rounded-lg shadow-sm p-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Improvement Suggestions</h2>
+        <div class="space-y-4">
+            {% for criterion, suggestion in analysis.improvement_suggestions.items %}
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ criterion }}</h3>
+                <p class="text-gray-600">{{ suggestion }}</p>
             </div>
-            <div>
-                <h3 class="text-xl font-semibold mb-2">Improvement Suggestions</h3>
-                <ul class="list-disc list-inside">
-                    {% for criterion, suggestion in analysis.improvement_suggestions.items %}
-                        <li><strong>{{ criterion }}:</strong> {{ suggestion }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

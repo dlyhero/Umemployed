@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import User
 from .forms import RegisterUserForm
-from resume.models import Resume
+from resume.models import Resume, ResumeDoc
 from company.models import Company
 from company.views import create_company
 from django.contrib.auth.decorators import login_required
@@ -369,10 +369,12 @@ def user_dashboard(request):
     else:
         completion_percentage = 0
 
+    resume_docs = ResumeDoc.objects.filter(user=request.user)
     context = {
         'recommended_jobs': recommended_jobs,
         'applied_job_ids': applied_job_ids,
         'completion_percentage': completion_percentage,
+        'resume_docs': resume_docs
     }
     return render(request, 'website/user_dashboard.html', context)
 

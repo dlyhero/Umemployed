@@ -232,6 +232,18 @@
         class="cursor-pointer bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">
         Browse Files
     </label>
+
+    <h2 class="mt-4">Or Select a Previously Uploaded Resume</h2>
+    <select name="selected_resume" id="selected_resume" class="mt-2 p-2 border rounded">
+        <option value="">Select a resume</option>
+        {% for resume_doc in resume_docs %}
+            <option value="{{ resume_doc.id }}">{{ resume_doc.file.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit" class="mt-4 bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">
+        Submit
+    </button>
 </form>
                 <p class="text-gray-500 text-sm mt-2">Supported format: PDF</p>
             </div>
