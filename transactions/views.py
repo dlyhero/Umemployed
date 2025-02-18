@@ -26,7 +26,7 @@ class PayPalPaymentView(View):
         paypal_dict = {  
             'business': settings.PAYPAL_RECEIVER_EMAIL,  # PayPal account email  
             'amount': '5.00',  # Amount to be charged  
-            'item_name': 'Test Item',  # Description of the item  
+            'item_name': 'Paying to access Endorsements',  # Description of the item  
             'invoice': transaction_id,  # Unique transaction/invoice ID  
             'notify_url': request.build_absolute_uri('/transactions/paypal-ipn/'),  # IPN URL  
             'return': request.build_absolute_uri(f'/transactions/success/?candidate_id={candidate_id}'),  # URL to redirect after payment  
@@ -129,7 +129,7 @@ class StripePaymentView(View):
             line_items=[{  
                 'price_data': {  
                     'currency': 'usd',  
-                    'product_data': {'name': 'Test Item'},  
+                    'product_data': {'name': 'Paying to access Endorsements'},  
                     'unit_amount': amount,  
                 },  
                 'quantity': 1,  

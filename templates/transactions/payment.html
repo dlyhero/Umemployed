@@ -107,7 +107,7 @@
           fetch('/transactions/stripe-payment/')
             .then((response) => response.json())
             .then((data) => {
-              const stripe = Stripe('pk_test_51Qp1jhGhd6oP7C9j9VJRInFSl15GCtu5vEwYsHY9D4W5xkx3VmRp5VknrbsMsotcWUVbD77Dj1l1BWyNbZwUW2ms00JGD8wxts')
+              const stripe = Stripe('pk_live_51QtB7zIpeZXn8z8ulNh2Mh5aztnZYgoCo7XArtbSg4cZMMZYtKE9emFG2q3OaliH2FU3ecwtIiM098AyhNKIDlS300yHTUKHHa')
               return stripe.redirectToCheckout({ sessionId: data.sessionId })
             })
             .then((result) => {
