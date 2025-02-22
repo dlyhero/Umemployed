@@ -211,3 +211,12 @@ class ResumeAnalysis(models.Model):
 
     def __str__(self):
         return f"Resume Analysis for {self.user.username} on {self.analyzed_at}"
+    
+class Transcript(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='transcripts/')
+    extracted_text = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Transcript for {self.user.username}"

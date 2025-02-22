@@ -1,5 +1,5 @@
 from django import forms
-from .models import Resume,ResumeDoc, SkillCategory, Skill, Experience, Education, ContactInfo
+from .models import Resume,ResumeDoc, SkillCategory, Skill, Experience, Education, ContactInfo,Transcript
 from django.core.exceptions import ValidationError
 from datetime import date
 
@@ -148,3 +148,7 @@ class ResumeForm(forms.ModelForm):
         model = ResumeDoc
         fields = ['file']
  
+class TranscriptForm(forms.ModelForm):
+    class Meta:
+        model = Transcript
+        fields = ['file']

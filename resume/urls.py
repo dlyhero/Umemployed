@@ -2,6 +2,7 @@ from django.urls import path
 from . import views 
 from .extract_pdf import *
 from .resume_analysis import resume_analysis, analyze_resume_view
+from .transcript_job_title import upload_transcript,extract_transcript_text
 
 # app_name = 'resume'
 
@@ -20,4 +21,7 @@ urlpatterns = [
     path('extract-technical-skills/<path:file_path>/', extract_technical_skills, name='extract_technical_skills'),
     path('analyze-resume/', analyze_resume_view, name='analyze_resume'),
     path('resume-analysis/', resume_analysis, name='resume_analysis'),
+    
+    path('upload-transcript/', upload_transcript, name='upload_transcript'),
+    path('extract-transcript/<path:file_path>/', extract_transcript_text, name='extract_transcript_text'),
 ]
