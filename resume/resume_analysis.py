@@ -3,14 +3,13 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import ResumeDoc, ResumeAnalysis
+from .models import ResumeDoc, ResumeAnalysis, UserProfile
 from .extract_pdf import extract_text
-from .forms import ResumeForm, Resume
+from .forms import ResumeForm
 import json
 import dotenv
 from openai import OpenAI
 import os
-import time
 import logging
 
 dotenv.load_dotenv()
@@ -24,9 +23,8 @@ def analyze_resume_view(request):
     Handles the resume analysis workflow.
     """
     if request.method == 'POST':
-        form = ResumeForm(request.POST, request.FILES)  # Use the imported ResumeForm
+        form = ResumeForm(request.POST, request.FILES)
         if form.is_valid():
-            # Check if a ResumeDoc already exists for the user
             try:
                 resume_doc = ResumeDoc.objects.get(user=request.user)
                 resume_doc.file = form.cleaned_data['file']
@@ -34,21 +32,17 @@ def analyze_resume_view(request):
                 resume_doc.extracted_skills.clear()
                 resume_doc.save()
             except ResumeDoc.DoesNotExist:
-                # Create a new ResumeDoc if it does not exist
                 resume_doc = ResumeDoc.objects.create(
                     user=request.user,
                     file=form.cleaned_data['file']
                 )
 
-            # Extract text from the new resume
             file_path = resume_doc.file.url.lstrip('/')
             extract_text(request, file_path)
-            resume_doc.refresh_from_db()  # Refresh to get the updated extracted_text
+            resume_doc.refresh_from_db()
 
-            # Analyze the resume text
-            analysis_results = analyze_resume(request, resume_doc.extracted_text,3)
+            analysis_results = analyze_resume(request, resume_doc.extracted_text)
 
-            # Save the analysis results to the database
             ResumeAnalysis.objects.create(
                 user=request.user,
                 resume=resume_doc,
@@ -57,28 +51,24 @@ def analyze_resume_view(request):
                 improvement_suggestions=analysis_results['improvement_suggestions']
             )
 
-            # Redirect to the results page
             return JsonResponse({'status': 'success', 'redirect_url': reverse('resume_analysis')})
         else:
             return JsonResponse({'status': 'error', 'message': 'Invalid file format.'}, status=400)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
-from .models import UserProfile
-import requests
-def analyze_resume(request,extracted_text,max_retries=3):
+
+def analyze_resume(request, extracted_text):
     """
     Analyzes the resume text based on the 15 criteria and returns the results.
     """
-    # Get the user's profile
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
-    # Check if the user has exceeded the limit
     if user_profile.resume_analysis_attempts >= 19:
-        return redirect(reverse('paypal-payment'))  # Redirect to the payment page
+        return redirect(reverse('paypal-payment'))
 
-    # Increment the attempt counter
     user_profile.resume_analysis_attempts += 1
     user_profile.save()
+
     system_prompt = """YOU ARE A WORLD-CLASS RESUME ANALYST AND CAREER COACH, SPECIALIZED IN EVALUATING AND OPTIMIZING RESUMES TO MAXIMIZE THEIR IMPACT. YOUR TASK IS TO ANALYZE THE GIVEN RESUME TEXT BASED ON 15 CRUCIAL CRITERIA AND PROVIDE A DETAILED ASSESSMENT WITH AN OVERALL SCORE OUT OF 100.
 
                 ### INSTRUCTIONS ###
@@ -153,48 +143,28 @@ def analyze_resume(request,extracted_text,max_retries=3):
         {"role": "user", "content": f"Analyze the following resume text:\n\n{extracted_text}"}
     ]
 
-    retries = 0
-    while retries < max_retries:
-        try:
-            # Call GPT-4 to analyze the resume
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=conversation,
-                timeout=120
-            )
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=conversation,
+            timeout=120
+        )
 
-            # Log the raw response for debugging
-            response_content = response.choices[0].message.content
-            print("Raw API Response:", response_content)  # Log the raw response
+        response_content = response.choices[0].message.content
 
-            # Validate the response content
-            if not response_content.strip():
-                raise ValueError("Empty response from the API")
+        if not response_content.strip():
+            raise ValueError("Empty response from the API")
 
-            # Parse the response
-            analysis_results = json.loads(response_content)
-            return analysis_results
+        analysis_results = json.loads(response_content)
+        return analysis_results
 
-        except json.JSONDecodeError as e:
-            logger.error(f"Error decoding JSON response (Attempt {retries + 1}): {e}")
-            logger.error(f"Raw API Response: {response_content}")  # Log the problematic response
-            retries += 1
-            time.sleep(2)  # Wait before retrying
-        except Exception as e:
-            logger.error(f"Error analyzing resume: {e}")
-            return {
-                "overall_score": 0,
-                "criteria_scores": {},
-                "improvement_suggestions": {}
-            }
-
-    logger.error("Max retries reached. Unable to analyze resume.")
-    return {
-        "overall_score": 0,
-        "criteria_scores": {},
-        "improvement_suggestions": {}
-    }
-
+    except Exception as e:
+        logger.error(f"Error analyzing resume: {e}")
+        return {
+            "overall_score": 0,
+            "criteria_scores": {},
+            "improvement_suggestions": {}
+        }
 
 @login_required(login_url='login')
 def resume_analysis(request):
@@ -202,7 +172,6 @@ def resume_analysis(request):
     Displays the resume analysis results.
     """
     try:
-        # Get the latest analysis for the user
         latest_analysis = ResumeAnalysis.objects.filter(user=request.user).latest('analyzed_at')
         return render(request, 'resume/resume_analysis.html', {'analysis': latest_analysis})
     except ResumeAnalysis.DoesNotExist:

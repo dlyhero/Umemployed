@@ -216,6 +216,7 @@ class Transcript(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to='transcripts/')
     extracted_text = models.TextField(blank=True, null=True)
+    reasoning = models.TextField(blank=True, null=True) 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

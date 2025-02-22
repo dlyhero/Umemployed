@@ -80,9 +80,10 @@ def extract_transcript_text(request, file_path):
         if not transcript:
             transcript = Transcript.objects.create(user=request.user, file=file_path, extracted_text='')
 
-        if transcript.extracted_text:
+        if transcript.extracted_text and transcript.reasoning:  # Check if both extracted text and reasoning exist
             extracted_text = transcript.extracted_text
-            logger.info("Using existing extracted text.")
+            reasoning = transcript.reasoning
+            logger.info("Using existing extracted text and reasoning.")
         else:
             # Download the file from Azure Blob Storage
             blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
@@ -116,11 +117,16 @@ def extract_transcript_text(request, file_path):
             # Clean and save the extracted text
             extracted_text = extracted_text.replace('\x00', '') if extracted_text else extracted_text
             transcript.extracted_text = extracted_text
+
+            # Get the perfect job title and reasoning using OpenAI
+            job_title, reasoning = get_perfect_job_title_and_reasoning(extracted_text)
+
+            # Save the reasoning in the database
+            transcript.reasoning = reasoning
             transcript.save()
 
-        # Get the perfect job title using OpenAI
-        job_title = get_perfect_job_title(extracted_text)
-        return JsonResponse({'job_title': job_title})
+        # Return the job title and reasoning in the JSON response
+        return JsonResponse({'job_title': job_title, 'reasoning': reasoning})
 
     except ResourceNotFoundError:
         logger.error(f"Blob {blob_name} not found in container {container_name}.")
@@ -131,15 +137,23 @@ def extract_transcript_text(request, file_path):
         messages.error(request, "An error occurred while processing the transcript. Please try again.")
         return HttpResponse("Error: Could not process the file", status=500)
 
-def get_perfect_job_title(extracted_text):
+def get_perfect_job_title_and_reasoning(extracted_text):
     """
-    Uses OpenAI to suggest a job title based on the extracted transcript text.
+    Uses OpenAI to suggest a job title and provide concise reasoning (50-75 words) based on the extracted transcript text.
+    The LLM is instructed to choose only one best job title.
     """
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
     conversation = [
         {
             "role": "user",
-            "content": f"Given the following transcript details: {extracted_text}, suggest the perfect job title for the student based on their academic performance and courses taken. The job title should be relevant to their field of study and skills."
+            "content": f"""
+            Given the following transcript details: {extracted_text}, suggest the **one best job title** for the student based on their academic performance and courses taken. 
+            The job title should be relevant to their field of study and skills. Ignore the program or degree mentioned in the transcript.
+            Provide a concise reasoning (50-75 words) for why this job title is the best fit.
+            Format your response as:
+            Job Title: [Title]
+            Reasoning: [Reasoning]
+            """
         }
     ]
 
@@ -150,4 +164,14 @@ def get_perfect_job_title(extracted_text):
     )
 
     response_content = response.choices[0].message.content
-    return response_content
+
+    # Split the response into job title and reasoning
+    if "Job Title:" in response_content and "Reasoning:" in response_content:
+        job_title = response_content.split("Job Title:")[1].split("Reasoning:")[0].strip()
+        reasoning = response_content.split("Reasoning:")[1].strip()
+    else:
+        # Fallback if the response format is unexpected
+        job_title = response_content
+        reasoning = "No specific reasoning provided."
+
+    return job_title, reasoning

@@ -1,46 +1,50 @@
 {% extends 'resume/base.html' %}
+{% load custom_filters %}  <!-- Load the custom filter -->
 
 {% block title %}
     <title>Resume Analysis | UmEmployed</title>
 {% endblock title %}
+
 {% block search_bar %}
 {% endblock search_bar %}
+
 <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts for Professional Typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .progress-bar {
-            height: 10px;
-            border-radius: 5px;
-            background-color: #e2e8f0;
-            overflow: hidden;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 5px;
-            background-color: #1e90ff;
-            transition: width 0.5s ease-in-out;
-        }
-        .criteria-card {
-            border-left: 4px solid #1e90ff;
-            transition: transform 0.2s ease-in-out;
-        }
-        .criteria-card:hover {
-            transform: translateY(-2px);
-        }
-        .percentage{
-            color: #1e90ff;
-        }
-    </style>
-</head>
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Font Awesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<!-- Google Fonts for Professional Typography -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    .resume-analysis {
+        font-family: 'Inter', sans-serif;
+    }
+    .resume-analysis .progress-bar {
+        height: 10px;
+        border-radius: 5px;
+        background-color: #e2e8f0;
+        overflow: hidden;
+    }
+    .resume-analysis .progress-bar-fill {
+        height: 100%;
+        border-radius: 5px;
+        background-color: #1e90ff;
+        transition: width 0.5s ease-in-out;
+    }
+    .resume-analysis .criteria-card {
+        border-left: 4px solid #1e90ff;
+        transition: transform 0.2s ease-in-out;
+    }
+    .resume-analysis .criteria-card:hover {
+        transform: translateY(-2px);
+    }
+    .resume-analysis .percentage {
+        color: #1e90ff;
+    }
+</style>
+
 {% block content %}
-<div class="container mx-auto p-6 max-w-7xl">
+<div class="resume-analysis container mx-auto p-6 max-w-7xl">
     <!-- Page Header -->
     <div class="text-center mb-12">
         <h1 class="text-4xl font-bold text-gray-800 mb-2">Resume Analysis Results</h1>
@@ -59,7 +63,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {% for criterion, score in analysis.criteria_scores.items %}
         <div class="criteria-card bg-white rounded-lg shadow-sm p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ criterion }}</h3>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ criterion|humanize_criteria }}</h3>
             <p class="text-gray-600 mb-2">{{ score }}/10</p>
             <p class="text-sm text-gray-500">{{ analysis.improvement_suggestions.criterion }}</p>
         </div>
@@ -72,7 +76,7 @@
         <div class="space-y-4">
             {% for criterion, suggestion in analysis.improvement_suggestions.items %}
             <div class="bg-gray-50 p-6 rounded-lg">
-                <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ criterion }}</h3>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ criterion|humanize_criteria }}</h3>
                 <p class="text-gray-600">{{ suggestion }}</p>
             </div>
             {% endfor %}
