@@ -43,6 +43,14 @@
 
         #tips::-webkit-scrollbar{width: 1px;}
 
+    #responseSection {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
     </style>
     
       
@@ -99,6 +107,10 @@
         <i class="fas fa-graduation-cap text-[#1e90ff] text-2xl mr-3"></i>
         <span class="text-gray-700 font-semibold text-center">Resume Advisor</span>
       </button>
+      <button id="perfectJobTitleButton" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+    <i class="fas fa-graduation-cap text-[#1e90ff] text-2xl mr-3"></i>
+    <span class="text-gray-700 font-semibold text-center">Perfect Job Title</span>
+</button>
       <a href="{% url 'update-resume' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
         <i class="fas fa-cog text-[#1e90ff] text-2xl mr-3"></i>
         <span class="text-gray-700 font-semibold text-center">Settings</span>
@@ -208,6 +220,56 @@
         </button>
 
         <!-- Modal for Uploading Resume -->
+        <!-- Modal for Uploading Transcript -->
+<div id="perfectJobTitleModal"
+    class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-lg mx-auto p-6 border rounded-lg bg-white shadow-2xl">
+        <div class="mt-3 text-center">
+            <!-- Modal Header -->
+            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex justify-center items-center">
+                <i class="fas fa-file-alt text-[#1e90ff] mr-2"></i>
+                Upload Your Transcript
+            </h3>
+
+            <!-- File Upload Section -->
+            <div class="border-2 border-dashed border-[#1e90ff] rounded-lg p-6 mb-6 bg-gray-50">
+                <div class="flex justify-center items-center mb-4">
+                    <i class="fas fa-cloud-upload-alt text-6xl text-[#1e90ff]"></i>
+                </div>
+                <p class="text-gray-600 mb-4">Drag & drop your transcript here or</p>
+                <form id="transcriptUploadForm" method="post" enctype="multipart/form-data" action="{% url 'upload_transcript' %}">
+                    {% csrf_token %}
+                    <input type="file" id="transcriptUpload" name="file" accept="application/pdf" class="hidden" />
+                    <label for="transcriptUpload"
+                        class="cursor-pointer bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">
+                        Browse Files
+                    </label>
+                    <p class="text-gray-500 text-sm mt-2">Supported format: PDF</p>
+                </form>
+            </div>
+
+            <!-- Scanning Animation (Lottie) -->
+            <div id="scanningAnimationTranscript" class="hidden flex flex-col items-center justify-center mt-4">
+                <div id="lottieAnimationTranscript" class="animation"></div>
+                <p id="scanningTextTranscript" class="text-gray-600 mt-2">Scanning your transcript...</p>
+            </div>
+
+            <!-- Response Section -->
+            <div id="responseSection" class="hidden mt-4 p-4 bg-gray-100 rounded-lg">
+                <h4 class="font-semibold text-lg">Perfect Job Title:</h4>
+                <p id="jobTitleResponse" class="text-gray-800"></p>
+                <h4 class="font-semibold text-lg mt-2">Reasoning:</h4>
+                <p id="reasoningResponse" class="text-gray-800"></p>
+            </div>
+
+            <!-- Close Modal Button -->
+            <button id="closeTranscriptModalButton"
+                class="mt-6 bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
         <!-- Modal for Uploading Resume -->
 <div id="resumeAdvisorModal"
     class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center p-4">
@@ -361,6 +423,87 @@
         // Remove the card from the DOM
         card.remove();
     }
+</script>
+<script>
+    // Open Modal when "Perfect Job Title" button is clicked
+    document.getElementById('perfectJobTitleButton').addEventListener('click', function () {
+        document.getElementById('perfectJobTitleModal').classList.remove('hidden');
+    });
+
+    // Close Modal when close button is clicked
+    document.getElementById('closeTranscriptModalButton').addEventListener('click', function () {
+        document.getElementById('perfectJobTitleModal').classList.add('hidden');
+    });
+
+    // Handle file upload and simulate scanning process
+    document.getElementById('transcriptUpload').addEventListener('change', function () {
+    var scanningAnimation = document.getElementById('scanningAnimationTranscript');
+    var scanningText = document.getElementById('scanningTextTranscript');
+    scanningAnimation.classList.remove('hidden');
+
+    // Load Lottie animation when scanning starts
+    var animationContainer = document.getElementById("lottieAnimationTranscript");
+    var animation = lottie.loadAnimation({
+        container: animationContainer,
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        path: '{% static "anims/scanning.json" %}' // Example Lottie animation URL
+    });
+
+    // Varying text messages
+    var messages = [
+        "Scanning your transcript...",
+        "Analyzing your courses...",
+        "Extracting key information...",
+        "Almost done..."
+    ];
+    var messageIndex = 0;
+
+    // Function to update the scanning text
+    function updateScanningText() {
+        scanningText.textContent = messages[messageIndex];
+        messageIndex = (messageIndex + 1) % messages.length;
+    }
+
+    // Update the text every 2 seconds
+    var textInterval = setInterval(updateScanningText, 2000);
+
+    // Submit the form dynamically
+    var form = document.getElementById('transcriptUploadForm');
+    var formData = new FormData(form);
+
+    fetch("{% url 'upload_transcript' %}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.redirect_url) {
+            // Redirect to the extraction view
+            window.location.href = data.redirect_url;
+        } else {
+            alert('An error occurred while uploading your transcript. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while uploading your transcript. Please try again.');
+    })
+    .finally(() => {
+        clearInterval(textInterval); // Stop updating the text
+        scanningAnimation.classList.add('hidden'); // Hide scanning animation
+        animation.destroy(); // Stop Lottie animation after scanning is done
+    });
+});
 </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
 

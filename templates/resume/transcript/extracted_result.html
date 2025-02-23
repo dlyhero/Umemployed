@@ -1,7 +1,0 @@
-{% extends 'base.html' %}
-
-{% block content %}
-  <h2>Extracted Job Title</h2>
-  <p>The most suitable job title based on your transcript is: <strong>{{ job_title }}</strong></p>
-  <a href="{% url 'upload_transcript' %}">Upload Another Transcript</a>
-{% endblock %}

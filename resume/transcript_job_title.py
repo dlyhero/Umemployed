@@ -37,29 +37,39 @@ def upload_transcript(request):
             blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
 
             try:
-                blob_client.upload_blob(uploaded_file)
-                logger.info(f"File uploaded to Azure Blob Storage. Blob name: {blob_name}")
+                # Check if the blob already exists
+                if blob_client.exists():
+                    logger.info(f"File '{blob_name}' already exists in storage. Skipping upload.")
+                    messages.info(request, "File already exists in storage. Using the existing file.")
+                else:
+                    blob_client.upload_blob(uploaded_file)
+                    logger.info(f"File uploaded to Azure Blob Storage. Blob name: {blob_name}")
+                    messages.success(request, "File uploaded successfully.")
+
+                # Create or get the Transcript object
+                transcript, created = Transcript.objects.get_or_create(
+                    user=request.user,
+                    file=blob_name,
+                    defaults={'extracted_text': ''}
+                )
+
+                if not created:
+                    logger.info(f"Using existing transcript for file: {blob_name}")
+
+                # Redirect to the extraction view
+                redirect_url = reverse('extract_transcript_text', kwargs={'file_path': blob_name})
+                return JsonResponse({'redirect_url': redirect_url})
+
             except Exception as e:
-                logger.error(f"Error uploading file to Azure Blob Storage: {str(e)}")
-                messages.error(request, "An error occurred while uploading the file. Please try again.")
-                return redirect('upload_transcript')
-
-            # Create the Transcript object with the correct blob name
-            transcript = Transcript.objects.create(
-                user=request.user,
-                file=blob_name,  # Store only the blob name
-                extracted_text=''
-            )
-
-            # Redirect to the extraction view
-            redirect_url = reverse('extract_transcript_text', kwargs={'file_path': blob_name})
-            return redirect(redirect_url)
+                logger.error(f"Error handling file upload: {str(e)}")
+                if "BlobAlreadyExists" in str(e):
+                    return JsonResponse({'error': 'File already exists in storage. Using the existing file.'}, status=400)
+                else:
+                    return JsonResponse({'error': 'An error occurred while processing the file. Please try again.'}, status=500)
         else:
-            messages.error(request, 'Invalid form submission. Please try again.')
-            return redirect('upload_transcript')
+            return JsonResponse({'error': 'Invalid form submission. Please try again.'}, status=400)
     else:
-        form = TranscriptForm()
-    return render(request, 'resume/transcript/upload_transcript.html', {'form': form})
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 
 def extract_transcript_text(request, file_path):
@@ -72,7 +82,7 @@ def extract_transcript_text(request, file_path):
     
     # Use the file_path directly as the blob name
     blob_name = file_path
-    logger.info(f"Blob name: {blob_name}")  # Log the blob name
+    logger.info(f"Blob name: {blob_name}")
 
     try:
         # Check if the transcript already exists in the database
@@ -80,7 +90,7 @@ def extract_transcript_text(request, file_path):
         if not transcript:
             transcript = Transcript.objects.create(user=request.user, file=file_path, extracted_text='')
 
-        if transcript.extracted_text and transcript.reasoning:  # Check if both extracted text and reasoning exist
+        if transcript.extracted_text and transcript.reasoning:
             extracted_text = transcript.extracted_text
             reasoning = transcript.reasoning
             logger.info("Using existing extracted text and reasoning.")
@@ -121,12 +131,17 @@ def extract_transcript_text(request, file_path):
             # Get the perfect job title and reasoning using OpenAI
             job_title, reasoning = get_perfect_job_title_and_reasoning(extracted_text)
 
-            # Save the reasoning in the database
+            # Save the reasoning and job title in the database
+            transcript.job_title = job_title
             transcript.reasoning = reasoning
             transcript.save()
 
-        # Return the job title and reasoning in the JSON response
-        return JsonResponse({'job_title': job_title, 'reasoning': reasoning})
+        # Render the template with the results
+        return render(request, 'resume/transcript/transcript_result.html', {
+            'job_title': transcript.job_title,
+            'reasoning': transcript.reasoning,
+            'extracted_text': transcript.extracted_text
+        })
 
     except ResourceNotFoundError:
         logger.error(f"Blob {blob_name} not found in container {container_name}.")
