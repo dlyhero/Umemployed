@@ -262,28 +262,11 @@ ACCOUNT_LOGOUT_REDIRECT_URL='/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
 EMAIL_HOST = 'smtp.gmail.com' #new
 EMAIL_PORT = 587 #new
-EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
-EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
+EMAIL_HOST_USER = 'info@umemployed.com'  #new
+EMAIL_HOST_PASSWORD = "hszd wpet pnre asce" #new
 EMAIL_USE_TLS = True #new
 DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
-# EMAIL_HOST = 'smtp.gmail.com' #new
-# EMAIL_PORT = 587 #new
-# EMAIL_HOST_USER = 'amandeepjaswal@umemployed.com'  #new
-# EMAIL_HOST_PASSWORD = "efyr xswi tguz cevf" #new
-# EMAIL_USE_TLS = True #new
-# DEFAULT_FROM_EMAIL = 'amandeepjaswal@umemployed.com'
-
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
-# EMAIL_HOST = 'mail.umemployed.com' #new
-# EMAIL_PORT = 465 #new
-# EMAIL_HOST_USER = 'info@umemployed.com'  #new
-# EMAIL_HOST_PASSWORD = "guew cfro yuao tkiz" #new
-# EMAIL_USE_TLS = True #new
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
