@@ -265,7 +265,7 @@ EMAIL_PORT = 587 #new
 EMAIL_HOST_USER = 'info@umemployed.com'  #new
 EMAIL_HOST_PASSWORD = "hszd wpet pnre asce" #new
 EMAIL_USE_TLS = True #new
-DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
+DEFAULT_FROM_EMAIL = 'info@umemployed.com'
 
 
 AUTH_PASSWORD_VALIDATORS = [

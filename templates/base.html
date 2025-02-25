@@ -76,7 +76,6 @@
     font-family: Arial, sans-serif; /* Font style */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     position: relative; /* Required for close button positioning */
-    max-width: 85%; /* Max width for alerts */
     margin-left: auto; /* Center horizontally */
     margin-right: auto; /* Center horizontally */
 }
@@ -453,14 +452,19 @@ header {
       </div>
      </div>
     </header>
-    <div class="primary container mx-auto px-6 w-8xl">
-        {% for message in messages %}
-            <div class="alert alert-info" role="alert">
-                {{ message }}
-                <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
-            </div>
-        {% endfor %}
-    </div>
+    <div class="primary">
+  {% for message in messages %}
+  <div class="alert alert-info" role="alert">
+    {{ message }}
+    <button
+      class="close-btn"
+      onclick="this.parentElement.style.display='none';"
+    >
+      &times;
+    </button>
+  </div>
+  {% endfor %}
+</div>
 
     
 
