@@ -24,10 +24,10 @@
         </div>
 
         <!-- PayPal Option -->
-        {% comment %} <div id="paypal" class="cursor-pointer py-6 px-4 border-2 border-gray-200 rounded-lg hover:border-[#1e90ff] transition-all w-1/2 mx-2">
+        <div id="paypal" class="cursor-pointer py-6 px-4 border-2 border-gray-200 rounded-lg hover:border-[#1e90ff] transition-all w-1/2 mx-2">
           <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal Logo" class="w-28 mx-auto mb-2" />
           <p class="text-gray-700">PayPal</p>
-        </div> {% endcomment %}
+        </div>
       </div>
 
       <!-- Accepted Cards -->
@@ -63,10 +63,10 @@
         </div>
       </div>
       <!-- Hidden PayPal Form -->
-      {% comment %} <form id="paypalForm" method="post" action="https://www.sandbox.paypal.com/cgi-bin/webscr" class="hidden">
+      <form id="paypalForm" method="post" action="https://www.sandbox.paypal.com/cgi-bin/webscr" class="hidden">
         {% csrf_token %}
         {{ form.render }} <!-- Render PayPal-specific fields -->
-      </form> {% endcomment %}
+      </form>
 
       <!-- Proceed Button -->
       <button id="proceed-button" class="w-full bg-[#1e90ff] font-semibold text-white py-2 px-4 rounded-full hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all" disabled>Proceed to Payment</button>
@@ -85,23 +85,21 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const stripeOption = document.getElementById('stripe')
-      //const paypalOption = document.getElementById('paypal')
+      const paypalOption = document.getElementById('paypal')
       const proceedButton = document.getElementById('proceed-button')
-      //const paypalForm = document.getElementById('paypalForm')
+      const paypalForm = document.getElementById('paypalForm')
     
       stripeOption.addEventListener('click', function () {
         stripeOption.classList.add('border-[#1e90ff]', 'bg-blue-50')
-        //paypalOption.classList.remove('border-[#1e90ff]', 'bg-blue-50')
+        paypalOption.classList.remove('border-[#1e90ff]', 'bg-blue-50')
         proceedButton.disabled = false
       })
     
-      /*
       paypalOption.addEventListener('click', function () {
         paypalOption.classList.add('border-[#1e90ff]', 'bg-blue-50')
         stripeOption.classList.remove('border-[#1e90ff]', 'bg-blue-50')
         proceedButton.disabled = false
       })
-        */
     
       proceedButton.addEventListener('click', function () {
         if (stripeOption.classList.contains('border-[#1e90ff]')) {
@@ -117,13 +115,10 @@
                 alert(result.error.message)
               }
             })
-        } 
-        /*
-        else if (paypalOption.classList.contains('border-[#1e90ff]')) {
+        } else if (paypalOption.classList.contains('border-[#1e90ff]')) {
           // Submit the hidden PayPal form
           paypalForm.submit()
         }
-          */
       })
     })
   </script>
