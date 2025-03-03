@@ -346,8 +346,8 @@ PAYPAL_TEST = True  # Set to False for live transactions
 
 # Stripe API Keys
 STRIPE_LIVE_MODE = True 
-STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
-STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY')
-STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='your-default-stripe-secret-key')
+STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='your-default-stripe-publishable-key')
+STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='your-default-stripe-webhook-secret')
 
 django_heroku.settings(locals())
