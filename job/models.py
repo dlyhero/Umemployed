@@ -229,9 +229,17 @@ class Application(models.Model):
         return required_skills <= completed_skills
 
     def update_quiz_score(self):
+        if not self.pk:  # Ensure instance is saved before querying
+            return
+        
         total_correct_answers = ApplicantAnswer.objects.filter(application=self, score=1).count()
-        self.quiz_score = total_correct_answers
-        logger.debug(f"Updated quiz score: {self.quiz_score}")
+        
+        # Avoid infinite recursion by updating only if necessary
+        if self.quiz_score != total_correct_answers:
+            self.quiz_score = total_correct_answers
+            super(Application, self).save(update_fields=['quiz_score'])  # Use `super().save()`
+
+
 
     def update_matching_percentage(self):
         try:

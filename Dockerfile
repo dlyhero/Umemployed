@@ -1,4 +1,4 @@
-FROM python:3.14.0a4
+FROM python:3.10
 
 # Install dependencies
 RUN apt-get update && apt-get install -y libmagic1 dnsutils
@@ -19,5 +19,9 @@ ENV REDIS_SSL_CERT_REQS=none
 # Collect static files
 RUN python manage.py collectstatic --no-input
 
-# Run the application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Add entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Set entrypoint
+ENTRYPOINT ["/entrypoint.sh"]

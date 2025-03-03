@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 def generate_questions_task(job_title, entry_level, skill_name, questions_per_skill):  
     questions = []  
     serialized_questions = []  
+    success = False  # Track if questions were generated successfully
     
     try:  
         question_data_list = generate_mcqs_for_skill(skill_name, entry_level, job_title)  
@@ -54,13 +55,14 @@ def generate_questions_task(job_title, entry_level, skill_name, questions_per_sk
                     'entry_level': skill_question.entry_level,  
                     'area': skill_question.area  
                 })  
+            success = True  # Set success to True if questions were generated
         else:  
             logger.error("Failed to generate questions for skill: %s", skill_name)  
     
     except Exception as e:  
         logger.error(f"An error occurred while generating questions for skill {skill_name}: {e}")  
     
-    return serialized_questions
+    return {'success': success, 'questions': serialized_questions}
 
 def generate_mcqs_for_skill(skill_name, entry_level, job_title):
     conversation = [
@@ -120,10 +122,11 @@ def send_new_job_email_task(email, full_name, job_title, job_link, job_descripti
 
     try:
         send_mail(subject, message, from_email, [email], html_message=html_message)
-        # Mark the job as complete after sending the email
+        # Check if all questions were generated successfully before marking the job as complete
         job_instance = Job.objects.get(id=job_id)
-        job_instance.job_creation_is_complete = True
-        job_instance.save()
+        if all(generate_questions_task(job_instance.title, job_instance.level, skill.name, 10)['success'] for skill in job_instance.requirements.all()):
+            job_instance.job_creation_is_complete = True
+            job_instance.save()
     except Exception as e:
         logger.error(f"An error occurred while sending email to {email}: {e}")
 
@@ -144,9 +147,10 @@ def send_recruiter_job_confirmation_email_task(email, full_name, job_title, comp
 
     try:
         send_mail(subject, message, from_email, [email], html_message=html_message)
-        # Mark the job as complete after sending the email
+        # Check if all questions were generated successfully before marking the job as complete
         job_instance = Job.objects.get(id=job_id)
-        job_instance.job_creation_is_complete = True
-        job_instance.save()
+        if all(generate_questions_task(job_instance.title, job_instance.level, skill.name, 10)['success'] for skill in job_instance.requirements.all()):
+            job_instance.job_creation_is_complete = True
+            job_instance.save()
     except Exception as e:
         logger.error(f"An error occurred while sending email to {email}: {e}")

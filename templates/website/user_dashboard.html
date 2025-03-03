@@ -1,454 +1,510 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-  <title>Dashboard|UmEmployed</title>
-{% endblock %}t>{% block custom_css %}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
+    <title>Dashboard|UmEmployed</title>
 
-  <style>
-    .animation {
-      width: 200px;
-      height: 200px;
-      margin: auto;
-    }
+    {% endblock title %}
+    t>
+    {% block custom_css %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
     
-    .modal-content {
-      animation: slideIn 0.3s ease-out;
-    }
-    
-    @keyframes slideIn {
-      from {
-        transform: translateY(-20px);
+    <style>
+              .animation {
+            width: 200px;
+            height: 200px;
+            margin: auto;
+        }
+
+        .modal-content {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+      .sidebar-item {
         opacity: 0;
-      }
-      to {
-        transform: translateY(0);
+        transform: translateY(-10px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .sidebar-item.visible {
         opacity: 1;
-      }
-    }
-    .sidebar-item {
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-    
-    .sidebar-item.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    #tips::-webkit-scrollbar {
-      width: 1px;
-    }
-    
+        transform: translateY(0);
+        }
+
+        #tips::-webkit-scrollbar{width: 1px;}
+
     #responseSection {
-      background-color: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 16px;
-      margin-top: 16px;
-    }
-  </style>
-{% endblock %}
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+    </style>
+    
+      
+    {% endblock %}
 {% block content %}
-  <!-- Main Content -->
-  <div class="flex flex-col lg:flex-row container mx-auto py-6 space-y-6 lg:space-y-0 lg:space-x-4">
-    <!-- Left Sidebar -->
-    <aside class="bg-white w-full lg:w-[30%] h-fit order-2 lg:order-1">
-      <div class="p-4">
-        <div class="search-wrapper max-w-xl hidden lg:flex flex-1 max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-lg shadow sm:shadow-none">
-          <input class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis" type="text" name="search" id="search" placeholder="Search jobs, companies, or keywords" />
-          <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
-          <div class="button-wrap">
-            <button class="text-white bg-[#1e90ff] font-semibold rounded-lg py-2 px-4">Search</button>
-          </div>
+
+
+
+
+   <!-- Main Content -->
+<div class="flex flex-col lg:flex-row container mx-auto py-6 space-y-6 lg:space-y-0 lg:space-x-4">
+  <!-- Left Sidebar -->
+  <aside class="bg-white w-full lg:w-[30%] h-fit order-2 lg:order-1">
+    <div class="p-4">
+      <div class="search-wrapper max-w-xl hidden lg:flex flex-1 max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-lg shadow sm:shadow-none">
+        <input
+          class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
+          type="text"
+          name="search"
+          id="search"
+          placeholder="Search jobs, companies, or keywords"
+        />
+        <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
+        <div class="button-wrap">
+          <button class="text-white bg-[#1e90ff] font-semibold rounded-lg py-2 px-4">Search</button>
         </div>
       </div>
-      <nav class="grid grid-cols-2 md:grid-cols-1 gap-4 p-4">
-        {% if user.has_resume %}
-          <a href="{% url 'user_dashboard' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
-            <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
-            <span class="text-gray-700 font-semibold">Dashboard Overview</span>
-          </a>
-        {% else %}
-          <a href="{% url 'upload' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
-            <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
-            <span class="text-gray-700 font-semibold text-center">Upload resume</span>
-          </a>
-        {% endif %}
-        <a href="{% url 'job:saved_jobs' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
-          <i class="fas fa-bookmark text-[#1e90ff] text-2xl mr-3"></i>
-          <span class="text-gray-700 font-semibold text-center">Saved Jobs</span>
+    </div>
+    <nav class="grid grid-cols-2 md:grid-cols-1 gap-4 p-4">
+      {% if user.has_resume %}
+        <a href="{% url 'user_dashboard' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+          <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
+          <span class="text-gray-700 font-semibold">Dashboard Overview</span>
         </a>
-        <a href="{% url 'job:applied_jobs' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
-          <i class="fas fa-file-alt text-[#1e90ff] text-2xl mr-3"></i>
-          <span class="text-gray-700 font-semibold text-center">Applications</span>
+      {% else %}
+        <a href="{% url 'upload' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+          <i class="fas fa-tachometer-alt text-[#1e90ff] text-2xl mr-3"></i>
+          <span class="text-gray-700 font-semibold text-center">Upload resume</span>
         </a>
-        <a href="{% url 'career_resources' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
-          <i class="fas fa-briefcase text-[#1e90ff] text-2xl mr-3"></i>
-          <span class="text-gray-700 font-semibold text-center">Career Resources</span>
-        </a>
-        <button id="resumeAdvisorButton" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
-          <i class="fas fa-graduation-cap text-[#1e90ff] text-2xl mr-3"></i>
-          <span class="text-gray-700 font-semibold text-center">Resume Advisor</span>
-        </button>
-        <button id="perfectJobTitleButton" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
-          <i class="fas fa-graduation-cap text-[#1e90ff] text-2xl mr-3"></i>
-          <span class="text-gray-700 font-semibold text-center">Perfect Job Title</span>
-        </button>
-        <a href="{% url 'update-resume' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
-          <i class="fas fa-cog text-[#1e90ff] text-2xl mr-3"></i>
-          <span class="text-gray-700 font-semibold text-center">Settings</span>
-        </a>
-      </nav>
-    </aside>
-
-    <!-- Main Dashboard Area -->
-    <main class="flex-1 space-y-6 lg:w-[70%] lg:space-y-0 order-1 lg:order-2 rounded-lg">
-      <!-- Search Bar for Mobile -->
-      <section id="search-ctn-mobile" class="mb-5 lg:hidden">
-        <div class="search-wrapper flex max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none">
-          <input class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis" type="text" name="search" id="search" placeholder="Search jobs, companies, or keywords" />
-          <div class="button-wrap">
-            <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4"><i class="fas fa-search"></i></button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Welcome Banner -->
-      <section class="px-6 pb-6">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Welcome, {{ user.first_name }}!</h2>
-        <p class="mt-2">Here's your personalized dashboard to help you land your dream job.</p>
-      </section>
-
-      <hr />
-
-      <!-- Profile Completion Bar -->
-      <section class="container mx-auto bg-white p-6">
-        <h2 class="font-semibold mb-4 text-xl md:text-2xl">Complete Your Profile</h2>
-        <div class="w-full bg-gray-200 rounded-full h-4">
-          <div class="bg-[#1e9] h-4 rounded-full" style="width: {{ completion_percentage }}%"></div>
-        </div>
-        <p class="mt-2 text-gray-600">
-          {% if completion_percentage == 100 %}
-            Congratulations! Your profile is fully complete.
-          {% else %}
-            {{ completion_percentage }}% Complete - Add your skills and work experience to improve your chances.
-          {% endif %}
-        </p>
-      </section>
-
-      <hr />
-
-      <!-- Recommended Jobs Section -->
-      <section class="container px-4 mx-auto py-12">
-        <div class="mb-8">
-          <h2 class="text-xl md:text-2xl font-bold text-gray-900">Recommended Jobs</h2>
-          <p class="text-gray-600 text-xl">Find the best jobs tailored to your skills and preferences.</p>
-        </div>
-        <div class="hidden lg:flex justify-end gap-4 lg:mr-10 items-center mb-4">
-          <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300" id="scrollLeft"><i class="fas fa-chevron-left text-gray-600"></i></button>
-          <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300" id="scrollRight"><i class="fas fa-chevron-right text-gray-600"></i></button>
-        </div>
-        <div class="flex gap-6 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory" id="jobCardsContainer">
-          {% if recommended_jobs %}
-            {% for job in recommended_jobs %}
-              <a href="{% url 'job:job_details' job.id %}">
-                <div class="min-w-[100%] sm:min-w-[50%] lg:min-w-[32%] bg-white border rounded-lg p-6 snap-start">
-                  <div class="flex items-center justify-between mb-4">
-                    <img class="w-12 h-12 rounded-full mr-4" src="{% static 'new_design/icons/294675_google_icon.svg' %}" alt="Company Logo" />
-                    <div>
-                      <span class="text-sm text-gray-500 capitalize">{{ job.job_location_type }}</span>
-                    </div>
-                  </div>
-                  <h3 class="text-xl font-semibold text-gray-800 truncate">{{ job.title }}</h3>
-                  <div class="flex items-center gap-2">
-                    <span class="text-gray-600 truncate">{{ job.company.name }}</span>
-                    <span class="text-sm text-gray-500 truncate">{{ job.created_at }}</span>
-                  </div>
-                  <p class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center">
-                    <i class="fas fa-map-marker-alt mr-2 truncate"></i> {{ job.location.name }}
-                  </p>
-                  <p class="text-gray-800 mb-4 flex items-center">${{ job.salary }} / year</p>
-                  {% if job.id in applied_job_ids %}
-                    <span style="color: green;">(Already Applied)</span>
-                  {% else %}
-                    <div class="mt-4">
-                      <a href="{% url 'job:job_details' job.id %}"><button class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full">Apply Now</button></a>
-                    </div>
-                  {% endif %}
-                </div>
-              </a>
-            {% endfor %}
-          {% endif %}
-        </div>
-      </section>
-    </main>
-    <div class="container mx-auto p-4">
-      <!-- Resume Advisor Button -->
-      <button id="resumeAdvisorButton" class="fixed bottom-8 right-8 bg-[#1e90ff] text-white px-6 py-3 rounded-full text-lg shadow-lg hover:bg-[#1c7cd6] transition duration-300 ease-in-out flex items-center space-x-2">
-        <i class="fas fa-magic"></i>
-        <span>Resume Advisor</span>
+      {% endif %}
+      <a href="{% url 'job:saved_jobs' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-bookmark text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Saved Jobs</span>
+      </a>
+      <a href="{% url 'job:applied_jobs' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-file-alt text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Applications</span>
+      </a>
+      <a href="{% url 'career_resources' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-briefcase text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Career Resources</span>
+      </a>
+      <button id="resumeAdvisorButton" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-graduation-cap text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Resume Advisor</span>
       </button>
+      <button id="perfectJobTitleButton" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+    <i class="fas fa-graduation-cap text-[#1e90ff] text-2xl mr-3"></i>
+    <span class="text-gray-700 font-semibold text-center">Perfect Job Title</span>
+</button>
+      <a href="{% url 'update-resume' %}" class="flex flex-col sm:flex-row sidebar-item items-center rounded-lg border border-gray-200 p-4 bg-white hover:bg-gray-50 transition">
+        <i class="fas fa-cog text-[#1e90ff] text-2xl mr-3"></i>
+        <span class="text-gray-700 font-semibold text-center">Settings</span>
+      </a>
+    </nav>
+  </aside>
 
-      <!-- Modal for Uploading Resume -->
-      <!-- Modal for Uploading Transcript -->
-      <div id="perfectJobTitleModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center p-4">
-        <div class="modal-content relative w-full max-w-lg mx-auto p-6 border rounded-lg bg-white shadow-2xl">
-          <div class="mt-3 text-center">
+  <!-- Main Dashboard Area -->
+  <main class="flex-1 space-y-6 lg:w-[70%]  lg:space-y-0 order-1 lg:order-2 rounded-lg">
+    <!-- Search Bar for Mobile -->
+    <section id="search-ctn-mobile" class="mb-5 lg:hidden">
+      <div class="search-wrapper flex max-w-[90%] mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none">
+        <input
+          class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
+          type="text"
+          name="search"
+          id="search"
+          placeholder="Search jobs, companies, or keywords"
+        />
+        <div class="button-wrap">
+          <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Welcome Banner -->
+    <section class="px-6 pb-6">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Welcome, {{ user.first_name }}!</h2>
+      <p class="mt-2">Here's your personalized dashboard to help you land your dream job.</p>
+    </section>
+
+    <hr />
+
+    <!-- Profile Completion Bar -->
+    <section class="container mx-auto  bg-white p-6">
+      <h2 class="font-semibold mb-4 text-xl md:text-2xl">Complete Your Profile</h2>
+      <div class="w-full bg-gray-200 rounded-full h-4">
+        <div class="bg-[#1e9] h-4 rounded-full " style="width: {{ completion_percentage }}%"></div>
+      </div>
+      <p class="mt-2 text-gray-600">
+        {% if completion_percentage == 100 %}
+          Congratulations! Your profile is fully complete.
+        {% else %}
+          {{ completion_percentage }}% Complete - Add your skills and work experience to improve your chances.
+        {% endif %}
+      </p>
+    </section>
+
+    <hr />
+
+    <!-- Recommended Jobs Section -->
+    <section class="container px-4 mx-auto py-12">
+      <div class="mb-8">
+        <h2 class="text-xl md:text-2xl font-bold text-gray-900">Recommended Jobs</h2>
+        <p class="text-gray-600 text-xl">Find the best jobs tailored to your skills and preferences.</p>
+      </div>
+      <div class="hidden lg:flex justify-end gap-4 lg:mr-10 items-center mb-4">
+        <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300" id="scrollLeft">
+          <i class="fas fa-chevron-left text-gray-600"></i>
+        </button>
+        <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300" id="scrollRight">
+          <i class="fas fa-chevron-right text-gray-600"></i>
+        </button>
+      </div>
+      <div class="flex gap-6 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory" id="jobCardsContainer">
+        {% if recommended_jobs %}
+          {% for job in recommended_jobs %}
+            <a href="{% url 'job:job_details' job.id %}">
+              <div class="min-w-[100%] sm:min-w-[50%] lg:min-w-[32%] bg-white border rounded-lg p-6 snap-start">
+                <div class="flex items-center justify-between mb-4">
+                  <img class="w-12 h-12 rounded-full mr-4" src="{% static 'new_design/icons/294675_google_icon.svg' %}" alt="Company Logo" />
+                  <div><span class="text-sm text-gray-500 capitalize">{{ job.job_location_type }}</span></div>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 truncate">{{ job.title }}</h3>
+                <div class="flex items-center gap-2">
+                  <span class="text-gray-600 truncate">{{ job.company.name }}</span>
+                  <span class="text-sm text-gray-500 truncate">{{ job.created_at }}</span>
+                </div>
+                <p class="text-[#1e90ff] font-semibold text-sm p-1 bg-[rgba(30,144,250,0.1)] w-fit rounded mb-4 flex items-center">
+                  <i class="fas fa-map-marker-alt mr-2 truncate"></i> {{ job.location.name }}
+                </p>
+                <p class="text-gray-800 mb-4 flex items-center">${{ job.salary }} / year</p>
+                {% if job.id in applied_job_ids %}
+                  <span style="color: green;">(Already Applied)</span>
+                {% else %}
+                  <div class="mt-4">
+                    <a href="{% url 'job:job_details' job.id %}">
+                      <button class="bg-[#1e90ff] text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 w-full">Apply Now</button>
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+            </a>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </section>
+  </main>
+   <div class="container mx-auto p-4">
+        <!-- Resume Advisor Button -->
+        <button id="resumeAdvisorButton"
+            class="fixed bottom-8 right-8 bg-[#1e90ff] text-white px-6 py-3 rounded-full text-lg shadow-lg hover:bg-[#1c7cd6] transition duration-300 ease-in-out flex items-center space-x-2">
+            <i class="fas fa-magic"></i>
+            <span>Resume Advisor</span>
+        </button>
+
+        <!-- Modal for Uploading Resume -->
+        <!-- Modal for Uploading Transcript -->
+<div id="perfectJobTitleModal"
+    class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-lg mx-auto p-6 border rounded-lg bg-white shadow-2xl">
+        <div class="mt-3 text-center">
             <!-- Modal Header -->
             <h3 class="text-2xl font-bold text-gray-900 mb-4 flex justify-center items-center">
-              <i class="fas fa-file-alt text-[#1e90ff] mr-2"></i>
-              Upload Your Transcript
+                <i class="fas fa-file-alt text-[#1e90ff] mr-2"></i>
+                Upload Your Transcript
             </h3>
 
             <!-- File Upload Section -->
             <div class="border-2 border-dashed border-[#1e90ff] rounded-lg p-6 mb-6 bg-gray-50">
-              <div class="flex justify-center items-center mb-4">
-                <i class="fas fa-cloud-upload-alt text-6xl text-[#1e90ff]"></i>
-              </div>
-              <p class="text-gray-600 mb-4">Drag & drop your transcript here or</p>
-              <form id="transcriptUploadForm" method="post" enctype="multipart/form-data" action="{% url 'upload_transcript' %}">
-                {% csrf_token %}
-                <input type="file" id="transcriptUpload" name="file" accept="application/pdf" class="hidden" />
-                <label for="transcriptUpload" class="cursor-pointer bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">Browse Files</label>
-                <p class="text-gray-500 text-sm mt-2">Supported format: PDF</p>
-              </form>
+                <div class="flex justify-center items-center mb-4">
+                    <i class="fas fa-cloud-upload-alt text-6xl text-[#1e90ff]"></i>
+                </div>
+                <p class="text-gray-600 mb-4">Drag & drop your transcript here or</p>
+                <form id="transcriptUploadForm" method="post" enctype="multipart/form-data" action="{% url 'upload_transcript' %}">
+                    {% csrf_token %}
+                    <input type="file" id="transcriptUpload" name="file" accept="application/pdf" class="hidden" />
+                    <label for="transcriptUpload"
+                        class="cursor-pointer bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">
+                        Browse Files
+                    </label>
+                    <p class="text-gray-500 text-sm mt-2">Supported format: PDF</p>
+                </form>
             </div>
 
             <!-- Scanning Animation (Lottie) -->
             <div id="scanningAnimationTranscript" class="hidden flex flex-col items-center justify-center mt-4">
-              <div id="lottieAnimationTranscript" class="animation"></div>
-              <p id="scanningTextTranscript" class="text-gray-600 mt-2">Scanning your transcript...</p>
+                <div id="lottieAnimationTranscript" class="animation"></div>
+                <p id="scanningTextTranscript" class="text-gray-600 mt-2">Scanning your transcript...</p>
             </div>
 
             <!-- Response Section -->
             <div id="responseSection" class="hidden mt-4 p-4 bg-gray-100 rounded-lg">
-              <h4 class="font-semibold text-lg">Perfect Job Title:</h4>
-              <p id="jobTitleResponse" class="text-gray-800"></p>
-              <h4 class="font-semibold text-lg mt-2">Reasoning:</h4>
-              <p id="reasoningResponse" class="text-gray-800"></p>
+                <h4 class="font-semibold text-lg">Perfect Job Title:</h4>
+                <p id="jobTitleResponse" class="text-gray-800"></p>
+                <h4 class="font-semibold text-lg mt-2">Reasoning:</h4>
+                <p id="reasoningResponse" class="text-gray-800"></p>
             </div>
 
             <!-- Close Modal Button -->
-            <button id="closeTranscriptModalButton" class="mt-6 bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">Close</button>
-          </div>
+            <button id="closeTranscriptModalButton"
+                class="mt-6 bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">
+                Close
+            </button>
         </div>
-      </div>
-      <!-- Modal for Uploading Resume -->
-      <div id="resumeAdvisorModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center p-4">
-        <div class="modal-content relative w-full max-w-lg mx-auto p-6 border rounded-lg bg-white shadow-2xl">
-          <div class="mt-3 text-center">
+    </div>
+</div>
+        <!-- Modal for Uploading Resume -->
+<div id="resumeAdvisorModal"
+    class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center p-4">
+    <div class="modal-content relative w-full max-w-lg mx-auto p-6 border rounded-lg bg-white shadow-2xl">
+        <div class="mt-3 text-center">
             <!-- Modal Header -->
             <h3 class="text-2xl font-bold text-gray-900 mb-4 flex justify-center items-center">
-              <i class="fas fa-file-alt text-[#1e90ff] mr-2"></i>
-              Upload Your Resume
+                <i class="fas fa-file-alt text-[#1e90ff] mr-2"></i>
+                Upload Your Resume
             </h3>
 
             <!-- File Upload Section -->
             <div class="border-2 border-dashed border-[#1e90ff] rounded-lg p-6 mb-6 bg-gray-50">
-              <div class="flex justify-center items-center mb-4">
-                <i class="fas fa-cloud-upload-alt text-6xl text-[#1e90ff]"></i>
-              </div>
-              <p class="text-gray-600 mb-4">Drag & drop your resume here or</p>
-              <form id="resumeUploadForm" method="post" enctype="multipart/form-data" action="{% url 'analyze_resume' %}">
-                {% csrf_token %}
-                <input type="file" id="resumeUpload" name="file" accept="application/pdf" class="hidden" />
-                <label for="resumeUpload" class="cursor-pointer bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">Browse Files</label>
+                <div class="flex justify-center items-center mb-4">
+                    <i class="fas fa-cloud-upload-alt text-6xl text-[#1e90ff]"></i>
+                </div>
+                <p class="text-gray-600 mb-4">Drag & drop your resume here or</p>
+                <form id="resumeUploadForm" method="post" enctype="multipart/form-data" action="{% url 'analyze_resume' %}">
+    {% csrf_token %}
+    <input type="file" id="resumeUpload" name="file" accept="application/pdf" class="hidden" />
+    <label for="resumeUpload"
+        class="cursor-pointer bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">
+        Browse Files
+    </label>
 
-                <h2 class="mt-4">Or Select a Previously Uploaded Resume</h2>
-                <select name="selected_resume" id="selected_resume" class="mt-2 p-2 border rounded">
-                  <option value="">Select a resume</option>
-                  {% for resume_doc in resume_docs %}
-                    <option value="{{ resume_doc.id }}">{{ resume_doc.file.name }}</option>
-                  {% endfor %}
-                </select>
+    <h2 class="mt-4">Or Select a Previously Uploaded Resume</h2>
+    <select name="selected_resume" id="selected_resume" class="mt-2 p-2 border rounded">
+        <option value="">Select a resume</option>
+        {% for resume_doc in resume_docs %}
+            <option value="{{ resume_doc.id }}">{{ resume_doc.file.name }}</option>
+        {% endfor %}
+    </select>
 
-                <button type="submit" class="mt-4 bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">Submit</button>
-              </form>
-              <p class="text-gray-500 text-sm mt-2">Supported format: PDF</p>
+    <button type="submit" class="mt-4 bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">
+        Submit
+    </button>
+</form>
+                <p class="text-gray-500 text-sm mt-2">Supported format: PDF</p>
             </div>
 
             <!-- Scanning Animation (Lottie) -->
-            <div id="scanningAnimation" class="hidden flex flex-col items-center justify-center mt-4">
-              <div id="lottieAnimation" class="animation"></div>
-              <p id="scanningText" class="text-gray-600 mt-2">Scanning your resume...</p>
-            </div>
+<div id="scanningAnimation" class="hidden flex flex-col items-center justify-center mt-4">
+    <div id="lottieAnimation" class="animation"></div>
+    <p id="scanningText" class="text-gray-600 mt-2">Scanning your resume...</p>
+</div>
 
             <!-- Close Modal Button -->
-            <button id="closeModalButton" class="mt-6 bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">Close</button>
-          </div>
+            <button id="closeModalButton"
+                class="mt-6 bg-[#1e90ff] text-white px-6 py-2 rounded-full hover:bg-[#1c7cd6] transition duration-300 ease-in-out">
+                Close
+            </button>
         </div>
-      </div>
     </div>
-  </div>
-  <script>
+</div>
+    </div>
+
+</div>
+<script>
     // Open Modal when "Resume Advisor" button is clicked
     document.getElementById('resumeAdvisorButton').addEventListener('click', function () {
-      document.getElementById('resumeAdvisorModal').classList.remove('hidden')
-    })
-    
+        document.getElementById('resumeAdvisorModal').classList.remove('hidden');
+    });
+
     // Close Modal when close button is clicked
     document.getElementById('closeModalButton').addEventListener('click', function () {
-      document.getElementById('resumeAdvisorModal').classList.add('hidden')
-    })
-    
+        document.getElementById('resumeAdvisorModal').classList.add('hidden');
+    });
+
     // Handle file upload and simulate scanning process
     document.getElementById('resumeUpload').addEventListener('change', function () {
-      var scanningAnimation = document.getElementById('scanningAnimation')
-      var scanningText = document.getElementById('scanningText')
-      scanningAnimation.classList.remove('hidden')
-    
-      // Load Lottie animation when scanning starts
-      var animationContainer = document.getElementById('lottieAnimation')
-      var animation = lottie.loadAnimation({
-        container: animationContainer,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: '{% static "anims/scanning.json" %}' // Example Lottie animation URL
-      })
-    
-      // Varying text messages
-      var messages = ['Scanning your resume...', 'Analyzing your skills...', 'Extracting key information...', 'Almost done...']
-      var messageIndex = 0
-    
-      // Function to update the scanning text
-      function updateScanningText() {
-        scanningText.textContent = messages[messageIndex]
-        messageIndex = (messageIndex + 1) % messages.length
-      }
-    
-      // Update the text every 2 seconds
-      var textInterval = setInterval(updateScanningText, 2000)
-    
-      // Submit the form dynamically
-      var form = document.getElementById('resumeUploadForm')
-      var formData = new FormData(form)
-    
-      fetch("{% url 'analyze_resume' %}", {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}'
+        var scanningAnimation = document.getElementById('scanningAnimation');
+        var scanningText = document.getElementById('scanningText');
+        scanningAnimation.classList.remove('hidden');
+
+        // Load Lottie animation when scanning starts
+        var animationContainer = document.getElementById("lottieAnimation");
+        var animation = lottie.loadAnimation({
+            container: animationContainer,
+            renderer: "svg",
+            loop: true,
+            autoplay: true,
+            path: '{% static "anims/scanning.json" %}' // Example Lottie animation URL
+        });
+
+        // Varying text messages
+        var messages = [
+            "Scanning your resume...",
+            "Analyzing your skills...",
+            "Extracting key information...",
+            "Almost done..."
+        ];
+        var messageIndex = 0;
+
+        // Function to update the scanning text
+        function updateScanningText() {
+            scanningText.textContent = messages[messageIndex];
+            messageIndex = (messageIndex + 1) % messages.length;
         }
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok')
-          }
-          return response.json()
+
+        // Update the text every 2 seconds
+        var textInterval = setInterval(updateScanningText, 2000);
+
+        // Submit the form dynamically
+        var form = document.getElementById('resumeUploadForm');
+        var formData = new FormData(form);
+
+        fetch("{% url 'analyze_resume' %}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
         })
-        .then((data) => {
-          if (data.status === 'success') {
-            // Redirect to the results page after scanning
-            window.location.href = data.redirect_url
-          } else {
-            alert('An error occurred while analyzing your resume. Please try again.')
-          }
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
         })
-        .catch((error) => {
-          console.error('Error:', error)
-          alert('An error occurred while uploading your resume. Please try again.')
+        .then(data => {
+            if (data.status === 'success') {
+                // Redirect to the results page after scanning
+                window.location.href = data.redirect_url;
+            } else {
+                alert('An error occurred while analyzing your resume. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while uploading your resume. Please try again.');
         })
         .finally(() => {
-          clearInterval(textInterval) // Stop updating the text
-          scanningAnimation.classList.add('hidden') // Hide scanning animation
-          animation.destroy() // Stop Lottie animation after scanning is done
-        })
-    })
-    
+            clearInterval(textInterval); // Stop updating the text
+            scanningAnimation.classList.add('hidden'); // Hide scanning animation
+            animation.destroy(); // Stop Lottie animation after scanning is done
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
-      const items = document.querySelectorAll('.sidebar-item')
-      items.forEach((item, index) => {
-        setTimeout(() => {
-          item.classList.add('visible')
-        }, index * 300) // 300ms delay between each item
-      })
-    })
-    
+        const items = document.querySelectorAll('.sidebar-item');
+        items.forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.add('visible');
+            }, index * 300); // 300ms delay between each item
+        });
+    });
+
     function removeTip(button) {
-      // Get the parent card element
-      const card = button.parentElement
-      // Remove the card from the DOM
-      card.remove()
+        // Get the parent card element
+        const card = button.parentElement;
+        // Remove the card from the DOM
+        card.remove();
     }
-  </script>
-  <script>
+</script>
+<script>
     // Open Modal when "Perfect Job Title" button is clicked
     document.getElementById('perfectJobTitleButton').addEventListener('click', function () {
-      document.getElementById('perfectJobTitleModal').classList.remove('hidden')
-    })
-    
+        document.getElementById('perfectJobTitleModal').classList.remove('hidden');
+    });
+
     // Close Modal when close button is clicked
     document.getElementById('closeTranscriptModalButton').addEventListener('click', function () {
-      document.getElementById('perfectJobTitleModal').classList.add('hidden')
-    })
-    
+        document.getElementById('perfectJobTitleModal').classList.add('hidden');
+    });
+
     // Handle file upload and simulate scanning process
     document.getElementById('transcriptUpload').addEventListener('change', function () {
-      var scanningAnimation = document.getElementById('scanningAnimationTranscript')
-      var scanningText = document.getElementById('scanningTextTranscript')
-      scanningAnimation.classList.remove('hidden')
-    
-      // Load Lottie animation when scanning starts
-      var animationContainer = document.getElementById('lottieAnimationTranscript')
-      var animation = lottie.loadAnimation({
+    var scanningAnimation = document.getElementById('scanningAnimationTranscript');
+    var scanningText = document.getElementById('scanningTextTranscript');
+    scanningAnimation.classList.remove('hidden');
+
+    // Load Lottie animation when scanning starts
+    var animationContainer = document.getElementById("lottieAnimationTranscript");
+    var animation = lottie.loadAnimation({
         container: animationContainer,
-        renderer: 'svg',
+        renderer: "svg",
         loop: true,
         autoplay: true,
         path: '{% static "anims/scanning.json" %}' // Example Lottie animation URL
-      })
-    
-      // Varying text messages
-      var messages = ['Scanning your transcript...', 'Analyzing your courses...', 'Extracting key information...', 'Almost done...']
-      var messageIndex = 0
-    
-      // Function to update the scanning text
-      function updateScanningText() {
-        scanningText.textContent = messages[messageIndex]
-        messageIndex = (messageIndex + 1) % messages.length
-      }
-    
-      // Update the text every 2 seconds
-      var textInterval = setInterval(updateScanningText, 2000)
-    
-      // Submit the form dynamically
-      var form = document.getElementById('transcriptUploadForm')
-      var formData = new FormData(form)
-    
-      fetch("{% url 'upload_transcript' %}", {
+    });
+
+    // Varying text messages
+    var messages = [
+        "Scanning your transcript...",
+        "Analyzing your courses...",
+        "Extracting key information...",
+        "Almost done..."
+    ];
+    var messageIndex = 0;
+
+    // Function to update the scanning text
+    function updateScanningText() {
+        scanningText.textContent = messages[messageIndex];
+        messageIndex = (messageIndex + 1) % messages.length;
+    }
+
+    // Update the text every 2 seconds
+    var textInterval = setInterval(updateScanningText, 2000);
+
+    // Submit the form dynamically
+    var form = document.getElementById('transcriptUploadForm');
+    var formData = new FormData(form);
+
+    fetch("{% url 'upload_transcript' %}", {
         method: 'POST',
         body: formData,
         headers: {
-          'X-CSRFToken': '{{ csrf_token }}'
+            'X-CSRFToken': '{{ csrf_token }}'
         }
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok')
-          }
-          return response.json()
-        })
-        .then((data) => {
-          if (data.redirect_url) {
-            // Redirect to the extraction view
-            window.location.href = data.redirect_url
-          } else {
-            alert('An error occurred while uploading your transcript. Please try again.')
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          alert('An error occurred while uploading your transcript. Please try again.')
-        })
-        .finally(() => {
-          clearInterval(textInterval) // Stop updating the text
-          scanningAnimation.classList.add('hidden') // Hide scanning animation
-          animation.destroy() // Stop Lottie animation after scanning is done
-        })
     })
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.redirect_url) {
+            // Redirect to the extraction view
+            window.location.href = data.redirect_url;
+        } else {
+            alert('An error occurred while uploading your transcript. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while uploading your transcript. Please try again.');
+    })
+    .finally(() => {
+        clearInterval(textInterval); // Stop updating the text
+        scanningAnimation.classList.add('hidden'); // Hide scanning animation
+        animation.destroy(); // Stop Lottie animation after scanning is done
+    });
+});
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
+
 {% endblock %}
