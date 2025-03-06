@@ -41,7 +41,7 @@ django-autocomplete-light==3.11.0
 django-autoslug==1.9.9
 django-celery-beat==2.7.0
 django-cities-light==3.10.1
-django-ckeditor==6.7.2
+django-ckeditor-5==0.2.17
 django-compressor==4.5.1
 django-countries==7.6.1
 django-crispy-forms==2.3
@@ -123,7 +123,7 @@ python3-openid==3.2.0
 pytz==2024.2
 rcssmin==1.1.2
 redis==5.2.1
-requests
+requests==2.32.3
 requests-oauthlib==2.0.0
 rjsmin==1.2.2
 rsa==4.9
