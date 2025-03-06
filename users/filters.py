@@ -1,8 +1,14 @@
 import django_filters
 from job.models import Job
+from django_ckeditor_5.fields import CKEditor5Field
+from django_filters import CharFilter
 
 class JobFilter(django_filters.FilterSet):
     class Meta:
         model = Job
-        fields = "__all__"  
-       
+        fields = ['title', 'company', 'location', 'job_type', 'level', 'salary_range', 'ideal_candidate']
+        filter_overrides = {
+            CKEditor5Field: {
+                'filter_class': CharFilter
+            },
+        }

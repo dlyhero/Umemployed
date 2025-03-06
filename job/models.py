@@ -6,12 +6,10 @@ import uuid
 from resume.models import Resume
 from job.utils import calculate_skill_match
 from django.conf import settings
-from ckeditor.fields import RichTextField
 from django.urls import reverse
 from django_countries.fields import CountryField
 from decimal import Decimal
-
-
+from django_ckeditor_5.fields import CKEditor5Field
 
 import logging
 
@@ -99,11 +97,11 @@ class Job(models.Model):
     ], default='30000-50000')
     requirements = models.ManyToManyField(Skill, related_name='required_jobs')
     extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='extracted_jobs')
-    ideal_candidate = RichTextField()
+    ideal_candidate = CKEditor5Field()
     is_available = models.BooleanField(default=False)
-    description = RichTextField(max_length=2000, default='We are looking for ...')
-    responsibilities = RichTextField(max_length=2000, default="You will be in charge of ...")
-    benefits = RichTextField(default="...")
+    description = CKEditor5Field(max_length=2000, default='We are looking for ...')
+    responsibilities = CKEditor5Field(max_length=2000, default="You will be in charge of ...")
+    benefits = CKEditor5Field(default="...")
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default=BEGINNER)
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, default=1)
     job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES, blank=True, verbose_name='Job Type')

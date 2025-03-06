@@ -1,7 +1,7 @@
 from django import forms
 from .models import Job, ApplicantAnswer, MCQ
 from resume.models import Skill, SkillCategory
-from ckeditor.widgets import CKEditorWidget
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 
 class CreateJobForm(forms.ModelForm):
@@ -26,9 +26,9 @@ class JobDescriptionForm(forms.Form):
         responsibilities (CharField): CKEditorWidget field for job responsibilities.
         ideal_candidate (CharField): CKEditorWidget field for ideal candidate description.
     """
-    description = forms.CharField(widget=CKEditorWidget())
-    responsibilities = forms.CharField(widget=CKEditorWidget())
-    ideal_candidate = forms.CharField(widget=CKEditorWidget())
+    description = forms.CharField(widget=CKEditor5Widget())
+    responsibilities = forms.CharField(widget=CKEditor5Widget())
+    ideal_candidate = forms.CharField(widget=CKEditor5Widget())
 
     class Meta:
         model = Job
@@ -44,9 +44,6 @@ class JobTypeForm(forms.ModelForm):
             'weekly_ranges': forms.HiddenInput(),
             'shifts': forms.HiddenInput(),
         }
-
-from django import forms
-from .models import Job, Skill
 
 class SkillForm(forms.ModelForm):
     """
@@ -86,10 +83,10 @@ class SkillForm(forms.ModelForm):
 
 
 class JobUpdateForm(forms.ModelForm):
-    ideal_candidate = CKEditorWidget()
-    description = CKEditorWidget()
-    responsibilities = CKEditorWidget()
-    benefits = CKEditorWidget()
+    ideal_candidate = CKEditor5Widget()
+    description = CKEditor5Widget()
+    responsibilities = CKEditor5Widget()
+    benefits = CKEditor5Widget()
 
     class Meta:
         model = Job

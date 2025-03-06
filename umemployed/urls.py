@@ -46,7 +46,7 @@ urlpatterns = [
     
     re_path(r'^accounts/confirm-email/(?P<key>[-:\w]+)/$', confirm_email, name='account_confirm_email'),
     
-    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path("ckeditor5/", include('django_ckeditor_5.urls')),
     
     path('resend_confirmation_email/', views.resend_confirmation_email, name='resend_confirmation_email'),
     

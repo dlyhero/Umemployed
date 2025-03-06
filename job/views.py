@@ -129,9 +129,9 @@ def enter_job_description(request):
             responsibilities = form.cleaned_data['responsibilities']
             ideal_candidate = form.cleaned_data['ideal_candidate']
             
-            # Check if the description is at least 20 words long
-            if len(description.split()) < 20:
-                messages.error(request, "The job description must be at least 20 words long.")
+            # Check if the description is at least 5 words long
+            if len(description.split()) < 5:
+                messages.error(request, "The job description must be at least 25 words long.")
                 return redirect('job:enter_job_description')
 
             # Update the job fields

@@ -3,19 +3,20 @@ from .models import Company
 from django_countries.widgets import CountrySelectWidget
 from django_countries.fields import CountryField
 from cities_light.models import City
-
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
-from ckeditor.widgets import CKEditorWidget
-
-
-from django import forms
-from django_countries.fields import CountryField  # Make sure to import CountryField
-from .models import Company  # Adjust the import based on your structure
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from job.models import Rating
+
 class UpdateCompanyForm(forms.ModelForm):
     country = CountryField().formfield()  # Include this if using CountryField
+    description = forms.CharField(widget=CKEditor5Widget(attrs={
+        'class': 'mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md'
+    }))
+    mission_statement = forms.CharField(widget=CKEditor5Widget(attrs={
+        'class': 'mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md'
+    }))
 
     class Meta:
         model = Company
@@ -28,12 +29,6 @@ class UpdateCompanyForm(forms.ModelForm):
         ]
         widgets = {
             'founded': forms.NumberInput(attrs={'placeholder': 'e.g. 2024', 'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md'}),
-            'description': CKEditorWidget(attrs={
-                'class': 'mt-1 border bg-transparent border-gray-400 block w-[150%] w-full p-2 outline-1 outline-[#1e90ff] rounded-md'
-            }),
-            'mission_statement': CKEditorWidget(attrs={
-                'class': 'mt-1 border bg-transparent border-gray-400 block w-full p-2 outline-1 outline-[#1e90ff] rounded-md'
-            }),
             'name': forms.TextInput(attrs={
                 'class': 'w-full mt-1 border border-gray-400 bg-transparent p-2 rounded-md',
                 'placeholder': 'Company Name'
@@ -75,8 +70,6 @@ class UpdateCompanyForm(forms.ModelForm):
         for field_name in ['linkedin', 'video_introduction']:
             if field_name in self.fields:  # Check if the field exists
                 self.fields[field_name].required = False
-
-
 
 class CreateCompanyForm(forms.ModelForm):
     class Meta:
@@ -130,7 +123,8 @@ class CreateCompanyForm(forms.ModelForm):
         if not logo:
             raise forms.ValidationError('This field is required.')
         return logo
-#for recruiter rating a candidate    
+
+# for recruiter rating a candidate    
 class RatingForm(forms.ModelForm):
     class Meta:
         model = Rating
@@ -144,4 +138,3 @@ class RatingForm(forms.ModelForm):
             'teamwork': forms.Select(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')]),
             'reliability': forms.Select(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')]),
         }
- 

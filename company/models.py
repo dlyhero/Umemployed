@@ -3,18 +3,12 @@ from users.models import User
 import uuid
 from django.contrib.auth import get_user_model
 from django_countries.fields import CountryField
-from ckeditor.fields import RichTextField
 from django.conf import settings
 import random
 import string
+from django_ckeditor_5.fields import CKEditor5Field
 
 User = get_user_model()
-
-
-
-from django.db import models
-from django_countries.fields import CountryField
-from ckeditor.fields import RichTextField
 
 class Company(models.Model):
     INDUSTRY_CHOICES = [
@@ -56,8 +50,8 @@ class Company(models.Model):
     contact_phone = models.CharField(max_length=20, null=True, blank=True)
 
     # Description with CKEditor
-    description = RichTextField(null=True, blank=True)
-    mission_statement = RichTextField(null=True, blank=True)
+    description = CKEditor5Field(null=True, blank=True)
+    mission_statement = CKEditor5Field(null=True, blank=True)
 
     linkedin = models.URLField(blank=True, null=True)
     video_introduction = models.URLField(blank=True, null=True)
@@ -67,16 +61,13 @@ class Company(models.Model):
     cover_photo = models.ImageField(upload_to="company/cover_photos", blank=True, default="resume/images/default.jpg")
 
     # Job Openings with CKEditor
-    job_openings = RichTextField(null=True, blank=True)
+    job_openings = CKEditor5Field(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name if self.name else "Unnamed Company"
-
-
-
 
 import pytz
 
