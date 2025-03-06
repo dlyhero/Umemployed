@@ -31,20 +31,23 @@
       <ul class="flex justify-start space-x-4 border-b border-gray-200 overflow-x-auto scrollbar-hide">
         <li>
           <a href="{% url 'company-list' %}" target="_self"
-            class="inline-block text-gray-800 font-medium py-2 px-6 border-b-4 border-[#1e90ff] transition-all duration-300 hover:border-blue-500">
+            class="inline-flex items-center text-gray-800 font-medium py-2 px-6 border-b-4 border-[#1e90ff] transition-all duration-300 hover:border-blue-500">
+            <i class="fas fa-building text-gray-500 mr-2"></i>
             All Companies
           </a>
         </li>
         {% if user.is_authenticated %}
         <li>
           <a href="{% url 'job:saved_jobs' %}" target="_self"
-            class="inline-block text-gray-600 font-medium py-2 px-6 border-b-4 border-transparent transition-all duration-300 hover:border-[#1e90ff]">
+            class="inline-flex items-center text-gray-600 font-medium py-2 px-6 border-b-4 border-transparent transition-all duration-300 hover:border-[#1e90ff]">
+            <i class="fas fa-bookmark text-gray-500 mr-2"></i>
             Saved
           </a>
         </li>
         <li>
           <a href="{% url 'job:applied_jobs' %}" target="_self"
-            class="inline-block text-gray-600 font-medium py-2 px-6 border-b-4 border-transparent transition-all duration-300 hover:border-[#1e90ff]">
+            class="inline-flex items-center text-gray-600 font-medium py-2 px-6 border-b-4 border-transparent transition-all duration-300 hover:border-[#1e90ff]">
+            <i class="fas fa-file-alt text-gray-500 mr-2"></i>
             Applied
           </a>
         </li>
@@ -83,23 +86,29 @@
       <div class="group relative bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col">
         <div class="flex items-center space-x-4">
           <!-- Gray Icon -->
-          <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
             <i class="fas fa-building text-gray-500 text-2xl"></i>
           </div>
           <div>
-            <h2 class="text-lg font-bold text-gray-800 group-hover:text-blue-600">{{ company.name }}</h2>
+            <h2 class="text-lg font-bold text-gray-800 text-xl group-hover:text-blue-600">{{ company.name }}</h2>
             <p class="text-sm text-gray-500">{{ company.location }}</p>
           </div>
         </div>
-        <div class="mt-4 flex-1">
-          <p class="text-sm text-gray-600 line-clamp-3">{{ company.description }}</p>
-        </div>
-        <div class="mt-4 flex justify-between items-center">
-          <span class="text-sm text-green-600 font-medium">{{ company.available_jobs }} Jobs Available</span>
-          <a href="{% url 'company-detail' company.id %}"
-            class="text-blue-500 text-sm font-semibold hover:underline">
-            Learn More
-          </a>
+        <div class="p-4">
+            <div class="mt-4 flex-1">
+              <p class="text-sm text-gray-600 line-clamp-3">{{ company.description }}</p>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+              <span class="text-sm text-green-600 font-medium">
+                <i class="fas fa-briefcase text-gray-500 mr-1"></i>
+                {{ company.available_jobs }} Jobs Available
+              </span>
+              <a href="{% url 'company-detail' company.id %}"
+                class="text-blue-500 text-sm font-semibold hover:underline">
+                <i class="fas fa-arrow-right text-gray-500 mr-1"></i>
+                Learn More
+              </a>
+            </div>
         </div>
       </div>
       {% endfor %}

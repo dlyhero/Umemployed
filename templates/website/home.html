@@ -17,7 +17,7 @@
     }
   }
   header {
-    margin-top: 10px;
+    
   }
   /* Sidebar styling */
   #sidebar {
@@ -93,20 +93,20 @@
 {% endblock %} {% block content %}
 
 <main class="flex-1">
-  <div class="bg-white h-full flex flex-col lg:flex-row py-2 lg:py-0">
+  <div class=" h-full flex flex-col lg:flex-row py-2 lg:py-0 border bg-[#eeedeb]">
    
     <!-- Main Content -->
     <div
       id="main-content"
-      class="bg-gray-50  flex-1 px-4 lg:pb-2 lg:px-10 border overflow-auto"
+      class="flex-1 px-4 lg:pb-2 lg:px-10  overflow-auto bg-[#eeedeb]"
     >
-      <section class="container my-8 lg:hidden">
+      <section class="container mx-auto my-8 lg:hidden bg-[#eeedeb]">
         <div
-          class="search-wrapper max-w-xl flex flex-1 mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none"
+          class="search-wrapper  flex flex-1 mx-auto bg-white px-4 py-2 border rounded-full shadow sm:shadow-none"
         >
           <form method="get" action="{% url 'home' %}" class="flex flex-1">
             <input
-              class="pl-2 focus:outline-none overflow-hidden text-ellipsis"
+              class="pl-2 flex-1 focus:outline-none overflow-hidden text-ellipsis"
               type="text"
               name="search_query"
               id="search"
@@ -125,14 +125,14 @@
       </section>
       <!-- Filters Dropdown Section for mobile -->
       <div
-        class="container relative mb-6 lg:hidden flex items-center justify-end"
+        class="container mx-auto relative mb-6 lg:hidden flex items-center justify-end"
       >
         <!-- Filter Button -->
         <button
           id="filterButtonMobile"
-          class="bg-blue-50 text-gray-900 font-bold px-2 rounded-lg py-2"
+          class="bg-white border border-gray-300 text-gray-900 font-bold px-2 rounded-lg py-2"
         >
-          <span>Filters</span>
+          <span>Filter</span>
           <i class="fas fa-filter ml-2"></i>
         </button>
 
@@ -213,7 +213,7 @@
 
       <!--for desktop-->
       <section
-        class="container mx-auto lg:flex justify-between items-center hidden "
+        class="container mx-auto lg:flex justify-between items-center hidden border border-gray-300 bg-white rounded-lg p-6 my-5"
       >
         <h2 class="text-2xl hidden lg:block font-bold text-gray-800 mb-6">
           Available Job Listings
@@ -236,7 +236,7 @@
           {% if matching_jobs %} {% for job, match_percentage in matching_jobs%}
           <!-- Job Card 1 -->
           <div
-            class="job-card bg-white border rounded-lg p-6 cursor-pointer relative"
+            class="job-card bg-white border  rounded-lg p-6 cursor-pointer relative"
             data-job="1"
           >
             <div class="flex items-center justify-between mb-4">
@@ -438,7 +438,7 @@
      <!-- Sidebar -->
 
      <div class="hidden lg:block">
-      <div class="h-full border-l lg:ml-2 border-gray-300 mx-auto"></div>
+      <div class="h-full b lg:ml-2 border-gray-300 mx-auto"></div>
     </div>
     <aside
       id="sidebar"
@@ -511,7 +511,7 @@
 
       // Clear the sidebar and display job details
       sidebar.innerHTML = `
-            <div class="job-card bg-white p-6 cursor-pointer">
+            <div class="job-card bg-white p-6 cursor-pointer border border-gray-300 rounded-lg">
                 <div class="flex items-center justify-between mb-4">
                     <img
                         class="w-12 h-12 rounded-full"
@@ -600,7 +600,7 @@
     function displayFilterMenu() {
       console.log("Displaying filter menu.");
 
-      sidebar.innerHTML = `<div id="filterMenu" class="max-w-5xl mx-auto p-6 bg-white rounded-lg">
+      sidebar.innerHTML = `<div id="filterMenu" class="max-w-5xl mx-auto p-6 bg-white border border-gray-300 rounded-lg">
                             <h2 class="text-xl font-semibold mb-4">Filter Jobs</h2>
                             <form id="filterForm" class="flex flex-col gap-6">
                                 <!-- Keyword Search -->
@@ -746,6 +746,28 @@
 <meta name="csrf-token" content="{{ csrf_token }}" />
 
 <script>
+   document.addEventListener("DOMContentLoaded", function () {
+    // Mobile Filter Menu Toggle
+    const filterButtonMobile = document.getElementById("filterButtonMobile");
+    const filterMenuMobile = document.getElementById("filterMenuMobile");
+
+    if (filterButtonMobile && filterMenuMobile) {
+      filterButtonMobile.addEventListener("click", function () {
+        // Toggle the visibility of the mobile filter menu
+        filterMenuMobile.classList.toggle("hidden");
+      });
+
+      // Close the filter menu when clicking outside of it
+      document.addEventListener("click", function (event) {
+        if (
+          !filterButtonMobile.contains(event.target) &&
+          !filterMenuMobile.contains(event.target)
+        ) {
+          filterMenuMobile.classList.add("hidden");
+        }
+      });
+    }
+  });
   $(document).on("click", ".bookmark-job", function (e) {
     e.preventDefault(); // Prevent the default action of the anchor tag
     const jobId = $(this).data("job-id");
