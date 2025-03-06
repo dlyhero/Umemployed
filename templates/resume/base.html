@@ -18,6 +18,9 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
   />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link
       rel="stylesheet"
       href="{% static 'new_design/styles/general.css' %}"
@@ -33,12 +36,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
          
-      body {
-        font-family: "Nunito", sans-serif;
+         body {
+        
+        font-family: "Montserrat", sans-serif;
         font-optical-sizing: auto;
         font-weight: normal;
         font-style: normal;
-      }
+              }
       header {
      
         background-color: White;
@@ -471,81 +475,69 @@
 </div>
 
     {% block content %} {% endblock %} {% block footer %}
-    <footer class="text-white bg-gray-900 py-8">
-      <!-- Section: Top - Call to Action -->
-     
-  
-      <!-- Section: Main Links -->
-      <section class="my-8 px-4">
-        <div class="container mx-auto px-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-           
-            <!-- About -->
-            <div>
-              <h6 class="uppercase font-bold">
-                About UmEmployed</h6>
-              <div class="w-16 h-1 bg-[#1e90ff] my-4"></div>
-            
-              <p>
-                UmEmployed is a professional job portal platform connecting talent with opportunities across all industries. We aim to bridge the gap between job seekers and employers.
-              </p>
+    <footer class="bg-gray-100 py-8">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Links Section -->
+          <nav class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <a href="https://about.linkedin.com/" class="text-sm font-bold text-gray-700 hover:text-blue-600">About</a>
+            <a href="https://www.linkedin.com/accessibility" class="text-sm font-bold text-gray-700 hover:text-blue-600">Accessibility</a>
+            <a href="https://business.linkedin.com/talent-solutions" class="text-sm font-bold text-gray-700 hover:text-blue-600">Talent Solutions</a>
+            <a href="https://www.linkedin.com/legal/professional-community-policies" class="text-sm font-bold text-gray-700 hover:text-blue-600">Community Policies</a>
+            <a href="https://careers.linkedin.com/" class="text-sm font-bold text-gray-700 hover:text-blue-600">Careers</a>
+            <a href="https://business.linkedin.com/marketing-solutions" class="text-sm font-bold text-gray-700 hover:text-blue-600">Marketing Solutions</a>
+            <a href="#" class="text-sm font-bold text-gray-700 hover:text-blue-600">Privacy & Terms</a>
+            <a href="https://www.linkedin.com/help/linkedin/answer/62931" class="text-sm font-bold text-gray-700 hover:text-blue-600">Ad Choices</a>
+            <a href="https://business.linkedin.com/marketing-solutions/ads" class="text-sm font-bold text-gray-700 hover:text-blue-600">Advertising</a>
+            <a href="https://business.linkedin.com/sales-solutions" class="text-sm font-bold text-gray-700 hover:text-blue-600">Sales Solutions</a>
+            <a href="https://mobile.linkedin.com/" class="text-sm font-bold text-gray-700 hover:text-blue-600">Mobile</a>
+            <a href="https://smallbusiness.linkedin.com" class="text-sm font-bold text-gray-700 hover:text-blue-600">Small Business</a>
+            <a href="https://safety.linkedin.com" class="text-sm font-bold text-gray-700 hover:text-blue-600">Safety Center</a>
+          </nav>
+    
+          <!-- Actions Section -->
+          <div class="space-y-6">
+            <!-- Help Center -->
+            <div class="flex items-center space-x-4">
+              <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div>
+                <a href="https://www.linkedin.com/help/linkedin" class="text-sm font-bold text-gray-700 hover:text-blue-600">Questions?</a>
+                <p class="text-xs text-gray-500">Visit our Help Center.</p>
+              </div>
             </div>
-            <!-- Job Categories -->
-            <div>
-              <h6 class="uppercase font-bold">Job Categories</h6>
-              <div class="w-16 h-1 bg-[#1e90ff] my-4"></div>
-              <ul class="space-y-2">
-                <li><a class="text-white">Technology</a></li>
-                <li><a class="text-white">Healthcare</a></li>
-                <li><a class="text-white">Education</a></li>
-                <li><a class="text-white">Finance</a></li>
-              </ul>
+    
+            <!-- Settings -->
+            <div class="flex items-center space-x-4">
+              <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+              <div>
+                <a href="https://www.linkedin.com/psettings/" class="text-sm font-bold text-gray-700 hover:text-blue-600">Manage your account and privacy</a>
+                <p class="text-xs text-gray-500">Go to your Settings.</p>
+              </div>
             </div>
-            <!-- Quick Links -->
+    
+            <!-- Language Selector -->
             <div>
-              <h6 class="uppercase font-bold">Quick Links</h6>
-              <div class="w-16 h-1 bg-[#1e90ff] my-4"></div>
-              <ul class="space-y-2">
-                <li><a href="https://umemployed.com" class="text-white">About Us</a></li>
-                <li><a href="https://umemployed.com" class="text-white">Contact</a></li>
-                <li><a href="https://umemployed.com" class="text-white">FAQs</a></li>
-                <li><a href="https://umemployed.com" class="text-white">Terms of Service</a></li>
-              </ul>
-            </div>
-            <!-- Contact -->
-            <div>
-              <h6 class="uppercase font-bold">Contact</h6>
-              <div class="w-16 h-1 bg-[#1e90ff] my-4"></div>
-              <ul class="space-y-2">
-                <li><i class="fas fa-home"></i> New Jersey, USA</li>
-                <li><i class="fas fa-envelope"></i> info@umemployed.com</li>
-                <li><i class="fas fa-phone"></i> +41 123 456 789</li>
-              </ul>
+              <label for="language" class="block text-xs text-gray-500 mb-1">Select Language</label>
+              <select id="language" class="w-full p-2 text-sm font-bold text-gray-700 border border-gray-300 rounded">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <!-- Add more languages as needed -->
+              </select>
             </div>
           </div>
         </div>
-      </section>
-  
-      <!-- Section: Bottom - Social Media -->
-      <section class="py-4 bg-gray-800">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-          <p class="text-sm">&copy; 2025 UmEmployed. All rights reserved.</p>
-          <div class="flex space-x-4">
-            <a href="#" class="text-white hover:text-gray-300">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="text-white hover:text-gray-300">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="text-white hover:text-gray-300">
-              <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="#" class="text-white hover:text-gray-300">
-              <i class="fab fa-instagram"></i>
-            </a>
-          </div>
-        </div>
-      </section>
+    
+        <!-- Copyright -->
+        <p class="text-xs text-gray-500 mt-8 text-center md:text-left">
+          UmEmployed Corporation © 2025
+        </p>
+      </div>
     </footer>
     <!-- Sidebar -->
     <div
