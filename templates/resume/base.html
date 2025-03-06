@@ -18,6 +18,9 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
   />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link
       rel="stylesheet"
       href="{% static 'new_design/styles/general.css' %}"
@@ -33,12 +36,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
          
-      body {
-        font-family: "Nunito", sans-serif;
+         body {
+        
+        font-family: "Montserrat", sans-serif;
         font-optical-sizing: auto;
         font-weight: normal;
         font-style: normal;
-      }
+background-color: rgb(229, 231, 235);
+              }
       header {
      
         background-color: White;
@@ -52,6 +57,61 @@
         z-index: 100;
 
       }
+      :root {
+      --base-font-size: 14px;
+      /* Default base size */
+      --scale-factor: 0.9;
+      /* Default scale factor */
+    }
+
+    /* Medium screens (tablets) */
+    @media (min-width: 768px) {
+      :root {
+        --scale-factor: 1.1;
+        /* Slightly increase scale factor */
+      }
+    }
+
+    /* Large screens (desktops) */
+    @media (min-width: 1024px) {
+      :root {
+        --scale-factor: 1.2;
+        /* Slightly increase scale factor further */
+      }
+    }
+
+    /* Extra-large screens (large desktops) */
+    @media (min-width: 1440px) {
+      :root {
+        --scale-factor: 1.3;
+        /* Largest scale factor */
+      }
+    }
+
+    /* Apply scaling to specific elements */
+    html {
+      font-size: var(--base-font-size);
+    }
+
+    h1 {
+      font-size: calc(1.2rem * var(--scale-factor));
+    }
+
+    h2 {
+      font-size: calc(1rem * var(--scale-factor));
+    }
+
+    p {
+      font-size: calc(0.8rem * var(--scale-factor));
+    }
+
+    h3 {
+      font-size: calc(0.5rem * var(--scale-factor));
+    }
+
+    .container {
+      padding: calc(0.8rem * var(--scale-factor));
+    }
 
       @keyframes slideFadeOut {
         0% {
@@ -128,326 +188,245 @@
   </head>
 
   <body id="main-body">
-    <header>
-      <div id="sub-header" class="p-4 py-4 lg:p-6 flex items-center justify-between">
+    <header class="bg-white border-b border-gray-200">
+      <div id="sub-header" class="p-1.5 py-2  flex items-center justify-between container mx-auto  max-w-8xl">
         <div id="left-section" class="flex items-center">
           <div class="logo-wrap flex items-center mr-10">
-           <a href="{% url 'index' %}">
-            
-             <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
-     <text x="0" y="40" class="svg-text" font-size="40" fill="#1e90ff" font-weight="bold">UE</text>
-   </svg>
-   
-           </a>
+            <a href="{% url 'index' %}">
+  
+              <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
+                <text x="0" y="40" class="svg-text" font-size="40" fill="#1e90ff" font-weight="bold">UE</text>
+              </svg>
+  
+            </a>
           </div>
-            <ul class="hidden md:flex items-center gap-8">
-              <li><a href="{% url 'company-list' %}" class="font-semibold">Companies</a></li>
-              
-            </ul>
-         </div>
-   
-
-         <div class="middle-section flex flex-1 max-w-xl">
-
+          <ul class="hidden md:flex items-center gap-8">
+            <li><a href="{% url 'company-list' %}" class="font-semibold">Companies</a></li>
+            {% if not user.is_authenticated %}
+            <li><a href="#" class="font-semibold">Hire Talent</a></li>
+            {% endif %}
+          </ul>
+        </div>
+  
+        <div class="middle-section flex flex-1 max-w-xl">
+  
           {% block search_bar %}
           <div
-              class="search-wrapper w-full hidden lg:flex flex-1  mx-auto bg-white pr- 2 pl-4 py-2 border rounded-full shadow sm:shadow-none"
-          >
-              <form method="get" action="{% url 'home' %}" class="flex flex-1 mx-4">
-                  <input
-                      class="flex-1  p-2 focus:outline-none overflow-hidden text-ellipsis"
-                      type="text"
-                      name="search_query"
-                      id="search"
-                      placeholder="Search jobs, companies, or keywords"
-                  />
-                  <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
-                  <div class="button-wrap">
-                      <button
-                          type="submit"
-                          class="text-white bg-[#1e90ff] font-semibold rounded-full py-2 px-4"
-                      >
-                          Search
-                      </button>
-                  </div>
-              </form>
+            class="search-wrapper w-full hidden lg:flex flex-1  mx-auto bg-white pr- 2 pl-4 py-2 border rounded-full shadow sm:shadow-none">
+            <form method="get" action="{% url 'home' %}" class="flex flex-1 mx-4">
+              <input class="flex-1  p-2 focus:outline-none overflow-hidden text-ellipsis" type="text" name="search_query"
+                id="search" placeholder="Search jobs, companies, or keywords" />
+              <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
+              <div class="button-wrap">
+                <button type="submit" class="text-white bg-[#1e90ff] font-semibold rounded-full py-2 px-4">
+                  Search
+                </button>
+              </div>
+            </form>
           </div>
-      {% endblock search_bar %}
-         </div>
-
+          {% endblock search_bar %}
+        </div>
         <div id="right-section">
+  
           <ul class="flex gap-4 items-center">
             {% if user.is_authenticated %}
-          {% if user.is_applicant %}
-          <li
-            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-          >
-            <a href="{% url 'upload' %}">Resume</a>
-          </li>
-          <li
-            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-          >
-            <a href="{% url 'home' %}"> Jobs</a>
-          </li>
-          <li
-              class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-            >
+            {% if user.is_applicant %}
+            <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
+              <a href="{% url 'upload' %}">Resume</a>
+            </li>
+            <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
+              <a href="{% url 'home' %}"> Jobs</a>
+            </li>
+            <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
               <a href="{% url 'update-resume' %}"> Settings</a>
-              
+  
             </li>
-          
-          <li
-            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-          >
-            <a href="{% url 'dashboard' %}">Dashboard</a>
-          </li>
-          
-          {% elif user.is_recruiter and user.has_company and user_company %}
-          
-          <li
-            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-          >
-            <i>Logged as Recruiter</i>
-          </li>
-          <li
-              class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-            >
+  
+            <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
+              <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+  
+            {% elif user.is_recruiter and user.has_company and user_company %}
+  
+            <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
+              <i>Logged as Recruiter</i>
+            </li>
+            <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
               <a href="{% url 'update_company' user_company.id %}"> Settings</a>
-              
+  
             </li>
-          <li
-            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-          >
-            <a href="{% url 'company_dashboard' user_company.id %}">Dashboard</a>
-          </li>
-          {% elif user.is_recruiter and not user.has_company %}
-          <li
-            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-          >
-            <i>Logged as Recruiter, No company created</i>
-          </li>
-          
-          <li
-            class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors"
-          >
-            <a href="{% url 'create_company' %}">Create Company</a>
-          </li>
-          {% else %}
-
-          {% endif %}
-          {% endif %}
-            <li></li>
+            <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
+              <a href="{% url 'company_dashboard' user_company.id %}">Dashboard</a>
+            </li>
+            {% elif user.is_recruiter and not user.has_company %}
+            <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
+              <i>Logged as Recruiter, No company created</i>
+            </li>
+  
+            <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
+              <a href="{% url 'create_company' %}">Create Company</a>
+            </li>
+            {% else %}
+  
+            {% endif %}
+            {% endif %}
+            <li>
             <li>
               {% if user.is_authenticated %}
-           {% if user.is_recruiter and user.has_company and user_company %}
+              {% if user.is_recruiter and user.has_company and user_company %}
               <a href="{% url 'company_dashboard' user_company.id %}">
                 <div class="text-nowrap items-center flex gap-2">
                   {% if user.resume.profile_image %}
-                  <img
-                    src="{{ user.resume.profile_image.url }}"
-                    alt="Profile Image"
-                    class="w-10 h-10 rounded-full object-cover"
-                  />
+                  <img src="{{ user.resume.profile_image.url }}" alt="Profile Image"
+                    class="w-10 h-10 rounded-full object-cover">
                   {% else %}
                   <span
-                    class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100"
-                  >
+                    class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100">
                     <i class="fas fa-user"></i>
                   </span>
                   {% endif %}
                   <span
-                    class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block"
-                    >{{user.username}}</span
-                  >
+                    class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">{{user.username}}</span>
                 </div>
               </a>
               {% else %}
               <a href="{% url 'dashboard' %}">
                 <div class="text-nowrap items-center flex gap-2">
                   {% if user.resume.profile_image %}
-                  <img
-                    src="{{ user.resume.profile_image.url }}"
-                    alt="Profile Image"
-                    class="w-10 h-10 rounded-full object-cover"
-                  />
+                  <img src="{{ user.resume.profile_image.url }}" alt="Profile Image"
+                    class="w-10 h-10 rounded-full object-cover">
                   {% else %}
                   <span
-                    class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100"
-                  >
+                    class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100">
                     <i class="fas fa-user"></i>
                   </span>
                   {% endif %}
                   <span
-                    class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block"
-                    >{{user.username}}</span
-                  >
+                    class="w-[90px] overflow-hidden whitespace-nowrap text-ellipsis hidden sm:block">{{user.username}}</span>
                 </div>
               </a>
-              {% endif %} 
+              {% endif %}
               {% else %}
-              <a href="{% url 'login' %}" class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full">
+              <a href="{% url 'login' %}"
+                class="px-4 lg:px-5 py-2 lg:py-3 text-[#1e90ff] font-semibold border border-[#1e90ff] rounded-full">
                 Sign In
               </a>
               {% endif %}
             </li>
-
+  
+  
+  
+  
+  
             <li>
               <button id="mobileMenuButton" class="sm:hidden">
                 <i class="fas fa-bars"></i>
               </button>
             </li>
             <li class="relative hidden sm:block">
-              <button
-                id="menuButton"
-                class="p-2  active:border-[#1e90ff] rounded-lg">
+              <button id="menuButton" class="p-2  active:border-[#1e90ff] rounded-lg">
                 <i class="fas fa-bars"></i>
               </button>
               <!-- Desktop Menu -->
-              <div
-                id="desktopMenu"
-                class="hidden absolute top-14 right-0 bg-white p-6 w-[300px] border rounded shadow-2xl z-20"
-              >
+              <div id="desktopMenu"
+                class="hidden absolute top-14 right-0 bg-white p-6 w-[300px] border rounded shadow-2xl z-20">
                 <div class="content flex flex-col gap-4 mb-8">
-                  <a
-                    href="{% url 'upload' %}"
-                    class="menu-item flex items-center gap-2 font-semibold md:hidden hover:text-[#1e90ff] transition-colors"
-                  >
+                  <a href="{% url 'upload' %}"
+                    class="menu-item flex items-center gap-2 font-semibold md:hidden hover:text-[#1e90ff] transition-colors">
                     <i class="fas fa-building"></i> Resume
                   </a>
-               
-                  <a
-                    href="{% url 'home' %}"
-                    class="menu-item flex items-center gap-2 font-semibold md:hidden hover:text-[#1e90ff]"
-                  >
+                  <a href="{% url 'home' %}"
+                    class="menu-item flex items-center gap-2 font-semibold md:hidden hover:text-[#1e90ff]">
                     <i class="fas fa-briefcase"></i> Browse Jobs
                   </a>
                   {% if user.is_authenticated %}
-                  <div
-                    class="header text-nowrap items-center flex gap-2 mb-4 bg-blue-200 p-2 rounded-lg"
-                  >
-                    <span
-                      class="font-semibold text-xl text-[#1e90ff] rounded-full py-3 px-3.5 bg-blue-100"
-                    >
+                  <div class="header text-nowrap items-center flex gap-2 mb-4 bg-blue-200 p-2 rounded-lg">
+                    <span class="font-semibold text-xl text-[#1e90ff] rounded-full py-3 px-3.5 bg-blue-100">
                       {% if user.resume.profile_image %}
-                      <img
-                        src="{{ user.resume.profile_image.url }}"
-                        alt="Profile Image"
-                        class="w-10 h-10 rounded-full object-cover"
-                      />
+                      <img src="{{ user.resume.profile_image.url }}" alt="Profile Image"
+                        class="w-10 h-10 rounded-full object-cover">
                       {% else %}
                       <span
-                        class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100"
-                      >
+                        class="w-[50px] h-[50px] flex items-center justify-center font-semibold text-xl text-[#1e90ff] rounded-full bg-blue-100">
                         <i class="fas fa-user"></i>
                       </span>
                       {% endif %}
                     </span>
-                    <span
-                      class="overflow-hidden whitespace-nowrap text-ellipsis"
-                      >{{user.username}}</span
-                    >
+                    <span class="overflow-hidden whitespace-nowrap text-ellipsis">{{user.username}}</span>
                   </div>
-                  <a
-                    href="{% url 'notifications:user_notifications' %}"
-                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
-                  >
+                  <a href="{% url 'notifications:user_notifications' %}"
+                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
                     <i class="fas fa-bell"></i> Notifications
                   </a>
-                  <a
-                    href="{% url 'messaging:inbox' %}"
-                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
-                  >
+                  <a href="{% url 'messaging:inbox' %}"
+                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
                     <i class="fas fa-envelope"></i> Messages
                   </a>
                   {% if user.is_applicant %}
-                  <a
-                  href="{% url 'update-resume' %}"
-                  class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
-                >
-                  <i class="fas fa-cog"></i> Settings
-                </a>
-                <a
-                  href="{% url 'job:applied_jobs' %}"
-                  class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
-                >
-                  <i class="fas fa-clock"></i> Timeline
-                </a>
-                {% elif user.is_recruiter and user.has_company and user_company%}
-                    <a
-                  href="{% url 'update_company' user_company.id %}"
-                  class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
-                >
-                  <i class="fas fa-cog"></i> Settings
-                </a>
-                <a
-                  href="{% url 'company_related_users' %}"
-                  class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
-                >
-                  <i class="fas fa-thumbs-up"></i> Endorsement
-                </a>
-                 <a
-                  href="{% url 'transaction_history' %}"
-                  class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
-                >
-                  <i class="fas fa-file-invoice"></i> Transaction History
-                </a>
-             
-                {% endif %}
+                  <a href="{% url 'update-resume' %}"
+                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
+                    <i class="fas fa-cog"></i> Settings
+                  </a>
+                  <a href="{% url 'job:applied_jobs' %}"
+                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
+                    <i class="fas fa-clock"></i> Timeline
+                  </a>
+                  {% elif user.is_recruiter and user.has_company and user_company%}
+                  <a href="{% url 'update_company' user_company.id %}"
+                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
+                    <i class="fas fa-cog"></i> Settings
+                  </a>
+                  <a href="{% url 'company_related_users' %}"
+                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
+                    <i class="fas fa-thumbs-up"></i> Endorsement
+                  </a>
+                  <a href="{% url 'transaction_history' %}"
+                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
+                    <i class="fas fa-file-invoice"></i> Transaction History
+                  </a>
+  
+                  {% endif %}
+  
                 </div>
                 <div class="authentication flex flex-col gap-4">
-                {% if user.is_applicant %}
-                <a
-                  href="{% url 'dashboard' %}"
-                  class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
-                >
-                <i class="fas fa-tachometer-alt"></i> Dashboard  
-
-                </a>
-                {% elif user.is_recruiter and user.has_company and user_company%}
-                  <a
-                  href="{% url 'company_dashboard' user_company.id %}"
-                  class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
-                >
-                <i class="fas fa-tachometer-alt"></i> Dashboard  
-
-                </a>
-                {% else %}
-                {% endif %}
-                  <a
-                    href="{% url 'logout' %}"
-                    class="w-full bg-[#1e90ff] text-white px-6 py-3 rounded-full text-center font-semibold"
-                  >
+                  {% if user.is_applicant %}
+                  <a href="{% url 'dashboard' %}"
+                    class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+  
+                  </a>
+                  {% elif user.is_recruiter and user.has_company and user_company%}
+                  <a href="{% url 'company_dashboard' user_company.id %}"
+                    class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+  
+                  </a>
+                  {% else %}
+                  {% endif %}
+                  <a href="{% url 'logout' %}"
+                    class="w-full bg-[#1e90ff] text-white px-6 py-3 rounded-full text-center font-semibold">
                     <i class="fas fa-sign-in-alt"></i> Logout
                   </a>
-
+  
                   {% else %}
-                  <a
-                    href="{% url 'change_account_type' %}"
-                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
-                  >
+                  <a href="{% url 'change_account_type' %}"
+                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
                     <i class="fas fa-plus-circle"></i> Post a job
                   </a>
-                  <a
-                    href="{% url 'feature-not-implemented' %}"
-                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors"
-                  >
+                  <a href="{% url 'feature-not-implemented' %}"
+                    class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
                     <i class="fas fa-envelope"></i> Contact Us
                   </a>
                 </div>
                 <div class="authentication flex flex-col gap-4">
-                  <a
-                    href="{% url 'register-applicant' %}"
-                    class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
-                  >
+                  <a href="{% url 'register-applicant' %}"
+                    class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold">
                     <i class="fas fa-user-plus"></i> Create Account
                   </a>
-                  <a
-                    href="{% url 'login' %}"
-                    class="w-full bg-[#1e90ff] text-white px-6 py-3 rounded-full text-center font-semibold"
-                  >
+                  <a href="{% url 'login' %}"
+                    class="w-full bg-[#1e90ff] text-white px-6 py-3 rounded-full text-center font-semibold">
                     <i class="fas fa-sign-in-alt"></i> Login
                   </a>
-
                   {% endif %}
                 </div>
               </div>
@@ -471,82 +450,76 @@
 </div>
 
     {% block content %} {% endblock %} {% block footer %}
-    <footer class="text-white bg-gray-900 py-8">
-      <!-- Section: Top - Call to Action -->
-     
+    <footer class=" py-8 border-t border-gray-200">
+      <div class="container mx-auto px-5 max-w-8xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Links Section -->
+          <nav class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <a href="/about" class="text-sm font-semibold text-gray-700 hover:text-blue-600">About Us</a>
+            <a href="/accessibility" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Accessibility</a>
+            <a href="/employers" class="text-sm font-semibold text-gray-700 hover:text-blue-600">For Employers</a>
+            <a href="/policies" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Community Guidelines</a>
+            <a href="/careers" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Work With Us</a>
+            <a href="/advertise" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Advertise Jobs</a>
+            <a href="/privacy" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Privacy Policy</a>
+            <a href="/terms" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Terms of Service</a>
+            <a href="/safety" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Safety Center</a>
+            <a href="/blog" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Blog</a>
+            <a href="/contact" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Contact Us</a>
+            <a href="/partners" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Partners</a>
+          </nav>
   
-      <!-- Section: Main Links -->
-      <section class="my-8 px-4">
-        <div class="container mx-auto px-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-           
-            <!-- About -->
-            <div>
-              <h6 class="uppercase font-bold">
-                About UmEmployed</h6>
-              <div class="w-16 h-1 bg-[#1e90ff] my-4"></div>
-            
-              <p>
-                UmEmployed is a professional job portal platform connecting talent with opportunities across all industries. We aim to bridge the gap between job seekers and employers.
-              </p>
+          <!-- Actions Section -->
+          <div class="space-y-6">
+            <!-- Help Center -->
+            <div class="flex items-center space-x-4">
+              <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div>
+                <a href="/help" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Need Help?</a>
+                <p class="text-xs text-gray-500">Visit our Support Center.</p>
+              </div>
             </div>
-            <!-- Job Categories -->
-            <div>
-              <h6 class="uppercase font-bold">Job Categories</h6>
-              <div class="w-16 h-1 bg-[#1e90ff] my-4"></div>
-              <ul class="space-y-2">
-                <li><a class="text-white">Technology</a></li>
-                <li><a class="text-white">Healthcare</a></li>
-                <li><a class="text-white">Education</a></li>
-                <li><a class="text-white">Finance</a></li>
-              </ul>
+  
+            <!-- Account Settings -->
+            <div class="flex items-center space-x-4">
+              <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+              <div>
+                <a href="/settings" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Account Settings</a>
+                <p class="text-xs text-gray-500">Manage your preferences.</p>
+              </div>
             </div>
-            <!-- Quick Links -->
+  
+            <!-- Language Selector -->
             <div>
-              <h6 class="uppercase font-bold">Quick Links</h6>
-              <div class="w-16 h-1 bg-[#1e90ff] my-4"></div>
-              <ul class="space-y-2">
-                <li><a href="https://umemployed.com" class="text-white">About Us</a></li>
-                <li><a href="https://umemployed.com" class="text-white">Contact</a></li>
-                <li><a href="https://umemployed.com" class="text-white">FAQs</a></li>
-                <li><a href="https://umemployed.com" class="text-white">Terms of Service</a></li>
-              </ul>
-            </div>
-            <!-- Contact -->
-            <div>
-              <h6 class="uppercase font-bold">Contact</h6>
-              <div class="w-16 h-1 bg-[#1e90ff] my-4"></div>
-              <ul class="space-y-2">
-                <li><i class="fas fa-home"></i> New Jersey, USA</li>
-                <li><i class="fas fa-envelope"></i> info@umemployed.com</li>
-                <li><i class="fas fa-phone"></i> +41 123 456 789</li>
-              </ul>
+              <label for="language" class="block text-xs text-gray-500 mb-1">Select Language</label>
+              <select id="language"
+                class="w-full p-2 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <!-- Add more languages as needed -->
+              </select>
             </div>
           </div>
         </div>
-      </section>
   
-      <!-- Section: Bottom - Social Media -->
-      <section class="py-4 bg-gray-800">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-          <p class="text-sm">&copy; 2025 UmEmployed. All rights reserved.</p>
-          <div class="flex space-x-4">
-            <a href="#" class="text-white hover:text-gray-300">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="text-white hover:text-gray-300">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="text-white hover:text-gray-300">
-              <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="#" class="text-white hover:text-gray-300">
-              <i class="fab fa-instagram"></i>
-            </a>
-          </div>
-        </div>
-      </section>
+        <!-- Copyright -->
+        <p class="text-xs text-gray-500 mt-8 text-center md:text-left">
+          © 2025 UmEmployed. All rights reserved.
+        </p>
+      </div>
     </footer>
+  
     <!-- Sidebar -->
     <div
       id="mobileMenu"

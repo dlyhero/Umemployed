@@ -25,131 +25,141 @@
 
 {% block content %}
 <!-- Main Content -->
-<main class="container mx-auto max-w-6xl p-4 lg:p-0 mb-10">
-    <section class="bg-white rounded-lg shadow-sm p-4 mb-10">
-        <ul class="flex justify-start space-x-4 border-b border-gray-200 overflow-x-auto scrollbar-hide">
-            <li>
-                <a href="{% url 'company-list' %}" target="_self"
-                    class="inline-block text-gray-800 font-medium py-2 px-6  border-b-4 border-[#1e90ff] transition-all duration-300 hover:border-blue-500 ">
-                    All Companies
-                </a>
-            </li>
-            {% if user.is_authenticated %}
-            <li>
-                <a href="{% url 'job:saved_jobs' %}" target="_self"
-                    class="inline-block text-gray-600 font-medium py-2 px-6  border-b-4 border-transparent transition-all duration-300 hover:biorder-[#1e90ff] ">
-                    Saved
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'job:applied_jobs' %}" target="_self"
-                    class="inline-block text-gray-600 font-medium py-2 px-6  border-b-4 border-transparent transition-all duration-300 hover:biorder-[#1e90ff] ">
-                    Applied
-                </a>
-            </li>
-            {% endif %}
-        </ul>
+<main class="container mx-auto max-w-8xl px-4 mb-10">
+    <!-- Navigation Tabs -->
+    <section class="bg-white rounded-lg border border-gray-300 shadow-sm p-4 my-5">
+      <ul class="flex justify-start space-x-4 border-b border-gray-200 overflow-x-auto scrollbar-hide">
+        <li>
+          <a href="{% url 'company-list' %}" target="_self"
+            class="inline-flex items-center text-gray-800 font-medium py-2 px-6 border-b-4 border-[#1e90ff] transition-all duration-300 hover:border-blue-500">
+            <i class="fas fa-building text-gray-500 mr-2"></i>
+            All Companies
+          </a>
+        </li>
+        {% if user.is_authenticated %}
+        <li>
+          <a href="{% url 'job:saved_jobs' %}" target="_self"
+            class="inline-flex items-center text-gray-600 font-medium py-2 px-6 border-b-4 border-transparent transition-all duration-300 hover:border-[#1e90ff]">
+            <i class="fas fa-bookmark text-gray-500 mr-2"></i>
+            Saved
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'job:applied_jobs' %}" target="_self"
+            class="inline-flex items-center text-gray-600 font-medium py-2 px-6 border-b-4 border-transparent transition-all duration-300 hover:border-[#1e90ff]">
+            <i class="fas fa-file-alt text-gray-500 mr-2"></i>
+            Applied
+          </a>
+        </li>
+        {% endif %}
+      </ul>
     </section>
-    
-
-    <section id="search-ctn-mobile" class="my-5 lg:hidden p-2">
-        <div class="search-wrapper flex mx-auto bg-white px-2 py-2 border rounded-full shadow sm:shadow-none">
-            <input
-                class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
-                type="text"
-                name="search"
-                id="search"
-                placeholder="Search companies"
-            />
-            <div class="border-l border-gray-300 mx-2 hidden sm:block"></div>
-            <div class="border-l border-gray-300 mx-2 hidden lg:block"></div>
-            <div class="button-wrap">
-                <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4">
-                    <i class="fas fa-search"></i>
-                </button>
+  
+    <!-- Mobile Search Bar -->
+    <section id="search-ctn-mobile" class="my-3 lg:hidden">
+      <div class="search-wrapper flex mx-auto bg-white px-2 py-2 border rounded-full shadow sm:shadow-none">
+        <input
+          class="flex-1 p-2 focus:outline-none overflow-hidden text-ellipsis"
+          type="text"
+          name="search"
+          id="search"
+          placeholder="Search companies"
+        />
+        <div class="border-l border-gray-300 mx-2 hidden sm:block"></div>
+        <div class="button-wrap">
+          <button class="text-white bg-[#1e90ff] rounded-full py-2 px-4">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Hero Section -->
+    <section class="text-center py-10 bg-white rounded-lg shadow-sm mb-4 border border-gray-300">
+      <h1 class="text-4xl font-extrabold text-[#1e90ff] mb-4">Explore Top Companies</h1>
+      <p class="text-lg text-gray-900">Discover opportunities with leading organizations.</p>
+    </section>
+  
+    <!-- Company Cards -->
+    <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {% for company in companies %}
+      <div class="group relative bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col">
+        <div class="flex items-center space-x-4">
+          <!-- Gray Icon -->
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-building text-gray-500 text-2xl"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-gray-800 text-xl group-hover:text-blue-600">{{ company.name }}</h2>
+            <p class="text-sm text-gray-500">{{ company.location }}</p>
+          </div>
+        </div>
+        <div class="p-4">
+            <div class="mt-4 flex-1">
+              <p class="text-sm text-gray-600 line-clamp-3">{{ company.description }}</p>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+              <span class="text-sm text-green-600 font-medium">
+                <i class="fas fa-briefcase text-gray-500 mr-1"></i>
+                {{ company.available_jobs }} Jobs Available
+              </span>
+              <a href="{% url 'company-detail' company.id %}"
+                class="text-blue-500 text-sm font-semibold hover:underline">
+                <i class="fas fa-arrow-right text-gray-500 mr-1"></i>
+                Learn More
+              </a>
             </div>
         </div>
+      </div>
+      {% endfor %}
     </section>
-
-    <section class="text-center py-10 bg-blue-50 rounded-lg shadow-sm mb-12">
-        <h1 class="text-4xl font-extrabold text-[#1e90ff] mb-4">Explore Top Companies</h1>
-        <p class="text-lg text-gray-600">Discover opportunities with leading organizations.</p>
+  
+    <!-- Pagination -->
+    <section class="mt-4 flex items-center justify-center space-x-2 p-2">
+      <!-- Previous Button -->
+      <button
+        class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+        <i class="fas fa-chevron-left text-gray-500"></i>
+      </button>
+  
+      <!-- Page Numbers -->
+      <ul class="flex items-center space-x-1">
+        <li>
+          <button
+            class="w-10 h-10 flex items-center justify-center text-white bg-[#1e90ff] rounded-lg font-semibold shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            1
+          </button>
+        </li>
+        <li>
+          <button
+            class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            2
+          </button>
+        </li>
+        <li>
+          <button
+            class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            3
+          </button>
+        </li>
+        <li>
+          <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+        </li>
+        <li>
+          <button
+            class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            10
+          </button>
+        </li>
+      </ul>
+  
+      <!-- Next Button -->
+      <button
+        class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+        <i class="fas fa-chevron-right text-gray-500"></i>
+      </button>
     </section>
-
-        <!-- Company Cards -->
-        <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <!-- Example Company Card -->
-            {% for company in companies %}
-            <div class="group relative bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col">
-                <div class="flex items-center space-x-4">
-                    <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
-                        <i class="fas fa-building text-blue-600 text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-800 group-hover:text-blue-600">{{ company.name }}</h2>
-                        <p class="text-sm text-gray-500">{{ company.location }}</p>
-                    </div>
-                </div>
-                <div class="mt-4 flex-1">
-                    <p class="text-sm text-gray-600 line-clamp-3">{{ company.description }}</p>
-                </div>
-                <div class="mt-4 flex justify-between items-center">
-                    <span class="text-sm text-green-600 font-medium">{{ company.available_jobs }} Jobs Available</span>
-                    <a href="{% url 'company-detail' company.id %}" 
-                       class="text-blue-500 text-sm font-semibold hover:underline">
-                        Learn More
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
-        </section>
-
-        <section class="mt-12 flex items-center justify-center space-x-2 p-2">
-            <!-- Previous Button -->
-            <button 
-                class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        
-            <!-- Page Numbers -->
-            <ul class="flex items-center space-x-1">
-                <li>
-                    <button 
-                        class="w-10 h-10 flex items-center justify-center text-white bg-[#1e90ff] rounded-lg font-semibold shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        1
-                    </button>
-                </li>
-                <li>
-                    <button 
-                        class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        2
-                    </button>
-                </li>
-                <li>
-                    <button 
-                        class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        3
-                    </button>
-                </li>
-                <li>
-                    <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
-                </li>
-                <li>
-                    <button 
-                        class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        10
-                    </button>
-                </li>
-            </ul>
-        
-            <!-- Next Button -->
-            <button 
-                class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </section>
-        
-</main>
+  </main>
 
 <!-- JavaScript for Dropdowns -->
 <script>
