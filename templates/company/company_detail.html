@@ -64,13 +64,12 @@
                 <!-- Company Overview Card -->
                 <div class="bg-white p-8 border border-gray-300 rounded-lg mt-2">
                     <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                        <i class="fas fa-building text-blue-500 text-2xl mr-2"></i>
                         Company Overview
                     </h2>
                     <!-- About Us -->
                     <div class="mb-8 p-4 border-2 border-dashed rounded-lg">
                         <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-info-circle text-blue-500 text-xl mr-2"></i>
+                            <i class="fas fa-info-circle text-[#1e90ff] text-xl mr-2"></i>
                             About Us
                         </h3>
                         <p class="text-gray-700">{{ company.description|safe }}</p>
@@ -79,7 +78,7 @@
                     
                     <div class="text-xl p-4 border-2 border-dashed rounded-lg mt-2">
                         <h3 class="font-bold text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-bullseye text-blue-500 text-xl mr-2"></i>
+                            <i class="fas fa-bullseye text-[#1e90ff] text-xl mr-2"></i>
                             Our Mission
                         </h3>
                         <p class="text-gray-800">{{ company.mission_statement|safe }}</p>
@@ -91,7 +90,6 @@
                     <!-- Section Header -->
                     <div class="mb-8">
                         <h2 class="text-3xl md:text-xl font-extrabold text-gray-800 flex items-center">
-                            <i class="fas fa-chart-line text-blue-500 text-2xl mr-2"></i>
                             Company Insights
                         </h2>
                         <p class="text-gray-600 mt-2 text-lg">Learn more about our unique values and initiatives.</p>
@@ -102,7 +100,7 @@
                         <!-- Culture & Work Environment -->
                         <div class="flex flex-col items-center text-center bg-gradient-to-br from-gray-50 to-white p-8 rounded-lg border">
                             <div class="mb-4 bg-gray-100 p-4 rounded-full">
-                                <i class="fas fa-users text-blue-500 text-3xl"></i>
+                                <i class="fas fa-users text-[#1e90ff] text-3xl"></i>
                             </div>
                             <h3 class="text-2xl font-semibold text-gray-800 mb-4">Culture & Work Environment</h3>
                             <p class="text-gray-700 leading-relaxed">
@@ -210,7 +208,7 @@
                     <!-- Founded -->
                     <div class="flex flex-col items-center">
                         <div class="bg-gray-100 p-4 rounded-full mb-4">
-                            <i class="fas fa-calendar-alt text-blue-500 text-xl"></i>
+                            <i class="fas fa-calendar-alt text-[#1e90ff] text-xl"></i>
                         </div>
                         <p class="text-gray-500">Founded</p>
                         <p class="text-lg font-bold text-gray-800">{{ company.founded }}</p>
@@ -220,7 +218,7 @@
                     <!-- Employees -->
                     <div class="flex flex-col items-center">
                         <div class="bg-gray-100 p-4 rounded-full mb-4">
-                            <i class="fas fa-users text-blue-500 text-xl"></i>
+                            <i class="fas fa-users text-[#1e90ff] text-xl"></i>
                         </div>
                         <p class="text-gray-500">Employees</p>
                         <p class="text-lg font-bold text-gray-800">{{ company.size }}</p>
@@ -230,7 +228,7 @@
                     <!-- Headquarters -->
                     <div class="flex flex-col items-center">
                         <div class="bg-gray-100 p-4 rounded-full mb-4">
-                            <i class="fas fa-map-marker-alt text-blue-500 text-xl"></i>
+                            <i class="fas fa-map-marker-alt text-[#1e90ff] text-xl"></i>
                         </div>
                         <p class="text-gray-500">Headquarters</p>
                         <p class="text-lg font-bold text-gray-800">{{ company.location }}</p>
@@ -240,7 +238,7 @@
                     <!-- Website -->
                     <div class="flex flex-col items-center">
                         <div class="bg-gray-100 p-4 rounded-full mb-4">
-                            <i class="fas fa-globe text-blue-500 text-xl"></i>
+                            <i class="fas fa-globe text-[#1e90ff] text-xl"></i>
                         </div>
                         <p class="text-gray-500">Website</p>
                         <a href="{{ company.website_url }}" 
