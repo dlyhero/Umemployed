@@ -195,11 +195,186 @@
   {% block custom_css %}
   {% endblock custom_css %}
   <!-- Add this CSS -->
+  <style>
+    /* Font Definitions */
+    @font-face {
+      font-family: 'Source Sans Pro';
+      src: url('/static/fonts/SourceSansPro-Regular.woff2') format('woff2'),
+           url('/static/fonts/SourceSansPro-Regular.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+    }
+  
+    /* Add other @font-face rules here */
+  
+    /* Base Styles */
+    body {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      background-color: rgb(229, 231, 235);
+    }
+  
+    h1, h2, h3 {
+      font-family: 'Source Serif Pro', serif;
+      font-weight: 600;
+    }
+  
+    p {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-weight: 400;
+    }
+  
+    .light-text {
+      font-weight: 300;
+    }
+  
+    .italic-text {
+      font-style: italic;
+    }
+  
+    /* Responsive Scaling */
+    :root {
+      --base-font-size: 14px;
+      --scale-factor: 0.9;
+    }
+  
+    @media (min-width: 768px) {
+      :root {
+        --scale-factor: 1.1;
+      }
+    }
+  
+    @media (min-width: 1024px) {
+      :root {
+        --scale-factor: 1.2;
+      }
+    }
+  
+    @media (min-width: 1440px) {
+      :root {
+        --scale-factor: 1.3;
+      }
+    }
+  
+    h1 {
+      font-size: clamp(1.2rem, 1.2rem * var(--scale-factor), 2rem);
+    }
+  
+    h2 {
+      font-size: clamp(1rem, 1rem * var(--scale-factor), 1.5rem);
+    }
+  
+    p {
+      font-size: clamp(0.85rem, 0.85rem * var(--scale-factor), 1.2rem);
+    }
+  
+    h3 {
+      font-size: clamp(0.95rem, 0.95rem * var(--scale-factor), 1.3rem);
+    }
+  
+    /* Alerts */
+    .alert {
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+  
+    .alert.primary {
+      background-color: #f0f9ff;
+      border: 1px solid #b3e5fc;
+      color: #0277bd;
+    }
+  
+    .alert .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  
+    /* Header and Mobile Menu */
+    header {
+      background-color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+    }
+  
+    #mobileMenu {
+      background-color: white;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      z-index: 100;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      transition: transform 0.3s ease-in-out;
+    }
+  
+    #mobileMenu.hidden {
+      transform: translateX(-100%);
+    }
+  
+    #mobileMenu.visible {
+      transform: translateX(0);
+    }
+  
+    /* Logo and SVG Text */
+    :root {
+      --logo-size: 50px;
+      --svg-text-size: 40px;
+    }
+  
+    .logo {
+      width: var(--logo-size);
+      height: var(--logo-size);
+    }
+  
+    .svg-text {
+      font-size: var(--svg-text-size);
+    }
+  
+    @media (max-width: 768px) {
+      :root {
+        --logo-size: 50px;
+        --svg-text-size: 30px;
+      }
+    }
+  
+    @media (max-width: 480px) {
+      :root {
+        --logo-size: 48px;
+        --svg-text-size: 25px;
+      }
+    }
+  
+    /* Transitions */
+    button, a {
+      transition: all 0.3s ease;
+    }
+  
+    button:hover, a:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+    
+  </style>
 </head>
 
 <body id="main-body">
   <header class="bg-white border-b border-gray-200">
-    <div id="sub-header" class="p-1.5 py-2  flex items-center justify-between container mx-auto  max-w-8xl">
+    <div id="sub-header" class="p-1.5 py-2  flex items-center justify-between container max-7xl w-full mx-auto ">
       <div id="left-section" class="flex items-center">
         <div class="logo-wrap flex items-center mr-10">
           <a href="{% url 'index' %}">
@@ -466,7 +641,7 @@
   {% block footer %}
 
   <footer class=" py-8 border-t border-gray-200">
-    <div class="container mx-auto px-5 max-w-8xl">
+    <div class="container max-w-7xl mx-auto px-2 md:px-0">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Links Section -->
         <nav class="grid grid-cols-2 md:grid-cols-3 gap-4">

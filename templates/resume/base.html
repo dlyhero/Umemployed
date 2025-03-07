@@ -207,6 +207,7 @@
         opacity: 0.8;
         transform: scale(1.05);
       }
+    
     </style>
     {% block custom_css %} {% endblock %}
     <!-- Add this CSS -->
@@ -214,7 +215,7 @@
 
   <body id="main-body">
     <header class="bg-white border-b border-gray-200">
-      <div id="sub-header" class="p-1.5 py-2  flex items-center justify-between container mx-auto  max-w-8xl">
+      <div id="sub-header" class="p-1.5 py-2  flex items-center justify-between container max-w-7xl mx-auto ">
         <div id="left-section" class="flex items-center">
           <div class="logo-wrap flex items-center mr-10">
             <a href="{% url 'index' %}">
@@ -475,8 +476,8 @@
 </div>
 
     {% block content %} {% endblock %} {% block footer %}
-    <footer class=" py-8 border-t border-gray-200">
-      <div class="container mx-auto px-5 max-w-8xl">
+    <footer class=" py-8 border-t border-gray-200 ">
+      <div class="container max-w-7xl mx-auto px-2 md:px-0">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <!-- Links Section -->
           <nav class="grid grid-cols-2 md:grid-cols-3 gap-4">
