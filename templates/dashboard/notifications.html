@@ -6,22 +6,43 @@
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
 />
+<style>
+  .notification-item:hover {
+    background-color: #f9fafb;
+    transition: background-color 0.2s ease-in-out;
+  }
+  .icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #eef2ff;
+  }
+  .notification-content {
+    flex-grow: 1;
+  }
+  .time {
+    white-space: nowrap;
+  }
+</style>
 {% endblock %}
 {% block content %}
 
-<main class="container w-[98%] sm:w-[80%] mx-auto sm:mt-4 mb-2 p-4 bg-white rounded sm:shadow-md">
-  <h2 class="text-2xl font-bold mb-4">Notifications</h2>
+<main class="container w-[98%] sm:w-[80%] mx-auto sm:mt-4 mb-2 p-4 bg-white rounded-lg shadow-sm">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">Notifications</h2>
 
   <!-- Summary Section -->
-  <section class="mb-6">
-    <div class="flex justify-between items-center bg-gray-100 p-4 rounded shadow-sm">
+  <section class="mb-8">
+    <div class="flex justify-between items-center bg-gray-50 p-6 rounded-lg shadow-sm">
       <div class="flex flex-col">
-        <p class="text-lg font-medium">Total Notifications</p>
-        <p class="text-2xl font-bold">{{ total_notifications_count }}</p>
+        <p class="text-lg font-medium text-gray-600">Total Notifications</p>
+        <p class="text-2xl font-bold text-gray-800">{{ total_notifications_count }}</p>
       </div>
       <div class="flex flex-col text-right">
-        <p class="text-lg font-medium">Unread Notifications</p>
-        <p class="text-2xl font-bold">{{ unread_notifications_count }}</p>
+        <p class="text-lg font-medium text-gray-600">Unread Notifications</p>
+        <p class="text-2xl font-bold text-gray-800">{{ unread_notifications_count }}</p>
       </div>
     </div>
   </section>
@@ -30,58 +51,58 @@
   <div id="notification-list">
     {% for notification in notifications %}
     <!-- Notification Items -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b cursor-pointer">
-      <div class="flex items-start sm:items-center">
-        <div class="icon mr-4 mb-2 sm:mb-0">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center notification-item p-4 border-b hover:shadow-sm cursor-pointer">
+      <div class="flex items-start sm:items-center space-x-4">
+        <div class="icon">
           <!-- Map model notification types to correct icons -->
           {% if notification.notification_type == 'JOB_APPLICATION' %}
-          <i class="fas fa-briefcase"></i> <!-- Job Application Icon -->
+          <i class="fas fa-briefcase text-blue-500"></i> <!-- Job Application Icon -->
           {% elif notification.notification_type == 'NEW_JOB_POSTED' %}
-          <i class="fas fa-clipboard-list text-green-600"></i> <!-- New Job Posted Icon -->
+          <i class="fas fa-clipboard-list text-green-500"></i> <!-- New Job Posted Icon -->
           {% elif notification.notification_type == 'ENDORSEMENT' %}
-          <i class="fas fa-thumbs-up text-indigo-600"></i> <!-- Endorsement Icon -->
+          <i class="fas fa-thumbs-up text-indigo-500"></i> <!-- Endorsement Icon -->
           {% elif notification.notification_type == 'INTERVIEW_SCHEDULED' %}
-          <i class="fas fa-calendar-check text-purple-600"></i> <!-- Interview Scheduled Icon -->
+          <i class="fas fa-calendar-check text-purple-500"></i> <!-- Interview Scheduled Icon -->
           {% elif notification.notification_type == 'ACCOUNT_ALERT' %}
-          <i class="fas fa-exclamation-triangle text-red-600"></i> <!-- Account Alert Icon -->
+          <i class="fas fa-exclamation-triangle text-red-500"></i> <!-- Account Alert Icon -->
           {% elif notification.notification_type == 'UPCOMING_EVENT' %}
-          <i class="fas fa-calendar-alt text-yellow-600"></i> <!-- Upcoming Event Icon -->
+          <i class="fas fa-calendar-alt text-yellow-500"></i> <!-- Upcoming Event Icon -->
           {% elif notification.notification_type == 'NEW_MESSAGE' %}
-          <i class="fas fa-envelope text-teal-600"></i> <!-- New Message Icon -->
+          <i class="fas fa-envelope text-teal-500"></i> <!-- New Message Icon -->
           {% elif notification.notification_type == 'SPECIAL_OFFER' %}
-          <i class="fas fa-gift text-orange-600"></i> <!-- Special Offer Icon -->
+          <i class="fas fa-gift text-orange-500"></i> <!-- Special Offer Icon -->
           {% elif notification.notification_type == 'PROFILE_UPDATED' %}
-          <i class="fas fa-user-edit text-blue-600"></i> <!-- Profile Updated Icon -->
+          <i class="fas fa-user-edit text-blue-500"></i> <!-- Profile Updated Icon -->
           {% else %}
-          <i class="fas fa-bell"></i> <!-- Default Icon -->
+          <i class="fas fa-bell text-gray-500"></i> <!-- Default Icon -->
           {% endif %}
         </div>
         <div class="notification-content">
-          <p class="title text-lg font-semibold">{{ notification.notification_type }}</p>
+          <p class="title text-lg font-semibold text-gray-800">{{ notification.notification_type }}</p>
           <p class="message text-sm text-gray-600">{{ notification.message }}</p>
         </div>
       </div>
-      <div class="flex items-center">
-        <a href="{% url 'notifications:mark_notification_as_read' notification.id %}" class="mr-4">Mark as read</a>
-        <span class="time text-xs text-gray-500 mt-2 sm:mt-0">{{ notification.timestamp|timesince }} ago</span>
+      <div class="flex items-center space-x-4">
+        <a href="{% url 'notifications:mark_notification_as_read' notification.id %}" class="text-sm text-blue-500 hover:text-blue-700">Mark as read</a>
+        <span class="time text-xs text-gray-500">{{ notification.timestamp|timesince }} ago</span>
       </div>
     </div>
     {% endfor %}
   </div>
 
   <!-- Read More Button -->
-  <div id="read-more-container" class="text-center mt-4">
-    <button id="read-more-button" class="text-white bg-[#1e90ff] font-semibold rounded-full py-2 px-4">Read More</button>
+  <div id="read-more-container" class="text-center mt-6">
+    <button id="read-more-button" class="text-white bg-blue-500 hover:bg-blue-600 font-semibold rounded-full py-2 px-6 transition duration-200">Load More</button>
   </div>
 
   <!-- Archived Notifications Section -->
-  <section class="mt-6">
-    <h3 class="text-xl font-semibold mb-2">Archived Notifications</h3>
-    <div class="bg-gray-100 p-4 rounded shadow-sm">
-      <p class="text-gray-600">You can review archived notifications here.</p>
+  <section class="mt-8">
+    <h3 class="text-xl font-semibold mb-4 text-gray-800">Archived Notifications</h3>
+    <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
+      <p class="text-gray-600 mb-4">You can review archived notifications here.</p>
       <!-- Example Archived Notification -->
-      <div class="p-4 border-b">
-        <p class="text-lg font-semibold">Archived Notification Example</p>
+      <div class="p-4 border-b hover:bg-gray-100 rounded-lg">
+        <p class="text-lg font-semibold text-gray-800">Archived Notification Example</p>
         <p class="text-sm text-gray-600">Details of the archived notification.</p>
         <span class="text-xs text-gray-500">Archived 1 month ago</span>
       </div>
