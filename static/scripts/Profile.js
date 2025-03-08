@@ -68,7 +68,12 @@ function fetchSuggestedSkills() {
 // Handle skill input for auto-suggestions
 function handleSkillInput() {
   const query = skillInput.value.toLowerCase();
-  suggestedSkillsContainer.innerHTML = "";
+  
+  // Replace innerHTML clearing with DOM manipulation
+  // suggestedSkillsContainer.innerHTML = "";
+  while (suggestedSkillsContainer.firstChild) {
+    suggestedSkillsContainer.removeChild(suggestedSkillsContainer.firstChild);
+  }
 
   if (query) {
     const filteredSkills = suggestedSkills.filter((skill) =>
@@ -129,7 +134,12 @@ document.getElementById('skills-form').addEventListener('submit', function (even
 
 // Initialize suggested skills
 function initializeSuggestedSkills() {
-  suggestedSkillsContainer.innerHTML = "";
+  // Replace innerHTML clearing with DOM manipulation
+  // suggestedSkillsContainer.innerHTML = "";
+  while (suggestedSkillsContainer.firstChild) {
+    suggestedSkillsContainer.removeChild(suggestedSkillsContainer.firstChild);
+  }
+
   suggestedSkills.forEach((skill) => {
     const skillElement = document.createElement("div");
     const skillLabel = document.createElement("label");
