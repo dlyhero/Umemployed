@@ -844,10 +844,12 @@
   const subHeader = document.getElementById("sub-header");
 
   function header() {
-    subHeader.classList.remove("container");
-  }
+    subHeader.classList.remove("max-w-7xl", "container"); // Remove classes correctly
+    subHeader.classList.add("w-full"); // Add new class
+}
 
-  header();
+header();
+
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
