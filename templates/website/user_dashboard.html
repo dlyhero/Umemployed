@@ -8,6 +8,7 @@ t>
 {% block custom_css %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
   .animation {
@@ -160,6 +161,32 @@ t>
         {{ completion_percentage }}% Complete - Add your skills and work experience to improve your chances.
         {% endif %}
       </p>
+    </section>
+
+    <!-- User Analytics Section -->
+    <section class="bg-white rounded-lg border-gray-300 border p-6 mb-2">
+      <h2 class="font-semibold mb-4 text-xl">Your Analytics</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-gray-100 p-4 rounded-lg shadow">
+          <h3 class="text-lg font-semibold text-gray-700">Profile Views</h3>
+          <p class="text-2xl font-bold text-[#1e90ff]">{{ profile_views }}</p>
+        </div>
+        <div class="bg-gray-100 p-4 rounded-lg shadow">
+          <h3 class="text-lg font-semibold text-gray-700">Applications</h3>
+          <p class="text-2xl font-bold text-[#1e90ff]">{{ applications_count }}</p>
+        </div>
+        <div class="bg-gray-100 p-4 rounded-lg shadow">
+          <h3 class="text-lg font-semibold text-gray-700">Job Matches</h3>
+          <p class="text-2xl font-bold text-[#1e90ff]">{{ job_matches_count }}</p>
+        </div>
+        <div class="bg-gray-100 p-4 rounded-lg shadow">
+          <h3 class="text-lg font-semibold text-gray-700">Skill Endorsements</h3>
+          <p class="text-2xl font-bold text-[#1e90ff]">{{ skill_endorsements_count }}</p>
+        </div>
+      </div>
+      <div class="mt-6">
+        <canvas id="analyticsPieChart"></canvas>
+      </div>
     </section>
 
     <!-- Recommended Jobs Section -->
@@ -513,6 +540,52 @@ t>
         scanningAnimation.classList.add('hidden'); // Hide scanning animation
         animation.destroy(); // Stop Lottie animation after scanning is done
       });
+  });
+
+  // Pie Chart for Analytics
+  document.addEventListener('DOMContentLoaded', function () {
+    var ctx = document.getElementById('analyticsPieChart').getContext('2d');
+    var analyticsData = {
+      labels: ['Profile Views', 'Applications', 'Job Matches', 'Skill Endorsements'],
+      datasets: [{
+        data: [{{ profile_views }}, {{ applications_count }}, {{ job_matches_count }}, {{ skill_endorsements_count }}],
+        backgroundColor: ['#1e90ff', '#ff6384', '#36a2eb', '#ffce56'],
+        hoverBackgroundColor: ['#1c7cd6', '#ff4d6b', '#2b8cc4', '#ffb84d']
+      }]
+    };
+
+    var analyticsPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: analyticsData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          tooltip: {
+            callbacks: {
+              label: function (tooltipItem) {
+                return tooltipItem.label + ': ' + tooltipItem.raw;
+              }
+            }
+          }
+        },
+        layout: {
+          padding: {
+            top: 20,
+            bottom: 20
+          }
+        },
+        radius: window.innerWidth > 1024 ? '50%' : '100%' // Adjust radius based on screen width
+      }
+    });
+
+    // Update chart radius on window resize
+    window.addEventListener('resize', function () {
+      analyticsPieChart.options.radius = window.innerWidth > 1024 ? '50%' : '100%';
+      analyticsPieChart.update();
+    });
   });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
