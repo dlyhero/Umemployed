@@ -3,13 +3,13 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import User
 from .forms import RegisterUserForm
-from resume.models import Resume, ResumeDoc
+from resume.models import Resume, ResumeDoc, ProfileView
 from company.models import Company
 from company.views import create_company
 from django.contrib.auth.decorators import login_required
-from job.models import Job,Application
+from job.models import Job, Application, Rating, SavedJob
 from .filters import JobFilter
-from django.db.models import Q,Count
+from django.db.models import Q, Count
 from job.models import calculate_skill_match 
 from allauth.account.utils import send_email_confirmation
 
@@ -17,7 +17,6 @@ from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailConfirmationHMAC
 from django.contrib.auth import login
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from job.models import SavedJob
 from urllib.parse import urlencode
 from .forms import CustomSetPasswordForm
 from django.contrib.auth import update_session_auth_hash
@@ -30,8 +29,7 @@ from allauth.account.models import EmailAddress
 import logging
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
-from django.urls import reverse  # Import reverse
-from resume.models import ResumeDoc
+from django.urls import reverse
 from django.contrib.auth import get_backends
 
 
@@ -370,11 +368,56 @@ def user_dashboard(request):
         completion_percentage = 0
 
     resume_docs = ResumeDoc.objects.filter(user=request.user)
+    # Fetch user analytics data
+    profile_views = ProfileView.objects.filter(user=user).count()
+    applications_count = Application.objects.filter(user=user).count()
+    skill_endorsements_count = Rating.objects.filter(candidate=user).count()
+
+    # Matching jobs logic
+    matching_jobs = []
+    non_matching_jobs = []
+
+    all_jobs = Job.objects.filter(job_creation_is_complete=True)
+
+    if user.is_authenticated:
+        try:
+            applicant_resume = Resume.objects.get(user=user)
+            applicant_skills = set(applicant_resume.skills.all())
+        except Resume.DoesNotExist:
+            applicant_skills = set()
+
+        for job in all_jobs:
+            job_skills = set(job.requirements.all())
+            match_percentage, _ = calculate_skill_match(applicant_skills, job_skills)
+
+            if match_percentage >= 10.0:
+                matching_jobs.append((job, match_percentage))
+            else:
+                non_matching_jobs.append(job)
+    else:
+        non_matching_jobs = list(all_jobs)
+
+    # Count matching jobs
+    job_matches_count = len(matching_jobs)
+
+    # Data for graphical representation
+    analytics_data = {
+        'profile_views': profile_views,
+        'applications_count': applications_count,
+        'job_matches_count': job_matches_count,
+        'skill_endorsements_count': skill_endorsements_count,
+    }
+
     context = {
         'recommended_jobs': recommended_jobs,
         'applied_job_ids': applied_job_ids,
         'completion_percentage': completion_percentage,
-        'resume_docs': resume_docs
+        'resume_docs': resume_docs,
+        'profile_views': profile_views,
+        'applications_count': applications_count,
+        'job_matches_count': job_matches_count,
+        'skill_endorsements_count': skill_endorsements_count,
+        'analytics_data': analytics_data,
     }
     return render(request, 'website/user_dashboard.html', context)
 

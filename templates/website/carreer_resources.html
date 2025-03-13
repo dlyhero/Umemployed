@@ -1,324 +1,261 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-    <title>Carreer Resources|UmEmployed</title>
-    {% endblock title %}
-    {% block custom_css %}
-    
-      <style>
-         .truncate-description {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      overflow: hidden;
+<title>Career Resources | UmEmployed</title>
+{% endblock title %}
+{% block custom_css %}
+<style>
+  .truncate-description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
+  .custom-shadow {
+    box-shadow: 5px 5px 10px rgba(30, 144, 255, 0.5);
+  }
+
+  .card-container {
+    max-height: 400px;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
     }
-    
-    /* Custom box shadow */
-    .custom-shadow {
-      box-shadow: 5px 5px 10px rgba(30, 144, 255, 0.5); /* Adjusted shadow */
+
+    100% {
+      transform: translateX(-100%);
     }
+  }
 
-    /* Adjust container height */
-    .card-container {
-      max-height: 400px; /* Adjust as needed */
-    }
-      /* Automatic scrolling */
-      @keyframes scroll {
-        0% {
-          transform: translateX(0);
-        }
+  .animate-scroll {
+    display: flex;
+    width: calc(100% * 2);
+    animation: scroll 30s linear infinite;
+  }
 
-        100% {
-          transform: translateX(-100%);
-        }
-      }
+  .animate-scroll > * {
+    flex: 0 0 auto;
+    width: 0.5rem;
+  }
 
-      .animate-scroll {
-        display: flex;
-        width: calc(100% * 2);
-        /* Adjust this based on the number of duplicated items */
-        animation: scroll 30s linear infinite;
-      }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 
-      .animate-scroll > * {
-        flex: 0 0 auto;
-        width: 0.5rem;
-        /* Width of one item */
-      }
-
-
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
-      }
-
-      .scrollbar-hide {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-    </style>
-      
-      {% endblock %}
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+{% endblock %}
 {% block content %}
-
-    <main>
-        <section
-      class="relative bg-cover bg-center h-[500px] overflow-hidden"
-      style="background-image: url('{% static 'new_design/images/hero.png' %}')"
-    >
-      <div class="absolute inset-0 bg-black opacity-50"></div>
-      <div class="container mx-auto relative z-10 text-center text-white py-16">
-        <h1 class="text-4xl font-bold mb-4">Get the Best Career Advice</h1>
-        <p class="mt-2 text-lg mb-8">
-          Find articles, tips, and expert guidance to advance your career.
-        </p>
-
-        <!-- Search Bar -->
-        <div class="w-full max-w-3xl mx-auto mb-8">
-          <div
-            class="flex items-center border border-gray-300 rounded-lg overflow-hidden"
-          >
-            <input
-              class="w-full p-4 pl-4 text-gray-800 placeholder-gray-400 border-none focus:outline-none"
-              placeholder="Search for your career advice"
-              type="search"
-              name=""
-              id=""
-            />
-            <button
-              class="bg-[#1e90ff] text-white p-3 rounded-r-lg flex items-center justify-center"
-            >
-              <i class="fa fa-search text-xl"></i>
-            </button>
-          </div>
+<main class="container mx-auto py-6 space-y-6">
+  <section class="relative bg-cover bg-center h-[500px] overflow-hidden rounded-lg shadow-lg"
+    style="background-image: url('{% static 'new_design/images/hero.png' %}')">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="relative z-10 text-center text-white py-16">
+      <h1 class="text-4xl font-bold mb-4">Get the Best Career Advice</h1>
+      <p class="mt-2 text-lg mb-8">Find articles, tips, and expert guidance to advance your career.</p>
+      <div class="w-full max-w-3xl mx-auto mb-8">
+        <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+          <input
+            class="w-full p-4 pl-4 text-gray-800 placeholder-gray-400 border-none focus:outline-none"
+            placeholder="Search for your career advice" type="search" name="" id="" />
+          <button class="bg-[#1e90ff] text-white p-3 rounded-r-lg flex items-center justify-center">
+            <i class="fa fa-search text-xl"></i>
+          </button>
         </div>
-
-        <div class="w-full max-w-3xl mt-10 mx-auto">
-          <h3 class="text-xl font-semibold mb-4">Popular Topics</h3>
-          <div class="relative overflow-hidden">
-            <div class="flex space-x-4 animate-scroll">
-              <!-- Each item in the carousel -->
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Career Growth</p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Job Search Tips</p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Resume Writing</p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Interview Skills</p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Networking Tips</p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Career Change</p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Salary Negotiation</p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Work-Life Balance</p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">
-                  Professional Development
-                </p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Remote Work</p>
-              </div>
-              <!-- Duplicate items for seamless scrolling -->
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Career Growth</p>
-              </div>
-              <div
-                class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md"
-              >
-                <p class="text-center text-white text-sm">Job Search Tips</p>
-              </div>
-              <!-- Add more duplicates if needed -->
+      </div>
+      <div class="w-full max-w-3xl mt-10 mx-auto">
+        <h3 class="text-xl font-semibold mb-4">Popular Topics</h3>
+        <div class="relative overflow-hidden">
+          <div class="flex space-x-4 animate-scroll">
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Career Growth</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Job Search Tips</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Resume Writing</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Interview Skills</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Networking Tips</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Career Change</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Salary Negotiation</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Work-Life Balance</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Professional Development</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Remote Work</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Career Growth</p>
+            </div>
+            <div class="flex-shrink-0 w-32 h-16 bg-[#1e90ff] rounded-lg p-3 flex items-center justify-center shadow-md">
+              <p class="text-center text-white text-sm">Job Search Tips</p>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
+  <section id="career-resources" class="bg-white p-6 rounded-lg shadow-lg">
+    <div class="category mb-8">
+      <h2 class="text-2xl font-semibold mb-6 text-[#1e90ff]">
+        <i class="fas fa-briefcase mr-2"></i> Job Search Tips
+      </h2>
+      <div id="job-search-tips" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
+      <div id="pagination-job-search-tips" class="text-center">
+        <button id="prevBtnJobSearchTips" class="text-2xl text-blue-500 px-2 py-1 mr-2">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="nextBtnJobSearchTips" class="text-2xl text-blue-500 px-2 py-1">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
 
-    <section id="career-resources" class="bg-gray-100 p-6">
-      <!-- Job Search Tips Section -->
-      <div class="category">
-        <h2 class="text-2xl font-semibold mb-6" style="color: #1e90ff;">
-          <i class="fas fa-briefcase mr-2"></i> Job Search Tips
-        </h2>
-        <div id="job-search-tips" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"></div>
-        <div id="pagination-job-search-tips" class="text-center">
-          <button id="prevBtnJobSearchTips" class="text-2xl text-blue-500 px-2 py-1 mr-2">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <button id="nextBtnJobSearchTips" class="text-2xl text-blue-500 px-2 py-1">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
+    <div class="category mb-8">
+      <h2 class="text-2xl font-semibold mb-6 text-[#1e90ff]">
+        <i class="fas fa-file-alt mr-2"></i> Resume & Cover Letter Writing
+      </h2>
+      <div id="resume-writing" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
+      <div id="pagination-resume-writing" class="text-center">
+        <button id="prevBtnResumeWriting" class="text-2xl text-blue-500 px-2 py-1 mr-2">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="nextBtnResumeWriting" class="text-2xl text-blue-500 px-2 py-1">
+          <i class="fas fa-chevron-right"></i>
+        </button>
       </div>
-    
-      <!-- Resume & Cover Letter Writing Section -->
-      <div class="category">
-        <h2 class="text-2xl font-semibold mb-6" style="color: #1e90ff;">
-          <i class="fas fa-file-alt mr-2"></i> Resume & Cover Letter Writing
-        </h2>
-        <div id="resume-writing" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"></div>
-        <div id="pagination-resume-writing" class="text-center">
-          <button id="prevBtnResumeWriting" class="text-2xl text-blue-500 px-2 py-1 mr-2">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <button id="nextBtnResumeWriting" class="text-2xl text-blue-500 px-2 py-1">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-      </div>
-    
-      <!-- Interview Preparation Section -->
-      <div class="category">
-        <h2 class="text-2xl font-semibold mb-6" style="color: #1e90ff;">
-          <i class="fas fa-handshake mr-2"></i> Interview Preparation
-        </h2>
-        <div id="interview-preparation" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"></div>
-        <div id="pagination-interview-preparation" class="text-center">
-          <button id="prevBtnInterviewPreparation" class="text-2xl text-blue-500 px-2 py-1 mr-2">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <button id="nextBtnInterviewPreparation" class="text-2xl text-blue-500 px-2 py-1">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-      </div>
-    
-      <!-- Career Growth & Development Section -->
-      <div class="category">
-        <h2 class="text-2xl font-semibold mb-6" style="color: #1e90ff;">
-          <i class="fas fa-chart-line mr-2"></i> Career Growth & Development
-        </h2>
-        <div id="career-growth" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"></div>
-        <div id="pagination-career-growth" class="text-center">
-          <button id="prevBtnCareerGrowth" class="text-2xl text-blue-500 px-2 py-1 mr-2">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <button id="nextBtnCareerGrowth" class="text-2xl text-blue-500 px-2 py-1">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-      </div>
-    </section>
-    
-    <script>
-      const articlesPerPage = 5;
-let currentPageJobSearchTips = 1;
-let currentPageResumeWriting = 1;
-let currentPageInterviewPreparation = 1;
-let currentPageCareerGrowth = 1;
+    </div>
 
-let articles = [];
+    <div class="category mb-8">
+      <h2 class="text-2xl font-semibold mb-6 text-[#1e90ff]">
+        <i class="fas fa-handshake mr-2"></i> Interview Preparation
+      </h2>
+      <div id="interview-preparation" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
+      <div id="pagination-interview-preparation" class="text-center">
+        <button id="prevBtnInterviewPreparation" class="text-2xl text-blue-500 px-2 py-1 mr-2">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="nextBtnInterviewPreparation" class="text-2xl text-blue-500 px-2 py-1">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
 
-async function fetchArticles() {
-  try {
-    const response = await fetch('{% static "data/articles.json" %}'); // Fetch local JSON file or replace with API endpoint
-    const data = await response.json();
-    articles = data.filter(article => article.urlToImage); // Only articles with images
-    displayArticles();
-  } catch (error) {
-    console.error('Error loading articles:', error);
+    <div class="category mb-8">
+      <h2 class="text-2xl font-semibold mb-6 text-[#1e90ff]">
+        <i class="fas fa-chart-line mr-2"></i> Career Growth & Development
+      </h2>
+      <div id="career-growth" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
+      <div id="pagination-career-growth" class="text-center">
+        <button id="prevBtnCareerGrowth" class="text-2xl text-blue-500 px-2 py-1 mr-2">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="nextBtnCareerGrowth" class="text-2xl text-blue-500 px-2 py-1">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const articlesPerPage = 4;
+  let currentPageJobSearchTips = 1;
+  let currentPageResumeWriting = 1;
+  let currentPageInterviewPreparation = 1;
+  let currentPageCareerGrowth = 1;
+
+  let articles = [];
+
+  async function fetchArticles() {
+    try {
+      const response = await fetch('{% static "data/articles.json" %}');
+      const data = await response.json();
+      articles = data.filter(article => article.urlToImage);
+      displayArticles();
+    } catch (error) {
+      console.error('Error loading articles:', error);
+    }
   }
-}
 
-function displayArticles() {
-  // Filter articles by category and display them accordingly
-  displayCategoryArticles('job-search-tips', currentPageJobSearchTips, 'Job Search Tips');
-  displayCategoryArticles('resume-writing', currentPageResumeWriting, 'Resume & Cover Letter Writing');
-  displayCategoryArticles('interview-preparation', currentPageInterviewPreparation, 'Interview Preparation');
-  displayCategoryArticles('career-growth', currentPageCareerGrowth, 'Career Growth & Development');
-}
+  function displayArticles() {
+    displayCategoryArticles('job-search-tips', currentPageJobSearchTips, 'Job Search Tips');
+    displayCategoryArticles('resume-writing', currentPageResumeWriting, 'Resume & Cover Letter Writing');
+    displayCategoryArticles('interview-preparation', currentPageInterviewPreparation, 'Interview Preparation');
+    displayCategoryArticles('career-growth', currentPageCareerGrowth, 'Career Growth & Development');
+  }
 
-function displayCategoryArticles(categoryId, currentPage, category) {
-  const articlesContainer = document.getElementById(categoryId);
-  articlesContainer.innerHTML = '';
+  function displayCategoryArticles(categoryId, currentPage, category) {
+    const articlesContainer = document.getElementById(categoryId);
+    articlesContainer.innerHTML = '';
 
-  // Filter articles based on category
-  const filteredArticles = articles.filter(article => article.category === category);
-  const start = (currentPage - 1) * articlesPerPage;
-  const end = start + articlesPerPage;
-  const paginatedArticles = filteredArticles.slice(start, end);
-
-  paginatedArticles.forEach(article => {
-    const articleCard = document.createElement('div');
-    articleCard.classList.add('bg-white', 'rounded-lg', 'shadow-md', 'overflow-hidden', 'transform', 'hover:scale-105', 'transition', 'duration-300', 'ease-in-out', 'custom-shadow', 'card-container');
-
-    articleCard.innerHTML = `
-  <img src="${article.urlToImage}" alt="${article.title}" class="w-full h-32 object-cover">
-  <div class="p-4">
-    <h2 class="text-lg font-semibold mb-2" style="color: #1e90ff;">${article.title}</h2>
-    <p class="truncate-description text-gray-700 mb-4">${article.description || 'No description available'}</p>
-    <a href="${article.url}" class="text-blue-500 hover:text-blue-700" target="_blank">Read more</a>
-  </div>
-`;
-
-
-    articlesContainer.appendChild(articleCard);
-  });
-}
-
-// Handle pagination for different categories
-function handlePagination(categoryId, currentPageVarName, prevBtnId, nextBtnId, category) {
-  const prevBtn = document.getElementById(prevBtnId);
-  const nextBtn = document.getElementById(nextBtnId);
-
-  prevBtn.addEventListener('click', () => {
-    if (window[currentPageVarName] > 1) {
-      window[currentPageVarName]--;
-      displayArticles();
-    }
-  });
-
-  nextBtn.addEventListener('click', () => {
     const filteredArticles = articles.filter(article => article.category === category);
-    if (window[currentPageVarName] * articlesPerPage < filteredArticles.length) {
-      window[currentPageVarName]++;
-      displayArticles();
-    }
-  });
-}
+    const start = (currentPage - 1) * articlesPerPage;
+    const end = start + articlesPerPage;
+    const paginatedArticles = filteredArticles.slice(start, end);
 
-fetchArticles();
+    paginatedArticles.forEach(article => {
+      const articleCard = document.createElement('div');
+      articleCard.classList.add('bg-white', 'rounded-lg', 'shadow-md', 'overflow-hidden', 'transform', 'hover:scale-105', 'transition', 'duration-300', 'ease-in-out', 'custom-shadow', 'card-container');
 
-// Setup pagination handlers for all categories
-handlePagination('job-search-tips', 'currentPageJobSearchTips', 'prevBtnJobSearchTips', 'nextBtnJobSearchTips', 'Job Search Tips');
-handlePagination('resume-writing', 'currentPageResumeWriting', 'prevBtnResumeWriting', 'nextBtnResumeWriting', 'Resume & Cover Letter Writing');
-handlePagination('interview-preparation', 'currentPageInterviewPreparation', 'prevBtnInterviewPreparation', 'nextBtnInterviewPreparation', 'Interview Preparation');
-handlePagination('career-growth', 'currentPageCareerGrowth', 'prevBtnCareerGrowth', 'nextBtnCareerGrowth', 'Career Growth & Development');
+      articleCard.innerHTML = `
+        <img src="${article.urlToImage}" alt="${article.title}" class="w-full h-32 object-cover">
+        <div class="p-4">
+          <h2 class="text-lg font-semibold mb-2 text-[#1e90ff]">${article.title}</h2>
+          <p class="truncate-description text-gray-700 mb-4">${article.description || 'No description available'}</p>
+          <a href="${article.url}" class="text-blue-500 hover:text-blue-700" target="_blank">Read more</a>
+        </div>
+      `;
 
-    </script>
-    </main>
+      articlesContainer.appendChild(articleCard);
+    });
+  }
+
+  function handlePagination(categoryId, currentPageVarName, prevBtnId, nextBtnId, category) {
+    const prevBtn = document.getElementById(prevBtnId);
+    const nextBtn = document.getElementById(nextBtnId);
+
+    prevBtn.addEventListener('click', () => {
+      if (window[currentPageVarName] > 1) {
+        window[currentPageVarName]--;
+        displayArticles();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      const filteredArticles = articles.filter(article => article.category === category);
+      if (window[currentPageVarName] * articlesPerPage < filteredArticles.length) {
+        window[currentPageVarName]++;
+        displayArticles();
+      }
+    });
+  }
+
+  fetchArticles();
+
+  handlePagination('job-search-tips', 'currentPageJobSearchTips', 'prevBtnJobSearchTips', 'nextBtnJobSearchTips', 'Job Search Tips');
+  handlePagination('resume-writing', 'currentPageResumeWriting', 'prevBtnResumeWriting', 'nextBtnResumeWriting', 'Resume & Cover Letter Writing');
+  handlePagination('interview-preparation', 'currentPageInterviewPreparation', 'prevBtnInterviewPreparation', 'nextBtnInterviewPreparation', 'Interview Preparation');
+  handlePagination('career-growth', 'currentPageCareerGrowth', 'prevBtnCareerGrowth', 'nextBtnCareerGrowth', 'Career Growth & Development');
+</script>
 {% endblock %}
