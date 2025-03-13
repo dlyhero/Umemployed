@@ -30,7 +30,7 @@
 
 <!-- Main Content -->
     <main class="container max-w-7xl   mt-4 mx-auto flex items-center justify-center">
-      <div class="bg-white p-5 w-full max-w-lg border-gray-300 rounded-lg border">
+      <div class="bg-white p-5 w-full max-w-xl border-gray-300 rounded-lg border">
         <h2 class="text-2xl font-bold text-gray-800 text-center">
           Welcome Back!
         </h2>
@@ -82,7 +82,7 @@
           {% csrf_token %}
           <div class="mb-4">
             <label
-              class="block text-gray-700 text-sm font-bold mb-2"
+              class="block text-gray-700 text-sm font-bold mb-2 ml-2"
               for="email"
               >Email</label
             >
@@ -91,7 +91,7 @@
               type="email"
               name="email"
               placeholder="Enter your email"
-              class="w-full px-3 py-2 border rounded focus:outline-none lg:focus:ring focus:ring-[#1e90ffaa] lg:focus:border-[#1e90ff]"
+              class="w-full px-3 py-2 border rounded-full focus:outline-none lg:focus:ring focus:ring-[#1e90ffaa] lg:focus:border-[#1e90ff]"
               required
             />
             <input type="hidden" name="next" value="{{ next }}">
@@ -99,7 +99,7 @@
 
           <div class="mb-4">
             <label
-              class="block text-gray-700 text-sm font-bold mb-2"
+              class="block text-gray-700 text-sm font-bold mb-2 ml-2"
               for="password"
               >Password</label
             >
@@ -108,12 +108,12 @@
               type="password"
               name="password"
               placeholder="Enter your password"
-              class="w-full px-3 py-2 border rounded focus:outline-none lg:focus:ring focus:ring-[#1e90ffaa] lg:focus:border-[#1e90ff]"
+              class="w-full px-3 py-2 border rounded-full focus:outline-none lg:focus:ring focus:ring-[#1e90ffaa] lg:focus:border-[#1e90ff]"
               required
             />
           </div>
 
-          <div class="mb-4 flex items-center">
+          <div class="mb-4 flex items-center ml-2">
             <input
               type="checkbox"
               class="form-checkbox h-5 w-5 text-blue-600"
@@ -126,7 +126,7 @@
           </div>
           <button
             type="submit"
-            class="w-full px-4 py-2 bg-[#1e90ff] font-semibold text-white rounded hover:bg-[#1e90fc] transition"
+            class="w-full px-4 py-2 bg-[#1e90ff] font-semibold text-white rounded-full hover:bg-[#1e90fc] "
           >
             Log In
           </button>
