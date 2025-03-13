@@ -117,7 +117,7 @@
     
             <!-- Company Description (Limited to 3 lines) -->
             <p class="text-sm text-gray-600 mt-2 line-clamp-3">
-              {{ company.description | safe }}
+              {{ company.description | striptags}}
             </p>
     
             <!-- Jobs Available and Learn More Link -->
