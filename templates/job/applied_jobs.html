@@ -30,12 +30,12 @@
 {% endblock %}
 {% block content %}
   <!-- Main Content -->
-  <main class="container mx-auto max-w-7xl p-4 lg:p-0 mb-10">
-    <section class="bg-white rounded-lg border border-gray-300 shadow-sm p-4 my-5">
+  <main class="container bg-white mx-auto max-w-7xl p-4 md:mt-2 mb-2 rounded-lg border border-gray-300">
+    <section class=" rounded-lg border border-gray-300 shadow-sm p-4 my-5">
       <ul class="flex justify-start space-x-4 border-b border-gray-200 overflow-x-auto scrollbar-hide">
         <li>
           <a href="{% url 'company-list' %}" target="_self"
-            class="inline-flex items-center text-gray-800 font-medium py-2 px-6 border-b-4 border-[#1e90ff] transition-all duration-300 hover:border-blue-500">
+            class="inline-flex items-center text-gray-800 font-medium py-2 px-6 border-b-4 border-transparent transition-all duration-300 hover:border-blue-500">
             <i class="fas fa-building text-gray-500 mr-2"></i>
             All Companies
           </a>
@@ -50,7 +50,7 @@
         </li>
         <li>
           <a href="{% url 'job:applied_jobs' %}" target="_self"
-            class="inline-flex items-center text-gray-600 font-medium py-2 px-6 border-b-4 border-transparent transition-all duration-300 hover:border-[#1e90ff]">
+            class="inline-flex items-center text-gray-600 font-medium py-2 px-6 border-b-4 border-b-4 border-[#1e90ff] transition-all duration-300 hover:border-[#1e90ff]">
             <i class="fas fa-file-alt text-gray-500 mr-2"></i>
             Applied
           </a>
@@ -70,7 +70,7 @@
       </div>
     </section>
 
-    <section class="my-2">
+    <section class="my-2 px-2">
       <div role="group" class="container mx-auto mb-6 md:mb-0">
         <div class="flex flex-col md:flex-row justify-between items-center">
           <div class="mb-4 md:mb-0 w-full sm:w-fit">
