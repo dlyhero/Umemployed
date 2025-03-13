@@ -106,8 +106,11 @@ def dashboard(request):
 
         # Initialize skills with data from ResumeDoc.extracted_skills
         try:
-            resume_doc = ResumeDoc.objects.get(user=request.user)
-            extracted_skills = resume_doc.extracted_skills.all()  # Access as queryset
+            resume_docs = ResumeDoc.objects.filter(user=request.user)
+            extracted_skills = set()
+
+            for resume_doc in resume_docs:
+                extracted_skills.update(resume_doc.extracted_skills.all())
 
             # Add extracted skills to the resume
             resume.skills.add(*extracted_skills)
