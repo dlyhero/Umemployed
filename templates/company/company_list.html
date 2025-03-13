@@ -83,34 +83,62 @@
     <!-- Company Cards -->
     <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {% for company in companies %}
-      <div class="group relative bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col">
-        <div class="flex items-center space-x-4">
-          <!-- Gray Icon -->
-          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-            <i class="fas fa-building text-gray-500 text-2xl"></i>
+      <a class="bg-white w-full h-[310px] hover:h-[315px] rounded-lg p-1 duration-200 group block border border-gray-200 hover:shadow-lg transition-shadow" href="{% url 'company-detail' company.id %}">
+        <div class="flex flex-col h-full">
+          <!-- Top Section with Icon and Background Animation -->
+          <div class="w-full h-[120px] !rounded-md bg-gray-100 group-hover:bg-white duration-200 relative overflow-hidden">
+            <!-- Background Animation -->
+            <div class="absolute w-full h-full blur-3xl opacity-0 group-hover:opacity-100 duration-200">
+              <div class="absolute left-[50%] w-[50%] aspect-square bg-indigo-300 rounded-full opacity-50" style="background-color:rgb(251 146 60)"></div>
+              <div class="absolute left-[0] w-[50%] top-[60%] aspect-square bg-purple-400 rounded-full opacity-50" style="background-color:rgb(250 204 21)"></div>
+            </div>
+            <!-- Company Icon -->
+            <div class="absolute rounded-lg overflow-hidden top-6 w-full flex flex-row justify-center">
+              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-building text-gray-500 text-2xl"></i>
+              </div>
+            </div>
           </div>
-          <div>
-            <h2 class="text-lg font-bold text-gray-800 text-xl group-hover:text-blue-600">{{ company.name }}</h2>
-            <p class="text-sm text-gray-500">{{ company.location }}</p>
-          </div>
+    
+          <!-- Bottom Section with Company Details -->
+          <div class="h-[120px] group-hover:h-32 w-full duration-200 p-3 md:p-4 z-10">
+            <!-- Industry Tag -->
+            <div class="w-fit p-1.5 rounded-md bg-gray-100 flex flex-row items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 text-[#1e90ff]">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"></path>
+              </svg>
+              <div class="text-xs font-medium">{{ company.location }}</div>
         </div>
         <div class="p-4">
             <div class="mt-4 flex-1">
               <p class="text-sm text-gray-600 line-clamp-3">{{ company.description |safe }}</p>
+
             </div>
-            <div class="mt-4 flex justify-between items-center">
+    
+            <!-- Company Name -->
+            <h3 class="text-lg font-bold tracking-tight mt-3 truncate group-hover:text-blue-600">
+              {{ company.name }}
+            </h3>
+    
+            <!-- Company Description (Limited to 3 lines) -->
+            <p class="text-sm text-gray-600 mt-2 line-clamp-3">
+              {{ company.description }}
+            </p>
+    
+            <!-- Jobs Available and Learn More Link -->
+            <div class="text-[#1e90ff] flex justify-between items-center font-medium h-0 opacity-0 group-hover:opacity-100 group-hover:h-5 duration-[300ms] hover:text-black group-hover:mt-3 flex items-center gap-1">
               <span class="text-sm text-green-600 font-medium">
                 <i class="fas fa-briefcase text-gray-500 mr-1"></i>
                 {{ company.available_jobs }} Jobs Available
               </span>
-              <a href="{% url 'company-detail' company.id %}"
-                class="text-blue-500 text-sm font-semibold hover:underline">
+              <span class="text-blue-500 text-sm font-semibold hover:underline text-end">
                 <i class="fas fa-arrow-right text-gray-500 mr-1"></i>
                 Learn More
-              </a>
+              </span>
             </div>
+          </div>
         </div>
-      </div>
+      </a>
       {% endfor %}
     </section>
   
