@@ -128,12 +128,12 @@
   {% endblock %}
 {% block content %}
 
-  <main class="flex flex-col lg:flex-row mx-auto container px-8 mt-4 gap-4 ">
+  <main class="flex flex-col lg:flex-row mx-auto container max-w-7xl px-4 md:mt-4 gap-4 bg-white md:bg-transparent">
      <aside
-        class="w-full lg:w-1/4 sm:bg-white rounded-lg sm:p-4 order-3 lg:order-3 h-fit sm:mt-4 sm:border border-gray-300"
+        class="w-full lg:w-1/4 sm:bg-white rounded-lg sm:p-4 order-3 lg:order-3 h-fit sm:mt-2 sm:border border-gray-300"
       >
         <!-- Top Jobs Section -->
-        <section class="mb-8">
+        <section class="mb-2">
           <h3 class="text-lg font-semibold text-gray-800 mb-4">Top Jobs</h3>
           <div id="top-jobs-section" class="space-y-4">
             <!-- Job Card 1 -->
@@ -190,12 +190,12 @@
    
    
    
-      <div class="w-full lg:w-1/2 rounded-lg sm:mt-4  lg:order-2">
+      <div class="w-full lg:w-1/2 rounded-lg sm:mt-2  lg:order-2">
       <section
           class="user-profile mx-auto sm:p-4 sm:rounded-lg sm:bg-white sm:border border-gray-300"
         >
           <div
-            class="profile-header mb-8 flex flex-col md:flex-row md:justify-between items-center md:items-start"
+            class="profile-header mb-2 flex flex-col md:flex-row md:justify-between items-center md:items-start"
           >
             <div class="relative mb-4 md:mb-0">
               <img
@@ -259,7 +259,7 @@
           </div>
         </section>
         <section
-        class="cv-wrap mx-auto sm:p-4 rounded-lg my-10 relative bg-white sm:border border-gray-300"
+        class="cv-wrap mx-auto sm:p-4 rounded-lg my-2 relative bg-white sm:border border-gray-300"
       >
         <div class="flex justify-between items-center relative">
           <div class="flex  items-center">
@@ -321,7 +321,7 @@
 
         </div>
       </section>
-        <section id="job-sec" class="mb-10 border rounded-lg">
+        <section id="job-sec" class="mb-2 border rounded-lg">
       <div class="">
         <div class="border border-white bg-white rounded-lg">
           <div class="flex justify-between items-center border-b p-4 mb-4">
@@ -365,7 +365,7 @@
       </div>
     </section>
     
-    <section id="skills-sec" class="mb-10 bg-white p-2 rounded-lg">
+    <section id="skills-sec" class="mb-2 bg-white p-2 rounded-lg">
     <div class="flex justify-between items-center mb-2 p-2">
         <h2 class="font-bold text-xl text-[#1e90ff]">Skills</h2>
         <button class="w-6" id="add-skill-btn">
@@ -576,7 +576,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
     
     
-    <section id="lang-sec" class="mb-10 bg-white p-2 rounded-lg">
+    <section id="lang-sec" class="mb-2 bg-white p-2 rounded-lg">
         <div class="flex justify-between items-center mb-2 p-2">
             <h2 class="font-bold text-xl text-[#1e90ff]">Languages</h2>
             <button class="w-6" id="add-lang-btn" onclick="showLanguageModal()">
@@ -597,7 +597,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </section>
     
-    <section id="country-sec" class="mb-10 bg-white p-2 rounded-lg">
+    <section id="country-sec" class="mb-2 bg-white p-2 rounded-lg">
         <div class="flex justify-between items-center mb-2 p-2">
             <h2 class="font-bold text-xl text-[#1e90ff]">Country</h2>
             <button class="w-6" id="edit-country-btn" onclick="showCountryModal()">
@@ -699,7 +699,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('modal').classList.add('hidden');
     });
   </script>
-  <section id="experience-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <section id="experience-sec" class="mb-2 bg-white p-2 rounded-lg">
     <div class="flex justify-between items-center mb-2 p-2">
       <h2 class="font-bold text-xl text-[#1e90ff]">Experience</h2>
       <button class="w-6" id="add-experience-btn">
@@ -823,7 +823,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   </script>
   
-  <section id="education-sec" class="mb-10 bg-white p-2 rounded-lg">
+  <section id="education-sec" class="mb-2 bg-white p-2 rounded-lg">
     <div class="flex justify-between items-center mb-2 p-2">
       <h2 class="font-bold text-xl text-[#1e90ff]">Education</h2>
       <button class="w-6" id="add-education-btn">
@@ -890,7 +890,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   </section>
   <section
-  class="sm:bg-white rounded-lg sm:p-4 mb-8 sm:border border-gray-300"
+  class="sm:bg-white rounded-lg sm:p-4 mb-2 sm:border border-gray-300"
 >
   <h2
     class="text-2xl font-semibold mb-4 border-b border-gray-200 pb-2 text-[#1e99ff]"
@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Resources Section -->
 <section
-  class="sm:bg-white rounded-lg sm:p-4 mb-8 sm:border border-gray-300"
+  class="sm:bg-white rounded-lg sm:p-4 mb-2 sm:border border-gray-300"
 >
   <h2
     class="text-2xl font-semibold mb-4 border-b border-gray-200 pb-2 text-[#1e99ff]"
@@ -1001,48 +1001,10 @@ document.addEventListener('DOMContentLoaded', function() {
     </a>
   </div>
 </section>
-{% block footer %}
-    
-    
-    {% endblock footer %}
-    <footer class="text-gray-800 text-center p-3">
-      <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
-        <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
-        <div class="flex space-x-4 items-center">
-          <a
-            href="{% url 'feature-not-implemented' %}"
-            class="text-white hover:text-gray-300"
-          >
-            <i class="fab fa-twitter text-black"></i>
-          </a>
-          <a
-            href="{% url 'feature-not-implemented' %}"
-            class="text-white hover:text-gray-300"
-          >
-            <i class="fab fa-linkedin text-black"></i>
-          </a>
-          <a
-            href="{% url 'feature-not-implemented' %}"
-            class="text-white hover:text-gray-300"
-          >
-            <i class="fab fa-facebook text-black"></i>
-          </a>
-          <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
-        </div>
-        <div class="text-sm ">
-                        
-          <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300"
-            >Privacy Policy
-            </a
-          >
-          
-          <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
-        </div>
-      </div>
-    </footer>
+
     </div>
     <aside
-        class="w-full lg:w-1/4 sm:bg-white rounded-lg sm:p-4 order-1 lg:order-1 h-fit sm:border border-gray-300 sm:mt-4"
+        class="w-full lg:w-1/4 sm:bg-white rounded-lg sm:p-4 order-1 lg:order-1 h-fit sm:border border-gray-300 sm:mt-2"
       >
         <h2
           class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2 text-gray-800"
@@ -1051,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </h2>
 
         <!-- Current Job Features -->
-        <section class="mb-8 bg-white">
+        <section class="mb-2 bg-white">
           <h3 class="text-lg font-semibold text-gray-800 mb-4">
             Current Job Features
           </h3>
@@ -1125,7 +1087,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       <!-- Suggested Jobs -->
 <section>
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">
         Suggested Jobs
     </h3>
     <div id="suggested-jobs" class="space-y-4">
