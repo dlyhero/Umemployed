@@ -34,6 +34,7 @@ from django.template.loader import render_to_string
 
 from django.contrib.sites.shortcuts import get_current_site
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -392,6 +393,19 @@ def company_jobs_list_view(request, company_id):
 
 def company_list_view(request):
     companies = Company.objects.annotate(available_jobs=Count('job'))
+    
+    # Pagination logic
+    page = request.GET.get('page', 1)
+    paginator = Paginator(companies, 3)  # Show 3 companies per page
+    try:
+        companies = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver the first page.
+        companies = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g., less than 1 or greater than max pages), deliver the first page.
+        companies = paginator.page(1)
+    
     return render(request, 'company/company_list.html', {'companies': companies})
 
 

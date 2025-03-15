@@ -114,11 +114,10 @@
             <h3 class="text-lg font-bold tracking-tight mt-3 truncate group-hover:text-blue-600">
               {{ company.name }}
             </h3>
-    
-            <!-- Company Description (Limited to 3 lines) -->
-            <p class="text-sm text-gray-600 mt-2 line-clamp-3">
-              {{ company.description | safe}}
-            </p>
+         <!-- Company Description (Limited to 3 lines) -->
+          <div class="text-sm text-gray-600 mt-2 line-clamp-3 ck-content">
+            {{ company.description | safe }}
+          </div>
     
             <!-- Jobs Available and Learn More Link -->
             <div class="text-[#1e90ff] flex justify-between items-center font-medium h-0 opacity-0 group-hover:opacity-100 group-hover:h-5 duration-[300ms] hover:text-black group-hover:mt-3 flex items-center gap-1">
@@ -138,50 +137,50 @@
     </section>
   
     <!-- Pagination -->
-    <section class="mt-4 flex items-center justify-center space-x-2 p-2">
-      <!-- Previous Button -->
-      <button
-        class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
-        <i class="fas fa-chevron-left text-gray-500"></i>
-      </button>
-  
-      <!-- Page Numbers -->
-      <ul class="flex items-center space-x-1">
+<section class="mt-4 flex items-center justify-center space-x-2 p-2">
+  <!-- Previous Button -->
+<button
+  class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+  {% if not companies.has_previous %}disabled{% endif %}
+  {% if companies.has_previous %}
+    onclick="location.href='?page={{ companies.previous_page_number }}'"
+  {% endif %}>
+  <i class="fas fa-chevron-left text-gray-500"></i>
+</button>
+
+
+  <!-- Page Numbers -->
+  <ul class="flex items-center space-x-1">
+    {% for page_num in companies.paginator.page_range %}
+      {% if page_num == companies.number %}
         <li>
           <button
             class="w-10 h-10 flex items-center justify-center text-white bg-[#1e90ff] rounded-lg font-semibold shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            1
+            {{ page_num }}
           </button>
         </li>
+      {% else %}
         <li>
           <button
-            class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            2
+            class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onclick="location.href='?page={{ page_num }}'">
+            {{ page_num }}
           </button>
         </li>
-        <li>
-          <button
-            class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            3
-          </button>
-        </li>
-        <li>
-          <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
-        </li>
-        <li>
-          <button
-            class="w-10 h-10 flex items-center justify-center text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            10
-          </button>
-        </li>
-      </ul>
-  
-      <!-- Next Button -->
-      <button
-        class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
-        <i class="fas fa-chevron-right text-gray-500"></i>
-      </button>
-    </section>
+      {% endif %}
+    {% endfor %}
+  </ul>
+
+<!-- Next Button -->
+<button
+  class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+  {% if not companies.has_next %}disabled{% endif %}
+  {% if companies.has_next %}
+    onclick="location.href='?page={{ companies.next_page_number }}'"
+  {% endif %}>
+  <i class="fas fa-chevron-right text-gray-500"></i>
+</button>
+</section>
   </main>
 
 <!-- JavaScript for Dropdowns -->
