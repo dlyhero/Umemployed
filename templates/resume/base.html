@@ -480,20 +480,20 @@
       <div class="container max-w-7xl mx-auto px-2 md:px-0">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <!-- Links Section -->
-          <nav class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <a href="/about" class="text-sm font-semibold text-gray-700 hover:text-blue-600">About Us</a>
-            <a href="/accessibility" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Accessibility</a>
-            <a href="/employers" class="text-sm font-semibold text-gray-700 hover:text-blue-600">For Employers</a>
-            <a href="/policies" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Community Guidelines</a>
-            <a href="/careers" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Work With Us</a>
-            <a href="/advertise" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Advertise Jobs</a>
-            <a href="/privacy" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Privacy Policy</a>
-            <a href="/terms" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Terms of Service</a>
-            <a href="/safety" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Safety Center</a>
-            <a href="/blog" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Blog</a>
-            <a href="/contact" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Contact Us</a>
-            <a href="/partners" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Partners</a>
-          </nav>
+            <nav class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <a href="{% url 'about_us' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">About Us</a>
+                <a href="{% url 'accessibility' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Accessibility</a>
+                <a href="{% url 'for_employers' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">For Employers</a>
+                <a href="{% url 'community_guidelines' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Community Guidelines</a>
+                <a href="{% url 'work_with_us' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Work With Us</a>
+                <a href="{% url 'advertise_jobs' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Advertise Jobs</a>
+                <a href="{% url 'privacy_policy' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Privacy Policy</a>
+                <a href="{% url 'terms_of_service' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Terms of Service</a>
+                <a href="{% url 'safety_center' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Safety Center</a>
+                <a href="{% url 'blog' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Blog</a>
+                <a href="{% url 'contact_us' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Contact Us</a>
+                <a href="{% url 'partners' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Partners</a>
+            </nav>
   
           <!-- Actions Section -->
           <div class="space-y-6">
@@ -504,7 +504,7 @@
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               <div>
-                <a href="/help" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Need Help?</a>
+                <a href="{% url 'contact_us' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Need Help?</a>
                 <p class="text-xs text-gray-500">Visit our Support Center.</p>
               </div>
             </div>

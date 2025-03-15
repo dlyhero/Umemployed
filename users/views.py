@@ -517,3 +517,46 @@ def user_resume(request, user_id):
         'contact_info': contact_info,
     }
     return render(request, 'users/resume_template.html', context)
+
+from django.shortcuts import render
+
+def about_us(request):
+    return render(request, 'website/about_us.html')
+
+def community_guidelines(request):
+    return render(request, 'website/community_guidelines.html')
+
+def privacy_policy(request):
+    return render(request, 'website/privacy_policy.html')
+
+def contact_us(request):
+    return render(request, 'website/contact_us.html')
+
+def need_help(request):
+    return render(request, 'website/need_help.html')
+
+from django.shortcuts import render
+
+def accessibility(request):
+    return render(request, 'website/accessibility.html')
+
+def for_employers(request):
+    return render(request, 'website/for_employers.html')
+
+def work_with_us(request):
+    return render(request, 'website/work_with_us.html')
+
+def advertise_jobs(request):
+    return render(request, 'website/advertise_jobs.html')
+
+def terms_of_service(request):
+    return render(request, 'website/terms_of_service.html')
+
+def safety_center(request):
+    return render(request, 'website/safety_center.html')
+
+def blog(request):
+    return render(request, 'website/blog.html')
+
+def partners(request):
+    return render(request, 'website/partners.html')
