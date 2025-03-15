@@ -27,8 +27,6 @@ from django.contrib import messages
 
 @login_required
 def update_resume(request):
-    api_url = "http://localhost:8000/job/execute_input/"
-
     try:
         contact_info = ContactInfo.objects.get(user=request.user)
     except ContactInfo.DoesNotExist:
@@ -68,9 +66,7 @@ def update_resume(request):
                 except SkillCategory.DoesNotExist:
                     messages.error(request, "Selected job title does not exist.")
             elif other_job_title:
-                response = requests.get(f"{api_url}?input_str={other_job_title}")
-                if response.status_code == 200:
-                    resume.job_title = other_job_title  # Set the job title to what the user typed
+                resume.job_title = other_job_title  # Set the job title to what the user typed
 
             # Save the updated resume with all relevant fields
             resume.save()
@@ -92,7 +88,8 @@ def update_resume(request):
     else:
         form = ContactInfoForm(instance=contact_info)
 
-    return render(request, 'resume/update_resume.html', {'form': form, 'api_url': api_url})
+    return render(request, 'resume/update_resume.html', {'form': form})
+
 
 
 @login_required
