@@ -162,10 +162,6 @@ MIDDLEWARE = [
      # Add the account middleware:
     "allauth.account.middleware.AccountMiddleware",
 ]
-SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'  # Use database-backed sessions
-SESSION_COOKIE_SECURE = True  # Ensure cookies are sent over HTTPS
-SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookies
-SESSION_COOKIE_SAMESITE = 'Lax'  # Adjust as needed for cross-site requests
 
 ROOT_URLCONF = 'umemployed.urls'
 
@@ -325,6 +321,28 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Update the path to an absolute path
 
+
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+OPENAI_API_KEY = config('OPENAI_API_KEY')
+SECRET_KEY = config('SECRET_KEY')
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+PAYPAL_RECEIVER_EMAIL = 'business@umemployed.com' 
+PAYPAL_TEST = True  # Set to False for live transactions
+
+
+# Stripe API Keys
+STRIPE_LIVE_MODE = True 
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='your-default-stripe-secret-key')
+STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='your-default-stripe-publishable-key')
+STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='your-default-stripe-webhook-secret')
+
+django_heroku.settings(locals())
 # CKEditor settings
 customColorPalette = [
         {
@@ -418,24 +436,3 @@ CKEDITOR_5_CONFIGS = {
         }
     }
 }
-
-AUTHENTICATION_BACKENDS = [
-    'social_core.backends.google.GoogleOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-]
-
-OPENAI_API_KEY = config('OPENAI_API_KEY')
-SECRET_KEY = config('SECRET_KEY')
-GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
-PAYPAL_RECEIVER_EMAIL = 'business@umemployed.com' 
-PAYPAL_TEST = True  # Set to False for live transactions
-
-
-# Stripe API Keys
-STRIPE_LIVE_MODE = True 
-STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='your-default-stripe-secret-key')
-STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='your-default-stripe-publishable-key')
-STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='your-default-stripe-webhook-secret')
-
-django_heroku.settings(locals())
