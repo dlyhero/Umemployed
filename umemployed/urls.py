@@ -10,10 +10,26 @@ from users.views import CustomConfirmEmailView
 from users.views import custom_404_view, custom_500_view
 from allauth.account.views import confirm_email, email_verification_sent
 
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework.permissions import AllowAny
 
 # Define custom error handlers
 handler404 = 'users.views.custom_404_view'
 handler500 = 'users.views.custom_500_view'
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Umemployed API",
+        default_version='v1',
+        description="API documentation for Umemployed",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="info@umemployed.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(AllowAny,),
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -58,6 +74,11 @@ urlpatterns = [
     path('meet/', include('videochat.urls')),
     path('transactions/', include('transactions.urls')),
     path('',include('paypal.standard.ipn.urls')),
+   
+   #rest api
+    path('api/users/', include('users.api.urls')),  # Add this line
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
