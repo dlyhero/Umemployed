@@ -128,7 +128,7 @@ pytz==2024.2
 PyYAML==6.0.2
 rcssmin==1.1.2
 redis==5.2.1
-requests==2.32.3
+requests
 requests-oauthlib==2.0.0
 rjsmin==1.2.2
 rsa==4.9
