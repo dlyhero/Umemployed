@@ -14,6 +14,13 @@ from django.core.mail import send_mail
 from rest_framework.exceptions import ValidationError
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view
+from social_django.utils import load_strategy
+from social_django.models import UserSocialAuth
+from social_core.backends.google import GoogleOAuth2
 
 User = get_user_model()
 
@@ -76,6 +83,7 @@ class ConfirmEmailView(APIView):
         else:
             return Response({"error": "Invalid confirmation link."}, status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     @swagger_auto_schema(
         operation_summary="User Login",
@@ -166,3 +174,29 @@ class PasswordResetConfirmView(APIView):
         user.set_password(new_password)
         user.save()
         return Response({"message": "Password has been reset successfully."}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def google_authenticate(request):
+    """
+    Authenticate a user using Google OAuth2 and return JWT tokens.
+    """
+    token = request.data.get('token')
+    if not token:
+        return Response({"error": "Token is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    strategy = load_strategy(request)
+    backend = GoogleOAuth2(strategy=strategy)
+
+    try:
+        user = backend.do_auth(token)
+        if user and user.is_active:
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Authentication failed."}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

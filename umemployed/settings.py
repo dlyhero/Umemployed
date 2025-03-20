@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'transactions',
 ]
 
+
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
 SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
@@ -190,23 +191,23 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=os.getenv('DATABASE_URL'),
-#         conn_max_age=600,  # 600 seconds (10 minutes) for connection reuse
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,  # 600 seconds (10 minutes) for connection reuse
+    )
+}
 
 # DATABASES = {
 #     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 # }
 
-DATABASES = {  
-    'default': {  
-        'ENGINE': 'django.db.backends.sqlite3',  
-        'NAME': BASE_DIR / "db.sqlite3",  
-    }  
-}
+# DATABASES = {  
+#     'default': {  
+#         'ENGINE': 'django.db.backends.sqlite3',  
+#         'NAME': BASE_DIR / "db.sqlite3",  
+#     }  
+# }
 
 ADMINS = [('Nyuydine Bill', 'billleynyuy@gmail.com')]
 MANAGERS = ADMINS
@@ -243,7 +244,10 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 
 CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-afec951f7ec7.herokuapp.com', 'http://127.0.0.1:8000', 'https://umemployed-development-8475c5e1c4b7.herokuapp.com','https://7eef-129-0-60-130.ngrok-free.app']
 
-
+CSRF_TRUSTED_ORIGINS += [
+    'https://accounts.google.com',
+    'https://www.googleapis.com',
+]
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
