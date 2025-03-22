@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     
     'paypal.standard.ipn',
     'transactions',
+    'corsheaders',  
 ]
 
 
@@ -150,6 +151,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
@@ -476,3 +478,30 @@ SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
     'JSON_EDITOR': True,
 }
+
+# CORS configuration
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be included in cross-origin requests
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-csrftoken',
+    'accept',
+    'origin',
+    'user-agent',
+    'x-requested-with',
+]  # Allow specific headers
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]  # Allow specific HTTP methods
+
+# CSRF settings for Next.js
+CSRF_TRUSTED_ORIGINS += [
+    'http://localhost:3000',  # Add your Next.js frontend URL
+    'https://your-nextjs-domain.com',  # Replace with your production domain
+]
