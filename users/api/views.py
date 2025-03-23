@@ -200,3 +200,46 @@ def google_authenticate(request):
             return Response({"error": "Authentication failed."}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class ChooseAccountTypeView(APIView):
+    """
+    API endpoint to allow users to choose their account type (recruiter or job seeker).
+    """
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_summary="Choose Account Type",
+        operation_description="Allows a user to select their account type (recruiter or job seeker).",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'account_type': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    enum=['recruiter', 'job_seeker'],
+                    description="The type of account to choose."
+                ),
+            },
+            required=['account_type'],
+        ),
+        responses={
+            200: openapi.Response("Account type updated successfully."),
+            400: openapi.Response("Invalid account type."),
+        },
+    )
+    def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response({"error": "Authentication required."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        account_type = request.data.get('account_type')
+        if account_type == 'recruiter':
+            user.is_recruiter = True
+            user.is_applicant = False
+        elif account_type == 'job_seeker':
+            user.is_recruiter = False
+            user.is_applicant = True
+        else:
+            return Response({"error": "Invalid account type."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.save()
+        return Response({"message": "Account type updated successfully."}, status=status.HTTP_200_OK)
