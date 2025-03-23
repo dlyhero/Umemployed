@@ -1,0 +1,20 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('create-company/', views.CreateCompanyAPIView.as_view(), name='api_create_company'),
+    path('update-company/<int:company_id>/', views.UpdateCompanyAPIView.as_view(), name='api_update_company'),
+    path('company-details/<int:company_id>/', views.CompanyDetailsAPIView.as_view(), name='api_company_details'),
+    path('list-companies/', views.CompanyListAPIView.as_view(), name='api_list_companies'),
+    path('company/<int:company_id>/dashboard/', views.CompanyDashboardAPIView.as_view(), name='api_company_dashboard'),
+    path('company/<int:company_id>/analytics/', views.CompanyAnalyticsAPIView.as_view(), name='api_company_analytics'),
+    path('company/<int:company_id>/jobs/', views.ViewMyJobsAPIView.as_view(), name='api_view_my_jobs'),
+    path('company/<int:company_id>/applications/', views.ViewApplicationsAPIView.as_view(), name='api_view_applications'),
+    path('application/<int:application_id>/', views.ApplicationDetailsAPIView.as_view(), name='api_application_details'),
+    path('company/<int:company_id>/job/<int:job_id>/applications/', views.JobApplicationsViewAPIView.as_view(), name='api_job_applications_view'),
+    path('companies/', views.CompanyListAPIView.as_view(), name='api_company_list'),
+    path('create-interview/', views.CreateInterviewAPIView.as_view(), name='api_create_interview'),
+    path('rate-candidate/<int:candidate_id>/', views.RateCandidateAPIView.as_view(), name='api_rate_candidate'),
+    path('related-users/', views.CompanyRelatedUsersAPIView.as_view(), name='api_company_related_users'),
+    path('pay-endorsement/<int:candidate_id>/', views.StartPaymentForEndorsementAPIView.as_view(), name='api_start_payment_for_endorsement'),
+]
