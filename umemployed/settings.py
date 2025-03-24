@@ -244,7 +244,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-afec951f7ec7.herokuapp.com', 'http://127.0.0.1:8000', 'https://umemployed-development-8475c5e1c4b7.herokuapp.com','https://7eef-129-0-60-130.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-afec951f7ec7.herokuapp.com', 'http://127.0.0.1:8000', 'https://umemployed-development-8475c5e1c4b7.herokuapp.com','https://7eef-129-0-60-130.ngrok-free.app','http://localhost:3000']
 
 CSRF_TRUSTED_ORIGINS += [
     'https://accounts.google.com',
@@ -500,8 +500,3 @@ CORS_ALLOW_METHODS = [
     'OPTIONS',
 ]  # Allow specific HTTP methods
 
-# CSRF settings for Next.js
-CSRF_TRUSTED_ORIGINS += [
-    'http://localhost:3000',  # Add your Next.js frontend URL
-    'https://your-nextjs-domain.com',  # Replace with your production domain
-]
