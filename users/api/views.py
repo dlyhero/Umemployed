@@ -58,6 +58,8 @@ class SignupView(APIView):
             return Response({"message": "User created successfully. Please confirm your email."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+from django.http import HttpResponseRedirect
+
 class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]
 
@@ -79,9 +81,13 @@ class ConfirmEmailView(APIView):
         if user is not None and default_token_generator.check_token(user, token):
             user.is_active = True
             user.save()
-            return Response({"message": "Email confirmed successfully."}, status=status.HTTP_200_OK)
+            # Redirect to success URL
+            success_url = "http://localhost:3000/email-confirmed"
+            return HttpResponseRedirect(success_url)
         else:
-            return Response({"error": "Invalid confirmation link."}, status=status.HTTP_400_BAD_REQUEST)
+            # Redirect to failure URL
+            failure_url = "http://localhost:3000/invalid-confirmation"
+            return HttpResponseRedirect(failure_url)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
