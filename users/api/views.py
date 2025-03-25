@@ -243,3 +243,47 @@ class ChooseAccountTypeView(APIView):
 
         user.save()
         return Response({"message": "Account type updated successfully."}, status=status.HTTP_200_OK)
+
+class ResendConfirmationEmailView(APIView):
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_summary="Resend Confirmation Email",
+        operation_description="Resend the email confirmation link to the user.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description='User email'),
+            },
+            required=['email'],
+        ),
+        responses={
+            200: openapi.Response("Confirmation email resent successfully."),
+            400: openapi.Response("Invalid email or user already activated."),
+        },
+    )
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+            if user.is_active:
+                return Response({"error": "User is already activated."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Resend confirmation email
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account'
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            confirmation_link = f"{current_site.domain}{reverse('confirm_email', kwargs={'uidb64': uid, 'token': token})}"
+            message = render_to_string('email/confirmation_email.html', {
+                'user': user,
+                'confirmation_link': confirmation_link,
+            })
+            send_mail(mail_subject, message, 'info@umemployed.com', [user.email], fail_silently=False)
+
+            return Response({"message": "Confirmation email resent successfully."}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User with this email does not exist."}, status=status.HTTP_400_BAD_REQUEST)
