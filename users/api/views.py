@@ -82,11 +82,11 @@ class ConfirmEmailView(APIView):
             user.is_active = True
             user.save()
             # Redirect to success URL
-            success_url = "http://localhost:3000/email-confirmed"
+            success_url = "http://localhost:3000/verify_email/success"
             return HttpResponseRedirect(success_url)
         else:
             # Redirect to failure URL
-            failure_url = "http://localhost:3000/invalid-confirmation"
+            failure_url = "http://localhost:3000/verify_email/failure"
             return HttpResponseRedirect(failure_url)
 
 @method_decorator(csrf_exempt, name='dispatch')
