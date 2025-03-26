@@ -21,6 +21,7 @@ from rest_framework.decorators import api_view
 from social_django.utils import load_strategy
 from social_django.models import UserSocialAuth
 from social_core.backends.google import GoogleOAuth2
+from rest_framework.permissions import IsAuthenticated
 
 User = get_user_model()
 
@@ -98,11 +99,15 @@ class LoginView(APIView):
         responses={
             200: openapi.Response("Login successful."),
             400: openapi.Response("Invalid email or password."),
+            403: openapi.Response("Email not verified."),
         },
     )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
+            user = User.objects.get(email=serializer.validated_data['email'])
+            if not user.is_active:
+                return Response({"error": "Email not verified."}, status=status.HTTP_403_FORBIDDEN)
             return Response(serializer.validated_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -293,3 +298,19 @@ class ResendConfirmationEmailView(APIView):
             return Response({"message": "Confirmation email resent successfully."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": "User with this email does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+
+class CheckEmailVerifiedView(APIView):
+    """
+    API endpoint to check if a user's email is verified.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Check Email Verification",
+        operation_description="Check if the authenticated user's email is verified.",
+        responses={
+            200: openapi.Response("Email verification status retrieved successfully."),
+        },
+    )
+    def get(self, request):
+        return Response({"is_email_verified": request.user.is_active}, status=status.HTTP_200_OK)
