@@ -55,6 +55,7 @@ class LoginSerializer(serializers.Serializer):
         if user and user.check_password(data['password']):
             refresh = RefreshToken.for_user(user)
             return {
+                'email': data['email'],  # Include email in the returned data
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
             }
