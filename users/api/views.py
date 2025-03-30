@@ -83,11 +83,11 @@ class ConfirmEmailView(APIView):
             user.is_active = True
             user.save()
             # Redirect to success URL
-            success_url = "http://localhost:3000/verify_email/success"
+            success_url = "https://umemployed-front-end.vercel.app/verify_email/success"
             return HttpResponseRedirect(success_url)
         else:
             # Redirect to failure URL
-            failure_url = "http://localhost:3000/verify_email/failure"
+            failure_url = "https://umemployed-front-end.vercel.app/verify_email/failure"
             return HttpResponseRedirect(failure_url)
 
 @method_decorator(csrf_exempt, name='dispatch')
