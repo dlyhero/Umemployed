@@ -108,7 +108,7 @@ class LoginView(APIView):
             user = User.objects.get(email=serializer.validated_data['email'])
             if not user.is_active:
                 return Response({"error": "Email not verified."}, status=status.HTTP_403_FORBIDDEN)
-            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)  # Role is included here
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ForgotPasswordView(APIView):

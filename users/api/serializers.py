@@ -54,10 +54,16 @@ class LoginSerializer(serializers.Serializer):
         user = User.objects.filter(email=data['email']).first()
         if user and user.check_password(data['password']):
             refresh = RefreshToken.for_user(user)
+            role = (
+                "recruiter" if user.is_recruiter else
+                "applicant" if user.is_applicant else
+                "none"
+            )
             return {
-                'email': data['email'],  # Include email in the returned data
+                'email': data['email'],  
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
+                'role': role, 
             }
         raise serializers.ValidationError("Invalid email or password.")
 
