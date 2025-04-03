@@ -74,16 +74,6 @@ class AppliedJobsListAPIView(ListAPIView):
     def get_queryset(self):
         return Application.objects.filter(user=self.request.user)
 
-class CreateJobAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        serializer = JobSerializer(data=request.data)
-        if serializer.is_valid():
-            # Ensure the user and company are set correctly
-            serializer.save(user=request.user, company=request.user.company)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CreateJobStep1APIView(APIView):
     """
@@ -138,12 +128,56 @@ class CreateJobStep2APIView(APIView):
     Endpoint to update the second step of a job.
 
     This step includes:
+    - Job type
+    - Experience levels
+    - Weekly ranges
+    - Shifts
+
+    Method: PATCH
+    URL: /api/jobs/<job_id>/create-step2/
+    Request Body:
+    {
+        "job_type": "Full_time",
+        "experience_levels": "1-3Years",
+        "weekly_ranges": "mondayToFriday",
+        "shifts": "morningShift"
+    }
+    Response:
+    - 200 OK: Returns the updated job details.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    - 400 Bad Request: Returns validation errors.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, job_id):
+        job = Job.objects.filter(id=job_id, user=request.user).first()
+        if not job:
+            return Response({"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND)
+
+        data = {
+            "job_type": request.data.get("job_type"),
+            "experience_levels": request.data.get("experience_levels"),
+            "weekly_ranges": request.data.get("weekly_ranges"),
+            "shifts": request.data.get("shifts"),
+        }
+        serializer = JobSerializer(job, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CreateJobStep3APIView(APIView):
+    """
+    Endpoint to update the third step of a job.
+
+    This step includes:
     - Description
     - Responsibilities
     - Benefits
 
     Method: PATCH
-    URL: /api/jobs/<job_id>/create-step2/
+    URL: /api/jobs/<job_id>/create-step3/
     Request Body:
     {
         "description": "We are looking for a skilled software engineer.",
@@ -174,16 +208,16 @@ class CreateJobStep2APIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CreateJobStep3APIView(APIView):
+class CreateJobStep4APIView(APIView):
     """
-    Endpoint to update the third step of a job.
+    Endpoint to update the fourth step of a job.
 
     This step includes:
     - Requirements
     - Level
 
     Method: PATCH
-    URL: /api/jobs/<job_id>/create-step3/
+    URL: /api/jobs/<job_id>/create-step4/
     Request Body:
     {
         "requirements": [1, 2],

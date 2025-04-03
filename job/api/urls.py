@@ -33,8 +33,8 @@ urlpatterns = [
     path('generate-questions/', views.GenerateQuestionsAPIView.as_view(), name='generate_questions'),
     path('extract-technical-skills/', views.ExtractTechnicalSkillsAPIView.as_view(), name='extract_technical_skills'),
     path('applied-jobs/', views.AppliedJobsListAPIView.as_view(), name='applied_jobs'),
-    path('create/', views.CreateJobAPIView.as_view(), name='create_job'),
     path('create-step1/', views.CreateJobStep1APIView.as_view(), name='create_job_step1'),
     path('<int:job_id>/create-step2/', views.CreateJobStep2APIView.as_view(), name='create_job_step2'),
     path('<int:job_id>/create-step3/', views.CreateJobStep3APIView.as_view(), name='create_job_step3'),
+    path('<int:job_id>/create-step4/', views.CreateJobStep4APIView.as_view(), name='create_job_step4'),
 ]

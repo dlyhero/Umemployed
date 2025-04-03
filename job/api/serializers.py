@@ -8,7 +8,7 @@ class JobSerializer(serializers.ModelSerializer):
             'id', 'title', 'hire_number', 'job_location_type', 'job_type', 
             'location', 'salary_range', 'category', 'description', 
             'responsibilities', 'benefits', 'requirements', 'level', 
-            'created_at'
+            'experience_levels', 'weekly_ranges', 'shifts', 'created_at'
         ]
         extra_kwargs = {
             'description': {'required': False},
@@ -16,6 +16,9 @@ class JobSerializer(serializers.ModelSerializer):
             'benefits': {'required': False},
             'requirements': {'required': False},
             'level': {'required': False},
+            'experience_levels': {'required': False},
+            'weekly_ranges': {'required': False},
+            'shifts': {'required': False},
         }
 
 class ApplicationSerializer(serializers.ModelSerializer):
