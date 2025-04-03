@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
-from ..models import Job, Application, SavedJob
+from ..models import Job, Application, SavedJob, Skill
 from ..tasks import generate_questions_task
 from ..job_description_algorithm import extract_technical_skills
 from .serializers import JobSerializer, ApplicationSerializer, SavedJobSerializer
@@ -176,6 +176,8 @@ class CreateJobStep3APIView(APIView):
     - Responsibilities
     - Benefits
 
+    Additionally, it extracts technical skills from the job description.
+
     Method: PATCH
     URL: /api/jobs/<job_id>/create-step3/
     Request Body:
@@ -185,7 +187,7 @@ class CreateJobStep3APIView(APIView):
         "benefits": "Health insurance, 401k"
     }
     Response:
-    - 200 OK: Returns the updated job details.
+    - 200 OK: Returns the updated job details and extracted skills.
     - 404 Not Found: If the job does not exist or the user is unauthorized.
     - 400 Bad Request: Returns validation errors.
     """
@@ -204,7 +206,18 @@ class CreateJobStep3APIView(APIView):
         serializer = JobSerializer(job, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+
+            # Extract technical skills from the job description
+            extracted_skills = extract_technical_skills(job.title, serializer.validated_data.get("description"))
+            if extracted_skills:
+                for skill_name in extracted_skills:
+                    skill, _ = Skill.objects.get_or_create(name=skill_name)
+                    job.extracted_skills.add(skill)
+
+            return Response({
+                "job": serializer.data,
+                "extracted_skills": [skill.name for skill in job.extracted_skills.all()]
+            }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
