@@ -54,6 +54,7 @@ urlpatterns = [
     #for the resume app
     path('resume/', include('resume.urls')),
     path('job/',include('job.urls')),
+    path('api/job/', include('job.api.urls')),
     path('jobs/',include('website.urls')),
     path('onboarding/', include('onboarding.urls')),
     path('assessments/', include('asseessments.urls')),

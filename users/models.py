@@ -30,7 +30,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
     is_recruiter = models.BooleanField(default=False)
-    is_applicant = models.BooleanField(default=True)
+    is_applicant = models.BooleanField(default=False)
     has_resume = models.BooleanField(default=False)
     has_company = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
