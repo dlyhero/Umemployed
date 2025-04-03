@@ -3,10 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
-from ..models import Job, Application, SavedJob, Skill
+from ..models import Job, Application, SavedJob
+from resume.models import Skill
 from ..tasks import generate_questions_task
 from ..job_description_algorithm import extract_technical_skills
 from .serializers import JobSerializer, ApplicationSerializer, SavedJobSerializer
+from ..generate_skills import generate_questions_task
 
 class JobListAPIView(ListAPIView):
     queryset = Job.objects.filter(is_available=True)
@@ -226,8 +228,10 @@ class CreateJobStep4APIView(APIView):
     Endpoint to update the fourth step of a job.
 
     This step includes:
-    - Requirements
-    - Level
+    - Requirements (skills selected from extracted skills)
+    - Level (skill level)
+
+    Additionally, it generates questions for the selected skills and triggers email notifications.
 
     Method: PATCH
     URL: /api/jobs/<job_id>/create-step4/
@@ -237,7 +241,7 @@ class CreateJobStep4APIView(APIView):
         "level": "Mid"
     }
     Response:
-    - 200 OK: Returns the updated job details.
+    - 200 OK: Returns the updated job details and generated questions.
     - 404 Not Found: If the job does not exist or the user is unauthorized.
     - 400 Bad Request: Returns validation errors.
     """
@@ -248,12 +252,40 @@ class CreateJobStep4APIView(APIView):
         if not job:
             return Response({"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND)
 
-        data = {
-            "requirements": request.data.get("requirements"),
-            "level": request.data.get("level"),
-        }
-        serializer = JobSerializer(job, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Extract requirements and level from the request
+        requirements = request.data.get("requirements", [])
+        level = request.data.get("level")
+
+        # Validate that all requirements are valid skill IDs
+        try:
+            skills = Skill.objects.filter(id__in=requirements)
+            if len(skills) != len(requirements):
+                return Response({"error": "One or more skill IDs are invalid."}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": f"Error validating skills: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update the job's requirements and level
+        job.requirements.set(skills)  # Use `set` to update ManyToManyField
+        job.level = level
+        job.save()
+
+        # Generate questions for the selected skills
+        generated_questions = []
+        for skill in skills:
+            result = generate_questions_task(job.title, level, skill.name, 5)
+            if result['success']:
+                generated_questions.extend(result['questions'])
+
+        # Check if questions were successfully generated
+        if generated_questions:
+            return Response({
+                "job": JobSerializer(job).data,
+                "generated_questions": generated_questions,
+                "message": "Questions generated successfully and emails sent."
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                "job": JobSerializer(job).data,
+                "generated_questions": [],
+                "message": "Failed to generate questions."
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

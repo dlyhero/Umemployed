@@ -25,8 +25,11 @@ def generate_questions_task(job_title, entry_level, skill_name, questions_per_sk
     try:  
         question_data_list = generate_mcqs_for_skill(skill_name, entry_level, job_title)  
 
-        # Assuming you also have a Job object to retrieve. Make sure you have this instance:  
-        job_instance = Job.objects.get(title=job_title)  # Modify based on how you're identifying Jobs  
+        # Retrieve the Job instance
+        job_instance = Job.objects.filter(title=job_title).first()
+        if not job_instance:
+            logger.error(f"Job with title '{job_title}' not found.")
+            return {'success': False, 'error': f"Job with title '{job_title}' not found."}
 
         if question_data_list and isinstance(question_data_list, list):  
             for question_data in question_data_list[:questions_per_skill]:  
@@ -40,8 +43,8 @@ def generate_questions_task(job_title, entry_level, skill_name, questions_per_sk
                     correct_answer=question_data['correct_answer'],  
                     skill=skill,  
                     entry_level=entry_level,  
-                    job=job_instance,  # Assign the job instance here  
-                    area=question_data['area']  # Save the area of expertise  
+                    job=job_instance,  
+                    area=question_data['area']  
                 )  
                 questions.append(skill_question)  
                 serialized_questions.append({  
@@ -62,6 +65,31 @@ def generate_questions_task(job_title, entry_level, skill_name, questions_per_sk
     except Exception as e:  
         logger.error(f"An error occurred while generating questions for skill {skill_name}: {e}")  
     
+    # If successful, trigger email notifications
+    if success:
+        try:
+            # Send email to recruiter
+            send_recruiter_job_confirmation_email_task.delay(
+                email=job_instance.user.email,
+                full_name=job_instance.user.get_full_name(),
+                job_title=job_instance.title,
+                company_name=job_instance.company.name,
+                job_id=job_instance.id
+            )
+
+            # Send email to users about the new job
+            send_new_job_email_task.delay(
+                email=job_instance.user.email,
+                full_name=job_instance.user.get_full_name(),
+                job_title=job_instance.title,
+                job_link=f"/jobs/{job_instance.id}/",
+                job_description=job_instance.description,
+                company_name=job_instance.company.name,
+                job_id=job_instance.id
+            )
+        except Exception as e:
+            logger.error(f"Error sending email notifications: {e}")
+
     return {'success': success, 'questions': serialized_questions}
 
 def generate_mcqs_for_skill(skill_name, entry_level, job_title):
