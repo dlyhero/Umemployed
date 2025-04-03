@@ -1,9 +1,27 @@
 from django.urls import path
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework.permissions import AllowAny
 from . import views
 
 app_name = 'job_api'
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Job API",
+        default_version='v1',
+        description="API documentation for the job application system",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="support@umemployed.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(AllowAny,),
+)
+
 urlpatterns = [
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('jobs/', views.JobListAPIView.as_view(), name='job_list'),
     path('jobs/<int:pk>/', views.JobDetailAPIView.as_view(), name='job_detail'),
     path('jobs/<int:job_id>/apply/', views.ApplyJobAPIView.as_view(), name='apply_job'),

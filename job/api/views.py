@@ -86,6 +86,34 @@ class CreateJobAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CreateJobStep1APIView(APIView):
+    """
+    Endpoint to create the first step of a job.
+
+    This step includes:
+    - Title
+    - Hire number
+    - Job location type
+    - Job type
+    - Location
+    - Salary range
+    - Category
+
+    Method: POST
+    URL: /api/jobs/create-step1/
+    Request Body:
+    {
+        "title": "Software Engineer",
+        "hire_number": 3,
+        "job_location_type": "remote",
+        "job_type": "Full_time",
+        "location": "US",
+        "salary_range": "70001-100000",
+        "category": 1
+    }
+    Response:
+    - 201 Created: Returns the created job details.
+    - 400 Bad Request: Returns validation errors.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -106,6 +134,27 @@ class CreateJobStep1APIView(APIView):
 
 
 class CreateJobStep2APIView(APIView):
+    """
+    Endpoint to update the second step of a job.
+
+    This step includes:
+    - Description
+    - Responsibilities
+    - Benefits
+
+    Method: PATCH
+    URL: /api/jobs/<job_id>/create-step2/
+    Request Body:
+    {
+        "description": "We are looking for a skilled software engineer.",
+        "responsibilities": "Develop and maintain software applications.",
+        "benefits": "Health insurance, 401k"
+    }
+    Response:
+    - 200 OK: Returns the updated job details.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    - 400 Bad Request: Returns validation errors.
+    """
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, job_id):
@@ -126,6 +175,25 @@ class CreateJobStep2APIView(APIView):
 
 
 class CreateJobStep3APIView(APIView):
+    """
+    Endpoint to update the third step of a job.
+
+    This step includes:
+    - Requirements
+    - Level
+
+    Method: PATCH
+    URL: /api/jobs/<job_id>/create-step3/
+    Request Body:
+    {
+        "requirements": [1, 2],
+        "level": "Mid"
+    }
+    Response:
+    - 200 OK: Returns the updated job details.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    - 400 Bad Request: Returns validation errors.
+    """
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, job_id):
