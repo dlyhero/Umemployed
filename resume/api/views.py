@@ -1,3 +1,4 @@
+import os  # Add this import for accessing environment variables
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
@@ -13,6 +14,8 @@ from resume.views import update_resume, resume_details, display_matching_jobs, u
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from resume.extract_pdf import extract_text  # Import the correct function
+from resume.transcript_job_title import extract_transcript_text  # Import the old function
+from azure.storage.blob import BlobServiceClient
 
 @api_view(['POST'])
 def update_resume_api(request):
@@ -149,22 +152,74 @@ def analyze_resume_api(request):
     """
     return update_resume_view(request)
 
+from resume.extract_pdf import extract_text  # Import the existing extract_text function
+
 @api_view(['POST'])
 def upload_transcript_api(request):
     """
-    Handles transcript upload for the authenticated user.
+    Handles transcript upload for the authenticated user and triggers processing.
 
     Request Body (Form-Data):
         file: Transcript file.
 
     Response:
         {
-            "message": "Transcript uploaded successfully."
+            "message": "Transcript uploaded and processed successfully.",
+            "extracted_text": "Extracted text from the transcript.",
+            "job_title": "Suggested job title.",
+            "reasoning": "Reasoning based on the transcript analysis."
         }
     """
-    transcript = Transcript(user=request.user, file=request.FILES['file'])
-    transcript.save()
-    return Response({"message": "Transcript uploaded successfully."})
+    if 'file' not in request.FILES:
+        return Response({"error": "The 'file' field is required."}, status=400)
+
+    file = request.FILES['file']
+    user = request.user
+
+    # Save the file to the Transcript model
+    transcript = Transcript(user=user, file=file)
+    try:
+        transcript.save()
+        print(f"Transcript uploaded: {transcript.file.name}")
+
+        # Upload the file to Azure Blob Storage
+        account_name = os.getenv('AZURE_ACCOUNT_NAME')
+        account_key = os.getenv('AZURE_ACCOUNT_KEY')
+        container_name = os.getenv('AZURE_CONTAINER')
+
+        connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};AccountKey={account_key};EndpointSuffix=core.windows.net"
+        blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob=transcript.file.name)
+
+        # Upload the file
+        with file.open('rb') as data:
+            blob_client.upload_blob(data, overwrite=True)
+        print(f"File uploaded to Azure Blob Storage: {transcript.file.name}")
+
+    except Exception as e:
+        return Response({"error": f"Failed to upload transcript: {str(e)}"}, status=500)
+
+    # Perform text extraction and additional processing
+    try:
+        # Call the old extract_transcript_text function
+        file_path = transcript.file.name  # Use the file name as the file_path
+        print(f"Processing file with path: {file_path}")
+
+        # Call the old function to process the transcript
+        extract_transcript_text(request, file_path)
+
+        # Refresh the transcript object to get updated fields
+        transcript.refresh_from_db()
+
+        # Return the processed response
+        return Response({
+            "message": "Transcript uploaded and processed successfully.",
+            "extracted_text": transcript.extracted_text,
+            "job_title": transcript.job_title,
+            "reasoning": transcript.reasoning
+        }, status=200)
+    except Exception as e:
+        return Response({"error": f"Failed to process transcript: {str(e)}"}, status=500)
 
 @api_view(['POST'])
 def extract_transcript_api(request):

@@ -129,12 +129,16 @@ def extract_transcript_text(request, file_path):
             transcript.extracted_text = extracted_text
 
             # Get the perfect job title and reasoning using OpenAI
+            logger.info("Calling OpenAI to generate job title and reasoning...")
             job_title, reasoning = get_perfect_job_title_and_reasoning(extracted_text)
+            logger.info(f"Generated job title: {job_title}")
+            logger.info(f"Generated reasoning: {reasoning}")
 
             # Save the reasoning and job title in the database
             transcript.job_title = job_title
             transcript.reasoning = reasoning
             transcript.save()
+            logger.info("Transcript updated successfully.")
 
         # Render the template with the results
         return render(request, 'resume/transcript/transcript_result.html', {
