@@ -24,7 +24,11 @@ def update_resume_api(request):
 
     Request Body:
         {
-            "field_name": "value"
+            "first_name": "John",
+            "last_name": "Doe",
+            "job_title": "Software Engineer",
+            "phone": "+1234567890",
+            "description": "Experienced software engineer with expertise in backend development."
         }
 
     Response:
@@ -32,7 +36,17 @@ def update_resume_api(request):
             "message": "Resume updated successfully."
         }
     """
-    return update_resume(request)
+    try:
+        # Call the existing update_resume function
+        response = update_resume(request)
+
+        # Check if the response is an HTML response
+        if isinstance(response, HttpResponse) and response.status_code == 200:
+            return Response({"message": "Resume updated successfully."}, status=200)
+        else:
+            return Response({"error": "Failed to update resume."}, status=500)
+    except Exception as e:
+        return Response({"error": f"An error occurred: {str(e)}"}, status=500)
 
 @api_view(['GET'])
 def resume_details_api(request, pk):
