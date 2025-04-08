@@ -22,6 +22,7 @@ from social_django.utils import load_strategy
 from social_django.models import UserSocialAuth
 from social_core.backends.google import GoogleOAuth2
 from rest_framework.permissions import IsAuthenticated
+from company.models import Company  # Import the Company model
 
 User = get_user_model()
 
@@ -108,7 +109,31 @@ class LoginView(APIView):
             user = User.objects.get(email=serializer.validated_data['email'])
             if not user.is_active:
                 return Response({"error": "Email not verified."}, status=status.HTTP_403_FORBIDDEN)
-            return Response(serializer.validated_data, status=status.HTTP_200_OK)  # Role is included here
+            
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+
+            # Determine role and additional details
+            role = "recruiter" if user.is_recruiter else "job_seeker"
+            response_data = {
+                "email": user.email,
+                "role": role,
+                "user_id": user.id,
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+            }
+
+            if user.is_recruiter:
+                # Query the Company model for the company ID
+                company = getattr(user, "company", None)
+                response_data["has_company"] = user.has_company
+                response_data["company_id"] = company.id if company else None
+            else:  # Job seeker
+                response_data["has_resume"] = user.has_resume
+
+            return Response(response_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ForgotPasswordView(APIView):
