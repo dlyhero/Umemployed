@@ -53,6 +53,7 @@ urlpatterns = [
     path('api/company/', include('company.api.urls')),
     #for the resume app
     path('resume/', include('resume.urls')),
+    path('api/resume/', include('resume.api.urls')),
     path('job/',include('job.urls')),
     path('api/job/', include('job.api.urls')),
     path('jobs/',include('website.urls')),
