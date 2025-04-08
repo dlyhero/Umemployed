@@ -9,6 +9,7 @@ urlpatterns = [
     path('analyze-resume/', views.analyze_resume_api, name='analyze_resume_api'),
     path('upload-transcript/', views.upload_transcript_api, name='upload_transcript_api'),
     path('extract-transcript/', views.extract_transcript_api, name='extract_transcript_api'),
+    path('resume-analysis/', views.resume_analysis_api, name='resume_analysis_api'),
     # Additional endpoints for serialized models
     path('skills/', views.skills_api, name='skills_api'),
     path('educations/', views.educations_api, name='educations_api'),

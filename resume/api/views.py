@@ -387,3 +387,72 @@ def profile_views_api(request):
     profile_views = ProfileView.objects.all()
     serializer = ProfileViewSerializer(profile_views, many=True)
     return Response(serializer.data)
+
+from resume.models import ResumeAnalysis  # Import the ResumeAnalysis model
+from resume.resume_analysis import analyze_resume  # Import the old function
+
+@api_view(['POST'])
+def resume_analysis_api(request):
+    """
+    Analyzes an uploaded resume file and provides feedback.
+
+    Request Body (Form-Data):
+        file: Resume file (PDF, DOCX, or TXT).
+
+    Response:
+        {
+            "overall_score": 85.5,
+            "criteria_scores": {
+                "formatting": 90,
+                "skills": 80
+            },
+            "improvement_suggestions": {
+                "skills": "Add more technical skills."
+            }
+        }
+    """
+    if 'file' not in request.FILES:
+        return Response({"error": "The 'file' field is required."}, status=400)
+
+    file = request.FILES['file']
+    user = request.user
+
+    # Save the file to the ResumeDoc model
+    resume_doc = ResumeDoc(user=user, file=file)
+    try:
+        resume_doc.save()
+        print(f"File uploaded to Azure Blob Storage: {resume_doc.file.name}")
+    except Exception as e:
+        return Response({"error": f"Failed to upload file: {str(e)}"}, status=500)
+
+    # Extract text from the uploaded file
+    try:
+        file_path = resume_doc.file.name  # Use the file name as the file_path
+        extract_text(request, file_path)  # Call the extract_text function to extract text
+        resume_doc.refresh_from_db()  # Refresh the model to get updated extracted_text
+        extracted_text = resume_doc.extracted_text
+    except Exception as e:
+        return Response({"error": f"Failed to extract text: {str(e)}"}, status=500)
+
+    # Perform resume analysis
+    try:
+        # Call the old analyze_resume function with extracted_text
+        analysis_results = analyze_resume(resume_doc, extracted_text)
+
+        # Save the analysis results to the database
+        ResumeAnalysis.objects.create(
+            user=resume_doc.user,
+            resume=resume_doc,
+            overall_score=analysis_results['overall_score'],
+            criteria_scores=analysis_results['criteria_scores'],
+            improvement_suggestions=analysis_results['improvement_suggestions']
+        )
+
+        # Return the analysis results
+        return Response({
+            "overall_score": analysis_results['overall_score'],
+            "criteria_scores": analysis_results['criteria_scores'],
+            "improvement_suggestions": analysis_results['improvement_suggestions']
+        }, status=200)
+    except Exception as e:
+        return Response({"error": f"An error occurred: {str(e)}"}, status=500)
