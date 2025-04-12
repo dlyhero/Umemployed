@@ -5,7 +5,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions = AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -117,8 +117,14 @@ class LoginView(APIView):
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
 
-            # Determine role and additional details
-            role = "recruiter" if user.is_recruiter else "job_seeker"
+            # Determine role based on user attributes
+            if user.is_recruiter:
+                role = "recruiter"
+            elif user.is_applicant:
+                role = "job_seeker"
+            else:
+                role = None
+
             response_data = {
                 "email": user.email,
                 "role": role,
