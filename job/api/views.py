@@ -3,12 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
-from ..models import Job, Application, SavedJob
+from ..models import Job, Application, SavedJob, SkillCategory
 from resume.models import Skill
 from ..tasks import generate_questions_task
 from ..job_description_algorithm import extract_technical_skills
 from .serializers import JobSerializer, ApplicationSerializer, SavedJobSerializer
 from ..generate_skills import generate_questions_task
+from django_countries import countries  # Import the correct iterable for countries
 
 class JobListAPIView(ListAPIView):
     queryset = Job.objects.filter(is_available=True)
@@ -289,3 +290,28 @@ class CreateJobStep4APIView(APIView):
                 "generated_questions": [],
                 "message": "Failed to generate questions."
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class JobOptionsAPIView(APIView):
+    """
+    Endpoint to fetch job-related options such as categories, salary ranges, locations, and job location types.
+    """
+    def get(self, request):
+        categories = SkillCategory.objects.values('id', 'name')
+        salary_ranges = dict(Job._meta.get_field('salary_range').choices)
+        job_location_types = dict(Job._meta.get_field('job_location_type').choices)
+        countries_list = [
+            {
+                'code': code,
+                'name': name,
+                'flag_url': f'https://flagcdn.com/w40/{code.lower()}.png'  # Flag URL
+            }
+            for code, name in countries
+        ]
+
+        return Response({
+            "categories": list(categories),
+            "salary_ranges": salary_ranges,
+            "job_location_types": job_location_types,
+            "locations": countries_list,
+        })

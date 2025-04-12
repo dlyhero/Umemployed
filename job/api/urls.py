@@ -37,4 +37,5 @@ urlpatterns = [
     path('<int:job_id>/create-step2/', views.CreateJobStep2APIView.as_view(), name='create_job_step2'),
     path('<int:job_id>/create-step3/', views.CreateJobStep3APIView.as_view(), name='create_job_step3'),
     path('<int:job_id>/create-step4/', views.CreateJobStep4APIView.as_view(), name='create_job_step4'),
+    path('job-options/', views.JobOptionsAPIView.as_view(), name='job_options'),
 ]
