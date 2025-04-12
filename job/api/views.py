@@ -294,12 +294,17 @@ class CreateJobStep4APIView(APIView):
 
 class JobOptionsAPIView(APIView):
     """
-    Endpoint to fetch job-related options such as categories, salary ranges, locations, and job location types.
+    Endpoint to fetch job-related options such as categories, salary ranges, locations, job location types, 
+    experience levels, weekly ranges, shifts, and job types.
     """
     def get(self, request):
         categories = SkillCategory.objects.values('id', 'name')
         salary_ranges = dict(Job._meta.get_field('salary_range').choices)
         job_location_types = dict(Job._meta.get_field('job_location_type').choices)
+        experience_levels = dict(Job._meta.get_field('experience_levels').choices)
+        weekly_ranges = dict(Job._meta.get_field('weekly_ranges').choices)
+        shifts = dict(Job._meta.get_field('shifts').choices)
+        job_types = dict(Job._meta.get_field('job_type').choices)
         countries_list = [
             {
                 'code': code,
@@ -313,5 +318,9 @@ class JobOptionsAPIView(APIView):
             "categories": list(categories),
             "salary_ranges": salary_ranges,
             "job_location_types": job_location_types,
+            "experience_levels": experience_levels,
+            "weekly_ranges": weekly_ranges,
+            "shifts": shifts,
+            "job_types": job_types,
             "locations": countries_list,
         })
