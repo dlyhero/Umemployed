@@ -116,6 +116,10 @@ def upload_resume_api(request):
     try:
         resume_doc.save()
         print(f"File uploaded to Azure Blob Storage: {resume_doc.file.name}")
+
+        # Set the user's has_resume field to True
+        user.has_resume = True
+        user.save()
     except Exception as e:
         return Response({"error": f"Failed to upload file: {str(e)}"}, status=500)
 

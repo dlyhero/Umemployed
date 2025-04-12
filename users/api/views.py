@@ -43,6 +43,8 @@ class SignupView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             user.is_active = False  # Deactivate account until email is confirmed
+            user.is_recruiter = False  # Set is_recruiter to False
+            user.is_applicant = False  # Set is_applicant to False
             user.save()
 
             # Send confirmation email
