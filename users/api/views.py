@@ -347,3 +347,33 @@ class CheckEmailVerifiedView(APIView):
     )
     def get(self, request):
         return Response({"is_email_verified": request.user.is_active}, status=status.HTTP_200_OK)
+
+class UserInfoView(APIView):
+    """
+    API endpoint to fetch all user information.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Fetch User Information",
+        operation_description="Retrieve all information about the authenticated user.",
+        responses={
+            200: openapi.Response("User information retrieved successfully."),
+        },
+    )
+    def get(self, request):
+        user = request.user
+        user_data = {
+            "id": user.id,
+            "email": user.email,
+            "username": user.username,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "is_recruiter": user.is_recruiter,
+            "is_applicant": user.is_applicant,
+            "has_resume": user.has_resume,
+            "has_company": user.has_company,
+            "created_at": user.created_at,
+            "updated_at": user.updated_at,
+        }
+        return Response(user_data, status=status.HTTP_200_OK)
