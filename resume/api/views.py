@@ -7,15 +7,16 @@ from resume.models import (
 )
 from .serializers import (
     SkillSerializer, EducationSerializer, ExperienceSerializer, ContactInfoSerializer, 
-    WorkExperienceSerializer, LanguageSerializer, ResumeAnalysisSerializer, ProfileViewSerializer
+    WorkExperienceSerializer, LanguageSerializer, ResumeAnalysisSerializer, ProfileViewSerializer,ResumeSerializer
 )
 from resume.models import Resume, ResumeDoc, Transcript
-from resume.views import update_resume, resume_details, display_matching_jobs, upload_resume, update_resume_view
+from resume.views import update_resume, display_matching_jobs, upload_resume, update_resume_view
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from resume.extract_pdf import extract_text  # Import the correct function
 from resume.transcript_job_title import extract_transcript_text  # Import the old function
 from azure.storage.blob import BlobServiceClient
+from django.db.models import Max  # Import Max for querying the latest resume
 
 @api_view(['POST'])
 def update_resume_api(request):
@@ -52,14 +53,10 @@ def update_resume_api(request):
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
 
 @api_view(['GET'])
-def resume_details_api(request, pk):
+def resume_details_api(request):
     """
-    Retrieves details of a specific resume by its primary key.
-
-    This endpoint references the existing `resume_details` function in the `resume` app.
-
-    Path Parameter:
-        pk (int): The primary key of the resume.
+    Retrieves details of the resume for the currently logged-in user.
+    If multiple resumes exist, it returns the most recently created one.
 
     Response:
         {
@@ -70,7 +67,18 @@ def resume_details_api(request, pk):
             ...
         }
     """
-    return resume_details(request, pk)
+    user = request.user
+    try:
+        # Get the latest resume for the logged-in user
+        resume = Resume.objects.filter(user=user).order_by('-created_at').first()
+        if not resume:
+            return Response({"error": "No resume found for the current user."}, status=404)
+
+        # Serialize the resume object
+        serializer = ResumeSerializer(resume)
+        return Response(serializer.data, status=200)
+    except Exception as e:
+        return Response({"error": f"An error occurred: {str(e)}"}, status=500)
 
 @api_view(['GET'])
 def matching_jobs_api(request):

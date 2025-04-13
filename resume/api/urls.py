@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('update-resume/', views.update_resume_api, name='update_resume_api'),
-    path('resume-details/<int:pk>/', views.resume_details_api, name='resume_details_api'),
+    path('resume-details/', views.resume_details_api, name='resume_details_api'),
     path('matching-jobs/', views.matching_jobs_api, name='matching_jobs_api'),
     path('upload-resume/', views.upload_resume_api, name='upload_resume_api'),
     path('analyze-resume/', views.analyze_resume_api, name='analyze_resume_api'),
