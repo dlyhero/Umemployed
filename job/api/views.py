@@ -324,3 +324,24 @@ class JobOptionsAPIView(APIView):
             "job_types": job_types,
             "locations": countries_list,
         })
+
+
+class ExtractedSkillsAPIView(APIView):
+    """
+    Endpoint to fetch extracted skills for a specific job.
+
+    Method: GET
+    URL: /api/jobs/<job_id>/extracted-skills/
+    Response:
+    - 200 OK: Returns a list of extracted skill IDs and names.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, job_id):
+        job = Job.objects.filter(id=job_id, user=request.user).first()
+        if not job:
+            return Response({"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND)
+
+        extracted_skills = job.extracted_skills.values('id', 'name')
+        return Response({"extracted_skills": list(extracted_skills)}, status=status.HTTP_200_OK)
