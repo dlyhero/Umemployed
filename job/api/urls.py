@@ -29,6 +29,7 @@ urlpatterns = [
     path('jobs/<int:job_id>/withdraw/', views.WithdrawApplicationAPIView.as_view(), name='withdraw_application'),
     path('jobs/<int:job_id>/shortlist/<int:candidate_id>/', views.ShortlistCandidateAPIView.as_view(), name='shortlist_candidate'),
     path('jobs/<int:job_id>/decline/<int:candidate_id>/', views.DeclineCandidateAPIView.as_view(), name='decline_candidate'),
+    path('jobs/<int:job_id>/extracted-skills/', views.ExtractedSkillsAPIView.as_view(), name='extracted_skills'),
     path('saved-jobs/', views.SavedJobsListAPIView.as_view(), name='saved_jobs'),
     path('generate-questions/', views.GenerateQuestionsAPIView.as_view(), name='generate_questions'),
     path('extract-technical-skills/', views.ExtractTechnicalSkillsAPIView.as_view(), name='extract_technical_skills'),
