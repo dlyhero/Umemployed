@@ -297,28 +297,82 @@ def extract_transcript_api(request):
     return Response({"extracted_text": extracted_text})
 
 class SkillViewSet(ModelViewSet):
-    queryset = Skill.objects.all()
+    """
+    Handles CRUD operations for user skills.
+    - GET: Retrieve all skills for the logged-in user.
+    - POST: Add a new skill for the logged-in user.
+    - PUT/PATCH: Update an existing skill for the logged-in user.
+    - DELETE: Delete a skill for the logged-in user.
+    """
     serializer_class = SkillSerializer
 
+    def get_queryset(self):
+        return Skill.objects.filter(user=self.request.user)
+
 class EducationViewSet(ModelViewSet):
-    queryset = Education.objects.all()
+    """
+    Handles CRUD operations for user education records.
+    - GET: Retrieve all education records for the logged-in user.
+    - POST: Add a new education record for the logged-in user.
+    - PUT/PATCH: Update an existing education record for the logged-in user.
+    - DELETE: Delete an education record for the logged-in user.
+    """
     serializer_class = EducationSerializer
 
+    def get_queryset(self):
+        return Education.objects.filter(user=self.request.user)
+
 class ExperienceViewSet(ModelViewSet):
-    queryset = Experience.objects.all()
+    """
+    Handles CRUD operations for user work experiences.
+    - GET: Retrieve all work experiences for the logged-in user.
+    - POST: Add a new work experience for the logged-in user.
+    - PUT/PATCH: Update an existing work experience for the logged-in user.
+    - DELETE: Delete a work experience for the logged-in user.
+    """
     serializer_class = ExperienceSerializer
 
+    def get_queryset(self):
+        return Experience.objects.filter(user=self.request.user)
+
 class ContactInfoViewSet(ModelViewSet):
-    queryset = ContactInfo.objects.all()
+    """
+    Handles CRUD operations for user contact information.
+    - GET: Retrieve all contact information for the logged-in user.
+    - POST: Add new contact information for the logged-in user.
+    - PUT/PATCH: Update existing contact information for the logged-in user.
+    - DELETE: Delete contact information for the logged-in user.
+    """
     serializer_class = ContactInfoSerializer
 
+    def get_queryset(self):
+        return ContactInfo.objects.filter(user=self.request.user)
+
 class WorkExperienceViewSet(ModelViewSet):
-    queryset = WorkExperience.objects.all()
+    """
+    Handles CRUD operations for user work experiences.
+    - GET: Retrieve all work experiences for the logged-in user.
+    - POST: Add a new work experience for the logged-in user.
+    - PUT/PATCH: Update an existing work experience for the logged-in user.
+    - DELETE: Delete a work experience for the logged-in user.
+    """
     serializer_class = WorkExperienceSerializer
 
+    def get_queryset(self):
+        return WorkExperience.objects.filter(user=self.request.user)
+
 class LanguageViewSet(ModelViewSet):
-    queryset = Language.objects.all()
+    """
+    Handles CRUD operations for user languages.
+    - GET: Retrieve all languages for the logged-in user.
+    - POST: Add a new language for the logged-in user.
+    - PUT/PATCH: Update an existing language for the logged-in user.
+    - DELETE: Delete a language for the logged-in user.
+    """
     serializer_class = LanguageSerializer
+
+    def get_queryset(self):
+        return Language.objects.filter(user=self.request.user)
 
 @api_view(['GET'])
 def resume_analyses_api(request):
