@@ -13,10 +13,13 @@ from resume.models import Resume, ResumeDoc, Transcript
 from resume.views import update_resume, display_matching_jobs, upload_resume, update_resume_view
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from resume.extract_pdf import extract_text  # Import the correct function
+from resume.extract_pdf import extract_text, extract_resume_details, parse_and_save_details, extract_technical_skills  # Import existing functions
 from resume.transcript_job_title import extract_transcript_text  # Import the old function
 from azure.storage.blob import BlobServiceClient
 from django.db.models import Max  # Import Max for querying the latest resume
+import logging
+
+logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 def update_resume_api(request):
@@ -110,7 +113,9 @@ def upload_resume_api(request):
     Response:
         {
             "message": "Resume uploaded and processed successfully.",
-            "extracted_text": "Extracted text from the resume."
+            "extracted_text": "Extracted text from the resume.",
+            "technical_skills": [...],
+            "extracted_details": {...}
         }
     """
     if 'file' not in request.FILES:
@@ -123,25 +128,58 @@ def upload_resume_api(request):
     resume_doc = ResumeDoc(user=user, file=file)
     try:
         resume_doc.save()
-        print(f"File uploaded to Azure Blob Storage: {resume_doc.file.name}")
+        logger.info(f"File uploaded to Azure Blob Storage: {resume_doc.file.name}")
 
         # Set the user's has_resume field to True
         user.has_resume = True
         user.save()
+
+        # Create or update the Resume object
+        resume, created = Resume.objects.get_or_create(user=user)
+        resume.cv = resume_doc.file  # Link the uploaded file to the Resume model
+        resume.save()
+
     except Exception as e:
+        logger.error(f"Failed to upload file: {str(e)}")
         return Response({"error": f"Failed to upload file: {str(e)}"}, status=500)
 
-    # Perform text extraction using the existing extract_text function
+    # Perform text extraction and parsing using the extract_pdf functions
     try:
         file_path = resume_doc.file.name  # Use the file name as the file_path
-        extract_text(request, file_path)  # Call the correct extract_text function
-        resume_doc.refresh_from_db()  # Refresh the model to get updated extracted_text
+
+        # Step 1: Extract raw text from the resume
+        extracted_text_response = extract_text(request, file_path)
+        if extracted_text_response.status_code != 200:
+            return extracted_text_response
+
+        extracted_text = extracted_text_response.data.get("extracted_text", "")
+        if not extracted_text.strip():
+            logger.error("Extracted text is empty or invalid after calling extract_text.")
+            return Response({"error": "Failed to extract meaningful text from the resume."}, status=400)
+
+        logger.info("Extracted text received in API: %s", extracted_text[:500])
+
+        # Step 2: Extract and save details using extract_resume_details and parse_and_save_details
+        extracted_details = extract_resume_details(request, extracted_text)
+        parse_and_save_details(extracted_details, user)
+
+        # Step 3: Extract technical skills and associate them with the ResumeDoc
+        job_title = resume.job_title if resume.job_title else "Others"
+        technical_skills = extract_technical_skills(request, extracted_text, job_title)
+
+        # Save the extracted text and skills to the ResumeDoc
+        resume_doc.extracted_text = extracted_text
+        resume_doc.save()
+
         return Response({
             "message": "Resume uploaded and processed successfully.",
-            "extracted_text": resume_doc.extracted_text
+            "extracted_text": extracted_text,
+            "technical_skills": technical_skills,
+            "extracted_details": extracted_details
         }, status=200)
     except Exception as e:
-        return Response({"error": f"Failed to extract text: {str(e)}"}, status=500)
+        logger.error("Error in upload_resume_api: %s", e)
+        return Response({"error": f"Failed to process resume: {str(e)}"}, status=500)
 
 @api_view(['POST'])
 def analyze_resume_api(request):

@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
+from rest_framework.response import Response
 from .forms import ResumeForm
 from .models import *
 from resume.models import SkillCategory, Skill
@@ -76,6 +77,9 @@ def clean_text(text):
     return text.replace('\x00', '') if text else text
 
 def extract_text(request, file_path):
+    """
+    Extracts raw text from the uploaded resume file.
+    """
     account_name = os.getenv('AZURE_ACCOUNT_NAME')
     account_key = os.getenv('AZURE_ACCOUNT_KEY')
     container_name = os.getenv('AZURE_CONTAINER')
@@ -116,29 +120,51 @@ def extract_text(request, file_path):
                 print(f"Extracted text from TXT: {extracted_text[:500]}")
             else:
                 print(f"Unsupported file extension: {file_extension}")
-                return HttpResponse("Unsupported file type", status=400)
+                return Response({"error": "Unsupported file type"}, status=400)
 
             extracted_text = clean_text(extracted_text)
-            extracted_details = extract_resume_details(request, extracted_text)
-            parse_and_save_details(extracted_details, request.user)
+            if not extracted_text.strip():
+                logger.error("Extracted text is empty or invalid after cleaning.")
+                return Response({"error": "Failed to extract meaningful text from the resume."}, status=400)
 
+            # Log the extracted text for debugging
+            logger.info("Extracted text (cleaned): %s", extracted_text[:500])
+            print(f"Extracted text (cleaned): {extracted_text[:500]}")
+
+            # Save the extracted text to the database
             if resume_doc:
                 resume_doc.extracted_text = extracted_text
                 resume_doc.save()
+
+        # Ensure extracted text is not empty before proceeding
+        if not extracted_text.strip():
+            logger.error("Extracted text is empty or invalid before sending to OpenAI.")
+            return Response({"error": "Extracted text is empty or invalid."}, status=400)
 
         # Fetch the job_title from the Resume model
         resume = Resume.objects.filter(user=request.user).first()
         job_title = resume.job_title if resume and resume.job_title else "Others"
 
-        extract_technical_skills(request, extracted_text, job_title)
-        return redirect('update-resume')
+        # Log the job title and extracted text before calling OpenAI
+        logger.info("Job title: %s", job_title)
+        logger.info("Extracted text being sent to OpenAI: %s", extracted_text[:500])
+
+        technical_skills = extract_technical_skills(request, extracted_text, job_title)
+
+        return Response({
+            "message": "Text extracted successfully.",
+            "extracted_text": extracted_text,
+            "technical_skills": technical_skills
+        }, status=200)
 
     except Exception as e:
-        print("Error during file extraction:", str(e))
-        messages.error(request, "An error occurred while processing the resume. Please try again.")
-        return HttpResponse("Error: Could not process the file", status=500)
+        logger.error("Error during file extraction: %s", e)
+        return Response({"error": "An error occurred while processing the resume."}, status=500)
 
 def extract_technical_skills(request, extracted_text, job_title):
+    """
+    Extracts technical skills from the resume text using OpenAI.
+    """
     conversation = [
         {
             "role": "user",
@@ -147,13 +173,22 @@ def extract_technical_skills(request, extracted_text, job_title):
     ]
 
     try:
+        # Log the input being sent to OpenAI
+        logger.info("Sending the following prompt to OpenAI: %s", conversation)
+
         response = client.chat.completions.create(
             model="gpt-4",
             messages=conversation,
             timeout=120
         )
 
-        response_content = response.choices[0].message.content
+        response_content = response.choices[0].message.content.strip()
+        if not response_content:
+            raise ValueError("Empty response from OpenAI API")
+
+        # Log the response from OpenAI
+        logger.info("Response from OpenAI: %s", response_content)
+
         response_dict = json.loads(response_content)
         technical_skills = response_dict.get("Technical Skills", [])
         print(technical_skills)
@@ -169,12 +204,28 @@ def extract_technical_skills(request, extracted_text, job_title):
 
         return technical_skills
 
-    except (json.JSONDecodeError, Exception) as e:
+    except (json.JSONDecodeError, ValueError) as e:
         logger.error("An error occurred while extracting technical skills: %s", e)
+        return []
+    except Exception as e:
+        logger.error("Unexpected error while extracting technical skills: %s", e)
         return []
 
 def extract_resume_details(request, extracted_text):
+    """
+    Extracts details such as contact information, work experience, and education from the extracted text.
+    """
     try:
+        if not extracted_text.strip():
+            logger.error("Extracted text is empty or invalid. Skipping API call.")
+            return {
+                "Name": "Unknown",
+                "Email": "unknown@example.com",
+                "Phone": "0000000000",
+                "Work Experience": [],
+                "Education": []
+            }
+
         conversation = [
             {
                 "role": "user",
@@ -191,20 +242,50 @@ def extract_resume_details(request, extracted_text):
             }
         ]
 
+        # Log the input sent to the OpenAI API
+        logger.info("Sending the following prompt to OpenAI API: %s", conversation)
+
         response = client.chat.completions.create(
             model="gpt-4",
             messages=conversation,
             timeout=120
         )
 
-        response_content = response.choices[0].message.content
-        extracted_details = json.loads(response_content)
-        print("Extracted Details from GPT-4:", extracted_details)
-        return extracted_details
+        response_content = response.choices[0].message.content.strip()
+        if not response_content or "Sorry" in response_content:
+            logger.error("Invalid response from OpenAI API: %s", response_content)
+            return {
+                "Name": "Unknown",
+                "Email": "unknown@example.com",
+                "Phone": "0000000000",
+                "Work Experience": [],
+                "Education": []
+            }
 
-    except (json.JSONDecodeError, Exception) as e:
-        logger.error("An error occurred while extracting resume details: %s", e)
-        return {}
+        try:
+            extracted_details = json.loads(response_content)
+            print("Extracted Details from GPT-4:", extracted_details)
+            return extracted_details
+        except json.JSONDecodeError as e:
+            logger.error("Failed to parse OpenAI API response as JSON: %s", e)
+            logger.error("Raw response content: %s", response_content)
+            return {
+                "Name": "Unknown",
+                "Email": "unknown@example.com",
+                "Phone": "0000000000",
+                "Work Experience": [],
+                "Education": []
+            }
+
+    except Exception as e:
+        logger.error("Unexpected error while extracting resume details: %s", e)
+        return {
+            "Name": "Unknown",
+            "Email": "unknown@example.com",
+            "Phone": "0000000000",
+            "Work Experience": [],
+            "Education": []
+        }
 
 def get_case_insensitive(d, key, default=None):
     if not isinstance(d, dict):
@@ -223,15 +304,21 @@ def parse_date(date_str):
         return None
 
 def parse_and_save_details(extracted_details, user):
-    name = get_case_insensitive(extracted_details, 'Name', 'Your Name')
-    email = get_case_insensitive(extracted_details, 'Email', 'example@email.com')
-    phone = get_case_insensitive(extracted_details, 'Phone', '+123456677')
+    """
+    Parses and saves extracted details into the database.
+    """
+    # Parse and save contact information
+    name = get_case_insensitive(extracted_details, 'Name', 'Unknown Name')
+    email = get_case_insensitive(extracted_details, 'Email', 'unknown@example.com')
+    phone = get_case_insensitive(extracted_details, 'Phone', '0000000000')
 
     contact_info, created = ContactInfo.objects.update_or_create(
         user=user,
         defaults={'name': name, 'email': email, 'phone': phone}
     )
+    print(f"Contact Info saved: {contact_info}")
 
+    # Parse and save work experiences
     experiences = get_case_insensitive(extracted_details, 'Work Experience', [])
     if isinstance(experiences, list):
         for exp in experiences:
@@ -240,9 +327,7 @@ def parse_and_save_details(extracted_details, user):
                 role = get_case_insensitive(exp, 'role', 'Unknown Position')
                 start_date = parse_date(exp.get('start_date'))
                 end_date = parse_date(exp.get('end_date')) if exp.get('end_date') else None
-                if start_date is None:
-                    print(f"Invalid start date format for {company_name}. Please provide the date in YYYY-MM-DD format.")
-                
+
                 WorkExperience.objects.create(
                     user=user,
                     company_name=company_name,
@@ -250,12 +335,11 @@ def parse_and_save_details(extracted_details, user):
                     start_date=start_date,
                     end_date=end_date
                 )
-                print("Work Experience added - Company:", company_name, "Position:", role, "Start Date:", start_date, "End Date:", end_date)
+                print(f"Work Experience added: {company_name}, {role}, {start_date}, {end_date}")
             else:
-                print("Invalid experience format:", exp)
-    else:
-        print("Invalid experiences format:", experiences)
+                print(f"Invalid work experience format: {exp}")
 
+    # Parse and save education details
     educations = get_case_insensitive(extracted_details, 'Education', [])
     if isinstance(educations, list):
         for edu in educations:
@@ -268,10 +352,7 @@ def parse_and_save_details(extracted_details, user):
                     graduation_year = int(graduation_year)
                 else:
                     graduation_year = date.today().year
-                print("Institution Name:", institution_name)
-                print("Degree:", degree)
-                print("Field of Study:", field_of_study)
-                print("Graduation Year:", graduation_year)
+
                 Education.objects.create(
                     user=user,
                     institution_name=institution_name,
@@ -279,8 +360,6 @@ def parse_and_save_details(extracted_details, user):
                     field_of_study=field_of_study,
                     graduation_year=graduation_year
                 )
-                print("Education added - Institution:", institution_name, "Degree:", degree, "Field of Study:", field_of_study, "Graduation Year:", graduation_year)
+                print(f"Education added: {institution_name}, {degree}, {field_of_study}, {graduation_year}")
             else:
-                print("Invalid education format:", edu)
-    else:
-        print("Invalid educations format:", educations)
+                print(f"Invalid education format: {edu}")
