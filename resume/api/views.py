@@ -2,6 +2,7 @@ import os  # Add this import for accessing environment variables
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
+from rest_framework.viewsets import ModelViewSet
 from resume.models import (
     Skill, Education, Experience, ContactInfo, WorkExperience, Language, ResumeAnalysis, ProfileView
 )
@@ -130,11 +131,13 @@ def upload_resume_api(request):
         resume_doc.save()
         logger.info(f"File uploaded to Azure Blob Storage: {resume_doc.file.name}")
 
-        # Ensure the Resume object is created or updated
-        resume, created = Resume.objects.get_or_create(user=user)
+        # Ensure the Resume object is updated
+        resume = Resume.objects.filter(user=user).first()
+        if not resume:
+            resume = Resume(user=user)
         resume.cv = resume_doc.file  # Link the uploaded file to the Resume model
         resume.save()
-        logger.info(f"Resume object {'created' if created else 'updated'}: {resume}")
+        logger.info(f"Resume object updated: {resume}")
 
         # Set user.has_resume to True
         user.has_resume = True
@@ -293,117 +296,29 @@ def extract_transcript_api(request):
     extracted_text = transcript.extracted_text  # Assuming text is already extracted
     return Response({"extracted_text": extracted_text})
 
-@api_view(['GET'])
-def skills_api(request):
-    """
-    Retrieves all skills.
+class SkillViewSet(ModelViewSet):
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
 
-    Response:
-        [
-            {
-                "id": 1,
-                "name": "Python",
-                "categories": [1, 2],
-                ...
-            }
-        ]
-    """
-    skills = Skill.objects.all()
-    serializer = SkillSerializer(skills, many=True)
-    return Response(serializer.data)
+class EducationViewSet(ModelViewSet):
+    queryset = Education.objects.all()
+    serializer_class = EducationSerializer
 
-@api_view(['GET'])
-def educations_api(request):
-    """
-    Retrieves all education records.
+class ExperienceViewSet(ModelViewSet):
+    queryset = Experience.objects.all()
+    serializer_class = ExperienceSerializer
 
-    Response:
-        [
-            {
-                "id": 1,
-                "institution_name": "University of XYZ",
-                "degree": "Bachelor's",
-                ...
-            }
-        ]
-    """
-    educations = Education.objects.all()
-    serializer = EducationSerializer(educations, many=True)
-    return Response(serializer.data)
+class ContactInfoViewSet(ModelViewSet):
+    queryset = ContactInfo.objects.all()
+    serializer_class = ContactInfoSerializer
 
-@api_view(['GET'])
-def experiences_api(request):
-    """
-    Retrieves all work experiences.
+class WorkExperienceViewSet(ModelViewSet):
+    queryset = WorkExperience.objects.all()
+    serializer_class = WorkExperienceSerializer
 
-    Response:
-        [
-            {
-                "id": 1,
-                "company_name": "TechCorp",
-                "role": "Software Engineer",
-                ...
-            }
-        ]
-    """
-    experiences = Experience.objects.all()
-    serializer = ExperienceSerializer(experiences, many=True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def contact_info_api(request):
-    """
-    Retrieves all contact information.
-
-    Response:
-        [
-            {
-                "id": 1,
-                "name": "John Doe",
-                "email": "john.doe@example.com",
-                ...
-            }
-        ]
-    """
-    contact_info = ContactInfo.objects.all()
-    serializer = ContactInfoSerializer(contact_info, many=True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def work_experiences_api(request):
-    """
-    Retrieves all work experiences.
-
-    Response:
-        [
-            {
-                "id": 1,
-                "company_name": "TechCorp",
-                "role": "Backend Developer",
-                ...
-            }
-        ]
-    """
-    work_experiences = WorkExperience.objects.all()
-    serializer = WorkExperienceSerializer(work_experiences, many=True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def languages_api(request):
-    """
-    Retrieves all languages.
-
-    Response:
-        [
-            {
-                "id": 1,
-                "name": "English"
-            }
-        ]
-    """
-    languages = Language.objects.all()
-    serializer = LanguageSerializer(languages, many=True)
-    return Response(serializer.data)
+class LanguageViewSet(ModelViewSet):
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
 
 @api_view(['GET'])
 def resume_analyses_api(request):

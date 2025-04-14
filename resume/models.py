@@ -161,16 +161,17 @@ class ContactInfo(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        # Update corresponding fields in the Resume model
+        # Update corresponding fields in the existing Resume model
         resume = Resume.objects.filter(user=self.user).first()
-        if resume:
-            name_parts = self.name.split(" ", 1)
-            resume.first_name = name_parts[0] if len(name_parts) > 0 else ""
-            resume.surname = name_parts[1] if len(name_parts) > 1 else ""
-            resume.phone = self.phone
-            resume.country = self.country.name
-            resume.job_title = self.job_title.name if self.job_title else None
-            resume.save()
+        if not resume:
+            resume = Resume(user=self.user)
+        name_parts = self.name.split(" ", 1)
+        resume.first_name = name_parts[0] if len(name_parts) > 0 else ""
+        resume.surname = name_parts[1] if len(name_parts) > 1 else ""
+        resume.phone = self.phone
+        resume.country = self.country.name
+        resume.job_title = self.job_title.name if self.job_title else None
+        resume.save()
 
     def __str__(self):
         return f"Contact Information for {self.user.username}"

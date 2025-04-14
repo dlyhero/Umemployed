@@ -46,20 +46,22 @@ def upload_resume(request):
             return redirect(redirect_url)
 
         if form.is_valid():
-            print("Form is valid, creating new ResumeDoc")
-            resume_doc = ResumeDoc.objects.create(
+            print("Form is valid, creating or updating ResumeDoc")
+            resume_doc, _ = ResumeDoc.objects.get_or_create(
                 user=request.user,
-                file=form.cleaned_data['file'],
-                extracted_text=''
+                defaults={'file': form.cleaned_data['file'], 'extracted_text': ''}
             )
+            resume_doc.file = form.cleaned_data['file']
             resume_doc.extracted_skills.clear()
             resume_doc.save()
 
-            # Ensure the Resume object is created or updated
-            resume, created = Resume.objects.get_or_create(user=request.user)
+            # Ensure the Resume object is updated
+            resume = Resume.objects.filter(user=request.user).first()
+            if not resume:
+                resume = Resume(user=request.user)
             resume.cv = resume_doc.file  # Link the uploaded file to the Resume model
             resume.save()
-            print(f"Resume object {'created' if created else 'updated'}: {resume}")
+            print(f"Resume object updated: {resume}")
 
             # Set user.has_resume to True
             request.user.has_resume = True
@@ -190,7 +192,7 @@ def extract_technical_skills(request, extracted_text, job_title):
         response = client.chat.completions.create(
             model="gpt-4",
             messages=conversation,
-            timeout=120
+            timeout=15  # Set a timeout for the OpenAI API call
         )
 
         response_content = response.choices[0].message.content.strip()
