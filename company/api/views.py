@@ -38,7 +38,7 @@ class CreateCompanyAPIView(APIView):
         """
         Handle POST requests to create a company.
         """
-        serializer = CompanySerializer(data=request.data)
+        serializer = CompanySerializer(data=request.data, files=request.FILES)  # Pass request.FILES for file uploads
         if serializer.is_valid():
             serializer.save(user=request.user)
             request.user.has_company = True
