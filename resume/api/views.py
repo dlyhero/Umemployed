@@ -372,7 +372,8 @@ class LanguageViewSet(ModelViewSet):
     serializer_class = LanguageSerializer
 
     def get_queryset(self):
-        return Language.objects.filter(user=self.request.user)
+        # Filter languages through UserLanguage for the logged-in user
+        return Language.objects.filter(userlanguage__user_profile__user=self.request.user)
 
 @api_view(['GET'])
 def resume_analyses_api(request):
