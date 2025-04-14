@@ -55,6 +55,17 @@ def upload_resume(request):
             resume_doc.extracted_skills.clear()
             resume_doc.save()
 
+            # Ensure the Resume object is created or updated
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            resume.cv = resume_doc.file  # Link the uploaded file to the Resume model
+            resume.save()
+            print(f"Resume object {'created' if created else 'updated'}: {resume}")
+
+            # Set user.has_resume to True
+            request.user.has_resume = True
+            request.user.save()
+            print(f"User {request.user.username} has_resume set to True")
+
             file_path = resume_doc.file.name
             print(f"File path for extraction: {file_path}")
 
@@ -317,6 +328,16 @@ def parse_and_save_details(extracted_details, user):
         defaults={'name': name, 'email': email, 'phone': phone}
     )
     print(f"Contact Info saved: {contact_info}")
+
+    # Ensure corresponding fields in Resume are updated
+    resume = Resume.objects.filter(user=user).first()
+    if resume:
+        name_parts = name.split(" ", 1)
+        resume.first_name = name_parts[0] if len(name_parts) > 0 else ""
+        resume.surname = name_parts[1] if len(name_parts) > 1 else ""
+        resume.phone = phone
+        resume.save()
+        print(f"Resume updated with contact info: {resume}")
 
     # Parse and save work experiences
     experiences = get_case_insensitive(extracted_details, 'Work Experience', [])

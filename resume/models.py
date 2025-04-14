@@ -91,9 +91,9 @@ class Resume(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        first_name = self.first_name if self.first_name else ""
-        surname = self.surname if self.surname else ""
-        return first_name + " " + surname
+        first_name = self.first_name if self.first_name else "Unknown"
+        surname = self.surname if self.surname else "User"
+        return f"{first_name} {surname} - {self.job_title if self.job_title else 'No Job Title'}"
 
     def calculate_completion_percentage(self):
         required_fields = [
@@ -156,10 +156,21 @@ class ContactInfo(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=254)
     phone = models.CharField(max_length=20)
-    country = CountryField(default='US')  # Default to 'CM' for Cameroon
-    # job_title = models.CharField(max_length=100, default='')
+    country = CountryField(default='US')  # Default to 'US'
     job_title = models.ForeignKey(SkillCategory, on_delete=models.SET_NULL, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Update corresponding fields in the Resume model
+        resume = Resume.objects.filter(user=self.user).first()
+        if resume:
+            name_parts = self.name.split(" ", 1)
+            resume.first_name = name_parts[0] if len(name_parts) > 0 else ""
+            resume.surname = name_parts[1] if len(name_parts) > 1 else ""
+            resume.phone = self.phone
+            resume.country = self.country.name
+            resume.job_title = self.job_title.name if self.job_title else None
+            resume.save()
 
     def __str__(self):
         return f"Contact Information for {self.user.username}"

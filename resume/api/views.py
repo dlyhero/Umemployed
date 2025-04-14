@@ -130,14 +130,16 @@ def upload_resume_api(request):
         resume_doc.save()
         logger.info(f"File uploaded to Azure Blob Storage: {resume_doc.file.name}")
 
-        # Set the user's has_resume field to True
-        user.has_resume = True
-        user.save()
-
-        # Create or update the Resume object
+        # Ensure the Resume object is created or updated
         resume, created = Resume.objects.get_or_create(user=user)
         resume.cv = resume_doc.file  # Link the uploaded file to the Resume model
         resume.save()
+        logger.info(f"Resume object {'created' if created else 'updated'}: {resume}")
+
+        # Set user.has_resume to True
+        user.has_resume = True
+        user.save()
+        logger.info(f"User {user.username} has_resume set to True")
 
     except Exception as e:
         logger.error(f"Failed to upload file: {str(e)}")
