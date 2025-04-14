@@ -307,6 +307,7 @@ class SkillViewSet(ModelViewSet):
     serializer_class = SkillSerializer
 
     def get_queryset(self):
+        # Filter skills by the currently logged-in user
         return Skill.objects.filter(user=self.request.user)
 
 class EducationViewSet(ModelViewSet):
