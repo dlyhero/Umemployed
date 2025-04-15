@@ -4,11 +4,11 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 from resume.models import (
-    Skill, Education, Experience, ContactInfo, WorkExperience, Language, ResumeAnalysis, ProfileView
+    Skill, Education, Experience, ContactInfo, WorkExperience, Language, ResumeAnalysis, ProfileView, SkillCategory
 )
 from .serializers import (
     SkillSerializer, EducationSerializer, ExperienceSerializer, ContactInfoSerializer, 
-    WorkExperienceSerializer, LanguageSerializer, ResumeAnalysisSerializer, ProfileViewSerializer,ResumeSerializer
+    WorkExperienceSerializer, LanguageSerializer, ResumeAnalysisSerializer, ProfileViewSerializer, ResumeSerializer, SkillCategorySerializer
 )
 from resume.models import Resume, ResumeDoc, Transcript
 from resume.views import update_resume, display_matching_jobs, upload_resume, update_resume_view
@@ -307,7 +307,7 @@ class SkillViewSet(ModelViewSet):
     serializer_class = SkillSerializer
 
     def get_queryset(self):
-        # Filter skills by the currently logged-in user
+        # Ensure only skills associated with the logged-in user are fetched
         return Skill.objects.filter(user=self.request.user)
 
 class EducationViewSet(ModelViewSet):
@@ -479,3 +479,27 @@ def resume_analysis_api(request):
         }, status=200)
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
+
+from rest_framework.views import APIView
+
+class SkillCategoryListView(APIView):
+    """
+    Fetches all items in the SkillCategory model, sorted alphabetically.
+
+    Response:
+        [
+            {
+                "id": 1,
+                "name": "Backend Development"
+            },
+            {
+                "id": 2,
+                "name": "Frontend Development"
+            },
+            ...
+        ]
+    """
+    def get(self, request):
+        skill_categories = SkillCategory.objects.all().order_by('name')  # Sort alphabetically
+        serializer = SkillCategorySerializer(skill_categories, many=True)
+        return Response(serializer.data)

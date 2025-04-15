@@ -72,9 +72,12 @@ class ContactInfoSerializer(serializers.ModelSerializer):
     Serializer for the ContactInfo model.
     Converts ContactInfo model instances to JSON and validates input data.
     """
+    job_title_name = serializers.StringRelatedField(source='job_title')  # Human-readable name
+    job_title_id = serializers.PrimaryKeyRelatedField(queryset=SkillCategory.objects.all(), source='job_title')  # Integer ID
+
     class Meta:
         model = ContactInfo
-        fields = '__all__'
+        fields = ['id', 'name', 'email', 'phone', 'country', 'city', 'date_of_birth', 'job_title_name', 'job_title_id']
 
 class WorkExperienceSerializer(serializers.ModelSerializer):
     """

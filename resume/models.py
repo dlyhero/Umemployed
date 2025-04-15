@@ -158,6 +158,8 @@ class ContactInfo(models.Model):
     phone = models.CharField(max_length=20)
     country = CountryField(default='US')  # Default to 'US'
     job_title = models.ForeignKey(SkillCategory, on_delete=models.SET_NULL, null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)  # New field
+    city = models.CharField(max_length=100, null=True, blank=True)  # New field
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -170,6 +172,8 @@ class ContactInfo(models.Model):
         resume.surname = name_parts[1] if len(name_parts) > 1 else ""
         resume.phone = self.phone
         resume.country = self.country.name
+        resume.state = self.city  # Map city to state in Resume
+        resume.date_of_birth = self.date_of_birth  # Map date_of_birth
         resume.job_title = self.job_title.name if self.job_title else None
         resume.save()
 

@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 from . import views
+from .views import SkillCategoryListView
 
 # Router for CRUD operations
 router = DefaultRouter()
@@ -23,6 +24,7 @@ urlpatterns = [
     path('resume-analysis/', views.resume_analysis_api, name='resume_analysis_api'),  # Analyze a resume file and provide feedback
     path('resume-analyses/', views.resume_analyses_api, name='resume_analyses_api'),  # Get all resume analyses for the user
     path('profile-views/', views.profile_views_api, name='profile_views_api'),  # Get all profile views for the user
+    path('skill-categories/', SkillCategoryListView.as_view(), name='skill_category_list'),  # Fetch all skill categories
 ]
 
 # Include router URLs
