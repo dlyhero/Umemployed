@@ -416,12 +416,113 @@ class StartPaymentForEndorsementAPIView(APIView):
 
     @swagger_auto_schema(
         operation_description="Start payment for viewing endorsements",
-        responses={200: "Payment started successfully", 403: "Forbidden"}
+        responses={
+            200: "Payment started successfully",
+            403: "Forbidden",
+            400: "Bad Request"
+        }
     )
     def post(self, request, candidate_id):
         """
         Handle POST requests to start payment for viewing endorsements.
         """
         candidate = get_object_or_404(User, id=candidate_id)
+
+        # Check if the user has a completed transaction for this candidate
+        has_paid = Transaction.objects.filter(
+            user=request.user,
+            candidate=candidate,
+            status='completed'
+        ).exists()
+
+        if has_paid:
+            # Redirect to the endorsements page if the user has already paid
+            return Response({"redirect_url": f"/api/candidate/{candidate_id}/endorsements/"}, status=status.HTTP_200_OK)
+
         # Logic to initiate payment
-        return Response({"message": "Payment started successfully"}, status=status.HTTP_200_OK)
+        # Example: Store the candidate ID in the session or database for tracking
+        request.session['candidate_id'] = candidate_id
+
+        # Return a response indicating payment initiation
+        return Response({"message": "Payment started successfully. Proceed to payment gateway."}, status=status.HTTP_200_OK)
+
+class CandidateEndorsementsAPIView(APIView):
+    """
+    API view to retrieve endorsements for a candidate.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Retrieve endorsements for a candidate",
+        responses={
+            200: "Endorsements retrieved successfully",
+            404: "Not Found"
+        }
+    )
+    def get(self, request, candidate_id):
+        """
+        Handle GET requests to retrieve endorsements for a candidate.
+        """
+        candidate = get_object_or_404(User, id=candidate_id)
+
+        # Check if the user has a completed transaction for this candidate
+        has_paid = Transaction.objects.filter(
+            user=request.user,
+            candidate=candidate,
+            status='completed'
+        ).exists()
+
+        if not has_paid:
+            return Response({"error": "You must complete payment to view endorsements."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Retrieve endorsements for the candidate
+        endorsements = Rating.objects.filter(candidate=candidate)
+        endorsements_data = [
+            {
+                "id": endorsement.id,
+                "endorser": endorsement.endorser.username,
+                "stars": endorsement.stars,
+                "review": endorsement.review,
+                "professionalism": endorsement.professionalism,
+                "skills": endorsement.skills,
+                "communication": endorsement.communication,
+                "teamwork": endorsement.teamwork,
+                "reliability": endorsement.reliability,
+            }
+            for endorsement in endorsements
+        ]
+
+        return Response(endorsements_data, status=status.HTTP_200_OK)
+
+class CheckPaymentStatusAPIView(APIView):
+    """
+    API view to check if payment for viewing endorsements has been completed.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Check if payment for viewing endorsements has been completed",
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    "has_paid": openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Whether the payment has been completed"),
+                },
+            ),
+            404: "Not Found"
+        }
+    )
+    def get(self, request, candidate_id):
+        """
+        Handle GET requests to check payment status for a candidate.
+        """
+        candidate = get_object_or_404(User, id=candidate_id)
+
+        # Check if the user has a completed transaction for this candidate
+        has_paid = Transaction.objects.filter(
+            user=request.user,
+            candidate=candidate,
+            status='completed'
+        ).exists()
+
+        return Response({"has_paid": has_paid}, status=status.HTTP_200_OK)
