@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 from resume.models import (
-    Skill, Education, Experience, ContactInfo, WorkExperience, Language, ResumeAnalysis, ProfileView, SkillCategory
+    Skill, Education, Experience, ContactInfo, WorkExperience, Language, ResumeAnalysis, ProfileView, SkillCategory, UserLanguage
 )
 from .serializers import (
     SkillSerializer, EducationSerializer, ExperienceSerializer, ContactInfoSerializer, 
@@ -503,3 +503,43 @@ class SkillCategoryListView(APIView):
         skill_categories = SkillCategory.objects.all().order_by('name')  # Sort alphabetically
         serializer = SkillCategorySerializer(skill_categories, many=True)
         return Response(serializer.data)
+
+@api_view(['GET'])
+def user_profile_details_api(request, user_id):
+    """
+    Retrieves a user's skills, contact information, work experience, and languages by user ID.
+
+    Response:
+        {
+            "skills": [...],
+            "contact_info": {...},
+            "work_experience": [...],
+            "languages": [...]
+        }
+    """
+    try:
+        # Fetch user's skills
+        skills = Skill.objects.filter(user_id=user_id)
+        skills_serializer = SkillSerializer(skills, many=True)
+
+        # Fetch user's contact information
+        contact_info = ContactInfo.objects.filter(user_id=user_id).first()
+        contact_info_serializer = ContactInfoSerializer(contact_info)
+
+        # Fetch user's work experience
+        work_experience = WorkExperience.objects.filter(user_id=user_id)
+        work_experience_serializer = WorkExperienceSerializer(work_experience, many=True)
+
+        # Fetch user's languages
+        user_languages = UserLanguage.objects.filter(user_profile__user_id=user_id)
+        languages = [user_language.language for user_language in user_languages]
+        languages_serializer = LanguageSerializer(languages, many=True)
+
+        return Response({
+            "skills": skills_serializer.data,
+            "contact_info": contact_info_serializer.data if contact_info else None,
+            "work_experience": work_experience_serializer.data,
+            "languages": languages_serializer.data
+        }, status=200)
+    except Exception as e:
+        return Response({"error": f"An error occurred: {str(e)}"}, status=500)
