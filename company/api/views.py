@@ -408,44 +408,6 @@ class CompanyRelatedUsersAPIView(APIView):
         user_data = [{"id": user.id, "username": user.username} for user in related_users]
         return Response(user_data, status=status.HTTP_200_OK)
 
-class StartPaymentForEndorsementAPIView(APIView):
-    """
-    API view to start payment for viewing endorsements.
-    """
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(
-        operation_description="Start payment for viewing endorsements",
-        responses={
-            200: "Payment started successfully",
-            403: "Forbidden",
-            400: "Bad Request"
-        }
-    )
-    def post(self, request, candidate_id):
-        """
-        Handle POST requests to start payment for viewing endorsements.
-        """
-        candidate = get_object_or_404(User, id=candidate_id)
-
-        # Check if the user has a completed transaction for this candidate
-        has_paid = Transaction.objects.filter(
-            user=request.user,
-            candidate=candidate,
-            status='completed'
-        ).exists()
-
-        if has_paid:
-            # Redirect to the endorsements page if the user has already paid
-            return Response({"redirect_url": f"/api/candidate/{candidate_id}/endorsements/"}, status=status.HTTP_200_OK)
-
-        # Logic to initiate payment
-        # Example: Store the candidate ID in the session or database for tracking
-        request.session['candidate_id'] = candidate_id
-
-        # Return a response indicating payment initiation
-        return Response({"message": "Payment started successfully. Proceed to payment gateway."}, status=status.HTTP_200_OK)
-
 class CandidateEndorsementsAPIView(APIView):
     """
     API view to retrieve endorsements for a candidate.

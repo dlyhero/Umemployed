@@ -16,7 +16,6 @@ urlpatterns = [
     path('create-interview/', views.CreateInterviewAPIView.as_view(), name='api_create_interview'),
     path('rate-candidate/<int:candidate_id>/', views.RateCandidateAPIView.as_view(), name='api_rate_candidate'),
     path('related-users/', views.CompanyRelatedUsersAPIView.as_view(), name='api_company_related_users'),
-    path('pay-endorsement/<int:candidate_id>/', views.StartPaymentForEndorsementAPIView.as_view(), name='api_start_payment_for_endorsement'),
     path('candidate/<int:candidate_id>/endorsements/', views.CandidateEndorsementsAPIView.as_view(), name='api_candidate_endorsements'),
     path('check-payment-status/<int:candidate_id>/', views.CheckPaymentStatusAPIView.as_view(), name='api_check_payment_status'),
 ]
