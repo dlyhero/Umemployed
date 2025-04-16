@@ -362,6 +362,14 @@ class WorkExperienceViewSet(ModelViewSet):
     def get_queryset(self):
         return WorkExperience.objects.filter(user=self.request.user)
 
+    def perform_create(self, serializer):
+        # Automatically set the user to the currently authenticated user
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        # Ensure the user field is not changed during updates
+        serializer.save(user=self.request.user)
+
 class LanguageViewSet(ModelViewSet):
     """
     Handles CRUD operations for user languages.
