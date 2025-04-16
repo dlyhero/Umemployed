@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from ..models import Company, Interview
+from ..models import Company, Interview, Rating
 from job.models import Job, Application
 from resume.models import Resume, WorkExperience
 from transactions.models import Transaction
@@ -12,6 +12,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .serializers import CompanySerializer
 from django.db.models import Count
+from ..forms import RatingForm
+from django.http import HttpResponseForbidden
 
 class IsCompanyOwner(BasePermission):
     """
@@ -323,15 +325,68 @@ class RateCandidateAPIView(APIView):
 
     @swagger_auto_schema(
         operation_description="Rate a candidate",
-        responses={200: "Candidate rated successfully", 403: "Forbidden"}
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'professionalism': openapi.Schema(type=openapi.TYPE_STRING, description='Professionalism rating'),
+                'skills': openapi.Schema(type=openapi.TYPE_STRING, description='Skills rating'),
+                'communication': openapi.Schema(type=openapi.TYPE_STRING, description='Communication rating'),
+                'teamwork': openapi.Schema(type=openapi.TYPE_STRING, description='Teamwork rating'),
+                'reliability': openapi.Schema(type=openapi.TYPE_STRING, description='Reliability rating'),
+                'stars': openapi.Schema(type=openapi.TYPE_INTEGER, description='Star rating (1-5)'),
+                'review': openapi.Schema(type=openapi.TYPE_STRING, description='Review text'),
+            },
+        ),
+        responses={
+            200: "Candidate rated successfully",
+            403: "Forbidden",
+            400: "Bad Request"
+        }
     )
     def post(self, request, candidate_id):
         """
         Handle POST requests to rate a candidate.
         """
         candidate = get_object_or_404(User, id=candidate_id)
-        rating = request.data.get('rating')
-        # Logic to save the rating
+        endorser = request.user
+
+        # Ensure the endorser and candidate have a past relationship in a company or matching email domains
+        candidate_companies = WorkExperience.objects.filter(user=candidate).values_list('company_name', flat=True)
+        endorser_companies = WorkExperience.objects.filter(user=endorser).values_list('company_name', flat=True)
+        candidate_email_domain = candidate.email.split('@')[-1]
+        endorser_email_domain = endorser.email.split('@')[-1]
+
+        if not (set(candidate_companies).intersection(set(endorser_companies)) or candidate_email_domain == endorser_email_domain):
+            return Response({"error": "You are not allowed to rate this candidate."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Check if a rating already exists
+        rating = Rating.objects.filter(candidate=candidate, endorser=endorser).first()
+
+        # Extract data from the request
+        professionalism = request.data.get('professionalism')
+        skills = request.data.get('skills')
+        communication = request.data.get('communication')
+        teamwork = request.data.get('teamwork')
+        reliability = request.data.get('reliability')
+        stars = request.data.get('stars')
+        review = request.data.get('review')
+
+        # Validate required fields
+        if not all([professionalism, skills, communication, teamwork, reliability, stars]):
+            return Response({"error": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create or update the rating
+        if not rating:
+            rating = Rating(candidate=candidate, endorser=endorser)
+        rating.professionalism = professionalism
+        rating.skills = skills
+        rating.communication = communication
+        rating.teamwork = teamwork
+        rating.reliability = reliability
+        rating.stars = stars
+        rating.review = review
+        rating.save()
+
         return Response({"message": "Candidate rated successfully"}, status=status.HTTP_200_OK)
 
 class CompanyRelatedUsersAPIView(APIView):
