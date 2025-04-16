@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from ..models import Company, Interview, Rating
+from ..models import Company, Interview
+from job.models import Rating 
 from job.models import Job, Application
 from resume.models import Resume, WorkExperience
 from transactions.models import Transaction
