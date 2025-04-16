@@ -507,7 +507,7 @@ class SkillCategoryListView(APIView):
 @api_view(['GET'])
 def user_profile_details_api(request, user_id):
     """
-    Retrieves a user's skills, contact information, work experience, and languages by user ID.
+    Retrieves a user's skills (from Resume), contact information, work experience, and languages by user ID.
 
     Response:
         {
@@ -518,9 +518,12 @@ def user_profile_details_api(request, user_id):
         }
     """
     try:
-        # Fetch user's skills
-        skills = Skill.objects.filter(user_id=user_id)
-        skills_serializer = SkillSerializer(skills, many=True)
+        # Fetch user's skills from the Resume model
+        resume = Resume.objects.filter(user_id=user_id).first()
+        if resume:
+            skills_serializer = SkillSerializer(resume.skills.all(), many=True)
+        else:
+            skills_serializer = []
 
         # Fetch user's contact information
         contact_info = ContactInfo.objects.filter(user_id=user_id).first()
@@ -536,7 +539,7 @@ def user_profile_details_api(request, user_id):
         languages_serializer = LanguageSerializer(languages, many=True)
 
         return Response({
-            "skills": skills_serializer.data,
+            "skills": skills_serializer.data if resume else [],
             "contact_info": contact_info_serializer.data if contact_info else None,
             "work_experience": work_experience_serializer.data,
             "languages": languages_serializer.data
