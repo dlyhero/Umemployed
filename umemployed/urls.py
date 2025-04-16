@@ -77,6 +77,7 @@ urlpatterns = [
     #for video chat
     path('meet/', include('videochat.urls')),
     path('transactions/', include('transactions.urls')),
+    path('api/transactions/',include('transactions.api.urls')),
     path('',include('paypal.standard.ipn.urls')),
    
    #rest api
