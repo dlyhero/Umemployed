@@ -514,7 +514,9 @@ def user_profile_details_api(request, user_id):
             "skills": [...],
             "contact_info": {...},
             "work_experience": [...],
-            "languages": [...]
+            "languages": [...],
+            "profile_image": "url_to_image",
+            "description": "User description"
         }
     """
     try:
@@ -538,11 +540,17 @@ def user_profile_details_api(request, user_id):
         languages = [user_language.language for user_language in user_languages]
         languages_serializer = LanguageSerializer(languages, many=True)
 
+        # Include profile_image and description from Resume
+        profile_image = resume.profile_image.url if resume and resume.profile_image else None
+        description = resume.description if resume else None
+
         return Response({
             "skills": skills_serializer.data if resume else [],
             "contact_info": contact_info_serializer.data if contact_info else None,
             "work_experience": work_experience_serializer.data,
-            "languages": languages_serializer.data
+            "languages": languages_serializer.data,
+            "profile_image": profile_image,
+            "description": description
         }, status=200)
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
