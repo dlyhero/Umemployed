@@ -15,6 +15,7 @@ from .serializers import CompanySerializer
 from django.db.models import Count
 from ..forms import RatingForm
 from django.http import HttpResponseForbidden
+import random
 
 class IsCompanyOwner(BasePermission):
     """
@@ -225,8 +226,10 @@ class ViewApplicationsAPIView(APIView):
         applications = Application.objects.filter(job__in=jobs)
         application_data = [
             {
-                "id": app.id,
+                "application_id": app.id,
+                "job_id": app.job.id,  # Added job_id
                 "job_title": app.job.title,
+                "user_id": app.user.id,  # Added user_id
                 "user": app.user.username,
                 "status": app.status
             }
@@ -252,9 +255,17 @@ class ApplicationDetailsAPIView(APIView):
         resume = Resume.objects.filter(user=application.user).first()
         data = {
             "application_id": application.id,
+            "job_id": application.job.id,  # Added job_id
             "job_title": application.job.title,
+            "user_id": application.user.id,  # Added user_id
             "user": application.user.username,
+            "status": application.status,
+            "quiz_score": application.quiz_score,
+            "matching_percentage": application.matching_percentage,
+            "overall_match_percentage": application.overall_match_percentage,
             "resume": resume.id if resume else None,
+            "created_at": application.created_at,
+            "updated_at": application.updated_at,
         }
         return Response(data, status=status.HTTP_200_OK)
 
@@ -275,14 +286,67 @@ class JobApplicationsViewAPIView(APIView):
         company = get_object_or_404(Company, id=company_id, user=request.user)
         job = get_object_or_404(Job, id=job_id, company=company)
         applications = Application.objects.filter(job=job)
-        application_data = [
-            {
-                "id": app.id,
-                "user": app.user.username,
-                "status": app.status
-            }
-            for app in applications
-        ]
+
+        # Calculate match percentage and overall score for each application
+        for application in applications:
+            user = application.user
+            resume = Resume.objects.filter(user=user).first()  # Avoid DoesNotExist error
+
+            if resume:  # Check if the user has a resume
+                applicant_skills = set(resume.skills.all())
+                job_skills = set(job.requirements.all())
+                match_percentage, _ = application.calculate_skill_match(applicant_skills, job_skills)
+                application.matching_percentage = match_percentage
+
+                # Calculate the overall score using match percentage and quiz score
+                quiz_score = application.quiz_score
+                overall_score = match_percentage * 0.7 + (quiz_score / 10) * 0.3
+                application.overall_score = overall_score
+            else:
+                # Handle cases where no resume exists
+                application.matching_percentage = 0
+                application.overall_score = application.quiz_score / 10 * 0.3  # Only quiz score
+
+        # Sort applications based on quiz score, matching percentage, and randomly if there's a tie
+        applications = sorted(applications, key=lambda x: (x.quiz_score, x.matching_percentage, random.random()), reverse=True)
+
+        # Select top 5 applications and the next 5 for the waiting list
+        top_5_applications = applications[:5]
+        waiting_list_applications = applications[5:10]
+
+        application_data = {
+            "top_5_candidates": [
+                {
+                    "application_id": app.id,
+                    "job_id": app.job.id,
+                    "user_id": app.user.id,
+                    "user": app.user.username,
+                    "status": app.status,
+                    "quiz_score": app.quiz_score,
+                    "matching_percentage": app.matching_percentage,
+                    "overall_match_percentage": app.overall_match_percentage,
+                    "created_at": app.created_at,
+                    "updated_at": app.updated_at,
+                }
+                for app in top_5_applications
+            ],
+            "waiting_list_candidates": [
+                {
+                    "application_id": app.id,
+                    "job_id": app.job.id,
+                    "user_id": app.user.id,
+                    "user": app.user.username,
+                    "status": app.status,
+                    "quiz_score": app.quiz_score,
+                    "matching_percentage": app.matching_percentage,
+                    "overall_match_percentage": app.overall_match_percentage,
+                    "created_at": app.created_at,
+                    "updated_at": app.updated_at,
+                }
+                for app in waiting_list_applications
+            ],
+        }
+
         return Response(application_data, status=status.HTTP_200_OK)
 
 class CreateInterviewAPIView(APIView):
@@ -405,8 +469,31 @@ class CompanyRelatedUsersAPIView(APIView):
         Handle GET requests to retrieve users related to the company.
         """
         current_user = request.user
-        related_users = User.objects.filter(work_experiences__company_name__in=current_user.work_experiences.values_list('company_name', flat=True)).distinct()
-        user_data = [{"id": user.id, "username": user.username} for user in related_users]
+        user_companies = WorkExperience.objects.filter(user=current_user).values_list('company_name', flat=True)
+        current_user_email_domain = current_user.email.split('@')[-1]
+
+        # Query related users based on work experiences
+        related_users = User.objects.filter(
+            work_experiences__company_name__in=user_companies
+        ).distinct().exclude(id=current_user.id)
+
+        # Include users with matching email domains
+        related_users_by_email = User.objects.filter(
+            email__endswith=current_user_email_domain
+        ).distinct().exclude(id=current_user.id)
+
+        # Combine both querysets
+        related_users = related_users | related_users_by_email
+
+        user_data = [
+            {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+            }
+            for user in related_users.distinct()
+        ]
+
         return Response(user_data, status=status.HTTP_200_OK)
 
 class CandidateEndorsementsAPIView(APIView):

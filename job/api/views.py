@@ -3,13 +3,19 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
-from ..models import Job, Application, SavedJob, SkillCategory
+from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from django.db.models import Q
+from django.core.mail import send_mail
+from django.conf import settings
+from ..models import Job, Application, SavedJob, SkillCategory, User, Shortlist, Company
 from resume.models import Skill
 from ..tasks import generate_questions_task
 from ..job_description_algorithm import extract_technical_skills
 from .serializers import JobSerializer, ApplicationSerializer, SavedJobSerializer
 from ..generate_skills import generate_questions_task
 from django_countries import countries  # Import the correct iterable for countries
+from notifications.utils import notify_user, notify_user_declined
 
 class JobListAPIView(ListAPIView):
     queryset = Job.objects.filter(is_available=True)
@@ -21,28 +27,100 @@ class JobDetailAPIView(RetrieveAPIView):
 
 class ApplyJobAPIView(APIView):
     def post(self, request, job_id):
-        # ...logic to apply for a job...
+        job = get_object_or_404(Job, id=job_id)
+        user = request.user
+
+        # Check if the user has already applied for this job
+        existing_application = Application.objects.filter(user=user, job=job).first()
+
+        if existing_application:
+            return Response({"message": "You have already applied for this job."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a new application
+        application = Application.objects.create(user=user, job=job)
+        application.save()
+
         return Response({"message": "Job application submitted successfully."}, status=status.HTTP_201_CREATED)
 
 class SaveJobAPIView(APIView):
     def post(self, request, job_id):
-        # ...logic to save a job...
-        return Response({"message": "Job saved successfully."}, status=status.HTTP_201_CREATED)
+        job = get_object_or_404(Job, id=job_id)
+        user = request.user
+
+        # Check if the job is already saved
+        saved_job, created = SavedJob.objects.get_or_create(user=user, job=job)
+
+        if created:
+            return Response({"message": "Job saved successfully."}, status=status.HTTP_201_CREATED)
+        else:
+            saved_job.delete()
+            return Response({"message": "Job removed successfully."}, status=status.HTTP_200_OK)
 
 class WithdrawApplicationAPIView(APIView):
     def delete(self, request, job_id):
-        # ...logic to withdraw a job application...
-        return Response({"message": "Application withdrawn successfully."}, status=status.HTTP_200_OK)
+        user = request.user
+        job = get_object_or_404(Job, id=job_id)
+
+        # Find the application for the user and job
+        application = Application.objects.filter(user=user, job=job).first()
+
+        if application:
+            application.delete()
+            return Response({"message": "Your application has been withdrawn."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "You haven't applied for this job."}, status=status.HTTP_400_BAD_REQUEST)
 
 class ShortlistCandidateAPIView(APIView):
     def post(self, request, job_id, candidate_id):
-        # ...logic to shortlist a candidate...
-        return Response({"message": "Candidate shortlisted successfully."}, status=status.HTTP_201_CREATED)
+        job = get_object_or_404(Job, id=job_id)
+        candidate = get_object_or_404(User, id=candidate_id)
+        recruiter = request.user
+
+        # Check if the candidate is already shortlisted for the job
+        if Shortlist.objects.filter(recruiter=recruiter, candidate=candidate, job=job).exists():
+            return Response({"message": "Candidate is already shortlisted for this job."}, status=status.HTTP_400_BAD_REQUEST)
+
+        Shortlist.objects.create(recruiter=recruiter, candidate=candidate, job=job)
+        return Response({"message": "Candidate has been shortlisted successfully."}, status=status.HTTP_201_CREATED)
 
 class DeclineCandidateAPIView(APIView):
     def post(self, request, job_id, candidate_id):
-        # ...logic to decline a candidate...
-        return Response({"message": "Candidate declined successfully."}, status=status.HTTP_201_CREATED)
+        job = get_object_or_404(Job, id=job_id)
+        candidate = get_object_or_404(User, id=candidate_id)
+        recruiter = request.user
+
+        # Check if the recruiter is associated with the job
+        company = get_object_or_404(Company, user=recruiter)
+        if job.company != company:
+            return Response({"message": "You are not authorized to decline this candidate."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Get the application object
+        application = get_object_or_404(Application, job=job, user=candidate)
+
+        # Delete the application object
+        application.delete()
+
+        # Send notification to the candidate
+        notify_user_declined(candidate, f"Your application for the job '{job.title}' has been declined.", Notification.JOB_APPLICATION)
+
+        # Send email to the candidate
+        subject = "Application Declined"
+        message = f"""
+                    Dear {candidate.get_full_name()},
+
+                    Thank you for your interest in the {job.title} position at {company.name}. After careful consideration, we regret to inform you that we will not be moving forward with your application at this time.
+
+                    We truly appreciate the effort you put into your application and encourage you to apply for future opportunities that align with your qualifications. Thank you again for your time and interest in joining our team.
+
+                    Wishing you the very best in your job search.
+
+                    Warm regards,  
+                    {company.name}
+                    """
+        from_email = settings.DEFAULT_FROM_EMAIL
+        send_mail(subject, message, from_email, [candidate.email])
+
+        return Response({"message": "Candidate has been declined successfully."}, status=status.HTTP_200_OK)
 
 class SavedJobsListAPIView(ListAPIView):
     serializer_class = SavedJobSerializer
@@ -76,7 +154,6 @@ class AppliedJobsListAPIView(ListAPIView):
 
     def get_queryset(self):
         return Application.objects.filter(user=self.request.user)
-
 
 class CreateJobStep1APIView(APIView):
     """
@@ -125,7 +202,6 @@ class CreateJobStep1APIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class CreateJobStep2APIView(APIView):
     """
     Endpoint to update the second step of a job.
@@ -168,7 +244,6 @@ class CreateJobStep2APIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class CreateJobStep3APIView(APIView):
     """
@@ -223,7 +298,6 @@ class CreateJobStep3APIView(APIView):
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class CreateJobStep4APIView(APIView):
     """
     Endpoint to update the fourth step of a job.
@@ -268,6 +342,7 @@ class CreateJobStep4APIView(APIView):
         # Update the job's requirements and level
         job.requirements.set(skills)  # Use `set` to update ManyToManyField
         job.level = level
+        job.is_available = True  # Set is_available to True
         job.save()
 
         # Generate questions for the selected skills
@@ -290,7 +365,6 @@ class CreateJobStep4APIView(APIView):
                 "generated_questions": [],
                 "message": "Failed to generate questions."
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class JobOptionsAPIView(APIView):
     """
@@ -324,7 +398,6 @@ class JobOptionsAPIView(APIView):
             "job_types": job_types,
             "locations": countries_list,
         })
-
 
 class ExtractedSkillsAPIView(APIView):
     """
