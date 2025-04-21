@@ -4,7 +4,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from ..models import Company, Interview
 from job.models import Rating 
-from job.models import Job, Application
+from job.models import Job, Application, Shortlist  # Import Shortlist model
 from resume.models import Resume, WorkExperience
 from transactions.models import Transaction
 from users.models import User
@@ -348,6 +348,82 @@ class JobApplicationsViewAPIView(APIView):
         }
 
         return Response(application_data, status=status.HTTP_200_OK)
+
+class ShortlistedCandidatesAPIView(APIView):
+    """
+    API view to retrieve shortlisted candidates for a specific job.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Retrieve shortlisted candidates for a specific job",
+        responses={200: "Shortlisted candidates retrieved successfully", 404: "Not Found"}
+    )
+    def get(self, request, company_id, job_id):
+        """
+        Handle GET requests to retrieve shortlisted candidates for a specific job.
+        """
+        company = get_object_or_404(Company, id=company_id, user=request.user)
+        job = get_object_or_404(Job, id=job_id, company=company)
+        shortlisted_candidates = Shortlist.objects.filter(job=job)
+
+        candidate_data = [
+            {
+                "candidate_id": shortlist.candidate.id,
+                "candidate_name": shortlist.candidate.get_full_name(),
+                "candidate_email": shortlist.candidate.email,
+                "job_id": shortlist.job.id,
+                "job_title": shortlist.job.title,
+                "shortlisted_at": shortlist.created_at,
+                "application": {
+                    "application_id": application.id,
+                    "status": application.status,
+                    "quiz_score": application.quiz_score,
+                    "matching_percentage": application.matching_percentage,
+                    "overall_match_percentage": application.overall_match_percentage,
+                } if (application := Application.objects.filter(user=shortlist.candidate, job=job).first()) else None
+            }
+            for shortlist in shortlisted_candidates
+        ]
+
+        return Response(candidate_data, status=status.HTTP_200_OK)
+
+class ShortlistCandidateAPIView(APIView):
+    """
+    API view to shortlist a candidate for a specific job.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Shortlist a candidate for a specific job",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'candidate_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the candidate to shortlist'),
+            },
+        ),
+        responses={201: "Candidate shortlisted successfully", 400: "Bad Request", 404: "Not Found"}
+    )
+    def post(self, request, company_id, job_id):
+        """
+        Handle POST requests to shortlist a candidate.
+        """
+        company = get_object_or_404(Company, id=company_id, user=request.user)
+        job = get_object_or_404(Job, id=job_id, company=company)
+        candidate_id = request.data.get('candidate_id')
+
+        if not candidate_id:
+            return Response({"error": "Candidate ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        candidate = get_object_or_404(User, id=candidate_id)
+
+        # Check if the candidate is already shortlisted
+        if Shortlist.objects.filter(job=job, candidate=candidate).exists():
+            return Response({"error": "Candidate is already shortlisted for this job."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a new shortlist entry
+        Shortlist.objects.create(recruiter=request.user, candidate=candidate, job=job)
+        return Response({"message": "Candidate shortlisted successfully."}, status=status.HTTP_201_CREATED)
 
 class CreateInterviewAPIView(APIView):
     """
