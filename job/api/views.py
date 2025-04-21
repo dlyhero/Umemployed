@@ -16,6 +16,9 @@ from .serializers import JobSerializer, ApplicationSerializer, SavedJobSerialize
 from ..generate_skills import generate_questions_task
 from django_countries import countries  # Import the correct iterable for countries
 from notifications.utils import notify_user, notify_user_declined
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination
 
 class JobListAPIView(ListAPIView):
     queryset = Job.objects.filter(is_available=True)
@@ -418,3 +421,30 @@ class ExtractedSkillsAPIView(APIView):
 
         extracted_skills = job.extracted_skills.values('id', 'name')
         return Response({"extracted_skills": list(extracted_skills)}, status=status.HTTP_200_OK)
+
+class SearchJobsAPIView(ListAPIView):
+    """
+    Endpoint for advanced searching and filtering of jobs.
+
+    Features:
+    - Full-text search on job title and description.
+    - Filtering by location, salary range, job type, and category.
+    - Sorting by created date or salary.
+    - Pagination for large result sets.
+    """
+    queryset = Job.objects.filter(is_available=True)
+    serializer_class = JobSerializer
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+    search_fields = ['title', 'description']
+    filterset_fields = ['location', 'salary_range', 'job_type', 'category']
+    ordering_fields = ['created_at', 'salary']
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        keyword = self.request.query_params.get('keyword', None)
+        if keyword:
+            queryset = queryset.filter(
+                Q(title__icontains=keyword) | Q(description__icontains=keyword)
+            )
+        return queryset
