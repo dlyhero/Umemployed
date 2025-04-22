@@ -24,9 +24,19 @@ class JobListAPIView(ListAPIView):
     queryset = Job.objects.filter(is_available=True)
     serializer_class = JobSerializer
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
 class JobDetailAPIView(RetrieveAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 class ApplyJobAPIView(APIView):
     def post(self, request, job_id):
@@ -439,6 +449,11 @@ class SearchJobsAPIView(ListAPIView):
     filterset_fields = ['location', 'salary_range', 'job_type', 'category']
     ordering_fields = ['created_at', 'salary']
     pagination_class = PageNumberPagination
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
