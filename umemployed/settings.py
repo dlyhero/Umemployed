@@ -196,7 +196,7 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL'),
-        conn_max_age=60,  # 60 seconds (1 minutes) for connection reuse
+        conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
     )
 }
 
