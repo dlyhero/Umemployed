@@ -136,10 +136,16 @@ class DeclineCandidateAPIView(APIView):
         return Response({"message": "Candidate has been declined successfully."}, status=status.HTTP_200_OK)
 
 class SavedJobsListAPIView(ListAPIView):
-    serializer_class = SavedJobSerializer
+    serializer_class = JobSerializer
 
     def get_queryset(self):
-        return SavedJob.objects.filter(user=self.request.user)
+        saved_jobs = SavedJob.objects.filter(user=self.request.user).select_related('job')
+        return Job.objects.filter(id__in=saved_jobs.values_list('job_id', flat=True))
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 class GenerateQuestionsAPIView(APIView):
     def post(self, request):
