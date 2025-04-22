@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from ..models import Job, Application, SavedJob
+from ..models import Job, Application, SavedJob, Company
 
 class JobSerializer(serializers.ModelSerializer):
     is_saved = serializers.SerializerMethodField()
     is_applied = serializers.SerializerMethodField()
+    company = serializers.SerializerMethodField()
 
     class Meta:
         model = Job
@@ -12,7 +13,7 @@ class JobSerializer(serializers.ModelSerializer):
             'location', 'salary_range', 'category', 'description', 
             'responsibilities', 'benefits', 'requirements', 'level', 
             'experience_levels', 'weekly_ranges', 'shifts', 'created_at', 
-            'is_saved', 'is_applied'
+            'is_saved', 'is_applied', 'company'
         ]
         extra_kwargs = {
             'description': {'required': False},
@@ -36,6 +37,27 @@ class JobSerializer(serializers.ModelSerializer):
         if user.is_authenticated:
             return Application.objects.filter(user=user, job=obj).exists()
         return False
+
+    def get_company(self, obj):
+        return {
+            "id": obj.company.id,
+            "name": obj.company.name,
+            "location": obj.company.location,
+            "description": obj.company.description,
+            "industry": obj.company.industry,
+            "size": obj.company.size,
+            "founded": obj.company.founded,
+            "website_url": obj.company.website_url,
+            "country": obj.company.country.name if obj.company.country else None,
+            "contact_email": obj.company.contact_email,
+            "contact_phone": obj.company.contact_phone,
+            "linkedin": obj.company.linkedin,
+            "video_introduction": obj.company.video_introduction,
+            "logo": obj.company.logo.url if obj.company.logo else None,
+            "cover_photo": obj.company.cover_photo.url if obj.company.cover_photo else None,
+            "mission_statement": obj.company.mission_statement,
+            "job_openings": obj.company.job_openings,
+        }
 
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
