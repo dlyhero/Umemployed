@@ -8,7 +8,8 @@ from django.contrib import messages
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
-from ..models import Job, Application, SavedJob, SkillCategory, User, Shortlist, Company
+from django.db import transaction
+from ..models import Job, Application, SavedJob, SkillCategory, User, Shortlist, Company, SkillQuestion, CompletedSkills, ApplicantAnswer, RetakeRequest
 from resume.models import Skill
 from ..tasks import generate_questions_task
 from ..job_description_algorithm import extract_technical_skills
@@ -19,6 +20,9 @@ from notifications.utils import notify_user, notify_user_declined
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
+import logging
+
+logger = logging.getLogger(__name__)
 
 class JobListAPIView(ListAPIView):
     queryset = Job.objects.filter(is_available=True)
@@ -469,3 +473,151 @@ class SearchJobsAPIView(ListAPIView):
                 Q(title__icontains=keyword) | Q(description__icontains=keyword)
             )
         return queryset
+
+class JobQuestionsAPIView(APIView):
+    """
+    API endpoint to fetch all questions for a job categorized by skills and submit all answers at once.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, job_id):
+        """
+        Fetch all questions for a job categorized by skills.
+
+        Args:
+            request: The HTTP GET request object.
+            job_id: The ID of the job for which questions are being fetched.
+
+        Returns:
+            Response: A JSON response containing:
+                - job_title: The title of the job.
+                - total_time: Total time allocated for the quiz in seconds.
+                - questions_by_skill: A dictionary where each key is a skill name, and the value is a list of questions for that skill.
+        """
+        job = get_object_or_404(Job, id=job_id)
+        skills = job.requirements.all()
+
+        # Calculate total time allocated for the quiz
+        time_per_skill = 3 * 60  # 3 minutes per skill in seconds
+        total_time = skills.count() * time_per_skill
+
+        categorized_questions = {}
+        for skill in skills:
+            questions = SkillQuestion.objects.filter(skill=skill, entry_level=job.level).order_by('?')
+            categorized_questions[skill.name] = [
+                {
+                    "id": question.id,
+                    "question": question.question,
+                    "options": [question.option_a, question.option_b, question.option_c, question.option_d]
+                }
+                for question in questions
+            ]
+
+        return Response({
+            "job_title": job.title,
+            "total_time": total_time,  # Total time in seconds
+            "questions_by_skill": categorized_questions
+        }, status=200)
+
+    def post(self, request, job_id):
+        """
+        Submit all answers for a job at once.
+
+        Args:
+            request: The HTTP POST request object containing the user's answers.
+            job_id: The ID of the job for which answers are being submitted.
+
+        Request Body:
+            {
+                "responses": [
+                    {
+                        "question_id": <int>,
+                        "answer": <str>,
+                        "skill_id": <int>
+                    },
+                    ...
+                ]
+            }
+
+        Returns:
+            Response: A JSON response containing:
+                - message: A success message.
+                - total_score: The total score achieved by the user.
+        """
+        user = request.user
+        job = get_object_or_404(Job, id=job_id)
+        data = request.data
+        responses = data.get("responses", [])
+
+        if not responses:
+            return Response({"error": "Responses are required."}, status=400)
+
+        application, _ = Application.objects.get_or_create(user=user, job=job)
+        total_score = 0
+
+        with transaction.atomic():
+            for response in responses:
+                question_id = response.get("question_id")
+                answer = response.get("answer")
+                skill_id = response.get("skill_id")
+
+                if not question_id or not answer or not skill_id:
+                    continue
+
+                question = get_object_or_404(SkillQuestion, id=question_id)
+                skill = get_object_or_404(Skill, id=skill_id)
+
+                # Save the applicant's answer
+                applicant_answer = ApplicantAnswer.objects.create(
+                    applicant=user,
+                    question=question,
+                    answer=answer,
+                    job=job,
+                    application=application
+                )
+                applicant_answer.calculate_score()
+                total_score += applicant_answer.score
+
+                # Mark the skill as completed
+                CompletedSkills.objects.update_or_create(
+                    user=user,
+                    job=job,
+                    skill=skill,
+                    defaults={"is_completed": True}
+                )
+
+            # Update application scores
+            application.quiz_score = total_score
+            application.has_completed_quiz = True
+            application.save()
+
+        return Response({"message": "All responses submitted successfully.", "total_score": total_score}, status=200)
+
+class ReportTestAPIView(APIView):
+    """
+    API endpoint to report issues with a test for a specific job.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, job_id):
+        job = get_object_or_404(Job, id=job_id)
+        reason = request.data.get("reason")
+
+        if not reason:
+            return Response({"error": "Reason is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a retake request
+        RetakeRequest.objects.create(user=request.user, job=job, reason=reason)
+
+        # Notify admins
+        superusers = User.objects.filter(is_superuser=True)
+        superuser_emails = [user.email for user in superusers]
+        send_mail(
+            "New Retake Request",
+            f"User {request.user.username} has requested to retake the test for job {job.id}.\n\nReason:\n{reason}",
+            "Assessment-Issue",
+            superuser_emails,
+            fail_silently=False,
+        )
+
+        return Response({"message": "Retake request submitted successfully."}, status=status.HTTP_200_OK)
