@@ -63,7 +63,10 @@ urlpatterns = [
     
     path('messages/',include('messaging.urls')),
     path('api/messages/',include('messaging.api.urls')),
+    
     path('notifications/',include('notifications.urls')),
+    path('api/notifications/',include('notifications.api.urls')),
+    
     
     re_path(r'^accounts/confirm-email/(?P<key>[-:\w]+)/$', confirm_email, name='account_confirm_email'),
     
