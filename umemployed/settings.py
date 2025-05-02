@@ -499,4 +499,3 @@ CORS_ALLOW_METHODS = [
     'DELETE',
     'OPTIONS',
 ]  # Allow specific HTTP methods
-
