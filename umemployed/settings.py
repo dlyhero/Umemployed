@@ -204,10 +204,7 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 # DATABASES = {
 #     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 # }
-connection_string = os.getenv('AZURE_POSTGRESQL_CONNECTIONSTRING')
-
-if not connection_string:
-    raise ValueError("The environment variable 'AZURE_POSTGRESQL_CONNECTIONSTRING' is not set.")
+connection_string = "Database=umemployed-database;Server=umemployed-server.postgres.database.azure.com;User Id=dznrkvkfku;Password=dr1MQr$MomOdnkSf"
 
 parameters = {
     key_value[0]: key_value[1]
@@ -218,10 +215,14 @@ parameters = {
 DATABASES = {  
     'default': {  
         'ENGINE': 'django.db.backends.postgresql',  
-        'NAME': parameters.get('dbname'),
-        'USER': parameters.get('user'),
-        'PASSWORD': parameters.get('password'),
-        'HOST': parameters.get('host'),
+        'NAME': parameters.get('Database'),
+        'USER': parameters.get('User Id').split('@')[0],  # Extract username from "username@servername"
+        'PASSWORD': parameters.get('Password'),
+        'HOST': parameters.get('Server'),
+        'PORT': '5432',  # Default PostgreSQL port
+        'OPTIONS': {
+            'sslmode': 'require',  # Use SSL for secure connection
+        },
     }  
 }
 
