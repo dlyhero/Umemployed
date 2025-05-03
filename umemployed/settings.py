@@ -205,6 +205,10 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 #     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 # }
 connection_string = os.getenv('AZURE_POSTGRESQL_CONNECTIONSTRING')
+
+if not connection_string:
+    raise ValueError("The environment variable 'AZURE_POSTGRESQL_CONNECTIONSTRING' is not set.")
+
 parameters = {
     key_value[0]: key_value[1]
     for pair in connection_string.split(';')
