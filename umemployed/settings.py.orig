@@ -23,7 +23,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['umemployed-app-afec951f7ec7.herokuapp.com','localhost','7eef-129-0-60-130.ngrok-free.app']
 
 SITE_ID = 3
 
@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'social_django',
+    'rest_framework',
+    'drf_yasg',
 
     'users',
     'allauth',
@@ -65,13 +67,19 @@ INSTALLED_APPS = [
     'channels',
     'cities_light',
     
-    'ckeditor',
-    'ckeditor_uploader',
+    'django_ckeditor_5',
+    'videochat',
+    
+    'paypal.standard.ipn',
+    'transactions',
+    'corsheaders',  
 ]
+
 
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
-REDIS_URL  = os.getenv('REDIS_URL')
+SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
+# REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
 
 # settings.py
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -79,19 +87,22 @@ GEMINI_API_KEY = os.getenv("GENAI_API_KEY")
 LLAMA_API_KEY = os.getenv("LLAMA_API_KEY")
 
 
+
+
 import logging
 from channels_redis.core import RedisChannelLayer
 import os
 import ssl
 
+
 # Load environment variables
-REDIS_URL = os.getenv('REDIS_URL', 'rediss://:p2ae106d8d68c62b36a40bcd26d5e854e78a219c54664828c1987db33f8cfe2c6@ec2-54-146-141-60.compute-1.amazonaws.com:14190')
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 
 # Channels configuration
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
             "hosts": [REDIS_URL],
         },
     },
@@ -104,8 +115,10 @@ CACHES = {
         'LOCATION': REDIS_URL,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'SOCKET_CONNECT_TIMEOUT': 10,  # in seconds
+            'SOCKET_TIMEOUT': 10,
             'CONNECTION_POOL_CLASS_KWARGS': {
-                'ssl_cert_reqs': ssl.CERT_NONE,  # This allows self-signed certificates
+                'ssl': False,  # Disable SSL
             },
         },
     }
@@ -114,6 +127,8 @@ CACHES = {
 # Celery configuration
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 accept_content = ['application/json']
 result_serializer = 'json'
@@ -132,11 +147,11 @@ result_backend_transport_options = {
 }
 
 
-
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
@@ -146,6 +161,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'users.middleware.EmailVerificationMiddleware',  # Added to support account verifcation
     # 'umemployed.middleware.RedirectBasedOnRoleMiddleware',
 
      # Add the account middleware:
@@ -177,17 +193,16 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-  
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd97r55prv16las',
-        'USER': 'u3mlos1b16lhnu',
-        'PASSWORD': 'p5d239049119450812c414a246b1be69bc8479bb870fc89fca6bcdbc1f082f3c5',
-        'HOST': 'c9pv5s2sq0i76o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
-        'PORT': '5432',      
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
+    )
 }
+
+# DATABASES = {
+#     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+# }
 
 # DATABASES = {  
 #     'default': {  
@@ -216,9 +231,9 @@ LOGOUT_URL='logout'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT='/'
 
-SOCIAL_AUTH_GOOGLE_OAUTH_KEY = '38566500036-s92j092h19cnf0seht935oatlm9bb67a.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH_SECRET = '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'
-
+SOCIAL_AUTH_GOOGLE_OAUTH_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI')
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SOCIAL_AUTH_GOOGLE_OAUTH_KEY  # This is the same as above
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SOCIAL_AUTH_GOOGLE_OAUTH_SECRET  # This is the same as above
 
@@ -229,9 +244,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-afec951f7ec7.herokuapp.com', 'http://127.0.0.1:8000', 'https://umemployed-development-8475c5e1c4b7.herokuapp.com',]
+CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-afec951f7ec7.herokuapp.com', 'http://127.0.0.1:8000', 'https://umemployed-development-8475c5e1c4b7.herokuapp.com','https://7eef-129-0-60-130.ngrok-free.app','http://localhost:3000']
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://umemployed-app-afec951f7ec7.herokuapp.com/social-auth/complete/google-oauth2/'
+CSRF_TRUSTED_ORIGINS += [
+    'https://accounts.google.com',
+    'https://www.googleapis.com',
+]
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
@@ -248,24 +266,14 @@ SOCIAL_AUTH_PIPELINE = (
 
 ACCOUNT_EMAIL_REQUIRED = True #new
 ACCOUNT_LOGOUT_REDIRECT_URL='/'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
 EMAIL_HOST = 'smtp.gmail.com' #new
 EMAIL_PORT = 587 #new
-EMAIL_HOST_USER = 'billleynyuy@gmail.com'  #new
-EMAIL_HOST_PASSWORD = "hlvr rkdd irly osnl" #new
+EMAIL_HOST_USER = 'info@umemployed.com'  #new
+EMAIL_HOST_PASSWORD = "hszd wpet pnre asce" #new
 EMAIL_USE_TLS = True #new
-DEFAULT_FROM_EMAIL = 'billleynyuy@gmail.com'
+DEFAULT_FROM_EMAIL = 'info@umemployed.com'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
-# EMAIL_HOST = 'mail.umemployed.com' #new
-# EMAIL_PORT = 465 #new
-# EMAIL_HOST_USER = 'info@umemployed.com'  #new
-# EMAIL_HOST_PASSWORD = "guew cfro yuao tkiz" #new
-# EMAIL_USE_TLS = True #new
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -321,15 +329,7 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Update the path to an absolute path
 
-# CKEditor settings
-CKEDITOR_UPLOAD_PATH = "uploads/"
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'width': '100%',
-        'height': 300,
-    },
-}
+
 
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',
@@ -340,18 +340,162 @@ OPENAI_API_KEY = config('OPENAI_API_KEY')
 SECRET_KEY = config('SECRET_KEY')
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+PAYPAL_RECEIVER_EMAIL = 'business@umemployed.com' 
+PAYPAL_TEST = True  # Set to False for live transactions
+
+
+# Stripe API Keys
+STRIPE_LIVE_MODE = True 
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='your-default-stripe-secret-key')
+STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='your-default-stripe-publishable-key')
+STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='your-default-stripe-webhook-secret')
 
 django_heroku.settings(locals())
+# CKEditor settings
+customColorPalette = [
+        {
+            'color': 'hsl(4, 90%, 58%)',
+            'label': 'Red'
+        },
+        {
+            'color': 'hsl(340, 82%, 52%)',
+            'label': 'Pink'
+        },
+        {
+            'color': 'hsl(291, 64%, 42%)',
+            'label': 'Purple'
+        },
+        {
+            'color': 'hsl(262, 52%, 47%)',
+            'label': 'Deep Purple'
+        },
+        {
+            'color': 'hsl(231, 48%, 48%)',
+            'label': 'Indigo'
+        },
+        {
+            'color': 'hsl(207, 90%, 54%)',
+            'label': 'Blue'
+        },
+    ]
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=os.getenv('DATABASE_URL'),
-#         conn_max_age=600,  # 600 seconds (10 minutes) for connection reuse
-#     )
-# }
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': {
+            'items': ['heading', '|', 'bold', 'italic', 'link',
+                      'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+        }
+    },
+    'extends': {
+        'blockToolbar': [
+            'paragraph', 'heading1', 'heading2', 'heading3',
+            '|',
+            'bulletedList', 'numberedList',
+            '|',
+            'blockQuote',
+        ],
+        'toolbar': {
+            'items': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
+                      'code', 'subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing', 'insertImage',
+                      'bulletedList', 'numberedList', 'todoList', '|', 'blockQuote', 'imageUpload', '|',
+                      'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
+                      'insertTable',
+            ],
+            'shouldNotGroupWhenFull': True
+        },
+        'image': {
+            'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
+                        'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side', '|'],
+            'styles': [
+                'full',
+                'side',
+                'alignLeft',
+                'alignRight',
+                'alignCenter',
+            ]
+        },
+        'table': {
+            'contentToolbar': ['tableColumn', 'tableRow', 'mergeTableCells',
+                               'tableProperties', 'tableCellProperties'],
+            'tableProperties': {
+                'borderColors': customColorPalette,
+                'backgroundColors': customColorPalette
+            },
+            'tableCellProperties': {
+                'borderColors': customColorPalette,
+                'backgroundColors': customColorPalette
+            }
+        },
+        'heading': {
+            'options': [
+                {'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph'},
+                {'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1'},
+                {'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2'},
+                {'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3'}
+            ]
+        }
+    },
+    'list': {
+        'properties': {
+            'styles': True,
+            'startIndex': True,
+            'reversed': True,
+        }
+    }
+}
 
-# DATABASES = {
-#     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',  # Change this to AllowAny
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20000),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': False,
+    'JSON_EDITOR': True,
+}
+
+# CORS configuration
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be included in cross-origin requests
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-csrftoken',
+    'accept',
+    'origin',
+    'user-agent',
+    'x-requested-with',
+]  # Allow specific headers
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]  # Allow specific HTTP methods
