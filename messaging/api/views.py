@@ -198,3 +198,118 @@ class DeleteConversationAPIView(APIView):
 
         conversation.delete()
         return Response({"message": "Conversation deleted successfully."}, status=200)
+
+from messaging.models import MessageReaction
+class MessageReactionAPIView(APIView):
+    """
+    Endpoint to add or remove a reaction to a message.
+
+    Methods:
+    - POST: Add a reaction to a message.
+    - DELETE: Remove a reaction from a message.
+
+    URL: /api/messaging/messages/<message_id>/reactions/
+    Request Body (POST):
+    {
+        "reaction": "like"
+    }
+    Response:
+    - 201 Created (POST): Confirms the reaction was added successfully.
+    - 200 OK (DELETE): Confirms the reaction was removed successfully.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, message_id):
+        message = get_object_or_404(ChatMessage, id=message_id)
+        reaction = request.data.get('reaction')
+        if not reaction:
+            return Response({"error": "Reaction is required."}, status=400)
+
+        reaction_obj, created = MessageReaction.objects.get_or_create(
+            message=message, user=request.user, reaction=reaction
+        )
+        if created:
+            return Response({"message": "Reaction added successfully."}, status=201)
+        return Response({"message": "Reaction already exists."}, status=200)
+
+    def delete(self, request, message_id):
+        message = get_object_or_404(ChatMessage, id=message_id)
+        reaction = request.data.get('reaction')
+        if not reaction:
+            return Response({"error": "Reaction is required."}, status=400)
+
+        reaction_obj = MessageReaction.objects.filter(
+            message=message, user=request.user, reaction=reaction
+        ).first()
+        if reaction_obj:
+            reaction_obj.delete()
+            return Response({"message": "Reaction removed successfully."}, status=200)
+        return Response({"error": "Reaction not found."}, status=404)
+
+class UpdateMessageAPIView(APIView):
+    """
+    Endpoint to update a specific message.
+
+    Method: PUT
+    URL: /api/messaging/messages/<message_id>/update/
+    Request Body:
+    {
+        "text": "Updated message text."
+    }
+    Response:
+    - 200 OK: Confirms the message was updated successfully.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, message_id):
+        message = get_object_or_404(ChatMessage, id=message_id, sender=request.user)
+        new_text = request.data.get('text')
+        if not new_text:
+            return Response({"error": "Message text is required."}, status=400)
+
+        message.text = new_text
+        message.save()
+        return Response({"message": "Message updated successfully."}, status=200)
+
+class DeleteMessageAPIView(APIView):
+    """
+    Endpoint to delete a specific message.
+
+    Method: DELETE
+    URL: /api/messaging/messages/<message_id>/delete/
+    Response:
+    - 200 OK: Confirms the message was deleted successfully.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, message_id):
+        message = get_object_or_404(ChatMessage, id=message_id, sender=request.user)
+        message.delete()
+        return Response({"message": "Message deleted successfully."}, status=200)
+
+class BulkDeleteMessagesAPIView(APIView):
+    """
+    Endpoint to delete multiple messages in a conversation.
+
+    Method: POST
+    URL: /api/messaging/conversations/<conversation_id>/bulk-delete/
+    Request Body:
+    {
+        "message_ids": [1, 2, 3]
+    }
+    Response:
+    - 200 OK: Confirms the messages were deleted successfully.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, conversation_id):
+        conversation = get_object_or_404(Conversation, id=conversation_id)
+        if request.user not in [conversation.participant1, conversation.participant2]:
+            return Response({"error": "Unauthorized"}, status=403)
+
+        message_ids = request.data.get('message_ids', [])
+        if not message_ids:
+            return Response({"error": "Message IDs are required."}, status=400)
+
+        ChatMessage.objects.filter(id__in=message_ids, conversation=conversation).delete()
+        return Response({"message": "Messages deleted successfully."}, status=200)

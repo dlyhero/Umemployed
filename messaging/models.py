@@ -17,3 +17,14 @@ class ChatMessage(models.Model):
 
     def __str__(self):
         return f"Message from {self.sender} at {self.timestamp}"
+
+class MessageReaction(models.Model):
+    message = models.ForeignKey(ChatMessage, related_name='reactions', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    reaction = models.CharField(max_length=50)  # e.g., 'like', 'love', 'laugh', etc.
+
+    class Meta:
+        unique_together = ('message', 'user', 'reaction')
+
+    def __str__(self):
+        return f"{self.user} reacted with {self.reaction} to message {self.message.id}"
