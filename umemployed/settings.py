@@ -153,6 +153,7 @@ CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -193,23 +194,32 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.getenv('DATABASE_URL'),
+#         conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
+#     )
+# }
 
 # DATABASES = {
 #     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 # }
+connection_string = os.getenv('AZURE_POSTGRESQL_CONNECTIONSTRING')
+parameters = {
+    key_value[0]: key_value[1]
+    for pair in connection_string.split(';')
+    if (key_value := pair.split('=', 1)) and len(key_value) == 2
+}
 
-# DATABASES = {  
-#     'default': {  
-#         'ENGINE': 'django.db.backends.sqlite3',  
-#         'NAME': BASE_DIR / "db.sqlite3",  
-#     }  
-# }
+DATABASES = {  
+    'default': {  
+        'ENGINE': 'django.db.backends.postgresql',  
+        'NAME': parameters.get('dbname'),
+        'USER': parameters.get('user'),
+        'PASSWORD': parameters.get('password'),
+        'HOST': parameters.get('host'),
+    }  
+}
 
 ADMINS = [('Nyuydine Bill', 'billleynyuy@gmail.com')]
 MANAGERS = ADMINS
@@ -302,9 +312,9 @@ USE_I18N = True
 USE_TZ = True
 
 # Azure Blob Storage settings
-AZURE_ACCOUNT_NAME = config('AZURE_ACCOUNT_NAME')
-AZURE_ACCOUNT_KEY = config('AZURE_ACCOUNT_KEY')
-AZURE_CONTAINER = config('AZURE_CONTAINER')
+AZURE_ACCOUNT_NAME = config('AZURE_ACCOUNT_NAME', default='your-default-account-name')
+AZURE_ACCOUNT_KEY = config('AZURE_ACCOUNT_KEY', default='your-default-account-key')
+AZURE_CONTAINER = config('AZURE_CONTAINER', default='your-default-container')
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
 # Media files settings
