@@ -501,6 +501,10 @@ class JobQuestionsAPIView(APIView):
         time_per_skill = 3 * 60  # 3 minutes per skill in seconds
         total_time = skills.count() * time_per_skill
 
+        application, _ = Application.objects.get_or_create(user=request.user, job=job)
+        application.has_started = True
+        application.save()
+
         categorized_questions = {}
         for skill in skills:
             questions = SkillQuestion.objects.filter(skill=skill, entry_level=job.level).order_by('?')

@@ -5,6 +5,7 @@ class JobSerializer(serializers.ModelSerializer):
     is_saved = serializers.SerializerMethodField()
     is_applied = serializers.SerializerMethodField()
     company = serializers.SerializerMethodField()
+    has_started = serializers.SerializerMethodField()
 
     class Meta:
         model = Job
@@ -13,7 +14,7 @@ class JobSerializer(serializers.ModelSerializer):
             'location', 'salary_range', 'category', 'description', 
             'responsibilities', 'benefits', 'requirements', 'level', 
             'experience_levels', 'weekly_ranges', 'shifts', 'created_at', 
-            'is_saved', 'is_applied', 'company'
+            'is_saved', 'is_applied', 'company', 'has_started'
         ]
         extra_kwargs = {
             'description': {'required': False},
@@ -58,6 +59,13 @@ class JobSerializer(serializers.ModelSerializer):
             "mission_statement": obj.company.mission_statement,
             "job_openings": obj.company.job_openings,
         }
+
+    def get_has_started(self, obj):
+        user = self.context.get('request').user
+        if user.is_authenticated:
+            application = Application.objects.filter(user=user, job=obj).first()
+            return application.has_started if application else False
+        return False
 
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
