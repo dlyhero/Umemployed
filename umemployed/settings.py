@@ -18,10 +18,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='your-default-secret-key')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = True
 
 ALLOWED_HOSTS = ['umemployed-app-afec951f7ec7.herokuapp.com','localhost','7eef-129-0-60-130.ngrok-free.app']
 
@@ -78,14 +78,13 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'umemployed.asgi.application'
 
-SITE_URL = config('SITE_URL', default='http://localhost:8000')
-
-REDIS_URL = config('REDIS_URL', default='redis://localhost:6379/0')
+SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
+# REDIS_URL  = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')
 
 # settings.py
-OPENAI_API_KEY = config('OPENAI_API_KEY', default='your-default-openai-api-key')
-GEMINI_API_KEY = config('GENAI_API_KEY', default='your-default-gemini-api-key')
-LLAMA_API_KEY = config('LLAMA_API_KEY', default='your-default-llama-api-key')
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GEMINI_API_KEY = os.getenv("GENAI_API_KEY")
+LLAMA_API_KEY = os.getenv("LLAMA_API_KEY")
 
 
 
@@ -95,6 +94,9 @@ from channels_redis.core import RedisChannelLayer
 import os
 import ssl
 
+
+# Load environment variables
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 
 # Channels configuration
 CHANNEL_LAYERS = {
@@ -151,7 +153,6 @@ CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -192,31 +193,23 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-connection_string = config(
-    'AZURE_POSTGRESQL_CONNECTIONSTRING',
-    default="Database=umemployed-database;Server=umemployed-server.postgres.database.azure.com;User Id=dznrkvkfku;Password=dr1MQr$MomOdnkSf"
-)
-
-parameters = {
-    key_value[0]: key_value[1]
-    for pair in connection_string.split(';')
-    if (key_value := pair.split('=', 1)) and len(key_value) == 2
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
+    )
 }
 
-DATABASES = {  
-    'default': {  
-        'ENGINE': 'django.db.backends.postgresql',  
-        'NAME': parameters.get('Database'),
-        'USER': parameters.get('User Id').split('@')[0],  # Extract username from "username@servername"
-        'PASSWORD': parameters.get('Password'),
-        'HOST': parameters.get('Server'),
-        'PORT': '5432',  # Default PostgreSQL port
-        'OPTIONS': {
-            'sslmode': 'require',  # Use SSL for secure connection
-        },
-    }  
-}
+# DATABASES = {
+#     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+# }
+
+# DATABASES = {  
+#     'default': {  
+#         'ENGINE': 'django.db.backends.sqlite3',  
+#         'NAME': BASE_DIR / "db.sqlite3",  
+#     }  
+# }
 
 ADMINS = [('Nyuydine Bill', 'billleynyuy@gmail.com')]
 MANAGERS = ADMINS
@@ -238,9 +231,9 @@ LOGOUT_URL='logout'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT='/'
 
-SOCIAL_AUTH_GOOGLE_OAUTH_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH_KEY', default='your-default-google-oauth-key')
-SOCIAL_AUTH_GOOGLE_OAUTH_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH_SECRET', default='your-default-google-oauth-secret')
-SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = config('SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI', default='http://localhost:8000/oauth2callback')
+SOCIAL_AUTH_GOOGLE_OAUTH_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI')
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SOCIAL_AUTH_GOOGLE_OAUTH_KEY  # This is the same as above
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SOCIAL_AUTH_GOOGLE_OAUTH_SECRET  # This is the same as above
 
@@ -276,8 +269,8 @@ ACCOUNT_LOGOUT_REDIRECT_URL='/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
 EMAIL_HOST = 'smtp.gmail.com' #new
 EMAIL_PORT = 587 #new
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='your-default-email@example.com')  #new
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='your-default-email-password') #new
+EMAIL_HOST_USER = 'info@umemployed.com'  #new
+EMAIL_HOST_PASSWORD = "hszd wpet pnre asce" #new
 EMAIL_USE_TLS = True #new
 DEFAULT_FROM_EMAIL = 'info@umemployed.com'
 
@@ -309,9 +302,9 @@ USE_I18N = True
 USE_TZ = True
 
 # Azure Blob Storage settings
-AZURE_ACCOUNT_NAME = config('AZURE_ACCOUNT_NAME', default='your-default-account-name')
-AZURE_ACCOUNT_KEY = config('AZURE_ACCOUNT_KEY', default='your-default-account-key')
-AZURE_CONTAINER = config('AZURE_CONTAINER', default='your-default-container')
+AZURE_ACCOUNT_NAME = config('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY = config('AZURE_ACCOUNT_KEY')
+AZURE_CONTAINER = config('AZURE_CONTAINER')
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
 # Media files settings
@@ -343,10 +336,10 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-OPENAI_API_KEY = config('OPENAI_API_KEY', default='your-default-openai-api-key')
-SECRET_KEY = config('SECRET_KEY', default='your-default-secret-key')
-GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID', default='your-default-google-client-id')
-GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET', default='your-default-google-client-secret')
+OPENAI_API_KEY = config('OPENAI_API_KEY')
+SECRET_KEY = config('SECRET_KEY')
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
 PAYPAL_RECEIVER_EMAIL = 'business@umemployed.com' 
 PAYPAL_TEST = True  # Set to False for live transactions
 
