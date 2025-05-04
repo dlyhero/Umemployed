@@ -1,27 +1,38 @@
-FROM python:3.10
+FROM python:3.10-slim
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y libmagic1 dnsutils
 
 # Set work directory
 WORKDIR /app
 
-# Install Python dependencies
+# Copy the requirements file
 COPY requirements.txt /app/
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
+# Copy the application code into the container
 COPY . /app/
 
-# Set environment variables
+# Set environment variables (for Django and Redis configuration, modify as needed)
 ENV REDIS_SSL_CERT_REQS=none
 
-# Collect static files
-RUN python manage.py collectstatic --no-input
+# Run Django migrations (to ensure the database is ready)
+RUN python manage.py migrate --noinput
 
-# Add entrypoint script
+# Collect static files (necessary for production environments)
+RUN python manage.py collectstatic --noinput
+
+# Expose the port for the application (8000 for Django development)
+EXPOSE 8000
+
+# Add entrypoint script to manage application startup and migration
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Set entrypoint
+# Set the entrypoint to the entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
+
+# Default command (can be overridden)
+CMD ["gunicorn", "umemployed.wsgi:application", "--bind", "0.0.0.0:8000"]
