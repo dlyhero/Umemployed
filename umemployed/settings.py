@@ -205,12 +205,20 @@ DATABASES = {
 #     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 # }
 
-# DATABASES = {  
-#     'default': {  
-#         'ENGINE': 'django.db.backends.sqlite3',  
-#         'NAME': BASE_DIR / "db.sqlite3",  
-#     }  
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'umemployed-database',
+        'USER': 'cwntsczzve',
+        'PASSWORD': '$$A5o$tdrafRenkH',
+        'HOST': '<your-server-name>.postgres.database.azure.com',
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
+}
+
 
 ADMINS = [('Nyuydine Bill', 'billleynyuy@gmail.com')]
 MANAGERS = ADMINS
