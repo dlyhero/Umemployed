@@ -51,6 +51,8 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    env:
+      SCM_DO_BUILD_DURING_DEPLOYMENT: true 
     
     steps:
       - name: Download artifact from build job
