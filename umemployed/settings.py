@@ -23,7 +23,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['umemployed-app-afec951f7ec7.herokuapp.com','localhost','7eef-129-0-60-130.ngrok-free.app']
+ALLOWED_HOSTS = ['*']
 
 SITE_ID = 3
 
@@ -152,6 +152,7 @@ CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
