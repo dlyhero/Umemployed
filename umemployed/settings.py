@@ -194,12 +194,12 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.getenv('DATABASE_URL'),
+#         conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
+#     )
+# }
 
 # DATABASES = {
 #     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
