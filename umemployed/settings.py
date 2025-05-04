@@ -151,8 +151,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', 
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',  
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
@@ -194,31 +194,23 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=os.getenv('DATABASE_URL'),
-#         conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
+    )
+}
 
 # DATABASES = {
 #     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'umemployed-database',
-        'USER': 'cwntsczzve',
-        'PASSWORD': '$$A5o$tdrafRenkH',
-        'HOST': 'umemployed-server.postgres.database.azure.com',
-        'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
-    }
-}
-
+# DATABASES = {  
+#     'default': {  
+#         'ENGINE': 'django.db.backends.sqlite3',  
+#         'NAME': BASE_DIR / "db.sqlite3",  
+#     }  
+# }
 
 ADMINS = [('Nyuydine Bill', 'billleynyuy@gmail.com')]
 MANAGERS = ADMINS

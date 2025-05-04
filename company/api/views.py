@@ -446,6 +446,12 @@ class CreateInterviewAPIView(APIView):
         timezone = request.data.get('timezone')
         note = request.data.get('note')
 
+        # Validate required fields
+        if not date:
+            return Response({"error": "The 'date' field is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if not time:
+            return Response({"error": "The 'time' field is required."}, status=status.HTTP_400_BAD_REQUEST)
+
         candidate = get_object_or_404(User, id=candidate_id)
         job = get_object_or_404(Job, id=job_id)
         interview = Interview.objects.create(

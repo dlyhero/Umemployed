@@ -1,42 +1,22 @@
-version: '3.8'
+version: '3.10'
 
 services:
-  db:
-    image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-
-  redis:
-    image: redis:6
-    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
-
   web:
     build: .
-    command: daphne -p 8000 -b 0.0.0.0 umemployed.asgi:application
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn umemployed.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/app
+      - ./media:/app/media
     ports:
       - "8000:8000"
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
-
-  celery:
-    build: .
-    command: celery -A umemployed worker --loglevel=info
-    volumes:
-      - .:/app
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
-
-volumes:
-  postgres_data:
+    environment:
+      DEBUG: "0"
+      DJANGO_ALLOWED_HOSTS: "*"
+      DB_NAME: d8sq22p8gfv67g
+      DB_USER: uepklalomgtt30
+      DB_PASSWORD: p249af02fa4e6441a213bc7e5ed4a4527bc856f4b6318d081d0beb13e97f401d4
+      DB_HOST: c40jpd51mc5mrg.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com
+      DB_PORT: 5432

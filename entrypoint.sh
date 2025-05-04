@@ -1,11 +1,17 @@
 #!/bin/bash
 
-if [ "$1" = "web" ]; then
-    exec python manage.py runserver 0.0.0.0:8000
-elif [ "$1" = "celery" ]; then
-    exec celery -A umemployed worker --loglevel=info
-elif [ "$1" = "daphne" ]; then
-    exec daphne -b 0.0.0.0 -p 8001 umemployed.asgi:application
-else
-    exec "$@"
-fi
+# Wait for the database to be ready
+echo "Waiting for the database to be ready..."
+# You can use `wait-for-it` or similar tools if needed to wait for the database
+
+# Run migrations
+echo "Running migrations..."
+python manage.py migrate --noinput
+
+# Collect static files (if not already done during build)
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
+
+# Start the application with Gunicorn
+echo "Starting Gunicorn server..."
+exec gunicorn umemployed.wsgi:application --bind 0.0.0.0:8000
