@@ -211,7 +211,7 @@ DATABASES = {
         'NAME': 'umemployed-database',
         'USER': 'cwntsczzve',
         'PASSWORD': '$$A5o$tdrafRenkH',
-        'HOST': '<your-server-name>.postgres.database.azure.com',
+        'HOST': 'umemployed-server.postgres.database.azure.com',
         'PORT': '5432',
         'OPTIONS': {
             'sslmode': 'require',
