@@ -14,4 +14,4 @@ python manage.py collectstatic --noinput
 
 # Start the application with Gunicorn
 echo "Starting Gunicorn server..."
-exec gunicorn umemployed.wsgi:application --bind 0.0.0.0:8000
+exec gunicorn umemployed.wsgi:application --bind 0.0.0.0:${PORT:-8000}

@@ -1,0 +1,38 @@
+'''OPENAI_API_KEY=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
+SECRET_KEY=django-insecure-v3ib3ym(*zd@b1lscbi+&$#6cziz8u(76ri1-1mua5t@3q@qc&
+GOOGLE_CLIENT_ID=473142107271-hpbu8mosgriihnfhmnonksea3ct7ejis.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
+# GOOGLE_CLIENT_ID=386827442963-cdhtqlufkcbr1s2du03okbvsk2p63jih.apps.googleusercontent.com
+# GOOGLE_CLIENT_SECRET=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
+
+REDIS_URL=rediss://:pa7d18f917d0696b438a6c7de85af8d0a8a0f74e7ff2455daa0cf355e647127bf@ec2-34-193-189-165.compute-1.amazonaws.com:26270?ssl_cert_reqs=none
+REDIS_PASSWORD=pa7d18f917d0696b438a6c7de85af8d0a8a0f74e7ff2455daa0cf355e647127bf
+DATABASE_URL=postgres://uepklalomgtt30:p249af02fa4e6441a213bc7e5ed4a4527bc856f4b6318d081d0beb13e97f401d4@c40jpd51mc5mrg.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d8sq22p8gfv67g
+# DATABASE_URL=postgres://uepklalomgtt30:p3e6a79a42e739605c32617dd0d4433f6dfce03cbf66b49a2a6f7c436dec3b6b0@ccpa7stkruda3o.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/dblog2hj0aubg6
+SITE_URL=https://umemployed-development-8475c5e1c4b7.herokuapp.com
+
+POSTGRES_DB=d8sq22p8gfv67g
+POSTGRES_USER=uepklalomgtt30
+POSTGRES_PASSWORD=p249af02fa4e6441a213bc7e5ed4a4527bc856f4b6318d081d0beb13e97f401d4
+
+AZURE_CONTAINER="umemployedcont1"
+AZURE_ACCOUNT_NAME="umemployeds1"
+AZURE_ACCOUNT_KEY="0bvvW2og6reUawS+0mknTG6ir6XuVmsMTNvAFqsRGk/SAOTiebNxgc2O6VQCuMgcM78k/TLi7TLy+ASttD3Jbw=="
+
+# settings.py
+GEMINI_API_KEY=AIzaSyDDp5AwVk8ML1E0DDGzo2Lfh7GYzX9Jfdc
+LLAMA_API_KEY=LA-1b48b5dccbdd4c909012320b2b546528cd677192dc9e4a4dbcd9b3b28fb3ca0d
+
+SOCIAL_AUTH_GOOGLE_OAUTH_KEY=473142107271-hpbu8mosgriihnfhmnonksea3ct7ejis.apps.googleusercontent.com
+SOCIAL_AUTH_GOOGLE_OAUTH_SECRET=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
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI=http://localhost:8000/social-auth/complete/google-oauth2/
+
+#video meetings
+AGORA_APP_ID=2947011f6c4f4653b8846e51bfaead13  
+AGORA_APP_CERTIFICATE=5e3fac198f1b427a83ea8f0a69053783
+
+STRIPE_SECRET_KEY=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
+STRIPE_PUBLISHABLE_KEY=pk_live_51QtB7zIpeZXn8z8ulNh2Mh5aztnZYgoCo7XArtbSg4cZMMZYtKE9emFG2q3OaliH2FU3ecwtIiM098AyhNKIDlS300yHTUKHHa
+STRIPE_WEBHOOK_SECRET=your-stripe-webhook-secret
+#DOCKER_PAT=dckr_pat_gkbTs5CmsYybwXzfKA4HAUk-ahU'''

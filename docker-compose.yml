@@ -11,12 +11,44 @@ services:
       - .:/app
       - ./media:/app/media
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:${PORT:-8000}"
     environment:
       DEBUG: "0"
       DJANGO_ALLOWED_HOSTS: "*"
-      DB_NAME: d8sq22p8gfv67g
-      DB_USER: uepklalomgtt30
-      DB_PASSWORD: p249af02fa4e6441a213bc7e5ed4a4527bc856f4b6318d081d0beb13e97f401d4
-      DB_HOST: c40jpd51mc5mrg.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com
+      DB_NAME: umemployed
+      DB_USER: umdb
+      DB_PASSWORD: Ume!Db@2025$Secure
+      DB_HOST: umemployed-database.postgres.database.azure.com
       DB_PORT: 5432
+      REDIS_URL: redis://:Rxiw0vK90aogJodr7J78sMoAoU8nYKmI7AzCaPRk7tI@umemployed-cache.redis.cache.windows.net:6380?ssl=true
+      SITE_URL: https://umemployed.azurewebsites.net
+
+  daphne:
+    build: .
+    command: daphne -p ${PORT:-8001} umemployed.asgi:application
+    ports:
+      - "${PORT:-8001}:${PORT:-8001}"
+    environment:
+      DEBUG: "0"
+      DJANGO_ALLOWED_HOSTS: "*"
+      DB_NAME: umemployed
+      DB_USER: umdb
+      DB_PASSWORD: Ume!Db@2025$Secure
+      DB_HOST: umemployed-database.postgres.database.azure.com
+      DB_PORT: 5432
+      REDIS_URL: redis://:Rxiw0vK90aogJodr7J78sMoAoU8nYKmI7AzCaPRk7tI@umemployed-cache.redis.cache.windows.net:6380?ssl=true
+      SITE_URL: https://umemployed.azurewebsites.net
+
+  celery:
+    build: .
+    command: celery -A umemployed worker --loglevel=info
+    environment:
+      DEBUG: "0"
+      DJANGO_ALLOWED_HOSTS: "*"
+      DB_NAME: umemployed
+      DB_USER: umdb
+      DB_PASSWORD: Ume!Db@2025$Secure
+      DB_HOST: umemployed-database.postgres.database.azure.com
+      DB_PORT: 5432
+      REDIS_URL: redis://:Rxiw0vK90aogJodr7J78sMoAoU8nYKmI7AzCaPRk7tI@umemployed-cache.redis.cache.windows.net:6380?ssl=true
+      SITE_URL: https://umemployed.azurewebsites.net
