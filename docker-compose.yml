@@ -6,7 +6,7 @@ services:
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             gunicorn umemployed.wsgi:application --bind 0.0.0.0:8000"
+             gunicorn umemployed.wsgi:application --bind 0.0.0.0:$PORT"
     volumes:
       - .:/app
       - ./media:/app/media
@@ -23,32 +23,3 @@ services:
       REDIS_URL: redis://:Rxiw0vK90aogJodr7J78sMoAoU8nYKmI7AzCaPRk7tI@umemployed-cache.redis.cache.windows.net:6380?ssl=true
       SITE_URL: https://umemployed.azurewebsites.net
 
-  daphne:
-    build: .
-    command: daphne -p ${PORT:-8001} umemployed.asgi:application
-    ports:
-      - "${PORT:-8001}:${PORT:-8001}"
-    environment:
-      DEBUG: "0"
-      DJANGO_ALLOWED_HOSTS: "*"
-      DB_NAME: umemployed
-      DB_USER: umdb
-      DB_PASSWORD: Ume!Db@2025$Secure
-      DB_HOST: umemployed-database.postgres.database.azure.com
-      DB_PORT: 5432
-      REDIS_URL: redis://:Rxiw0vK90aogJodr7J78sMoAoU8nYKmI7AzCaPRk7tI@umemployed-cache.redis.cache.windows.net:6380?ssl=true
-      SITE_URL: https://umemployed.azurewebsites.net
-
-  celery:
-    build: .
-    command: celery -A umemployed worker --loglevel=info
-    environment:
-      DEBUG: "0"
-      DJANGO_ALLOWED_HOSTS: "*"
-      DB_NAME: umemployed
-      DB_USER: umdb
-      DB_PASSWORD: Ume!Db@2025$Secure
-      DB_HOST: umemployed-database.postgres.database.azure.com
-      DB_PORT: 5432
-      REDIS_URL: redis://:Rxiw0vK90aogJodr7J78sMoAoU8nYKmI7AzCaPRk7tI@umemployed-cache.redis.cache.windows.net:6380?ssl=true
-      SITE_URL: https://umemployed.azurewebsites.net

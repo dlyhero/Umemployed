@@ -35,4 +35,4 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Default command
-CMD ["gunicorn", "umemployed.wsgi:application", "--bind", "0.0.0.0:${PORT:-8000}"]
+CMD ["gunicorn", "umemployed.wsgi:application", "--bind", "0.0.0.0:$PORT"]
