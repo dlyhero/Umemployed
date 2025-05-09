@@ -194,23 +194,30 @@ WSGI_APPLICATION = 'umemployed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.getenv('DATABASE_URL'),
+#         conn_max_age=0,  # 0 seconds (0 minutes) for connection reuse
+#     )
+# }
 
 # DATABASES = {
 #     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 # }
 
-# DATABASES = {  
-#     'default': {  
-#         'ENGINE': 'django.db.backends.sqlite3',  
-#         'NAME': BASE_DIR / "db.sqlite3",  
-#     }  
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('AZURE_DB_NAME'),
+        'USER': os.getenv('AZURE_DB_USER'),
+        'PASSWORD': os.getenv('AZURE_DB_PASSWORD',),
+        'HOST': os.getenv('AZURE_DB_HOST',),
+        'PORT': os.getenv('AZURE_DB_PORT',),
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
+}
 
 ADMINS = [('Nyuydine Bill', 'billleynyuy@gmail.com')]
 MANAGERS = ADMINS
@@ -458,7 +465,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20000),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=200000),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
