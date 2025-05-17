@@ -252,13 +252,14 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://umemployed-app-afec951f7ec7.herokuapp.com', 'http://127.0.0.1:8000', 'https://umemployed-development-8475c5e1c4b7.herokuapp.com','https://7eef-129-0-60-130.ngrok-free.app','http://localhost:3000']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
 
-CSRF_TRUSTED_ORIGINS += [
-    'https://accounts.google.com',
-    'https://www.googleapis.com',
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://umemployed-f6fdddfffmhjhjcj.canadacentral-01.azurewebsites.net",
+    "https://umemployed.azurewebsites.net",  
 ]
-
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
@@ -490,20 +491,5 @@ SWAGGER_SETTINGS = {
 # CORS configuration
 CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be included in cross-origin requests
-CORS_ALLOW_HEADERS = [
-    'content-type',
-    'authorization',
-    'x-csrftoken',
-    'accept',
-    'origin',
-    'user-agent',
-    'x-requested-with',
-]  # Allow specific headers
-CORS_ALLOW_METHODS = [
-    'GET',
-    'POST',
-    'PUT',
-    'PATCH',
-    'DELETE',
-    'OPTIONS',
-]  # Allow specific HTTP methods
+CORS_ALLOW_HEADERS = ['*']  # Allow all headers
+CORS_ALLOW_METHODS = ['*']  # Allow all HTTP methods

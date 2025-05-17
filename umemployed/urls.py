@@ -13,6 +13,8 @@ from allauth.account.views import confirm_email, email_verification_sent
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework.permissions import AllowAny
+from django.http import JsonResponse
+
 
 # Define custom error handlers
 handler404 = 'users.views.custom_404_view'
@@ -30,6 +32,13 @@ schema_view = get_schema_view(
     public=True,
     permission_classes=(AllowAny,),
 )
+def show_settings(request):
+    return JsonResponse({
+        "CSRF_TRUSTED_ORIGINS": settings.CSRF_TRUSTED_ORIGINS,
+        "ALLOWED_HOSTS": settings.ALLOWED_HOSTS,
+        "SECURE_PROXY_SSL_HEADER": settings.SECURE_PROXY_SSL_HEADER,
+        "USE_X_FORWARDED_HOST": settings.USE_X_FORWARDED_HOST
+    })
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -88,6 +97,7 @@ urlpatterns = [
     path('api/users/', include('users.api.urls')),  # Add this line
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path("debug-settings/", show_settings),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
