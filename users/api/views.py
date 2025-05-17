@@ -286,7 +286,10 @@ class ChooseAccountTypeView(APIView):
             return Response({"error": "Invalid account type."}, status=status.HTTP_400_BAD_REQUEST)
 
         user.save()
-        return Response({"message": "Account type updated successfully."}, status=status.HTTP_200_OK)
+        return Response({
+            "message": "Account type updated successfully.",
+            "state": "recruiter" if user.is_recruiter else "job_seeker"
+        }, status=status.HTTP_200_OK)
 
 class ResendConfirmationEmailView(APIView):
     permission_classes = [AllowAny]

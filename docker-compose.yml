@@ -10,7 +10,7 @@ services:
     volumes:
       - .:/app
       - ./media:/app/media
-    ports:
+    ports:  
       - "${PORT:-8000}:${PORT:-8000}"
     environment:
       DEBUG: "0"

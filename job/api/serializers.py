@@ -28,15 +28,15 @@ class JobSerializer(serializers.ModelSerializer):
         }
 
     def get_is_saved(self, obj):
-        user = self.context.get('request').user
-        if user.is_authenticated:
-            return SavedJob.objects.filter(user=user, job=obj).exists()
+        request = self.context.get('request', None)
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            return SavedJob.objects.filter(user=request.user, job=obj).exists()
         return False
 
     def get_is_applied(self, obj):
-        user = self.context.get('request').user
-        if user.is_authenticated:
-            return Application.objects.filter(user=user, job=obj).exists()
+        request = self.context.get('request', None)
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            return Application.objects.filter(user=request.user, job=obj).exists()
         return False
 
     def get_company(self, obj):
@@ -61,9 +61,9 @@ class JobSerializer(serializers.ModelSerializer):
         }
 
     def get_has_started(self, obj):
-        user = self.context.get('request').user
-        if user.is_authenticated:
-            application = Application.objects.filter(user=user, job=obj).first()
+        request = self.context.get('request', None)
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            application = Application.objects.filter(user=request.user, job=obj).first()
             return application.has_started if application else False
         return False
 
