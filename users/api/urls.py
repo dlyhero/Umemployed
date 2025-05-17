@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SignupView, LoginView, ForgotPasswordView, ConfirmEmailView, PasswordResetConfirmView, google_authenticate, ChooseAccountTypeView, ResendConfirmationEmailView, CheckEmailVerifiedView, UserInfoView
+from .views import SignupView, LoginView, ForgotPasswordView, ConfirmEmailView, PasswordResetConfirmView, google_authenticate, ChooseAccountTypeView, ResendConfirmationEmailView, CheckEmailVerifiedView, UserInfoView, TestBackgroundProcessView
 
 urlpatterns = [
     path('signup/', SignupView.as_view(), name='signup'),
@@ -12,4 +12,5 @@ urlpatterns = [
     path('resend-confirmation-email/', ResendConfirmationEmailView.as_view(), name='resend_confirmation_email'),
     path('check-email-verified/', CheckEmailVerifiedView.as_view(), name='check_email_verified'),
     path('profile/', UserInfoView.as_view(), name='profile'),
+    path('test-background-process/', TestBackgroundProcessView.as_view(), name='test_background_process'),
 ]

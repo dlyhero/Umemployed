@@ -183,7 +183,7 @@ class ViewMyJobsAPIView(APIView):
     """
     API view to retrieve jobs posted by a company.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
     @swagger_auto_schema(
         operation_description="Retrieve jobs posted by the company",

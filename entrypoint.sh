@@ -12,6 +12,12 @@ python manage.py migrate --noinput
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Start the application with Gunicorn
-echo "Starting Gunicorn server..."
-exec gunicorn umemployed.wsgi:application --bind 0.0.0.0:${PORT:-8000}
+if [ "$1" = "" ]; then
+  # Start the application with Gunicorn
+  echo "Starting Gunicorn server..."
+  exec gunicorn umemployed.wsgi:application --bind 0.0.0.0:${PORT:-8000}
+else
+  # Run the provided command (e.g., Celery)
+  echo "Running custom command: $@"
+  exec "$@"
+fi

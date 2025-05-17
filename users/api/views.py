@@ -23,8 +23,26 @@ from social_django.models import UserSocialAuth
 from social_core.backends.google import GoogleOAuth2
 from rest_framework.permissions import IsAuthenticated
 from company.models import Company  # Import the Company model
+from umemployed.celery import app as celery_app  # Import your celery app
+from celery import shared_task
 
 User = get_user_model()
+
+# Updated background task to send an email after a 1-minute delay
+@shared_task
+def test_background_task():
+    import time
+    time.sleep(60)  # Wait for 1 minute
+    from django.core.mail import send_mail
+    send_mail(
+        subject="Background Task Test",
+        message="This is a test email sent from the background Celery task.",
+        from_email="info@umemployed.com",
+        recipient_list=["info@umemployed.com"],
+        fail_silently=False,
+    )
+    print("Background task executed and email sent!")
+    return "Background task completed and email sent"
 
 class SignupView(APIView):
     permission_classes = [AllowAny]
@@ -380,3 +398,14 @@ class UserInfoView(APIView):
             "updated_at": user.updated_at,
         }
         return Response(user_data, status=status.HTTP_200_OK)
+
+class TestBackgroundProcessView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Trigger the background task
+        result = test_background_task.delay()
+        return Response({
+            "message": "Background task triggered. An email will be sent to info@umemployed.com after 1 minute.",
+            "task_id": result.id
+        }, status=status.HTTP_202_ACCEPTED)
