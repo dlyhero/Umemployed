@@ -6,7 +6,7 @@ services:
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             gunicorn umemployed.wsgi:application --bind 0.0.0.0:$PORT"
+             gunicorn umemployed.wsgi:application --bind 0.0.0.0:${PORT:-8000}"
     volumes:
       - .:/app
       - ./media:/app/media
@@ -22,7 +22,6 @@ services:
       DB_PORT: 5432
       REDIS_URL: rediss://:CJ4sjQCD3Lm86hod07HxWss0sbU9TlFdkAzCaNhQSuw=@umemployed-redis.redis.cache.windows.net:6380/0?ssl=true
       SITE_URL: https://umemployed.azurewebsites.net
-      PORT: 8000
 
   celery:
     build:

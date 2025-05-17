@@ -33,6 +33,3 @@ RUN chmod +x /entrypoint.sh
 
 # Set the entrypoint to the entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
-
-# Default command
-CMD ["gunicorn", "umemployed.wsgi:application", "--bind", "0.0.0.0:$PORT"]
