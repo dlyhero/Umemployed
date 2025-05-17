@@ -489,7 +489,11 @@ SWAGGER_SETTINGS = {
 }
 
 # CORS configuration
-CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins
+# CORS_ALLOW_ALL_ORIGINS = True 
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be included in cross-origin requests
 CORS_ALLOW_HEADERS = ['*']  # Allow all headers
 CORS_ALLOW_METHODS = ['*']  # Allow all HTTP methods
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'https://umemployed-front-end.vercel.app'
+]
