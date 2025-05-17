@@ -80,7 +80,6 @@ class CompanyDetailsAPIView(APIView):
     """
     API view to retrieve details of a specific company.
     """
-    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         operation_description="Retrieve details of a specific company",
@@ -163,7 +162,6 @@ class CompanyAnalyticsAPIView(APIView):
     """
     API view to retrieve analytics data for a company.
     """
-    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         operation_description="Retrieve analytics data for the company",
