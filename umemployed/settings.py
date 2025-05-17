@@ -93,10 +93,23 @@ import logging
 from channels_redis.core import RedisChannelLayer
 import os
 import ssl
+import urllib.parse
 
 
 # Load environment variables
 REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+
+# Ensure ssl_cert_reqs is set for rediss:// URLs for Celery
+def add_ssl_cert_reqs(url):
+    if url.startswith('rediss://') and 'ssl_cert_reqs' not in url:
+        if '?' in url:
+            return url + '&ssl_cert_reqs=CERT_NONE'
+        else:
+            return url + '?ssl_cert_reqs=CERT_NONE'
+    return url
+
+CELERY_BROKER_URL = add_ssl_cert_reqs(REDIS_URL)
+CELERY_RESULT_BACKEND = add_ssl_cert_reqs(REDIS_URL)
 
 # Channels configuration
 CHANNEL_LAYERS = {
@@ -125,27 +138,9 @@ CACHES = {
 }
 
 # Celery configuration
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
 accept_content = ['application/json']
 result_serializer = 'json'
 task_serializer = 'json'
-
-broker_transport_options = {
-    'ssl': {
-        'ssl_cert_reqs': ssl.CERT_NONE  # Change to 'CERT_REQUIRED' or 'CERT_OPTIONAL' as needed
-    }
-}
-
-result_backend_transport_options = {
-    'ssl': {
-        'ssl_cert_reqs': ssl.CERT_NONE  # Change to 'CERT_REQUIRED' or 'CERT_OPTIONAL' as needed
-    }
-}
-
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
