@@ -80,7 +80,7 @@ class CompanyDetailsAPIView(APIView):
     """
     API view to retrieve details of a specific company.
     """
-
+    permission_classes = []
     @swagger_auto_schema(
         operation_description="Retrieve details of a specific company",
         responses={
@@ -100,6 +100,7 @@ class CompanyListAPIView(APIView):
     """
     API view to list all companies.
     """
+    permission_classes = []
     @swagger_auto_schema(
         operation_description="List all companies",
         responses={200: "Companies retrieved successfully"}
