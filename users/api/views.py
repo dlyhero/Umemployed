@@ -26,6 +26,8 @@ from company.models import Company  # Import the Company model
 from umemployed.celery import app as celery_app  # Import your celery app
 from celery import shared_task
 import logging
+from django.http import HttpResponseRedirect
+User = get_user_model()
 
 logger = logging.getLogger(__name__)
 
@@ -68,21 +70,26 @@ class SignupView(APIView):
             user.save()
 
             # Send confirmation email
-            current_site = get_current_site(request)
             mail_subject = 'Activate your account'
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            confirmation_link = f"{current_site.domain}{reverse('confirm_email', kwargs={'uidb64': uid, 'token': token})}"
+            confirmation_link = f"https://umemployed-f6fdddfffmhjhjcj.canadacentral-01.azurewebsites.net/api/users/confirm-email/{uid}/{token}"
+            print(confirmation_link)
             message = render_to_string('email/confirmation_email.html', {
                 'user': user,
                 'confirmation_link': confirmation_link,
             })
-            send_mail(mail_subject, message, 'info@umemployed.com', [user.email], fail_silently=False)
+            send_mail(
+                mail_subject,
+                '',  # Leave plain text empty
+                'info@umemployed.com',
+                [user.email],
+                fail_silently=False,
+                html_message=message  # Send as HTML email
+            )
 
             return Response({"message": "User created successfully. Please confirm your email."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-from django.http import HttpResponseRedirect
 
 class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]
@@ -344,12 +351,19 @@ class ResendConfirmationEmailView(APIView):
             mail_subject = 'Activate your account'
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            confirmation_link = f"{current_site.domain}{reverse('confirm_email', kwargs={'uidb64': uid, 'token': token})}"
+            confirmation_link = f"https://newsite.example.com/confirm-email/{uid}/{token}"
             message = render_to_string('email/confirmation_email.html', {
                 'user': user,
                 'confirmation_link': confirmation_link,
             })
-            send_mail(mail_subject, message, 'info@umemployed.com', [user.email], fail_silently=False)
+            send_mail(
+                mail_subject,
+                '',  # Leave plain text empty
+                'info@umemployed.com',
+                [user.email],
+                fail_silently=False,
+                html_message=message  # Send as HTML email
+            )
 
             return Response({"message": "Confirmation email resent successfully."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
