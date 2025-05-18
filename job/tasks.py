@@ -129,7 +129,7 @@ from django.utils.html import strip_tags
 
 logger = logging.getLogger(__name__)
 
-@shared_task
+@shared_task(autoretry_for=(), max_retries=0)
 def send_new_job_email_task(email, full_name, job_title, job_link, job_description, company_name, job_id):
     subject = f"New Job Posted: {job_title}"
     plain_job_description = strip_tags(job_description)
@@ -158,7 +158,7 @@ def send_new_job_email_task(email, full_name, job_title, job_link, job_descripti
     except Exception as e:
         logger.error(f"An error occurred while sending email to {email}: {e}")
 
-@shared_task
+@shared_task(autoretry_for=(), max_retries=0)
 def send_recruiter_job_confirmation_email_task(email, full_name, job_title, company_name, job_id):
     subject = f"Job Created Successfully: {job_title}"
     message = f"Hello {full_name},\n\nYour job '{job_title}' has been successfully created and is now available on the platform at {company_name}.\n\nBest regards,\n{company_name}"
