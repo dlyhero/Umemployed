@@ -1,0 +1,19 @@
+{
+  "minReplicas": 1,
+  "maxReplicas": 10,
+  "rules": [
+    {
+      "name": "redis-scaler",
+      "type": "redis",
+      "metadata": {
+        "address": "rediss://umemployed-redis.redis.cache.windows.net:6380",
+        "listName": "celery",
+        "listLength": "5"
+      },
+      "auth": {
+        "type": "secret",
+        "secretRef": "redis-password"
+      }
+    }
+  ]
+}
