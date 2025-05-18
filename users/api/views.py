@@ -25,23 +25,25 @@ from rest_framework.permissions import IsAuthenticated
 from company.models import Company  # Import the Company model
 from umemployed.celery import app as celery_app  # Import your celery app
 from celery import shared_task
+import logging
 
-User = get_user_model()
+logger = logging.getLogger(__name__)
 
 # Updated background task to send an email after a 1-minute delay
 @shared_task
 def test_background_task():
     import time
     time.sleep(60)  # Wait for 1 minute
+    logger.warning("Celery test_background_task is running!")
     from django.core.mail import send_mail
     send_mail(
         subject="Background Task Test",
         message="This is a test email sent from the background Celery task.",
-        from_email="info@umemployed.com",
-        recipient_list=["info@umemployed.com"],
+        from_email="billleynyuy@gmail.com",
+        recipient_list=["billleynyuy@gmail.com"],
         fail_silently=False,
     )
-    print("Background task executed and email sent!")
+    logger.warning("Celery test_background_task sent the email!")
     return "Background task completed and email sent"
 
 class SignupView(APIView):
