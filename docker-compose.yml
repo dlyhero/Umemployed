@@ -20,8 +20,9 @@ services:
       DB_PASSWORD: Ume!Db@2025$Secure
       DB_HOST: umemployed-database.postgres.database.azure.com
       DB_PORT: 5432
-      REDIS_URL: rediss://:CJ4sjQCD3Lm86hod07HxWss0sbU9TlFdkAzCaNhQSuw=@umemployed-redis.redis.cache.windows.net:6380/0?ssl=true
-      SITE_URL: https://umemployed.azurewebsites.net
+      REDIS_URL: rediss://:CJ4sjQCD3Lm86hod07HxWss0sbU9TlFdkAzCaNhQSuw=@umemployed-redis.redis.cache.windows.net:6380?ssl_cert_reqs=none
+      REDIS_PASSWORD: CJ4sjQCD3Lm86hod07HxWss0sbU9TlFdkAzCaNhQSuw=
+      SITE_URL: https://umemployed-f6fdddfffmhjhjcj.canadacentral-01.azurewebsites.net
 
   celery:
     build:
@@ -42,8 +43,9 @@ services:
       DB_PASSWORD: Ume!Db@2025$Secure
       DB_HOST: umemployed-database.postgres.database.azure.com
       DB_PORT: 5432
-      REDIS_URL: rediss://:CJ4sjQCD3Lm86hod07HxWss0sbU9TlFdkAzCaNhQSuw=@umemployed-redis.redis.cache.windows.net:6380/0?ssl=true
-      SITE_URL: https://umemployed.azurewebsites.net
+      REDIS_URL: rediss://:CJ4sjQCD3Lm86hod07HxWss0sbU9TlFdkAzCaNhQSuw=@umemployed-redis.redis.cache.windows.net:6380?ssl_cert_reqs=none
+      REDIS_PASSWORD: CJ4sjQCD3Lm86hod07HxWss0sbU9TlFdkAzCaNhQSuw=
+      SITE_URL: https://umemployed-f6fdddfffmhjhjcj.canadacentral-01.azurewebsites.net
     depends_on:
       - web
 
