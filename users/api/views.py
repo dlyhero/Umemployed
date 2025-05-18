@@ -73,7 +73,7 @@ class SignupView(APIView):
             mail_subject = 'Activate your account'
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            confirmation_link = f"https://umemployed-f6fdddfffmhjhjcj.canadacentral-01.azurewebsites.net/api/users/confirm-email/{uid}/{token}"
+            confirmation_link = f"https://server.umemployed.com/api/users/confirm-email/{uid}/{token}"
             print(confirmation_link)
             message = render_to_string('email/confirmation_email.html', {
                 'user': user,
