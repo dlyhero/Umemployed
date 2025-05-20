@@ -89,6 +89,9 @@ class Job(models.Model):
     location = CountryField(blank_label='(Select Country)', null=True)
     salary = models.PositiveBigIntegerField(default=35000)
     salary_range = models.CharField(max_length=20, choices=[
+        ('0-10000', '$0 - $10,000'),
+        ('10001-20000', '$10,001 - $20,000'),
+        ('20001-30000', '$20,001 - $30,000'),
         ('30000-50000', '$30,000 - $50,000'),
         ('50001-70000', '$50,001 - $70,000'),
         ('70001-100000', '$70,001 - $100,000'),
