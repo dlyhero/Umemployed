@@ -16,6 +16,8 @@ from django.db.models import Count
 from ..forms import RatingForm
 from django.http import HttpResponseForbidden
 import random
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 class IsCompanyOwner(BasePermission):
     """
@@ -387,6 +389,7 @@ class ShortlistedCandidatesAPIView(APIView):
 
         return Response(candidate_data, status=status.HTTP_200_OK)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ShortlistCandidateAPIView(APIView):
     """
     API view to shortlist a candidate for a specific job.
