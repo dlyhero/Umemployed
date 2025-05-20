@@ -7,4 +7,7 @@ urlpatterns = [
     path('transaction-history/', views.TransactionHistoryAPIView.as_view(), name='api_transaction_history'),
     path('payment-success/', views.PaymentSuccessAPIView.as_view(), name='api_payment_success'),
     path('payment-cancel/', views.PaymentCancelAPIView.as_view(), name='api_payment_cancel'),
+    path('stripe-subscribe/', views.CreateStripeSubscriptionAPIView.as_view(), name='api_stripe_subscribe'),
+    path('stripe-cancel/', views.CancelStripeSubscriptionAPIView.as_view(), name='api_stripe_cancel'),
+    path('stripe-webhook/', views.StripeWebhookAPIView.as_view(), name='api_stripe_webhook'),
 ]
