@@ -25,7 +25,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class JobListAPIView(ListAPIView):
-    queryset = Job.objects.filter(is_available=True)
+    queryset = Job.objects.filter(job_creation_is_complete=True)
     serializer_class = JobSerializer
 
     def get_serializer_context(self):
@@ -452,7 +452,7 @@ class SearchJobsAPIView(ListAPIView):
     - Sorting by created date or salary.
     - Pagination for large result sets.
     """
-    queryset = Job.objects.filter(is_available=True)
+    queryset = Job.objects.filter(job_creation_is_complete=True)
     serializer_class = JobSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['title', 'description']
