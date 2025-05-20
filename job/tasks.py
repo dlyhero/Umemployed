@@ -68,6 +68,19 @@ def generate_questions_task(job_title, entry_level, skill_name, questions_per_sk
     # If successful, trigger email notifications
     if success:
         try:
+            # Mark job as complete if all skills have questions
+            job_instance = Job.objects.filter(title=job_title).first()
+            if job_instance:
+                all_skills = job_instance.requirements.all()
+                all_questions_generated = all(
+                    SkillQuestion.objects.filter(
+                        job=job_instance, skill=skill, entry_level=entry_level
+                    ).exists() for skill in all_skills
+                )
+                if all_questions_generated:
+                    job_instance.job_creation_is_complete = True
+                    job_instance.save()
+
             # Send email to recruiter
             send_recruiter_job_confirmation_email_task.delay(
                 email=job_instance.user.email,
@@ -150,11 +163,6 @@ def send_new_job_email_task(email, full_name, job_title, job_link, job_descripti
 
     try:
         send_mail(subject, message, from_email, [email], html_message=html_message)
-        # Check if all questions were generated successfully before marking the job as complete
-        job_instance = Job.objects.get(id=job_id)
-        if all(generate_questions_task(job_instance.title, job_instance.level, skill.name, 10)['success'] for skill in job_instance.requirements.all()):
-            job_instance.job_creation_is_complete = True
-            job_instance.save()
     except Exception as e:
         logger.error(f"An error occurred while sending email to {email}: {e}")
 
@@ -175,10 +183,5 @@ def send_recruiter_job_confirmation_email_task(email, full_name, job_title, comp
 
     try:
         send_mail(subject, message, from_email, [email], html_message=html_message)
-        # Check if all questions were generated successfully before marking the job as complete
-        job_instance = Job.objects.get(id=job_id)
-        if all(generate_questions_task(job_instance.title, job_instance.level, skill.name, 10)['success'] for skill in job_instance.requirements.all()):
-            job_instance.job_creation_is_complete = True
-            job_instance.save()
     except Exception as e:
         logger.error(f"An error occurred while sending email to {email}: {e}")

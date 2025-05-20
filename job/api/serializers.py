@@ -6,6 +6,7 @@ class JobSerializer(serializers.ModelSerializer):
     is_applied = serializers.SerializerMethodField()
     company = serializers.SerializerMethodField()
     has_started = serializers.SerializerMethodField()
+    requirements = serializers.SerializerMethodField()  # Override requirements field
 
     class Meta:
         model = Job
@@ -49,7 +50,8 @@ class JobSerializer(serializers.ModelSerializer):
             "size": obj.company.size,
             "founded": obj.company.founded,
             "website_url": obj.company.website_url,
-            "country": obj.company.country.name if obj.company.country else None,
+            "country": obj.company.country.code if obj.company.country else None,
+            "country_name": obj.company.country.name if obj.company.country else None,
             "contact_email": obj.company.contact_email,
             "contact_phone": obj.company.contact_phone,
             "linkedin": obj.company.linkedin,
@@ -66,6 +68,13 @@ class JobSerializer(serializers.ModelSerializer):
             application = Application.objects.filter(user=request.user, job=obj).first()
             return application.has_started if application else False
         return False
+
+    def get_requirements(self, obj):
+        # Return list of {id, name} for each requirement (skill)
+        return [
+            {"id": skill.id, "name": skill.name}
+            for skill in obj.requirements.all()
+        ]
 
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
