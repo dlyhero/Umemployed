@@ -196,8 +196,8 @@ class ViewMyJobsAPIView(APIView):
         Handle GET requests to retrieve jobs posted by the company.
         """
         company = get_object_or_404(Company, id=company_id)
-        # Ensure the query filters jobs by the company
-        jobs = Job.objects.filter(company=company).order_by('-created_at')
+        # Ensure the query filters jobs by the company and job_creation_is_complete is True
+        jobs = Job.objects.filter(company=company, job_creation_is_complete=True).order_by('-created_at')
         job_data = [
             {
                 "id": job.id,
