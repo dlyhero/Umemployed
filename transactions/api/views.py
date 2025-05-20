@@ -2,13 +2,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from transactions.models import Transaction
+from transactions.models import Transaction, Subscription
 from users.models import User
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 import stripe
 from django.conf import settings
+import uuid
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.utils import timezone
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -104,6 +108,153 @@ class StripePaymentAPIView(APIView):
         )
 
         return Response({"session_id": session.id}, status=status.HTTP_200_OK)
+
+
+class CreateStripeSubscriptionAPIView(APIView):
+    """
+    API view to create a Stripe subscription for a user or recruiter.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Create a Stripe subscription",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "tier": openapi.Schema(type=openapi.TYPE_STRING, description="Subscription tier (basic, standard, premium, custom)"),
+                "user_type": openapi.Schema(type=openapi.TYPE_STRING, description="user or recruiter"),
+            },
+            required=["tier", "user_type"]
+        ),
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    "session_id": openapi.Schema(type=openapi.TYPE_STRING, description="Stripe session ID"),
+                },
+            ),
+            400: "Bad Request"
+        }
+    )
+    def post(self, request):
+        user = request.user
+        tier = request.data.get("tier")
+        user_type = request.data.get("user_type")
+        # Map your tier/user_type to Stripe price IDs
+        STRIPE_PRICE_IDS = {
+            ("user", "standard"): "price_user_standard",
+            ("user", "premium"): "price_user_premium",
+            ("recruiter", "standard"): "price_recruiter_standard",
+            ("recruiter", "premium"): "price_recruiter_premium",
+            # Add more as needed
+        }
+        price_id = STRIPE_PRICE_IDS.get((user_type, tier))
+        if not price_id:
+            return Response({"error": "Invalid tier or user_type."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create Stripe Checkout Session for subscription
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': price_id,
+                'quantity': 1,
+            }],
+            mode='subscription',
+            customer_email=user.email,
+            success_url=request.build_absolute_uri('/transactions/payment-success/'),
+            cancel_url=request.build_absolute_uri('/transactions/payment-cancel/'),
+        )
+
+        # Optionally, mark any previous subscriptions inactive
+        Subscription.objects.filter(user=user, user_type=user_type, is_active=True).update(is_active=False)
+
+        # Create a pending subscription (will be activated on webhook)
+        Subscription.objects.create(
+            user=user,
+            user_type=user_type,
+            tier=tier,
+            is_active=False,
+            stripe_subscription_id=session.id  # Temporarily store session ID, update later
+        )
+
+        return Response({"session_id": session.id}, status=status.HTTP_200_OK)
+
+
+class CancelStripeSubscriptionAPIView(APIView):
+    """
+    API view to cancel an active Stripe subscription.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Cancel an active Stripe subscription",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "user_type": openapi.Schema(type=openapi.TYPE_STRING, description="user or recruiter"),
+            },
+            required=["user_type"]
+        ),
+        responses={200: "Subscription canceled"}
+    )
+    def post(self, request):
+        user = request.user
+        user_type = request.data.get("user_type")
+        subscription = Subscription.objects.filter(user=user, user_type=user_type, is_active=True).first()
+        if not subscription or not subscription.stripe_subscription_id:
+            return Response({"error": "No active Stripe subscription found."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            # Retrieve the Stripe subscription ID from the session or update logic as needed
+            stripe_sub = stripe.Subscription.retrieve(subscription.stripe_subscription_id)
+            stripe.Subscription.delete(stripe_sub.id)
+            subscription.is_active = False
+            subscription.ended_at = timezone.now()
+            subscription.save()
+            return Response({"message": "Subscription canceled."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class StripeWebhookAPIView(APIView):
+    """
+    API view to handle Stripe webhooks for subscription events.
+    """
+    authentication_classes = []  # Stripe does not send auth headers
+    permission_classes = []
+
+    def post(self, request):
+        payload = request.body
+        sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+        endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, endpoint_secret
+            )
+        except (ValueError, stripe.error.SignatureVerificationError):
+            return Response(status=400)
+
+        # Handle subscription events
+        if event['type'] == 'checkout.session.completed':
+            session = event['data']['object']
+            # Find the pending subscription and activate it
+            sub = Subscription.objects.filter(stripe_subscription_id=session['id']).first()
+            if sub:
+                sub.is_active = True
+                sub.stripe_subscription_id = session.get('subscription')  # Update to real subscription ID
+                sub.started_at = timezone.now()
+                sub.ended_at = None
+                sub.save()
+        elif event['type'] == 'customer.subscription.deleted':
+            subscription_obj = event['data']['object']
+            sub = Subscription.objects.filter(stripe_subscription_id=subscription_obj['id']).first()
+            if sub:
+                sub.is_active = False
+                sub.ended_at = timezone.now()
+                sub.save()
+        # Add more event types as needed
+
+        return Response(status=200)
 
 
 class TransactionHistoryAPIView(APIView):

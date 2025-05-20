@@ -21,6 +21,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 import logging
+from transactions.models import Subscription 
 
 logger = logging.getLogger(__name__)
 
@@ -210,6 +211,18 @@ class CreateJobStep1APIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        user = request.user
+        # Check recruiter subscription and posting limit
+        subscription = Subscription.objects.filter(user=user, user_type='recruiter', is_active=True).first()
+        if not subscription:
+            return Response({"message": "No active recruiter subscription found."}, status=status.HTTP_403_FORBIDDEN)
+        if not subscription.can_perform_action('posting'):
+            return Response({"message": "You have reached your daily job posting limit for your subscription tier."}, status=status.HTTP_403_FORBIDDEN)
+        # Example: Only allow AI job description for premium recruiters
+        if request.data.get("use_ai_job_description"):
+            if not subscription.has_feature('ai_job_description'):
+                return Response({"message": "Your subscription does not include AI job description feature."}, status=status.HTTP_403_FORBIDDEN)
+
         data = {
             "title": request.data.get("title"),
             "hire_number": request.data.get("hire_number"),
@@ -221,7 +234,8 @@ class CreateJobStep1APIView(APIView):
         }
         serializer = JobSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(user=request.user, company=request.user.company)
+            serializer.save(user=user, company=user.company)
+            subscription.increment_usage('posting')  # Increment usage after successful post
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -494,6 +508,18 @@ class JobQuestionsAPIView(APIView):
                 - total_time: Total time allocated for the quiz in seconds.
                 - questions_by_skill: A dictionary where each key is a skill name, and the value is a list of questions for that skill.
         """
+        user = request.user
+        # Check user subscription and application limit
+        subscription = Subscription.objects.filter(user=user, user_type='user', is_active=True).first()
+        if not subscription:
+            return Response({"message": "No active user subscription found."}, status=status.HTTP_403_FORBIDDEN)
+        if not subscription.can_perform_action('application'):
+            return Response({"message": "You have reached your daily job application limit for your subscription tier."}, status=status.HTTP_403_FORBIDDEN)
+        # Example: Only allow resume enhancer for premium users
+        if request.query_params.get("use_resume_enhancer") == "true":
+            if not subscription.has_feature('resume_enhancer'):
+                return Response({"message": "Your subscription does not include resume enhancer feature."}, status=status.HTTP_403_FORBIDDEN)
+
         job = get_object_or_404(Job, id=job_id)
         skills = job.requirements.all()
 
@@ -516,6 +542,8 @@ class JobQuestionsAPIView(APIView):
                 }
                 for question in questions
             ]
+
+        subscription.increment_usage('application')  # Increment usage after successful application start
 
         return Response({
             "job_title": job.title,

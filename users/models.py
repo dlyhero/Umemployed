@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **extra_fields):
@@ -43,3 +45,20 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+@receiver(post_save, sender=User)
+def create_basic_subscription(sender, instance, created, **kwargs):
+    if created:
+        from transactions.models import Subscription
+        # Only create if no subscription exists
+        if not Subscription.objects.filter(user=instance, is_active=True).exists():
+            if instance.is_recruiter:
+                user_type = 'recruiter'
+            else:
+                user_type = 'user'
+            Subscription.objects.create(
+                user=instance,
+                user_type=user_type,
+                tier='basic',
+                is_active=True
+            )
