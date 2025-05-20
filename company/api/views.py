@@ -462,7 +462,7 @@ class CreateInterviewAPIView(APIView):
             time=time,
             timezone=timezone,
             note=note,
-            meeting_link=f"http://example.com/interview/{job.id}"
+            meeting_link=f"https://umemployed.com/interview/{job.id}"
         )
         return Response({"message": "Interview created successfully", "interview_id": interview.id}, status=status.HTTP_201_CREATED)
 

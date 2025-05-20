@@ -95,7 +95,7 @@ def generate_questions_task(job_title, entry_level, skill_name, questions_per_sk
                 email=job_instance.user.email,
                 full_name=job_instance.user.get_full_name(),
                 job_title=job_instance.title,
-                job_link=f"/jobs/{job_instance.id}/",
+                job_link=f"https://umemployed.com/jobs/{job_instance.id}/",
                 job_description=job_instance.description,
                 company_name=job_instance.company.name,
                 job_id=job_instance.id
