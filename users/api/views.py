@@ -306,13 +306,31 @@ class ChooseAccountTypeView(APIView):
         if account_type == 'recruiter':
             user.is_recruiter = True
             user.is_applicant = False
+            subscription_user_type = 'recruiter'
         elif account_type == 'job_seeker':
             user.is_recruiter = False
             user.is_applicant = True
+            subscription_user_type = 'user'
         else:
             return Response({"error": "Invalid account type."}, status=status.HTTP_400_BAD_REQUEST)
 
         user.save()
+
+        # Update or create the active subscription with the correct user_type
+        from transactions.models import Subscription
+        subscription = Subscription.objects.filter(user=user, is_active=True).first()
+        if subscription:
+            if subscription.user_type != subscription_user_type:
+                subscription.user_type = subscription_user_type
+                subscription.save()
+        else:
+            Subscription.objects.create(
+                user=user,
+                user_type=subscription_user_type,
+                tier='basic',
+                is_active=True
+            )
+
         return Response({
             "message": "Account type updated successfully.",
             "state": "recruiter" if user.is_recruiter else "job_seeker"
