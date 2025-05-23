@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from resume.models import (
     Resume, ResumeDoc, Transcript, SkillCategory, Skill, Education, Experience, 
-    ContactInfo, WorkExperience, UserProfile, Language, UserLanguage, ResumeAnalysis, ProfileView
+    ContactInfo, WorkExperience, UserProfile, Language, UserLanguage, ResumeAnalysis, ProfileView,
+    EnhancedResume
 )
 
 class SkillCategorySerializer(serializers.ModelSerializer):
@@ -132,3 +133,16 @@ class ProfileViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileView
         fields = '__all__'
+
+class EnhancedResumeSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the EnhancedResume model.
+    Converts EnhancedResume model instances to JSON and validates input data.
+    """
+    class Meta:
+        model = EnhancedResume
+        fields = [
+            'id', 'user', 'job', 'full_name', 'email', 'phone', 'linkedin', 'location', 'summary',
+            'skills', 'experience', 'education', 'certifications', 'projects', 'languages',
+            'awards', 'publications', 'volunteer_experience', 'interests', 'created_at'
+        ]

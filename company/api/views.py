@@ -550,7 +550,7 @@ class CompanyRelatedUsersAPIView(APIView):
     )
     def get(self, request):
         """
-        Handle GET requests to retrieve users related to the company.
+        Handle GET requests to retrieve users related to a company.
         """
         current_user = request.user
         user_companies = WorkExperience.objects.filter(user=current_user).values_list('company_name', flat=True)
@@ -660,3 +660,37 @@ class CheckPaymentStatusAPIView(APIView):
         ).exists()
 
         return Response({"has_paid": has_paid}, status=status.HTTP_200_OK)
+
+class UnshortlistCandidateAPIView(APIView):
+    """
+    API view to unshortlist a candidate for a specific job.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Unshortlist a candidate for a specific job",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'candidate_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the candidate to unshortlist'),
+            },
+            required=['candidate_id'],
+        ),
+        responses={200: "Candidate unshortlisted successfully", 400: "Bad Request", 404: "Not Found"}
+    )
+    def post(self, request, company_id, job_id):
+        company = get_object_or_404(Company, id=company_id, user=request.user)
+        job = get_object_or_404(Job, id=job_id, company=company)
+        candidate_id = request.data.get('candidate_id')
+
+        if not candidate_id:
+            return Response({"error": "Candidate ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        candidate = get_object_or_404(User, id=candidate_id)
+
+        shortlist = Shortlist.objects.filter(job=job, candidate=candidate).first()
+        if not shortlist:
+            return Response({"error": "Candidate is not shortlisted for this job."}, status=status.HTTP_400_BAD_REQUEST)
+
+        shortlist.delete()
+        return Response({"message": "Candidate unshortlisted successfully."}, status=status.HTTP_200_OK)
