@@ -625,20 +625,51 @@ def enhance_resume_api(request, job_id):
     except Job.DoesNotExist:
         return Response({"error": "Job not found."}, status=404)
 
-    # Prepare prompt for AI with all important fields and improved instructions
-    prompt = (
-        "You are a professional resume enhancer. "
-        "Given the following resume text and job description, rewrite and enhance the resume so that it is smooth, well-structured, and tailored to match the job description as closely as possible. "
+    # Remove fields not needed per the system prompt (focus on ATS, summary, experience, and core sections)
+    section_str = "full_name, email, phone, linkedin, location, summary, skills, experience, education"
+
+    # Prepare advanced system prompt for AI
+    system_prompt = (
+        "YOU ARE A WORLD-CLASS RESUME ENHANCEMENT AGENT SPECIALIZED IN TAILORING RESUMES TO MATCH SPECIFIC JOB DESCRIPTIONS. "
+        "YOUR TASK IS TO TRANSFORM A PARSED RESUME TO ALIGN PERFECTLY WITH THE PROVIDED JOB DESCRIPTION, OPTIMIZING FOR ATS (APPLICANT TRACKING SYSTEM) PARSING AND RELEVANCY.\n\n"
+        "###INSTRUCTIONS###\n"
+        "UPDATE ONLY THE SUMMARY AND EXPERIENCE SECTIONS BASED ON THE JOB DESCRIPTION,\n"
+        f"ENSURE THE FINAL RESUME INCLUDES ONLY THE FOLLOWING SECTIONS: {section_str},\n"
+        "FORMAT OUTPUT USING ATS-COMPATIBLE STRUCTURE: clean headings, no graphics/tables, consistent formatting,\n"
+        "INTEGRATE RELEVANT KEYWORDS, SKILLS, TOOLS, AND PHRASES DIRECTLY FROM THE JOB DESCRIPTION,\n"
+        "PRESERVE THE CANDIDATE’S ORIGINAL ACCOMPLISHMENTS WHILE REPHRASING TO ALIGN WITH JOB REQUIREMENTS,\n"
+        "MAINTAIN PROFESSIONAL, CONCISE LANGUAGE FOCUSED ON IMPACT AND RESULTS,\n\n"
+        "###CHAIN OF THOUGHTS###\n"
+        "UNDERSTAND: READ AND COMPREHEND BOTH THE PARSED RESUME AND JOB DESCRIPTION,\n"
+        "BASICS: IDENTIFY THE JOB TITLE, KEY RESPONSIBILITIES, REQUIRED SKILLS, AND INDUSTRY CONTEXT,\n"
+        "BREAK DOWN: DECONSTRUCT THE JOB DESCRIPTION INTO A LIST OF DESIRED QUALIFICATIONS, TOOLS, AND EXPERIENCES,\n"
+        "ANALYZE: COMPARE THE JOB REQUIREMENTS TO THE CANDIDATE’S EXPERIENCE, IDENTIFYING ALIGNMENT AND GAPS,\n"
+        "BUILD: REWRITE THE SUMMARY TO EMPHASIZE RELEVANT SKILLS, TOOLS, AND INDUSTRY EXPERIENCE\n"
+        "REWRITE EACH BULLET IN THE EXPERIENCE SECTION TO HIGHLIGHT MATCHING SKILLS AND IMPACT,\n"
+        "EDGE CASES: IF A MATCHING TOOL/SKILL IS MISSING, PRIORITIZE GENERAL BUT RELATED TRANSFERABLE LANGUAGE,\n"
+        f"FINAL ANSWER: RETURN ONLY THE UPDATED RESUME CONTAINING SECTIONS: {section_str},\n\n"
+        "###WHAT NOT TO DO###\n"
+        f"NEVER INCLUDE SECTIONS OUTSIDE THE ALLOWED LIST: {section_str},\n"
+        "NEVER COPY-PASTE LARGE CHUNKS FROM THE JOB DESCRIPTION WITHOUT ADAPTATION,\n"
+        "NEVER USE GENERIC, VAGUE LANGUAGE (E.G., \"responsible for\", \"worked on\"),\n"
+        "NEVER INCLUDE GRAPHICS, COLUMNS, IMAGES, OR TABLES (NON-ATS COMPATIBLE),\n"
+        "NEVER OMIT RELEVANT KEYWORDS OR INDUSTRY TERMINOLOGY FOUND IN THE JOB DESCRIPTION,\n"
+        "NEVER INTRODUCE FABRICATED INFORMATION OR FAKE EXPERIENCES,\n\n"
+        "###FEW-SHOT EXAMPLES###\n"
+        "Original Experience Bullet:\n"
+        "Led a team of developers to build internal tools.\n\n"
+        "Job Description Requirement:\n"
+        "Experience with Agile methodologies and CI/CD pipelines.\n\n"
+        "Optimized Bullet:\n"
+        "Led a cross-functional Agile team to develop internal tools, integrating CI/CD pipelines for accelerated deployment cycles.\n"
+    )
+
+    # Compose the user prompt
+    user_prompt = (
+        "Given the following resume text and job description, rewrite and enhance the resume so that it is smooth, well-structured, "
+        "and tailored to match the job description as closely as possible. "
         "Ensure the resume highlights relevant skills, experience, and qualifications that fit the job. "
-        "Only return a valid JSON object with the following fields if available: "
-        "full_name, email, phone, linkedin, location, summary, skills, "
-        "experience (with job_title, company, location, start_date, end_date, description), "
-        "education (with degree, institution, location, start_date, end_date, description), "
-        "certifications (name, issuer, date), projects (name, description, technologies), "
-        "languages (language, proficiency), awards (name, issuer, date), "
-        "publications (title, publisher, date), volunteer_experience (role, organization, start_date, end_date, description), interests. "
-        "Do not include any extra text or explanation. "
-        "The output must be a smooth, recruiter-ready resume that is highly relevant to the job description.\n\n"
+        "Return only a valid JSON object with the allowed sections.\n\n"
         f"Resume Text:\n{resume_text}\n\n"
         f"Job Description:\n{job_description}\n"
     )
@@ -650,8 +681,8 @@ def enhance_resume_api(request, job_id):
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
             ],
             max_tokens=1500,
             temperature=0.7,
@@ -661,7 +692,7 @@ def enhance_resume_api(request, job_id):
     except Exception as e:
         return Response({"error": f"AI enhancement failed: {str(e)}"}, status=500)
 
-    # Save enhanced fields to EnhancedResume model
+    # Save only the necessary fields to EnhancedResume
     try:
         job = Job.objects.get(id=job_id)
         EnhancedResume.objects.create(
@@ -676,13 +707,6 @@ def enhance_resume_api(request, job_id):
             skills=enhanced_resume.get('skills'),
             experience=enhanced_resume.get('experience'),
             education=enhanced_resume.get('education'),
-            certifications=enhanced_resume.get('certifications'),
-            projects=enhanced_resume.get('projects'),
-            languages=enhanced_resume.get('languages'),
-            awards=enhanced_resume.get('awards'),
-            publications=enhanced_resume.get('publications'),
-            volunteer_experience=enhanced_resume.get('volunteer_experience'),
-            interests=enhanced_resume.get('interests'),
         )
     except Exception as e:
         return Response({"error": f"Failed to save enhanced resume: {str(e)}"}, status=500)
