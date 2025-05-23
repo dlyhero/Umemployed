@@ -26,6 +26,7 @@ urlpatterns = [
     path('profile-views/', views.profile_views_api, name='profile_views_api'),  # Get all profile views for the user
     path('skill-categories/', SkillCategoryListView.as_view(), name='skill_category_list'),  # Fetch all skill categories
     path('user-profile/<int:user_id>/', user_profile_details_api, name='user_profile_details_api'),  # Fetch user profile details
+    path('enhance-resume/<int:job_id>/', views.enhance_resume_api, name='enhance_resume_api'),  # Enhance resume for a job with job_id in URL
 ]
 
 # Include router URLs

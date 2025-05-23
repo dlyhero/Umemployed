@@ -243,3 +243,27 @@ class ProfileView(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     viewed_at = models.DateTimeField(auto_now_add=True)
 
+class EnhancedResume(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    job = models.ForeignKey('job.Job', on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=50, blank=True, null=True)
+    linkedin = models.URLField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    summary = models.TextField(blank=True, null=True)
+    skills = models.JSONField(blank=True, null=True)  # List of skills
+    experience = models.JSONField(blank=True, null=True)  # List of jobs
+    education = models.JSONField(blank=True, null=True)  # List of education entries
+    certifications = models.JSONField(blank=True, null=True)
+    projects = models.JSONField(blank=True, null=True)
+    languages = models.JSONField(blank=True, null=True)
+    awards = models.JSONField(blank=True, null=True)
+    publications = models.JSONField(blank=True, null=True)
+    volunteer_experience = models.JSONField(blank=True, null=True)
+    interests = models.JSONField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Enhanced Resume for {self.user.username} - Job {self.job.id}"
+

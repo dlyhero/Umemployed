@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 from resume.models import (
-    Skill, Education, Experience, ContactInfo, WorkExperience, Language, ResumeAnalysis, ProfileView, SkillCategory, UserLanguage
+    Skill, Education, Experience, ContactInfo, WorkExperience, Language, ResumeAnalysis, ProfileView, SkillCategory, UserLanguage,EnhancedResume
 )
 from .serializers import (
     SkillSerializer, EducationSerializer, ExperienceSerializer, ContactInfoSerializer, 
@@ -19,6 +19,10 @@ from resume.transcript_job_title import extract_transcript_text  # Import the ol
 from azure.storage.blob import BlobServiceClient
 from django.db.models import Max  # Import Max for querying the latest resume
 import logging
+from job.models import Job  # Import Job model
+from django.conf import settings
+import openai  # Assuming you use OpenAI or similar for AI enhancement
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -410,6 +414,7 @@ def resume_analyses_api(request):
     serializer = ResumeAnalysisSerializer(analyses, many=True)
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 def profile_views_api(request):
     """
@@ -570,3 +575,119 @@ def user_profile_details_api(request, user_id):
         }, status=200)
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
+
+@api_view(['POST'])
+def enhance_resume_api(request, job_id):
+    """
+    Enhances the uploaded resume to fit a specific job description.
+
+    Request Body (Form-Data):
+        file: Resume file (PDF, DOCX, or TXT).
+
+    URL Parameter:
+        job_id: ID of the job the user is applying for.
+
+    Response:
+        {
+            "message": "Resume enhanced successfully.",
+            "enhanced_resume": {...}
+        }
+    """
+    file = request.FILES.get('file')
+    user = request.user
+
+    if not file:
+        return Response({"error": "The 'file' field is required."}, status=400)
+
+    # Save the file to ResumeDoc
+    resume_doc = ResumeDoc(user=user, file=file)
+    try:
+        resume_doc.save()
+    except Exception as e:
+        return Response({"error": f"Failed to upload file: {str(e)}"}, status=500)
+
+    # Extract resume text
+    try:
+        file_path = resume_doc.file.name
+        extracted_text_response = extract_text(request, file_path)
+        if extracted_text_response.status_code != 200:
+            return extracted_text_response
+        resume_text = extracted_text_response.data.get("extracted_text", "")
+        if not resume_text.strip():
+            return Response({"error": "Failed to extract meaningful text from the resume."}, status=400)
+    except Exception as e:
+        return Response({"error": f"Failed to extract text: {str(e)}"}, status=500)
+
+    # Fetch job description
+    try:
+        job = Job.objects.get(id=job_id)
+        job_description = str(job.description)
+    except Job.DoesNotExist:
+        return Response({"error": "Job not found."}, status=404)
+
+    # Prepare prompt for AI with all important fields and improved instructions
+    prompt = (
+        "You are a professional resume enhancer. "
+        "Given the following resume text and job description, rewrite and enhance the resume so that it is smooth, well-structured, and tailored to match the job description as closely as possible. "
+        "Ensure the resume highlights relevant skills, experience, and qualifications that fit the job. "
+        "Only return a valid JSON object with the following fields if available: "
+        "full_name, email, phone, linkedin, location, summary, skills, "
+        "experience (with job_title, company, location, start_date, end_date, description), "
+        "education (with degree, institution, location, start_date, end_date, description), "
+        "certifications (name, issuer, date), projects (name, description, technologies), "
+        "languages (language, proficiency), awards (name, issuer, date), "
+        "publications (title, publisher, date), volunteer_experience (role, organization, start_date, end_date, description), interests. "
+        "Do not include any extra text or explanation. "
+        "The output must be a smooth, recruiter-ready resume that is highly relevant to the job description.\n\n"
+        f"Resume Text:\n{resume_text}\n\n"
+        f"Job Description:\n{job_description}\n"
+    )
+
+    # Call AI model (OpenAI v1+ compatible)
+    try:
+        openai.api_key = getattr(settings, "OPENAI_API_KEY", None)
+        client = openai.OpenAI(api_key=openai.api_key)
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1500,
+            temperature=0.7,
+        )
+        ai_content = response.choices[0].message.content
+        enhanced_resume = json.loads(ai_content)
+    except Exception as e:
+        return Response({"error": f"AI enhancement failed: {str(e)}"}, status=500)
+
+    # Save enhanced fields to EnhancedResume model
+    try:
+        job = Job.objects.get(id=job_id)
+        EnhancedResume.objects.create(
+            user=user,
+            job=job,
+            full_name=enhanced_resume.get('full_name'),
+            email=enhanced_resume.get('email'),
+            phone=enhanced_resume.get('phone'),
+            linkedin=enhanced_resume.get('linkedin'),
+            location=enhanced_resume.get('location'),
+            summary=enhanced_resume.get('summary'),
+            skills=enhanced_resume.get('skills'),
+            experience=enhanced_resume.get('experience'),
+            education=enhanced_resume.get('education'),
+            certifications=enhanced_resume.get('certifications'),
+            projects=enhanced_resume.get('projects'),
+            languages=enhanced_resume.get('languages'),
+            awards=enhanced_resume.get('awards'),
+            publications=enhanced_resume.get('publications'),
+            volunteer_experience=enhanced_resume.get('volunteer_experience'),
+            interests=enhanced_resume.get('interests'),
+        )
+    except Exception as e:
+        return Response({"error": f"Failed to save enhanced resume: {str(e)}"}, status=500)
+
+    return Response({
+        "message": "Resume enhanced successfully.",
+        "enhanced_resume": enhanced_resume
+    }, status=200)

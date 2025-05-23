@@ -14,3 +14,11 @@ admin.site.register(UserLanguage)
 admin.site.register(Language)
 admin.site.register(ResumeAnalysis)
 admin.site.register(Transcript)
+
+from .models import EnhancedResume
+
+@admin.register(EnhancedResume)
+class EnhancedResumeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'job', 'full_name', 'email', 'created_at')
+    search_fields = ('user__username', 'full_name', 'email')
+    list_filter = ('created_at', 'job')
