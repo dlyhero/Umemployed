@@ -22,6 +22,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 import logging
 from transactions.models import Subscription 
+import openai
+from django.conf import settings
+import json
+import re
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -653,3 +658,121 @@ class ReportTestAPIView(APIView):
         )
 
         return Response({"message": "Retake request submitted successfully."}, status=status.HTTP_200_OK)
+
+class TailoredJobDescriptionAPIView(APIView):
+    """
+    Generates and saves a tailored job description, responsibilities, and benefits for a job using AI.
+    Expects job details and a list of required skills (not saved).
+    """
+    def post(self, request, job_id):
+        job = get_object_or_404(Job, id=job_id)
+        # Extract job fields from request or use job instance as fallback
+        title = request.data.get('title', job.title)
+        hire_number = request.data.get('hire_number', job.hire_number)
+        job_location_type = request.data.get('job_location_type', job.job_location_type)
+        job_type = request.data.get('job_type', job.job_type)
+        location = request.data.get('location', str(job.location))
+        salary_range = request.data.get('salary_range', job.salary_range)
+        category = request.data.get('category', job.category.name if job.category else "")
+        experience_levels = request.data.get('experience_levels', job.experience_levels)
+        weekly_ranges = request.data.get('weekly_ranges', job.weekly_ranges)
+        shifts = request.data.get('shifts', job.shifts)
+        skills = request.data.get('skills', [])  # List of required skills from frontend
+
+        # randomization to the prompt for tone/style
+        style_options = [
+            "Use a dynamic and energetic tone that excites candidates about the opportunity.",
+            "Adopt a formal and authoritative style, emphasizing professionalism and expertise.",
+            "Write in a friendly, conversational manner that feels approachable and inclusive.",
+            "Highlight innovation and forward-thinking, appealing to candidates who love new challenges.",
+            "Focus on impact and mission, appealing to candidates who want to make a difference.",
+            "Emphasize collaboration and team culture, making the role attractive to team players.",
+        ]
+        chosen_style = random.choice(style_options)
+
+        prompt = (
+            "YOU ARE A WORLD-CLASS HR COPYWRITER AND TALENT ACQUISITION SPECIALIST. "
+            "YOUR TASK IS TO CREATE THE MOST EFFECTIVE, ENGAGING, AND ATS-OPTIMIZED JOB DESCRIPTION, RESPONSIBILITIES, AND BENEFITS FOR THE ROLE BELOW. "
+            "YOUR OUTPUT WILL BE USED IN A REAL JOB POSTING TO ATTRACT TOP TALENT AND ENSURE HIGH RELEVANCY FOR BOTH HUMAN RECRUITERS AND APPLICANT TRACKING SYSTEMS (ATS).\n\n"
+            f"###STYLE###\n{chosen_style}\n\n"
+            "###INSTRUCTIONS###\n"
+            "- Analyze all provided job details and required skills.\n"
+            "- The experience level (e.g., 5-10 years) is a mandatory requirement and must be clearly stated in the job description and responsibilities.\n"
+            "- Write a compelling, clear, and concise job description that highlights the impact, mission, unique aspects of the role and company, and explicitly states the required years of experience.\n"
+            "- Responsibilities should be actionable, specific, and results-oriented, using bullet points and strong verbs. At least one bullet should reference the required experience level.\n"
+            "- Benefits should be attractive, concrete, and reflect both tangible (salary, insurance, perks) and intangible (growth, culture, flexibility) aspects.\n"
+            "- Integrate relevant keywords, skills, and tools from the provided skills list and job context.\n"
+            "- Use inclusive, bias-free, and motivating language.\n"
+            "- Format output as a valid JSON object with three fields: description, responsibilities, benefits. Each field should be a string (responsibilities as a bullet list in a string).\n"
+            "- Do NOT include any extra text, explanations, or sections outside of description, responsibilities, and benefits.\n"
+            "- Ensure the writing is ATS-friendly: no graphics, tables, or unusual formatting.\n"
+            "- Make sure the description is unique, not generic, and tailored to the provided details.\n\n"
+            "###JOB DETAILS###\n"
+            f"Job Title: {title}\n"
+            f"Hire Number: {hire_number}\n"
+            f"Job Location Type: {job_location_type}\n"
+            f"Job Type: {job_type}\n"
+            f"Location: {location}\n"
+            f"Salary Range: {salary_range}\n"
+            f"Category: {category}\n"
+            f"Experience Levels: {experience_levels}\n"
+            f"Weekly Ranges: {weekly_ranges}\n"
+            f"Shifts: {shifts}\n"
+            f"Required Skills: {', '.join(skills)}\n\n"
+            "###EXAMPLES###\n"
+            "description: \"Join our mission-driven team as a Senior Data Scientist (5+ years experience required), where you'll build scalable solutions impacting thousands of users. You'll collaborate with cross-functional teams, leverage modern technologies, and contribute to a culture of innovation and excellence.\"\n"
+            "responsibilities: \"- Design, develop, and deploy high-quality software solutions\n"
+            "- Collaborate with product managers and designers to define requirements\n"
+            "- Implement best practices for code quality, testing, and documentation\n"
+            "- Mentor junior engineers and contribute to team knowledge sharing\n"
+            "- Leverage at least 5 years of experience in data science to drive impactful projects\n"
+            "- Continuously improve system performance and scalability\"\n"
+            "benefits: \"- Competitive salary and performance bonuses\n"
+            "- Comprehensive health, dental, and vision insurance\n"
+            "- Flexible remote work options\n"
+            "- Professional development budget\n"
+            "- Inclusive and collaborative team culture\"\n"
+            "###END###\n"
+        )
+
+        # Call OpenAI API
+        try:
+            openai.api_key = getattr(settings, "OPENAI_API_KEY", None)
+            client = openai.OpenAI(api_key=openai.api_key)
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=1000,
+                temperature=0.7,
+            )
+            ai_content = response.choices[0].message.content
+
+            # Clean up control characters and invalid JSON before parsing
+            ai_content_clean = re.sub(r'[\x00-\x1F\x7F]', '', ai_content)
+            # Optionally, try to extract the first JSON object if extra text is present
+            match = re.search(r'\{.*\}', ai_content_clean, re.DOTALL)
+            if match:
+                ai_content_clean = match.group(0)
+
+            result = json.loads(ai_content_clean)
+        except Exception as e:
+            return Response({"error": f"AI generation failed: {str(e)}"}, status=500)
+
+        # Save to job fields
+        try:
+            job.description = result.get('description', job.description)
+            job.responsibilities = result.get('responsibilities', job.responsibilities)
+            job.benefits = result.get('benefits', job.benefits)
+            job.save()
+        except Exception as e:
+            return Response({"error": f"Failed to save tailored job description: {str(e)}"}, status=500)
+
+        return Response({
+            "message": "Tailored job description generated and saved successfully.",
+            "description": job.description,
+            "responsibilities": job.responsibilities,
+            "benefits": job.benefits
+        }, status=200)
