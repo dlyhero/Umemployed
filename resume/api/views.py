@@ -311,7 +311,8 @@ class SkillViewSet(ModelViewSet):
     serializer_class = SkillSerializer
 
     def get_queryset(self):
-        # Ensure only skills associated with the logged-in user are fetched
+        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+            return Skill.objects.none()
         return Skill.objects.filter(user=self.request.user)
 
 class EducationViewSet(ModelViewSet):
@@ -325,6 +326,8 @@ class EducationViewSet(ModelViewSet):
     serializer_class = EducationSerializer
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+            return Education.objects.none()
         return Education.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
@@ -346,6 +349,8 @@ class ExperienceViewSet(ModelViewSet):
     serializer_class = ExperienceSerializer
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+            return Experience.objects.none()
         return Experience.objects.filter(user=self.request.user)
 
 class ContactInfoViewSet(ModelViewSet):
@@ -359,6 +364,8 @@ class ContactInfoViewSet(ModelViewSet):
     serializer_class = ContactInfoSerializer
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+            return ContactInfo.objects.none()
         return ContactInfo.objects.filter(user=self.request.user)
 
 class WorkExperienceViewSet(ModelViewSet):
@@ -372,6 +379,8 @@ class WorkExperienceViewSet(ModelViewSet):
     serializer_class = WorkExperienceSerializer
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+            return WorkExperience.objects.none()
         return WorkExperience.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
@@ -393,8 +402,10 @@ class LanguageViewSet(ModelViewSet):
     serializer_class = LanguageSerializer
 
     def get_queryset(self):
-        # Filter languages through UserLanguage for the logged-in user
-        return Language.objects.filter(userlanguage__user_profile__user=self.request.user)
+        user = self.request.user
+        if not user.is_authenticated:
+            return Language.objects.none()
+        return Language.objects.filter(userlanguage__user_profile__user=user)
 
 @api_view(['GET'])
 def resume_analyses_api(request):
