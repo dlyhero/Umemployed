@@ -33,6 +33,7 @@ urlpatterns = [
     path('jobs/<int:job_id>/shortlist/<int:candidate_id>/', views.ShortlistCandidateAPIView.as_view(), name='shortlist_candidate'),  # Shortlist a candidate
     path('jobs/<int:job_id>/decline/<int:candidate_id>/', views.DeclineCandidateAPIView.as_view(), name='decline_candidate'),  # Decline a candidate
     path('jobs/<int:job_id>/extracted-skills/', views.ExtractedSkillsAPIView.as_view(), name='extracted_skills'),  # Get extracted skills for a job
+    path('jobs/<int:job_id>/tailored-description/', views.TailoredJobDescriptionAPIView.as_view(), name='tailored_job_description'),  # Get tailored job description
 
     # Saved jobs
     path('saved-jobs/', views.SavedJobsListAPIView.as_view(), name='saved_jobs'),  # List saved jobs
