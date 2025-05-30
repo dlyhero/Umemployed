@@ -21,5 +21,5 @@ urlpatterns = [
     path('related-users/', views.CompanyRelatedUsersAPIView.as_view(), name='api_company_related_users'),
     path('candidate/<int:candidate_id>/endorsements/', views.CandidateEndorsementsAPIView.as_view(), name='api_candidate_endorsements'),
     path('check-payment-status/<int:candidate_id>/', views.CheckPaymentStatusAPIView.as_view(), name='api_check_payment_status'),
-    path('my-shortlisted-jobs/', views.MyShortlistedJobsAPIView.as_view(), name='api_my_shortlisted_jobs'),
+    path('my-shortlisted-jobs/<int:user_id>/', views.MyShortlistedJobsAPIView.as_view(), name='api_my_shortlisted_jobs'),
 ]
