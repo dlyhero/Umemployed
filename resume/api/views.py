@@ -379,6 +379,7 @@ class WorkExperienceViewSet(ModelViewSet):
     serializer_class = WorkExperienceSerializer
 
     def get_queryset(self):
+        # Short-circuit for schema generation or unauthenticated user
         if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
             return WorkExperience.objects.none()
         return WorkExperience.objects.filter(user=self.request.user)
@@ -402,10 +403,10 @@ class LanguageViewSet(ModelViewSet):
     serializer_class = LanguageSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        if not user.is_authenticated:
+        # Short-circuit for schema generation or unauthenticated user
+        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
             return Language.objects.none()
-        return Language.objects.filter(userlanguage__user_profile__user=user)
+        return Language.objects.filter(userlanguage__user_profile__user=self.request.user)
 
 @api_view(['GET'])
 def resume_analyses_api(request):
