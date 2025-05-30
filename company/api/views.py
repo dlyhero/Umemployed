@@ -700,19 +700,24 @@ class UnshortlistCandidateAPIView(APIView):
 
 class MyShortlistedJobsAPIView(APIView):
     """
-    API view to retrieve jobs where the authenticated user has been shortlisted.
+    API view to retrieve jobs where the specified user has been shortlisted.
     """
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_description="Retrieve jobs where the authenticated user has been shortlisted",
+        operation_description="Retrieve jobs where the specified user has been shortlisted",
         responses={200: "Shortlisted jobs retrieved successfully"}
     )
-    def get(self, request):
+    def get(self, request, user_id):
         """
         Handle GET requests to retrieve jobs where the user has been shortlisted.
         """
-        shortlisted = Shortlist.objects.filter(candidate=request.user).select_related('job', 'job__company')
+        # Only allow the user themselves or an admin to view this
+        if request.user.id != user_id and not request.user.is_staff:
+            return Response({"detail": "Not authorized."}, status=status.HTTP_403_FORBIDDEN)
+
+        user = get_object_or_404(User, id=user_id)
+        shortlisted = Shortlist.objects.filter(candidate=user).select_related('job', 'job__company')
         jobs_data = [
             {
                 "job_id": s.job.id,
