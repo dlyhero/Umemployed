@@ -18,6 +18,9 @@ from django.http import HttpResponseForbidden
 import random
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
 
 class IsCompanyOwner(BasePermission):
     """
@@ -694,3 +697,146 @@ class UnshortlistCandidateAPIView(APIView):
 
         shortlist.delete()
         return Response({"message": "Candidate unshortlisted successfully."}, status=status.HTTP_200_OK)
+
+class MyShortlistedJobsAPIView(APIView):
+    """
+    API view to retrieve jobs where the authenticated user has been shortlisted.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Retrieve jobs where the authenticated user has been shortlisted",
+        responses={200: "Shortlisted jobs retrieved successfully"}
+    )
+    def get(self, request):
+        """
+        Handle GET requests to retrieve jobs where the user has been shortlisted.
+        """
+        shortlisted = Shortlist.objects.filter(candidate=request.user).select_related('job', 'job__company')
+        jobs_data = [
+            {
+                "job_id": s.job.id,
+                "job_title": s.job.title,
+                "company_id": s.job.company.id,
+                "company_name": s.job.company.name,
+                "shortlisted_at": s.created_at,
+            }
+            for s in shortlisted
+        ]
+        return Response(jobs_data, status=status.HTTP_200_OK)
+
+def update_and_notify_top10(job):
+    """
+    Helper function to update top 10 candidates and send emails as needed.
+    Should be called after a new application is created for a job.
+    """
+    applications = Application.objects.filter(job=job)
+    # Calculate scores
+    for application in applications:
+        user = application.user
+        resume = Resume.objects.filter(user=user).first()
+        if resume:
+            applicant_skills = set(resume.skills.all())
+            job_skills = set(job.requirements.all())
+            match_percentage, _ = application.calculate_skill_match(applicant_skills, job_skills)
+            application.matching_percentage = match_percentage
+            quiz_score = application.quiz_score
+            overall_score = match_percentage * 0.7 + (quiz_score / 10) * 0.3
+            application.overall_score = overall_score
+        else:
+            application.matching_percentage = 0
+            application.overall_score = application.quiz_score / 10 * 0.3
+        application.save(update_fields=['matching_percentage', 'overall_score'])
+
+    # Sort applications by overall_score, then quiz_score, then random
+    sorted_apps = sorted(
+        applications,
+        key=lambda x: (x.overall_score, x.quiz_score, random.random()),
+        reverse=True
+    )
+    # Get previous top 10 for comparison
+    prev_top10_ids = set(Application.objects.filter(job=job, top10_flag=True).values_list('id', flat=True))
+    # Mark all as not in top 10
+    Application.objects.filter(job=job, top10_flag=True).update(top10_flag=False)
+
+    # Mark new top 10 and send emails
+    new_top10_ids = set()
+    for idx, app in enumerate(sorted_apps[:10]):
+        app.top10_flag = True
+        app.save(update_fields=['top10_flag'])
+        new_top10_ids.add(app.id)
+        # Send emails based on position
+        if idx < 5:
+            # Top 5
+            if app.id not in prev_top10_ids or idx < 5 and app.id not in set(Application.objects.filter(job=job, top10_flag=True, top5_flag=True).values_list('id', flat=True)):
+                subject = "Congratulations! You're among the top candidates"
+                html_message = render_to_string(
+                    'emails/top5_candidate.html',
+                    {
+                        'username': app.user.username,
+                        'job_title': job.title,
+                        'company_name': job.company.name,
+                    }
+                )
+                send_mail(
+                    subject,
+                    '',  # Plain text fallback (optional)
+                    settings.DEFAULT_FROM_EMAIL,
+                    [app.user.email],
+                    html_message=html_message,
+                    fail_silently=True,
+                )
+            app.top5_flag = True
+            app.save(update_fields=['top5_flag'])
+        else:
+            # Waiting list (6-10)
+            if app.id not in prev_top10_ids or app.top5_flag:
+                subject = f"Update: Your application status for {job.title}"
+                html_message = render_to_string(
+                    'emails/waiting_list_candidate.html',
+                    {
+                        'username': app.user.username,
+                        'job_title': job.title,
+                        'company_name': job.company.name,
+                    }
+                )
+                send_mail(
+                    subject,
+                    '',  # Plain text fallback (optional)
+                    settings.DEFAULT_FROM_EMAIL,
+                    [app.user.email],
+                    html_message=html_message,
+                    fail_silently=True,
+                )
+            app.top5_flag = False
+            app.save(update_fields=['top5_flag'])
+
+    # Send sorry email to those who dropped out of top 10
+    dropped_ids = prev_top10_ids - new_top10_ids
+    for app in Application.objects.filter(id__in=dropped_ids):
+        subject = f"Update: Your application status for {job.title}"
+        html_message = render_to_string(
+            'emails/sorry_candidate.html',
+            {
+                'username': app.user.username,
+                'job_title': job.title,
+                'company_name': job.company.name,
+            }
+        )
+        send_mail(
+            subject,
+            '',  # Plain text fallback (optional)
+            settings.DEFAULT_FROM_EMAIL,
+            [app.user.email],
+            html_message=html_message,
+            fail_silently=True,
+        )
+        app.top5_flag = False
+        app.top10_flag = False
+        app.save(update_fields=['top5_flag', 'top10_flag'])
+
+# --- Usage Example ---
+# In your application creation view (not shown), after saving a new Application:
+# update_and_notify_top10(job)
+
+# You must add BooleanFields to Application model: top5_flag and top10_flag (default False)

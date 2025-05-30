@@ -27,6 +27,7 @@ from django.conf import settings
 import json
 import re
 import random
+from company.api.views import update_and_notify_top10  # Add this import
 
 logger = logging.getLogger(__name__)
 
@@ -627,6 +628,9 @@ class JobQuestionsAPIView(APIView):
             application.quiz_score = total_score
             application.has_completed_quiz = True
             application.save()
+
+        # Trigger top 10 update and notification logic
+        update_and_notify_top10(job)
 
         return Response({"message": "All responses submitted successfully.", "total_score": total_score}, status=200)
 
