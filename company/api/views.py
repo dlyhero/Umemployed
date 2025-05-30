@@ -709,6 +709,10 @@ class MyShortlistedJobsAPIView(APIView):
         responses={200: "Shortlisted jobs retrieved successfully"}
     )
     def get(self, request, user_id):
+        # Short-circuit for schema generation (e.g., drf_yasg)
+        if getattr(self, 'swagger_fake_view', False):
+            return Response([])
+
         """
         Handle GET requests to retrieve jobs where the user has been shortlisted.
         """
