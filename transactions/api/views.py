@@ -153,7 +153,7 @@ class CreateStripeSubscriptionAPIView(APIView):
             return Response({"error": "Invalid tier or user_type."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Get frontend base URL from environment variable
-        frontend_base_url = os.environ.get("FRONTEND_BASE_URL", "http://localhost:3000")  # fallback to local dev
+        frontend_base_url = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")  # fallback to local dev
         # Create Stripe Checkout Session for subscription
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
