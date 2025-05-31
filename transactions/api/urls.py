@@ -10,4 +10,5 @@ urlpatterns = [
     path('stripe-subscribe/', views.CreateStripeSubscriptionAPIView.as_view(), name='api_stripe_subscribe'),
     path('stripe-cancel/', views.CancelStripeSubscriptionAPIView.as_view(), name='api_stripe_cancel'),
     path('stripe-webhook/', views.StripeWebhookAPIView.as_view(), name='api_stripe_webhook'),
+    path('subscription-status/<int:user_id>/', views.SubscriptionStatusAPIView.as_view(), name='api_subscription_status'),
 ]
