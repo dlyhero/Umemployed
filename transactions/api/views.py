@@ -142,10 +142,10 @@ class CreateStripeSubscriptionAPIView(APIView):
         user_type = request.data.get("user_type")
         # Map your tier/user_type to Stripe price IDs
         STRIPE_PRICE_IDS = {
-            ("user", "standard"): "price_user_standard",
-            ("user", "premium"): "price_user_premium",
-            ("recruiter", "standard"): "price_recruiter_standard",
-            ("recruiter", "premium"): "price_recruiter_premium",
+            ("user", "standard"): "price_1RUpqCGhd6oP7C9j40K7Wk8J",  # <-- Your actual Stripe Price ID
+            ("user", "premium"): "price_1RUq6wGhd6oP7C9jLts6eQsf",
+            ("recruiter", "standard"): "price_1RUpqCGhd6oP7C9j40K7Wk8J",
+            ("recruiter", "premium"): "price_1RUq6wGhd6oP7C9jLts6eQsf",
             # Add more as needed
         }
         price_id = STRIPE_PRICE_IDS.get((user_type, tier))
@@ -155,10 +155,12 @@ class CreateStripeSubscriptionAPIView(APIView):
         # Create Stripe Checkout Session for subscription
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
-            line_items=[{
-                'price': price_id,
-                'quantity': 1,
-            }],
+            line_items=[
+                {
+                    'price': price_id,  # Use the mapped price_id based on plan
+                    'quantity': 1,
+                },
+            ],
             mode='subscription',
             customer_email=user.email,
             success_url=request.build_absolute_uri('/transactions/payment-success/'),
