@@ -304,12 +304,11 @@ class JobApplicationsViewAPIView(APIView):
 
                 # Calculate the overall score using match percentage and quiz score
                 quiz_score = application.quiz_score
-                overall_score = match_percentage * 0.7 + (quiz_score / 10) * 0.3
-                application.overall_score = overall_score
+                application.overall_match_percentage = application.quiz_score / 10 * 0.3
             else:
                 # Handle cases where no resume exists
                 application.matching_percentage = 0
-                application.overall_score = application.quiz_score / 10 * 0.3  # Only quiz score
+                application.overall_match_percentage = application.quiz_score / 10 * 0.3  # Only quiz score
 
         # Sort applications based on quiz score, matching percentage, and randomly if there's a tie
         applications = sorted(applications, key=lambda x: (x.quiz_score, x.matching_percentage, random.random()), reverse=True)
@@ -751,10 +750,11 @@ def update_and_notify_top10(job):
             application.matching_percentage = match_percentage
             quiz_score = application.quiz_score
             # Use overall_match_percentage instead of overall_score
-            application.overall_match_percentage = application.overall_match_percentage  # Already set by model logic
+            # application.overall_match_percentage is already set by model logic
         else:
             application.matching_percentage = 0
             application.overall_match_percentage = application.quiz_score / 10 * 0.3  # Only quiz score
+        # Save using correct field name
         application.save(update_fields=['matching_percentage', 'overall_match_percentage'])
 
     # Sort applications by overall_match_percentage, then quiz_score, then random
