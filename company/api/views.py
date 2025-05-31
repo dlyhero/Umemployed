@@ -748,13 +748,10 @@ def update_and_notify_top10(job):
             job_skills = set(job.requirements.all())
             match_percentage, _ = application.calculate_skill_match(applicant_skills, job_skills)
             application.matching_percentage = match_percentage
-            quiz_score = application.quiz_score
-            # Use overall_match_percentage instead of overall_score
             # application.overall_match_percentage is already set by model logic
         else:
             application.matching_percentage = 0
             application.overall_match_percentage = application.quiz_score / 10 * 0.3  # Only quiz score
-        # Save using correct field name
         application.save(update_fields=['matching_percentage', 'overall_match_percentage'])
 
     # Sort applications by overall_match_percentage, then quiz_score, then random
@@ -763,66 +760,55 @@ def update_and_notify_top10(job):
         key=lambda x: (float(x.overall_match_percentage), x.quiz_score, random.random()),
         reverse=True
     )
-    # Get previous top 10 for comparison
-    prev_top10_ids = set(Application.objects.filter(job=job, top10_flag=True).values_list('id', flat=True))
-    # Mark all as not in top 10
-    Application.objects.filter(job=job, top10_flag=True).update(top10_flag=False)
 
-    # Mark new top 10 and send emails
-    new_top10_ids = set()
-    for idx, app in enumerate(sorted_apps[:10]):
-        app.top10_flag = True
-        app.save(update_fields=['top10_flag'])
-        new_top10_ids.add(app.id)
-        # Send emails based on position
-        if idx < 5:
-            # Top 5
-            if app.id not in prev_top10_ids or idx < 5 and app.id not in set(Application.objects.filter(job=job, top10_flag=True, top5_flag=True).values_list('id', flat=True)):
-                subject = "Congratulations! You're among the top candidates"
-                html_message = render_to_string(
-                    'emails/top5_candidate.html',
-                    {
-                        'username': app.user.username,
-                        'job_title': job.title,
-                        'company_name': job.company.name,
-                    }
-                )
-                send_mail(
-                    subject,
-                    '',  # Plain text fallback (optional)
-                    settings.DEFAULT_FROM_EMAIL,
-                    [app.user.email],
-                    html_message=html_message,
-                    fail_silently=True,
-                )
-            app.top5_flag = True
-            app.save(update_fields=['top5_flag'])
-        else:
-            # Waiting list (6-10)
-            if app.id not in prev_top10_ids or app.top5_flag:
-                subject = f"Update: Your application status for {job.title}"
-                html_message = render_to_string(
-                    'emails/waiting_list_candidate.html',
-                    {
-                        'username': app.user.username,
-                        'job_title': job.title,
-                        'company_name': job.company.name,
-                    }
-                )
-                send_mail(
-                    subject,
-                    '',  # Plain text fallback (optional)
-                    settings.DEFAULT_FROM_EMAIL,
-                    [app.user.email],
-                    html_message=html_message,
-                    fail_silently=True,
-                )
-            app.top5_flag = False
-            app.save(update_fields=['top5_flag'])
+    # Select top 10 and top 5 applications
+    top_10_apps = sorted_apps[:10]
+    top_5_apps = sorted_apps[:5]
+    waiting_list_apps = sorted_apps[5:10]
 
-    # Send sorry email to those who dropped out of top 10
-    dropped_ids = prev_top10_ids - new_top10_ids
-    for app in Application.objects.filter(id__in=dropped_ids):
+    # Send emails to top 5
+    for app in top_5_apps:
+        subject = "Congratulations! You're among the top candidates"
+        html_message = render_to_string(
+            'emails/top5_candidate.html',
+            {
+                'username': app.user.username,
+                'job_title': job.title,
+                'company_name': job.company.name,
+            }
+        )
+        send_mail(
+            subject,
+            '',  # Plain text fallback (optional)
+            settings.DEFAULT_FROM_EMAIL,
+            [app.user.email],
+            html_message=html_message,
+            fail_silently=True,
+        )
+
+    # Send emails to waiting list (6-10)
+    for app in waiting_list_apps:
+        subject = f"Update: Your application status for {job.title}"
+        html_message = render_to_string(
+            'emails/waiting_list_candidate.html',
+            {
+                'username': app.user.username,
+                'job_title': job.title,
+                'company_name': job.company.name,
+            }
+        )
+        send_mail(
+            subject,
+            '',  # Plain text fallback (optional)
+            settings.DEFAULT_FROM_EMAIL,
+            [app.user.email],
+            html_message=html_message,
+            fail_silently=True,
+        )
+
+    # Optionally, notify others who are not in top 10
+    dropped_apps = [app for app in applications if app not in top_10_apps]
+    for app in dropped_apps:
         subject = f"Update: Your application status for {job.title}"
         html_message = render_to_string(
             'emails/sorry_candidate.html',
@@ -840,10 +826,6 @@ def update_and_notify_top10(job):
             html_message=html_message,
             fail_silently=True,
         )
-        app.top5_flag = False
-        app.top10_flag = False
-        app.save(update_fields=['top5_flag', 'top10_flag'])
-
 # --- Usage Example ---
 # In your application creation view (not shown), after saving a new Application:
 # update_and_notify_top10(job)
