@@ -750,17 +750,17 @@ def update_and_notify_top10(job):
             match_percentage, _ = application.calculate_skill_match(applicant_skills, job_skills)
             application.matching_percentage = match_percentage
             quiz_score = application.quiz_score
-            overall_score = match_percentage * 0.7 + (quiz_score / 10) * 0.3
-            application.overall_score = overall_score
+            # Use overall_match_percentage instead of overall_score
+            application.overall_match_percentage = application.overall_match_percentage  # Already set by model logic
         else:
             application.matching_percentage = 0
-            application.overall_score = application.quiz_score / 10 * 0.3
-        application.save(update_fields=['matching_percentage', 'overall_score'])
+            application.overall_match_percentage = application.quiz_score / 10 * 0.3  # Only quiz score
+        application.save(update_fields=['matching_percentage', 'overall_match_percentage'])
 
-    # Sort applications by overall_score, then quiz_score, then random
+    # Sort applications by overall_match_percentage, then quiz_score, then random
     sorted_apps = sorted(
         applications,
-        key=lambda x: (x.overall_score, x.quiz_score, random.random()),
+        key=lambda x: (float(x.overall_match_percentage), x.quiz_score, random.random()),
         reverse=True
     )
     # Get previous top 10 for comparison
