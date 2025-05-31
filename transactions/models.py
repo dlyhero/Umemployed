@@ -3,6 +3,7 @@ from users.models import User
 
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 class Transaction(models.Model):
     PAYMENT_METHODS = [
@@ -83,11 +84,15 @@ class Subscription(models.Model):
         # Safeguard: Only allow if subscription is active
         if not self.is_active:
             return False
-        from django.utils import timezone
         today = timezone.now().date()
-        usage, _ = DailyUsage.objects.get_or_create(
+        usage, created = DailyUsage.objects.get_or_create(
             user=self.user, date=today, usage_type=usage_type
         )
+        # If the record is not for today, reset the count
+        if not created and usage.date != today:
+            usage.count = 0
+            usage.date = today
+            usage.save()
         limit = self.get_daily_limit()
         if limit is None:
             return True  # Unlimited
@@ -99,9 +104,13 @@ class Subscription(models.Model):
             return
         from django.utils import timezone
         today = timezone.now().date()
-        usage, _ = DailyUsage.objects.get_or_create(
+        usage, created = DailyUsage.objects.get_or_create(
             user=self.user, date=today, usage_type=usage_type
         )
+        # If the record is not for today, reset the count
+        if not created and usage.date != today:
+            usage.count = 0
+            usage.date = today
         usage.count += 1
         usage.save()
 
