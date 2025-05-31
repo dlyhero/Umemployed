@@ -13,7 +13,7 @@ import uuid
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.utils import timezone
-
+import os
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class PayPalPaymentAPIView(APIView):
@@ -152,6 +152,8 @@ class CreateStripeSubscriptionAPIView(APIView):
         if not price_id:
             return Response({"error": "Invalid tier or user_type."}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Get frontend base URL from environment variable
+        frontend_base_url = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")  # fallback to local dev
         # Create Stripe Checkout Session for subscription
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -163,8 +165,8 @@ class CreateStripeSubscriptionAPIView(APIView):
             ],
             mode='subscription',
             customer_email=user.email,
-            success_url=request.build_absolute_uri('/transactions/payment-success/'),
-            cancel_url=request.build_absolute_uri('/transactions/payment-cancel/'),
+            success_url=f"{frontend_base_url}/pricing/success",
+            cancel_url=f"{frontend_base_url}/pricing/failure",
         )
 
         # Optionally, mark any previous subscriptions inactive
