@@ -349,3 +349,42 @@ class PaymentCancelAPIView(APIView):
         transaction.save()
 
         return Response({"message": "Payment canceled"}, status=status.HTTP_200_OK)
+
+
+class SubscriptionStatusAPIView(APIView):
+    """
+    API view to get a user's active subscription status by user ID.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Get a user's active subscription status by user ID",
+        manual_parameters=[
+            openapi.Parameter('user_id', openapi.IN_PATH, description="User ID", type=openapi.TYPE_INTEGER)
+        ],
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    "has_active_subscription": openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Whether the user has an active subscription"),
+                    "user_type": openapi.Schema(type=openapi.TYPE_STRING, description="User type"),
+                    "tier": openapi.Schema(type=openapi.TYPE_STRING, description="Subscription tier"),
+                    "started_at": openapi.Schema(type=openapi.TYPE_STRING, description="Subscription start date"),
+                    "ended_at": openapi.Schema(type=openapi.TYPE_STRING, description="Subscription end date"),
+                },
+            ),
+            404: "No active subscription found"
+        }
+    )
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        subscription = Subscription.objects.filter(user=user, is_active=True).order_by('-started_at').first()
+        if not subscription:
+            return Response({"has_active_subscription": False}, status=status.HTTP_200_OK)
+        return Response({
+            "has_active_subscription": True,
+            "user_type": subscription.user_type,
+            "tier": subscription.tier,
+            "started_at": subscription.started_at,
+            "ended_at": subscription.ended_at,
+        }, status=status.HTTP_200_OK)
