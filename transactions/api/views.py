@@ -14,13 +14,16 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 import os
+from transactions.api.permissions import HasActiveSubscription
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class PayPalPaymentAPIView(APIView):
     """
     API view to initiate a PayPal payment.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasActiveSubscription]
+    required_feature = 'free_endorsement'
 
     @swagger_auto_schema(
         operation_description="Initiate a PayPal payment",
@@ -60,7 +63,8 @@ class StripePaymentAPIView(APIView):
     """
     API view to initiate a Stripe payment.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasActiveSubscription]
+    required_feature = 'free_endorsement'
 
     @swagger_auto_schema(
         operation_description="Initiate a Stripe payment",
@@ -188,7 +192,7 @@ class CancelStripeSubscriptionAPIView(APIView):
     """
     API view to cancel an active Stripe subscription.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasActiveSubscription]
 
     @swagger_auto_schema(
         operation_description="Cancel an active Stripe subscription",
@@ -265,7 +269,7 @@ class TransactionHistoryAPIView(APIView):
     """
     API view to retrieve the transaction history for the authenticated user.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasActiveSubscription]
 
     @swagger_auto_schema(
         operation_description="Retrieve transaction history",
@@ -307,7 +311,7 @@ class PaymentSuccessAPIView(APIView):
     """
     API view to handle successful payments.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasActiveSubscription]
 
     @swagger_auto_schema(
         operation_description="Handle successful payments",
@@ -332,7 +336,7 @@ class PaymentCancelAPIView(APIView):
     """
     API view to handle canceled payments.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasActiveSubscription]
 
     @swagger_auto_schema(
         operation_description="Handle canceled payments",
@@ -357,7 +361,7 @@ class SubscriptionStatusAPIView(APIView):
     """
     API view to get a user's active subscription status by user ID.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasActiveSubscription]
 
     @swagger_auto_schema(
         operation_description="Get a user's active subscription status by user ID",

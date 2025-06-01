@@ -28,6 +28,7 @@ import json
 import re
 import random
 from company.api.views import update_and_notify_top10  # Add this import
+from transactions.api.permissions import HasActiveSubscription
 
 logger = logging.getLogger(__name__)
 
@@ -214,14 +215,15 @@ class CreateJobStep1APIView(APIView):
     - 201 Created: Returns the created job details.
     - 400 Bad Request: Returns validation errors.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasActiveSubscription]
+    required_user_type = 'recruiter'
 
     def post(self, request):
         user = request.user
-        # Check recruiter subscription and posting limit
         subscription = Subscription.objects.filter(user=user, user_type='recruiter', is_active=True).first()
         if not subscription:
             return Response({"message": "No active recruiter subscription found."}, status=status.HTTP_403_FORBIDDEN)
+        # Check daily posting limit
         if not subscription.can_perform_action('posting'):
             return Response({"message": "You have reached your daily job posting limit for your subscription tier."}, status=status.HTTP_403_FORBIDDEN)
         # Example: Only allow AI job description for premium recruiters
@@ -669,6 +671,15 @@ class TailoredJobDescriptionAPIView(APIView):
     Expects job details and a list of required skills (not saved).
     """
     def post(self, request, job_id):
+        # Subscription check: require at least standard or premium
+        user = request.user
+        subscription = Subscription.objects.filter(user=user, user_type='recruiter', is_active=True).order_by('-started_at').first()
+        if not subscription or subscription.tier not in ['standard', 'premium']:
+            return Response(
+                {"error": "You need a Standard or Premium recruiter subscription to use the AI job description feature. Please upgrade your plan."},
+                status=403
+            )
+
         job = get_object_or_404(Job, id=job_id)
         # Extract job fields from request or use job instance as fallback
         title = request.data.get('title', job.title)

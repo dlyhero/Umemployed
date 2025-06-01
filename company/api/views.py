@@ -599,6 +599,16 @@ class CandidateEndorsementsAPIView(APIView):
         """
         Handle GET requests to retrieve endorsements for a candidate.
         """
+        # Require recruiter with premium subscription
+        from transactions.models import Subscription
+        user = request.user
+        subscription = Subscription.objects.filter(user=user, user_type='recruiter', is_active=True).order_by('-started_at').first()
+        if not subscription or subscription.tier != 'premium':
+            return Response(
+                {"error": "You need a Premium recruiter subscription to view candidate endorsements. Please upgrade your plan."},
+                status=403
+            )
+
         candidate = get_object_or_404(User, id=candidate_id)
 
         # Check if the user has a completed transaction for this candidate

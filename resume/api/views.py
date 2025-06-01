@@ -23,6 +23,7 @@ from job.models import Job  # Import Job model
 from django.conf import settings
 import openai  # Assuming you use OpenAI or similar for AI enhancement
 import json
+from transactions.models import Subscription
 
 logger = logging.getLogger(__name__)
 
@@ -605,6 +606,15 @@ def enhance_resume_api(request, job_id):
             "enhanced_resume": {...}
         }
     """
+    # Subscription check: require at least standard or premium
+    user = request.user
+    subscription = Subscription.objects.filter(user=user, user_type='user', is_active=True).order_by('-started_at').first()
+    if not subscription or subscription.tier not in ['standard', 'premium']:
+        return Response(
+            {"error": "You need a Standard or Premium subscription to use the resume enhancer. Please upgrade your plan."},
+            status=403
+        )
+
     file = request.FILES.get('file')
     user = request.user
 

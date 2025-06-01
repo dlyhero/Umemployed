@@ -115,10 +115,13 @@ class Subscription(models.Model):
         usage.save()
 
     def has_feature(self, feature_name):
-        """
-        Check if this subscription grants access to a specific feature.
-        """
-        return feature_name in self.FEATURES_BY_TIER.get((self.user_type, self.tier), [])
+        tier_order = ['basic', 'standard', 'premium', 'custom']
+        user_type = self.user_type
+        current_tier_index = tier_order.index(self.tier)
+        for tier in reversed(tier_order[:current_tier_index + 1]):
+            if feature_name in self.FEATURES_BY_TIER.get((user_type, tier), []):
+                return True
+        return False
 
 class DailyUsage(models.Model):
     USAGE_TYPE_CHOICES = [
