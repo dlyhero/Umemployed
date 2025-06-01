@@ -29,6 +29,7 @@ import re
 import random
 from company.api.views import update_and_notify_top10  # Add this import
 from transactions.api.permissions import HasActiveSubscription
+from notifications.models import Notification
 
 logger = logging.getLogger(__name__)
 
@@ -85,12 +86,16 @@ class WithdrawApplicationAPIView(APIView):
     def delete(self, request, job_id):
         user = request.user
         job = get_object_or_404(Job, id=job_id)
-
-        # Find the application for the user and job
         application = Application.objects.filter(user=user, job=job).first()
-
         if application:
             application.delete()
+            # Notify recruiter/company owner
+            if job.company and job.company.user:
+                Notification.objects.create(
+                    user=job.company.user,
+                    notification_type=Notification.JOB_APPLICATION,
+                    message=f"{user.get_full_name() or user.username} has withdrawn their application for '{job.title}'."
+                )
             return Response({"message": "Your application has been withdrawn."}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "You haven't applied for this job."}, status=status.HTTP_400_BAD_REQUEST)
@@ -100,12 +105,17 @@ class ShortlistCandidateAPIView(APIView):
         job = get_object_or_404(Job, id=job_id)
         candidate = get_object_or_404(User, id=candidate_id)
         recruiter = request.user
-
         # Check if the candidate is already shortlisted for the job
         if Shortlist.objects.filter(recruiter=recruiter, candidate=candidate, job=job).exists():
             return Response({"message": "Candidate is already shortlisted for this job."}, status=status.HTTP_400_BAD_REQUEST)
 
         Shortlist.objects.create(recruiter=recruiter, candidate=candidate, job=job)
+        # Notify candidate
+        Notification.objects.create(
+            user=candidate,
+            notification_type=Notification.JOB_APPLICATION,
+            message=f"You have been shortlisted for the job '{job.title}' at {job.company.name if job.company else ''}."
+        )
         return Response({"message": "Candidate has been shortlisted successfully."}, status=status.HTTP_201_CREATED)
 
 class DeclineCandidateAPIView(APIView):
@@ -390,6 +400,13 @@ class CreateJobStep4APIView(APIView):
         job.is_available = True  # Set is_available to True
         job.save()
 
+        # Notify recruiter that job is now available
+        Notification.objects.create(
+            user=request.user,
+            notification_type=Notification.NEW_JOB_POSTED,
+            message=f"Your job '{job.title}' is now available and visible to candidates."
+        )
+
         # Generate questions for the selected skills
         generated_questions = []
         for skill in skills:
@@ -633,7 +650,19 @@ class JobQuestionsAPIView(APIView):
 
         # Trigger top 10 update and notification logic
         update_and_notify_top10(job)
-
+        # Notify user of quiz completion
+        Notification.objects.create(
+            user=user,
+            notification_type=Notification.JOB_APPLICATION,
+            message=f"You have completed the quiz for the job '{job.title}'."
+        )
+        # Notify recruiter/company owner of new candidate quiz completion
+        if job.company and job.company.user:
+            Notification.objects.create(
+                user=job.company.user,
+                notification_type=Notification.JOB_APPLICATION,
+                message=f"{user.get_full_name() or user.username} has completed the quiz for '{job.title}'."
+            )
         return Response({"message": "All responses submitted successfully.", "total_score": total_score}, status=200)
 
 class ReportTestAPIView(APIView):

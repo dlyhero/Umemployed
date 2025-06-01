@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import *
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from notifications.models import Notification  # Add this import
 
 # Create your views here.
 @login_required(login_url="login")
@@ -42,6 +43,12 @@ def chat(request, pk):
         text = request.POST.get('text')
         message = Message(text = text, sender = request.user, receiver = user)
         message.save()
+        # Notify receiver of new message
+        Notification.objects.create(
+            user=user,
+            notification_type=Notification.NEW_MESSAGE,
+            message=f"You have received a new message from {request.user.get_full_name() or request.user.username}."
+        )
     messages = list(Message.objects.filter(Q(sender = user, receiver = request.user) | Q(receiver = user, sender = request.user)))
     
     for message in messages:

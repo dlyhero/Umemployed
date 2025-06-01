@@ -27,6 +27,7 @@ from umemployed.celery import app as celery_app  # Import your celery app
 from celery import shared_task
 import logging
 from django.http import HttpResponseRedirect
+from notifications.models import Notification
 User = get_user_model()
 
 logger = logging.getLogger(__name__)
@@ -86,6 +87,12 @@ class SignupView(APIView):
                 [user.email],
                 fail_silently=False,
                 html_message=message  # Send as HTML email
+            )
+            # Notify user of signup
+            Notification.objects.create(
+                user=user,
+                notification_type=Notification.ACCOUNT_ALERT,
+                message="Your account has been created. Please confirm your email to activate your account."
             )
 
             return Response({"message": "User created successfully. Please confirm your email."}, status=status.HTTP_201_CREATED)
