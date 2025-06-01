@@ -5,6 +5,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     """
     Serializer for the Transaction model.
     """
+    candidate = serializers.PrimaryKeyRelatedField(queryset=Transaction._meta.get_field('candidate').related_model.objects.all(), allow_null=True, required=False)
     class Meta:
         model = Transaction
         fields = [
