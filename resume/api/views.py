@@ -8,7 +8,8 @@ from resume.models import (
 )
 from .serializers import (
     SkillSerializer, EducationSerializer, ExperienceSerializer, ContactInfoSerializer, 
-    WorkExperienceSerializer, LanguageSerializer, ResumeAnalysisSerializer, ProfileViewSerializer, ResumeSerializer, SkillCategorySerializer
+    WorkExperienceSerializer, LanguageSerializer, UserLanguageSerializer,
+    ResumeAnalysisSerializer, ProfileViewSerializer, ResumeSerializer, SkillCategorySerializer
 )
 from resume.models import Resume, ResumeDoc, Transcript
 from resume.views import update_resume, display_matching_jobs, upload_resume, update_resume_view
@@ -25,6 +26,9 @@ import openai  # Assuming you use OpenAI or similar for AI enhancement
 import json
 from transactions.models import Subscription
 from notifications.models import Notification  # Add this import
+from rest_framework.permissions import AllowAny
+from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
 
 logger = logging.getLogger(__name__)
 
@@ -328,6 +332,12 @@ class SkillViewSet(ModelViewSet):
             return Skill.objects.none()
         return Skill.objects.filter(user=self.request.user)
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        # Return list of {id, name}
+        data = [{"id": skill.id, "name": skill.name} for skill in queryset]
+        return Response(data)
+
 class EducationViewSet(ModelViewSet):
     """
     Handles CRUD operations for user education records.
@@ -413,13 +423,41 @@ class LanguageViewSet(ModelViewSet):
     - PUT/PATCH: Update an existing language for the logged-in user.
     - DELETE: Delete a language for the logged-in user.
     """
-    serializer_class = LanguageSerializer
+    serializer_class = UserLanguageSerializer
 
     def get_queryset(self):
         # Short-circuit for schema generation or unauthenticated user
         if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
-            return Language.objects.none()
-        return Language.objects.filter(userlanguage__user_profile__user=self.request.user)
+            return UserLanguage.objects.none()
+        return UserLanguage.objects.filter(user_profile__user=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        # Automatically set the user_profile to the currently authenticated user's profile
+        user_profile = getattr(self.request.user, 'userprofile', None)
+        if user_profile:
+            serializer.save(user_profile=user_profile)
+        else:
+            raise serializers.ValidationError("User profile not found.")
+
+    def perform_update(self, serializer):
+        user_profile = getattr(self.request.user, 'userprofile', None)
+        if user_profile:
+            serializer.save(user_profile=user_profile)
+        else:
+            raise serializers.ValidationError("User profile not found.")
+
+class LanguageListView(ListAPIView):
+    """
+    Read-only endpoint to fetch all available languages (for dropdowns).
+    """
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
+    permission_classes = [AllowAny]
 
 @api_view(['GET'])
 def resume_analyses_api(request):
@@ -749,3 +787,33 @@ def enhance_resume_api(request, job_id):
         "message": "Resume enhanced successfully.",
         "enhanced_resume": enhanced_resume
     }, status=200)
+
+from rest_framework.generics import ListAPIView
+
+class SkillListView(ListAPIView):
+    """
+    Read-only endpoint to fetch all available skills (for dropdowns).
+    """
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
+    permission_classes = [AllowAny]
+
+@api_view(['PATCH', 'PUT'])
+def update_resume_fields_api(request):
+    """
+    Update specific fields of the authenticated user's Resume.
+    Accepts PATCH or PUT with any subset of the Resume fields.
+    """
+    user = request.user
+    try:
+        resume = Resume.objects.get(user=user)
+    except Resume.DoesNotExist:
+        return Response({"error": "Resume not found for this user."}, status=404)
+
+    # Use the serializer for validation and partial update
+    serializer = ResumeSerializer(resume, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=200)
+    else:
+        return Response(serializer.errors, status=400)

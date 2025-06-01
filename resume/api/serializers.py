@@ -105,16 +105,21 @@ class LanguageSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Language
-        fields = '__all__'
+        fields = ['id', 'name']
 
 class UserLanguageSerializer(serializers.ModelSerializer):
     """
     Serializer for the UserLanguage model.
-    Converts UserLanguage model instances to JSON and validates input data.
+    Returns id, language (with id and name), and proficiency.
     """
+    language = LanguageSerializer(read_only=True)
+    language_id = serializers.PrimaryKeyRelatedField(
+        queryset=Language.objects.all(), source='language', write_only=True, required=False
+    )
+
     class Meta:
         model = UserLanguage
-        fields = '__all__'
+        fields = ['id', 'language', 'language_id', 'proficiency']
 
 class ResumeAnalysisSerializer(serializers.ModelSerializer):
     """
