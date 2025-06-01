@@ -211,8 +211,20 @@ class Language(models.Model):
         return self.name
 
 class UserLanguage(models.Model):
+    PROFICIENCY_CHOICES = [
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+        ('native', 'Native'),
+    ]
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    proficiency = models.CharField(
+        max_length=20,
+        choices=PROFICIENCY_CHOICES,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return f"{self.user_profile.user.username} - {self.language.name}"
