@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import StripeWebhookAPIView
 
 urlpatterns = [
     path('paypal-payment/<int:candidate_id>/', views.PayPalPaymentAPIView.as_view(), name='api_paypal_payment'),
@@ -9,6 +10,6 @@ urlpatterns = [
     path('payment-cancel/', views.PaymentCancelAPIView.as_view(), name='api_payment_cancel'),
     path('stripe-subscribe/', views.CreateStripeSubscriptionAPIView.as_view(), name='api_stripe_subscribe'),
     path('stripe-cancel/', views.CancelStripeSubscriptionAPIView.as_view(), name='api_stripe_cancel'),
-    path('stripe-webhook/', views.StripeWebhookAPIView.as_view(), name='api_stripe_webhook'),
+    path('stripe/webhook/', StripeWebhookAPIView.as_view(), name='stripe-webhook'),
     path('subscription-status/<int:user_id>/', views.SubscriptionStatusAPIView.as_view(), name='api_subscription_status'),
 ]

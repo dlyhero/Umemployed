@@ -48,10 +48,11 @@ class PayPalPaymentAPIView(APIView):
             user=request.user,
             candidate=candidate,
             transaction_id=transaction_id,
-            amount=5.00,  # Example amount
+            amount=5.00,
             payment_method='paypal',
             status='pending',
         )
+        print("Transaction created for user:", request.user.id)
         # Notify candidate of payment initiation for endorsements
         Notification.objects.create(
             user=candidate,
@@ -194,6 +195,18 @@ class CreateStripeSubscriptionAPIView(APIView):
             is_active=False,
             stripe_subscription_id=session.id  # Temporarily store session ID, update later
         )
+
+        # Create a pending transaction for the subscription
+        Transaction.objects.create(
+            user=user,
+            candidate=None,  # No candidate for subscriptions
+            transaction_id=session.id,
+            amount=0,  # You can set this to the subscription price if you want
+            payment_method='stripe',
+            status='pending',
+            description=f"Stripe subscription ({user_type}, {tier})"
+        )
+
         # Notify user of subscription initiation
         Notification.objects.create(
             user=user,
@@ -250,10 +263,23 @@ class StripeWebhookAPIView(APIView):
         payload = request.body
         sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
         endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+
+        # Check for thin payload and fetch full event if needed
+        payload_type = None
+        if sig_header:
+            for part in sig_header.split(','):
+                if part.strip().startswith('payloadType='):
+                    payload_type = part.split('=')[1]
+                    break
+
         try:
             event = stripe.Webhook.construct_event(
                 payload, sig_header, endpoint_secret
             )
+            # If thin payload, fetch full event from Stripe
+            if payload_type == 'thin':
+                event_id = event['id']
+                event = stripe.Event.retrieve(event_id)
         except (ValueError, stripe.error.SignatureVerificationError):
             return Response(status=400)
 
@@ -268,6 +294,12 @@ class StripeWebhookAPIView(APIView):
                 sub.started_at = timezone.now()
                 sub.ended_at = None
                 sub.save()
+
+                # Mark the transaction as completed
+                transaction = Transaction.objects.filter(transaction_id=session['id']).first()
+                if transaction:
+                    transaction.status = 'completed'
+                    transaction.save()
         elif event['type'] == 'customer.subscription.deleted':
             subscription_obj = event['data']['object']
             sub = Subscription.objects.filter(stripe_subscription_id=subscription_obj['id']).first()
