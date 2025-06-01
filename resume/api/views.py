@@ -23,6 +23,8 @@ from job.models import Job  # Import Job model
 from django.conf import settings
 import openai  # Assuming you use OpenAI or similar for AI enhancement
 import json
+from transactions.models import Subscription
+from notifications.models import Notification  # Add this import
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +56,12 @@ def update_resume_api(request):
 
         # Check if the response is an HTML response
         if isinstance(response, HttpResponse) and response.status_code == 200:
+            # Notify user of resume update
+            Notification.objects.create(
+                user=request.user,
+                notification_type=Notification.PROFILE_UPDATED,
+                message="Your resume has been updated successfully."
+            )
             return Response({"message": "Resume updated successfully."}, status=200)
         else:
             return Response({"error": "Failed to update resume."}, status=500)
@@ -147,7 +155,12 @@ def upload_resume_api(request):
         user.has_resume = True
         user.save()
         logger.info(f"User {user.username} has_resume set to True")
-
+        # Notify user of resume upload
+        Notification.objects.create(
+            user=user,
+            notification_type=Notification.PROFILE_UPDATED,
+            message="Your resume has been uploaded and processed successfully."
+        )
     except Exception as e:
         logger.error(f"Failed to upload file: {str(e)}")
         return Response({"error": f"Failed to upload file: {str(e)}"}, status=500)
@@ -605,6 +618,15 @@ def enhance_resume_api(request, job_id):
             "enhanced_resume": {...}
         }
     """
+    # Subscription check: require at least standard or premium
+    user = request.user
+    subscription = Subscription.objects.filter(user=user, user_type='user', is_active=True).order_by('-started_at').first()
+    if not subscription or subscription.tier not in ['standard', 'premium']:
+        return Response(
+            {"error": "You need a Standard or Premium subscription to use the resume enhancer. Please upgrade your plan."},
+            status=403
+        )
+
     file = request.FILES.get('file')
     user = request.user
 

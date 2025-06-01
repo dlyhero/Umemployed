@@ -21,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
+from notifications.models import Notification
 
 class IsCompanyOwner(BasePermission):
     """
@@ -52,6 +53,12 @@ class CreateCompanyAPIView(APIView):
             serializer.save(user=request.user)
             request.user.has_company = True
             request.user.save()
+            # Create notification for company creation
+            Notification.objects.create(
+                user=request.user,
+                notification_type=Notification.ACCOUNT_ALERT,
+                message="Your company has been created successfully."
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -78,6 +85,12 @@ class UpdateCompanyAPIView(APIView):
         serializer = CompanySerializer(company, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            # Create notification for company update
+            Notification.objects.create(
+                user=request.user,
+                notification_type=Notification.ACCOUNT_ALERT,
+                message="Your company profile has been updated."
+            )
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -427,6 +440,12 @@ class ShortlistCandidateAPIView(APIView):
 
         # Create a new shortlist entry
         Shortlist.objects.create(recruiter=request.user, candidate=candidate, job=job)
+        # Notify candidate
+        Notification.objects.create(
+            user=candidate,
+            notification_type=Notification.JOB_APPLICATION,
+            message=f"You have been shortlisted for the job '{job.title}' at {company.name}."
+        )
         return Response({"message": "Candidate shortlisted successfully."}, status=status.HTTP_201_CREATED)
 
 class CreateInterviewAPIView(APIView):
@@ -465,6 +484,12 @@ class CreateInterviewAPIView(APIView):
             timezone=timezone,
             note=note,
             meeting_link=f"https://umemployed.com/interview/{job.id}"
+        )
+        # Notify candidate
+        Notification.objects.create(
+            user=candidate,
+            notification_type=Notification.INTERVIEW_SCHEDULED,
+            message=f"An interview has been scheduled for you for the job '{job.title}' at {job.company.name}."
         )
         return Response({"message": "Interview created successfully", "interview_id": interview.id}, status=status.HTTP_201_CREATED)
 
@@ -537,7 +562,12 @@ class RateCandidateAPIView(APIView):
         rating.stars = stars
         rating.review = review
         rating.save()
-
+        # Notify candidate
+        Notification.objects.create(
+            user=candidate,
+            notification_type=Notification.ENDORSEMENT,
+            message=f"You have received a new endorsement from {endorser.username}."
+        )
         return Response({"message": "Candidate rated successfully"}, status=status.HTTP_200_OK)
 
 class CompanyRelatedUsersAPIView(APIView):
@@ -599,6 +629,16 @@ class CandidateEndorsementsAPIView(APIView):
         """
         Handle GET requests to retrieve endorsements for a candidate.
         """
+        # Require recruiter with premium subscription
+        from transactions.models import Subscription
+        user = request.user
+        subscription = Subscription.objects.filter(user=user, user_type='recruiter', is_active=True).order_by('-started_at').first()
+        if not subscription or subscription.tier != 'premium':
+            return Response(
+                {"error": "You need a Premium recruiter subscription to view candidate endorsements. Please upgrade your plan."},
+                status=403
+            )
+
         candidate = get_object_or_404(User, id=candidate_id)
 
         # Check if the user has a completed transaction for this candidate
@@ -695,6 +735,12 @@ class UnshortlistCandidateAPIView(APIView):
             return Response({"error": "Candidate is not shortlisted for this job."}, status=status.HTTP_400_BAD_REQUEST)
 
         shortlist.delete()
+        # Notify candidate
+        Notification.objects.create(
+            user=candidate,
+            notification_type=Notification.JOB_APPLICATION,
+            message=f"You have been removed from the shortlist for the job '{job.title}' at {company.name}."
+        )
         return Response({"message": "Candidate unshortlisted successfully."}, status=status.HTTP_200_OK)
 
 class MyShortlistedJobsAPIView(APIView):

@@ -14,6 +14,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 import os
+from notifications.models import Notification
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class PayPalPaymentAPIView(APIView):
@@ -49,6 +51,12 @@ class PayPalPaymentAPIView(APIView):
             amount=5.00,  # Example amount
             payment_method='paypal',
             status='pending',
+        )
+        # Notify candidate of payment initiation for endorsements
+        Notification.objects.create(
+            user=candidate,
+            notification_type=Notification.SPECIAL_OFFER,
+            message=f"{request.user.get_full_name() or request.user.username} has initiated a payment to view your endorsements."
         )
 
         # Generate PayPal payment URL
@@ -105,6 +113,12 @@ class StripePaymentAPIView(APIView):
             amount=amount / 100,  # Convert cents to dollars
             payment_method='stripe',
             status='pending',
+        )
+        # Notify candidate of payment initiation for endorsements
+        Notification.objects.create(
+            user=candidate,
+            notification_type=Notification.SPECIAL_OFFER,
+            message=f"{request.user.get_full_name() or request.user.username} has initiated a payment to view your endorsements."
         )
 
         return Response({"session_id": session.id}, status=status.HTTP_200_OK)
@@ -180,7 +194,12 @@ class CreateStripeSubscriptionAPIView(APIView):
             is_active=False,
             stripe_subscription_id=session.id  # Temporarily store session ID, update later
         )
-
+        # Notify user of subscription initiation
+        Notification.objects.create(
+            user=user,
+            notification_type=Notification.SPECIAL_OFFER,
+            message=f"Your {user_type} subscription ({tier}) process has started. Please complete payment to activate."
+        )
         return Response({"session_id": session.id}, status=status.HTTP_200_OK)
 
 
