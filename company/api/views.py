@@ -767,16 +767,21 @@ class MyShortlistedJobsAPIView(APIView):
 
         user = get_object_or_404(User, id=user_id)
         shortlisted = Shortlist.objects.filter(candidate=user).select_related('job', 'job__company')
-        jobs_data = [
-            {
-                "job_id": s.job.id,
-                "job_title": s.job.title,
-                "company_id": s.job.company.id,
-                "company_name": s.job.company.name,
-                "shortlisted_at": s.created_at,
-            }
-            for s in shortlisted
-        ]
+        jobs_data = []
+        for s in shortlisted:
+            job = s.job
+            # Try to get the related application for this user and job
+            application = Application.objects.filter(user=user, job=job).order_by('-created_at').first()
+            jobs_data.append({
+                "id": job.id,
+                "title": job.title,
+                "company": job.company.name,
+                "shortlisted_date": s.created_at,
+                "status": application.status if application else "Under Review",
+                "location": job.get_job_location_type_display() if hasattr(job, 'get_job_location_type_display') else str(job.location),
+                "salary": job.salary,
+                "match_score": application.overall_match_percentage if application else None,
+            })
         return Response(jobs_data, status=status.HTTP_200_OK)
 
 def update_and_notify_top10(job):
