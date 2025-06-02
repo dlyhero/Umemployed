@@ -29,6 +29,7 @@ urlpatterns = [
     path('enhance-resume/<int:job_id>/', views.enhance_resume_api, name='enhance_resume_api'),  # Enhance resume for a job with job_id in URL
     path('skills-list/', views.SkillListView.as_view(), name='skill_list'),  # Fetch all skills (id and name)
     path('update-resume-fields/', views.update_resume_fields_api, name='update_resume_fields_api'),  # Dedicated endpoint for updating Resume fields
+    path('enhancement-history/', views.enhancement_history_api, name='enhancement_history_api'),  # Fetch user's enhanced resumes
 ]
 
 # Include router URLs

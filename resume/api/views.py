@@ -1,6 +1,6 @@
 import os  # Add this import for accessing environment variables
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 from resume.models import (
@@ -9,7 +9,7 @@ from resume.models import (
 from .serializers import (
     SkillSerializer, EducationSerializer, ExperienceSerializer, ContactInfoSerializer, 
     WorkExperienceSerializer, LanguageSerializer, UserLanguageSerializer,
-    ResumeAnalysisSerializer, ProfileViewSerializer, ResumeSerializer, SkillCategorySerializer
+    ResumeAnalysisSerializer, ProfileViewSerializer, ResumeSerializer, SkillCategorySerializer, EnhancedResumeSerializer
 )
 from resume.models import Resume, ResumeDoc, Transcript
 from resume.views import update_resume, display_matching_jobs, upload_resume, update_resume_view
@@ -26,7 +26,7 @@ import openai  # Assuming you use OpenAI or similar for AI enhancement
 import json
 from transactions.models import Subscription
 from notifications.models import Notification  # Add this import
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -817,3 +817,25 @@ def update_resume_fields_api(request):
         return Response(serializer.data, status=200)
     else:
         return Response(serializer.errors, status=400)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def enhancement_history_api(request):
+    """
+    Retrieves all enhanced resumes for the authenticated user.
+
+    Response:
+        [
+            {
+                "id": 1,
+                "user": 1,
+                "job": 2,
+                "full_name": "...",
+                ...
+            },
+            ...
+        ]
+    """
+    enhanced_resumes = EnhancedResume.objects.filter(user=request.user).order_by('-created_at')
+    serializer = EnhancedResumeSerializer(enhanced_resumes, many=True)
+    return Response(serializer.data, status=200)
