@@ -756,6 +756,9 @@ def enhance_resume_api(request, job_id):
     # Call AI model (OpenAI v1+ compatible)
     try:
         openai.api_key = getattr(settings, "OPENAI_API_KEY", None)
+        if not openai.api_key:
+            logger.error("OPENAI_API_KEY is not set in settings.")
+            return Response({"error": "AI service configuration error. Please contact support."}, status=500)
         client = openai.OpenAI(api_key=openai.api_key)
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -769,6 +772,7 @@ def enhance_resume_api(request, job_id):
         ai_content = response.choices[0].message.content
         enhanced_resume = json.loads(ai_content)
     except Exception as e:
+        logger.exception("AI enhancement failed: %s", e)
         return Response({"error": f"AI enhancement failed: {str(e)}"}, status=500)
 
     # Save only the necessary fields to EnhancedResume
