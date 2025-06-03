@@ -667,7 +667,9 @@ def enhance_resume_api(request, job_id):
 
     # Prevent duplicate enhancement for the same job
     try:
+        logger.info(f"Checking for EnhancedResume with user={user.id}, job_id={job_id}")
         if EnhancedResume.objects.filter(user=user, job_id=job_id).exists():
+            logger.warning(f"Duplicate enhancement attempt for user={user.id}, job_id={job_id}")
             return Response(
                 {"error": "You have already enhanced a resume for this job."},
                 status=400
