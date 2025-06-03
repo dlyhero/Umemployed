@@ -665,12 +665,12 @@ def enhance_resume_api(request, job_id):
             status=403
         )
 
-    # # Prevent duplicate enhancement for the same job
-    # if EnhancedResume.objects.filter(user=user, job_id=job_id).exists():
-    #     return Response(
-    #         {"error": "You have already enhanced a resume for this job."},
-    #         status=400
-    #     )
+    # Prevent duplicate enhancement for the same job
+    if EnhancedResume.objects.filter(user=user, job_id=job_id).exists():
+        return Response(
+            {"error": "You have already enhanced a resume for this job."},
+            status=400
+        )
 
     file = request.FILES.get('file')
     user = request.user
