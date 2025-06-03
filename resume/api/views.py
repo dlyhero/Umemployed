@@ -665,21 +665,6 @@ def enhance_resume_api(request, job_id):
             status=403
         )
 
-    # If already enhanced, return the existing enhanced resume (not an error)
-    try:
-        logger.info(f"Checking for EnhancedResume with user={user.id}, job_id={job_id}")
-        existing = EnhancedResume.objects.filter(user=user, job_id=job_id).first()
-        if existing:
-            logger.info(f"Returning existing enhanced resume for user={user.id}, job_id={job_id}")
-            serializer = EnhancedResumeSerializer(existing)
-            return Response({
-                "message": "You have already enhanced a resume for this job.",
-                "enhanced_resume": serializer.data
-            }, status=200)
-    except Exception as e:
-        logger.exception("Error checking for duplicate enhanced resume: %s", e)
-        return Response({"error": f"Internal error: {str(e)}"}, status=500)
-
     file = request.FILES.get('file')
     user = request.user
 
@@ -764,9 +749,6 @@ def enhance_resume_api(request, job_id):
     # Call AI model (OpenAI v1+ compatible)
     try:
         openai.api_key = getattr(settings, "OPENAI_API_KEY", None)
-        if not openai.api_key:
-            logger.error("OPENAI_API_KEY is not set in settings.")
-            return Response({"error": "AI service configuration error. Please contact support."}, status=500)
         client = openai.OpenAI(api_key=openai.api_key)
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -780,7 +762,6 @@ def enhance_resume_api(request, job_id):
         ai_content = response.choices[0].message.content
         enhanced_resume = json.loads(ai_content)
     except Exception as e:
-        logger.exception("AI enhancement failed: %s", e)
         return Response({"error": f"AI enhancement failed: {str(e)}"}, status=500)
 
     # Save only the necessary fields to EnhancedResume
@@ -858,3 +839,30 @@ def enhancement_history_api(request):
     enhanced_resumes = EnhancedResume.objects.filter(user=request.user).order_by('-created_at')
     serializer = EnhancedResumeSerializer(enhanced_resumes, many=True)
     return Response(serializer.data, status=200)
+
+@api_view(['GET'])
+def check_enhanced_resume_api(request, user_id, job_id):
+    """
+    Checks if a user has enhanced a resume for a particular job.
+
+    URL Parameters:
+        user_id: ID of the user
+        job_id: ID of the job
+
+    Response:
+        {
+            "has_enhanced": true/false,
+            "enhanced_resume": {...}  # Only if exists
+        }
+    """
+    enhanced_resume = EnhancedResume.objects.filter(user_id=user_id, job_id=job_id).first()
+    if enhanced_resume:
+        serializer = EnhancedResumeSerializer(enhanced_resume)
+        return Response({
+            "has_enhanced": True,
+            "enhanced_resume": serializer.data
+        }, status=200)
+    else:
+        return Response({
+            "has_enhanced": False
+        }, status=200)
