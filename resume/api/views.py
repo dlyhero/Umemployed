@@ -665,17 +665,17 @@ def enhance_resume_api(request, job_id):
             status=403
         )
 
-    # Prevent duplicate enhancement for the same job
+    # If already enhanced, return the existing enhanced resume (not an error)
     try:
         logger.info(f"Checking for EnhancedResume with user={user.id}, job_id={job_id}")
-        if EnhancedResume.objects.filter(user=user, job_id=job_id).exists():
-            logger.warning(f"Duplicate enhancement attempt for user={user.id}, job_id={job_id}")
-            print(f"Duplicate enhancement attempt for user={user.id}, job_id={job_id}")
-            return Response(
-                {"error": "You have already enhanced a resume for this job."},
-                status=400,
-                content_type="application/json"
-            )
+        existing = EnhancedResume.objects.filter(user=user, job_id=job_id).first()
+        if existing:
+            logger.info(f"Returning existing enhanced resume for user={user.id}, job_id={job_id}")
+            serializer = EnhancedResumeSerializer(existing)
+            return Response({
+                "message": "You have already enhanced a resume for this job.",
+                "enhanced_resume": serializer.data
+            }, status=200)
     except Exception as e:
         logger.exception("Error checking for duplicate enhanced resume: %s", e)
         return Response({"error": f"Internal error: {str(e)}"}, status=500)
