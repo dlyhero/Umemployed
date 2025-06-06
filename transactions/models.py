@@ -38,6 +38,7 @@ class Subscription(models.Model):
         ('standard', 'Standard'),
         ('premium', 'Premium'),
         ('custom', 'Custom'),  # For recruiters only
+        ('endorsement', 'Endorsement'),  # For endorsement subscription
     ]
     USER_TYPE_CHOICES = [
         ('user', 'User'),
@@ -46,7 +47,7 @@ class Subscription(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
-    tier = models.CharField(max_length=10, choices=TIER_CHOICES)
+    tier = models.CharField(max_length=20, choices=TIER_CHOICES)  # Increased from 10 to 20
     is_active = models.BooleanField(default=True)
     stripe_subscription_id = models.CharField(max_length=100, null=True, blank=True)
     started_at = models.DateTimeField(auto_now_add=True)

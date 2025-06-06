@@ -491,6 +491,29 @@ class CreateInterviewAPIView(APIView):
             notification_type=Notification.INTERVIEW_SCHEDULED,
             message=f"An interview has been scheduled for you for the job '{job.title}' at {job.company.name}."
         )
+        # Send interview email to candidate
+        subject = f"Interview Scheduled for {job.title} at {job.company.name}"
+        html_message = render_to_string(
+            'emails/interview_scheduled.html',
+            {
+                'username': candidate.username,
+                'job_title': job.title,
+                'company_name': job.company.name,
+                'date': date,
+                'time': time,
+                'timezone': timezone,
+                'meeting_link': interview.meeting_link,
+                'note': note,
+            }
+        )
+        send_mail(
+            subject,
+            '',  # Plain text fallback
+            settings.DEFAULT_FROM_EMAIL,
+            [candidate.email],
+            html_message=html_message,
+            fail_silently=True,
+        )
         return Response({"message": "Interview created successfully", "interview_id": interview.id}, status=status.HTTP_201_CREATED)
 
 class RateCandidateAPIView(APIView):
@@ -567,6 +590,23 @@ class RateCandidateAPIView(APIView):
             user=candidate,
             notification_type=Notification.ENDORSEMENT,
             message=f"You have received a new endorsement from {endorser.username}."
+        )
+        # Send endorsement email to candidate (no details)
+        subject = "You've received a new endorsement!"
+        html_message = render_to_string(
+            'emails/candidate_endorsed.html',
+            {
+                'candidate_username': candidate.username,
+                'endorser_username': endorser.username,
+            }
+        )
+        send_mail(
+            subject,
+            f"You have received a new endorsement from {endorser.username}.",
+            settings.DEFAULT_FROM_EMAIL,
+            [candidate.email],
+            html_message=html_message,
+            fail_silently=True,
         )
         return Response({"message": "Candidate rated successfully"}, status=status.HTTP_200_OK)
 
