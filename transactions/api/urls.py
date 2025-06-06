@@ -12,4 +12,6 @@ urlpatterns = [
     path('stripe-cancel/', views.CancelStripeSubscriptionAPIView.as_view(), name='api_stripe_cancel'),
     path('stripe/webhook/', StripeWebhookAPIView.as_view(), name='stripe-webhook'),
     path('subscription-status/<int:user_id>/', views.SubscriptionStatusAPIView.as_view(), name='api_subscription_status'),
+    path('endorsement-subscribe/', views.CreateEndorsementSubscriptionAPIView.as_view(), name='api_endorsement_subscribe'),
+    path('endorsement-subscription-status/', views.EndorsementSubscriptionStatusAPIView.as_view(), name='api_endorsement_subscription_status'),
 ]

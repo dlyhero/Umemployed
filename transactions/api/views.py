@@ -331,6 +331,12 @@ class TransactionHistoryAPIView(APIView):
                         "payment_method": openapi.Schema(type=openapi.TYPE_STRING, description="Payment method"),
                         "status": openapi.Schema(type=openapi.TYPE_STRING, description="Transaction status"),
                         "created_at": openapi.Schema(type=openapi.TYPE_STRING, description="Transaction creation date"),
+                        "description": openapi.Schema(type=openapi.TYPE_STRING, description="Transaction description"),
+                        "candidate": openapi.Schema(type=openapi.TYPE_OBJECT, description="Candidate info", properties={
+                            "id": openapi.Schema(type=openapi.TYPE_INTEGER),
+                            "username": openapi.Schema(type=openapi.TYPE_STRING),
+                            "full_name": openapi.Schema(type=openapi.TYPE_STRING),
+                        }),
                     },
                 ),
             ),
@@ -340,17 +346,25 @@ class TransactionHistoryAPIView(APIView):
         """
         Handle GET requests to retrieve transaction history.
         """
-        transactions = Transaction.objects.filter(user=request.user).order_by('-created_at')
-        data = [
-            {
+        transactions = Transaction.objects.filter(user=request.user).select_related('candidate').order_by('-created_at')
+        data = []
+        for transaction in transactions:
+            candidate_info = None
+            if transaction.candidate:
+                candidate_info = {
+                    "id": transaction.candidate.id,
+                    "username": transaction.candidate.username,
+                    "full_name": transaction.candidate.get_full_name() or transaction.candidate.username,
+                }
+            data.append({
                 "transaction_id": transaction.transaction_id,
                 "amount": transaction.amount,
                 "payment_method": transaction.payment_method,
                 "status": transaction.status,
                 "created_at": transaction.created_at,
-            }
-            for transaction in transactions
-        ]
+                "description": getattr(transaction, "description", ""),
+                "candidate": candidate_info,
+            })
         return Response(data, status=status.HTTP_200_OK)
 
 
@@ -440,4 +454,101 @@ class SubscriptionStatusAPIView(APIView):
             "tier": subscription.tier,
             "started_at": subscription.started_at,
             "ended_at": subscription.ended_at,
+        }, status=status.HTTP_200_OK)
+
+
+class CreateEndorsementSubscriptionAPIView(APIView):
+    """
+    API view to create a Stripe subscription for endorsements.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Create a Stripe subscription for endorsements",
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    "session_id": openapi.Schema(type=openapi.TYPE_STRING, description="Stripe session ID"),
+                },
+            ),
+            400: "Bad Request"
+        }
+    )
+    def post(self, request):
+        user = request.user
+        ENDORSEMENT_PRICE_ID = "price_1RWu3pGhd6oP7C9jKnDDOb1o"
+        frontend_base_url = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price': ENDORSEMENT_PRICE_ID,
+                    'quantity': 1,
+                },
+            ],
+            mode='subscription',
+            customer_email=user.email,
+            success_url=f"{frontend_base_url}/endorsement/success",
+            cancel_url=f"{frontend_base_url}/endorsement/failure",
+        )
+
+        # Optionally, mark any previous endorsement subscriptions inactive
+        Subscription.objects.filter(user=user, user_type='user', tier='endorsement', is_active=True).update(is_active=False)
+
+        # Create a pending subscription (will be activated on webhook)
+        Subscription.objects.create(
+            user=user,
+            user_type='user',
+            tier='endorsement',
+            is_active=False,
+            stripe_subscription_id=session.id
+        )
+
+        Transaction.objects.create(
+            user=user,
+            candidate=None,
+            transaction_id=session.id,
+            amount=0,
+            payment_method='stripe',
+            status='pending',
+            description="Stripe endorsement subscription"
+        )
+
+        Notification.objects.create(
+            user=user,
+            notification_type=Notification.SPECIAL_OFFER,
+            message="Your endorsement subscription process has started. Please complete payment to activate."
+        )
+        return Response({"session_id": session.id}, status=status.HTTP_200_OK)
+
+
+class EndorsementSubscriptionStatusAPIView(APIView):
+    """
+    API view to check if the user has an active endorsement subscription.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Check if the user has an active endorsement subscription",
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    "has_active_endorsement_subscription": openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                    "started_at": openapi.Schema(type=openapi.TYPE_STRING, description="Subscription start date"),
+                    "ended_at": openapi.Schema(type=openapi.TYPE_STRING, description="Subscription end date"),
+                }
+            )
+        }
+    )
+    def get(self, request):
+        user = request.user
+        sub = Subscription.objects.filter(user=user, user_type='user', tier='endorsement', is_active=True).order_by('-started_at').first()
+        if not sub:
+            return Response({"has_active_endorsement_subscription": False}, status=status.HTTP_200_OK)
+        return Response({
+            "has_active_endorsement_subscription": True,
+            "started_at": sub.started_at,
+            "ended_at": sub.ended_at,
         }, status=status.HTTP_200_OK)
