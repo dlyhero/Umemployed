@@ -264,7 +264,7 @@ class EnhancedResume(models.Model):
     linkedin = models.URLField(blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     summary = models.TextField(blank=True, null=True)
-    skills = models.JSONField(blank=True, null=True)  # List of skills
+    skills = models.JSONField(blank=True, null=True)  # Dict of grouped/categorized skills, e.g. {"Programming Languages": [...], ...}
     experience = models.JSONField(blank=True, null=True)  # List of jobs
     education = models.JSONField(blank=True, null=True)  # List of education entries
     certifications = models.JSONField(blank=True, null=True)
