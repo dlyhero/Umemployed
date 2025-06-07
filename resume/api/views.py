@@ -600,7 +600,8 @@ def user_profile_details_api(request, user_id):
             "work_experience": [...],
             "languages": [...],
             "profile_image": "url_to_image",
-            "description": "User description"
+            "description": "User description",
+            "education": [...]
         }
     """
     try:
@@ -615,9 +616,13 @@ def user_profile_details_api(request, user_id):
         contact_info = ContactInfo.objects.filter(user_id=user_id).first()
         contact_info_serializer = ContactInfoSerializer(contact_info)
 
-        # Fetch user's work experience
+        # Fetch user's work experience (return all, not just one)
         work_experience = WorkExperience.objects.filter(user_id=user_id)
         work_experience_serializer = WorkExperienceSerializer(work_experience, many=True)
+
+        # Fetch user's education (return all, not just one)
+        educations = Education.objects.filter(user_id=user_id)
+        education_serializer = EducationSerializer(educations, many=True)
 
         # Fetch user's languages
         user_languages = UserLanguage.objects.filter(user_profile__user_id=user_id)
@@ -632,6 +637,7 @@ def user_profile_details_api(request, user_id):
             "skills": skills_serializer.data if resume else [],
             "contact_info": contact_info_serializer.data if contact_info else None,
             "work_experience": work_experience_serializer.data,
+            "education": education_serializer.data,
             "languages": languages_serializer.data,
             "profile_image": profile_image,
             "description": description
@@ -698,9 +704,8 @@ def enhance_resume_api(request, job_id):
         return Response({"error": "Job not found."}, status=404)
 
     # Remove fields not needed per the system prompt (focus on ATS, summary, experience, and core sections)
-    section_str = "full_name, email, phone, linkedin, location, summary, skills, experience, education"
-
-    # Prepare advanced system prompt for AI
+    section_str = "full_name, email, phone, linkedin, location, summary, skills, experience, education, certifications"
+    # --- Updated system prompt to instruct AI to return lists for education, experience, and certifications ---
     system_prompt = (
         "YOU ARE A WORLD-CLASS RESUME ENHANCEMENT AGENT SPECIALIZED IN TAILORING RESUMES TO MATCH SPECIFIC JOB DESCRIPTIONS. "
         "YOUR TASK IS TO TRANSFORM A PARSED RESUME TO ALIGN PERFECTLY WITH THE PROVIDED JOB DESCRIPTION, OPTIMIZING FOR ATS (APPLICANT TRACKING SYSTEM) PARSING AND RELEVANCY.\n\n"
@@ -710,7 +715,14 @@ def enhance_resume_api(request, job_id):
         "FORMAT OUTPUT USING ATS-COMPATIBLE STRUCTURE: clean headings, no graphics/tables, consistent formatting,\n"
         "INTEGRATE RELEVANT KEYWORDS, SKILLS, TOOLS, AND PHRASES DIRECTLY FROM THE JOB DESCRIPTION,\n"
         "PRESERVE THE CANDIDATE’S ORIGINAL ACCOMPLISHMENTS WHILE REPHRASING TO ALIGN WITH JOB REQUIREMENTS,\n"
-        "MAINTAIN PROFESSIONAL, CONCISE LANGUAGE FOCUSED ON IMPACT AND RESULTS,\n\n"
+        "MAINTAIN PROFESSIONAL, CONCISE LANGUAGE FOCUSED ON IMPACT AND RESULTS,\n"
+        "FOR THE 'skills' SECTION, GROUP/CATEGORIZE THE SKILLS INTO RELEVANT CATEGORIES (e.g., 'Programming Languages', 'Machine Learning', 'Software', etc.) "
+        "AND RETURN THEM AS AN OBJECT WHERE EACH KEY IS A CATEGORY AND THE VALUE IS A LIST OF SKILLS IN THAT CATEGORY. "
+        "EXAMPLE: {\"Programming Languages\": [\"Python\", \"SQL\"], \"Machine Learning\": [\"KNN\", \"XGBoost\"]}\n"
+        "FOR THE 'education' SECTION, RETURN A LIST OF ALL EDUCATION ENTRIES FOUND, NOT JUST ONE. "
+        "FOR THE 'experience' SECTION, RETURN A LIST OF ALL WORK EXPERIENCE ENTRIES FOUND, NOT JUST ONE. "
+        "FOR THE 'certifications' SECTION, RETURN A LIST OF ALL CERTIFICATIONS FOUND, NOT JUST ONE. "
+        "EACH ENTRY IN 'education', 'experience', or 'certifications' SHOULD BE AN OBJECT WITH RELEVANT FIELDS (e.g., institution, degree, years for education; company, role, dates for experience; name, issuer, year for certifications).\n\n"
         "###CHAIN OF THOUGHTS###\n"
         "UNDERSTAND: READ AND COMPREHEND BOTH THE PARSED RESUME AND JOB DESCRIPTION,\n"
         "BASICS: IDENTIFY THE JOB TITLE, KEY RESPONSIBILITIES, REQUIRED SKILLS, AND INDUSTRY CONTEXT,\n"
@@ -764,7 +776,9 @@ def enhance_resume_api(request, job_id):
     except Exception as e:
         return Response({"error": f"AI enhancement failed: {str(e)}"}, status=500)
 
-    # Save only the necessary fields to EnhancedResume
+    # No grouping logic here; just save and return as provided by AI
+    skills = enhanced_resume.get('skills', {})
+
     try:
         job = Job.objects.get(id=job_id)
         EnhancedResume.objects.create(
@@ -776,7 +790,7 @@ def enhance_resume_api(request, job_id):
             linkedin=enhanced_resume.get('linkedin'),
             location=enhanced_resume.get('location'),
             summary=enhanced_resume.get('summary'),
-            skills=enhanced_resume.get('skills'),
+            skills=skills,  # Save as grouped/categorized object
             experience=enhanced_resume.get('experience'),
             education=enhanced_resume.get('education'),
         )
