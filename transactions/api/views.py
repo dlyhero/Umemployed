@@ -155,9 +155,8 @@ class CreateStripeSubscriptionAPIView(APIView):
         user = request.user
         tier = request.data.get("tier")
         user_type = request.data.get("user_type")
-        # Map your tier/user_type to Stripe price IDs
         STRIPE_PRICE_IDS = {
-            ("user", "standard"): "price_1RUpqCGhd6oP7C9j40K7Wk8J",  # <-- Your actual Stripe Price ID
+            ("user", "standard"): "price_1RUpqCGhd6oP7C9j40K7Wk8J",
             ("user", "premium"): "price_1RUq6wGhd6oP7C9jLts6eQsf",
             ("recruiter", "standard"): "price_1RUpqCGhd6oP7C9j40K7Wk8J",
             ("recruiter", "premium"): "price_1RUq6wGhd6oP7C9jLts6eQsf",
@@ -166,6 +165,10 @@ class CreateStripeSubscriptionAPIView(APIView):
         price_id = STRIPE_PRICE_IDS.get((user_type, tier))
         if not price_id:
             return Response({"error": "Invalid tier or user_type."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Fetch price amount from Stripe
+        price_obj = stripe.Price.retrieve(price_id)
+        amount = price_obj['unit_amount'] / 100 if price_obj['currency'] == 'usd' else 0
 
         # Get frontend base URL from environment variable
         frontend_base_url = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")  # fallback to local dev
@@ -196,12 +199,12 @@ class CreateStripeSubscriptionAPIView(APIView):
             stripe_subscription_id=session.id  # Temporarily store session ID, update later
         )
 
-        # Create a pending transaction for the subscription
+        # Store the actual subscription price in the transaction
         Transaction.objects.create(
             user=user,
-            candidate=None,  # No candidate for subscriptions
+            candidate=None,  # No candidate for subscription transactions
             transaction_id=session.id,
-            amount=0,  # You can set this to the subscription price if you want
+            amount=amount,
             payment_method='stripe',
             status='pending',
             description=f"Stripe subscription ({user_type}, {tier})"
@@ -479,6 +482,10 @@ class CreateEndorsementSubscriptionAPIView(APIView):
         user = request.user
         ENDORSEMENT_PRICE_ID = "price_1RWu3pGhd6oP7C9jKnDDOb1o"
         frontend_base_url = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")
+        # Fetch price amount from Stripe
+        price_obj = stripe.Price.retrieve(ENDORSEMENT_PRICE_ID)
+        amount = price_obj['unit_amount'] / 100 if price_obj['currency'] == 'usd' else 0
+
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[
@@ -495,8 +502,6 @@ class CreateEndorsementSubscriptionAPIView(APIView):
 
         # Optionally, mark any previous endorsement subscriptions inactive
         Subscription.objects.filter(user=user, user_type='user', tier='endorsement', is_active=True).update(is_active=False)
-
-        # Create a pending subscription (will be activated on webhook)
         Subscription.objects.create(
             user=user,
             user_type='user',
@@ -507,9 +512,9 @@ class CreateEndorsementSubscriptionAPIView(APIView):
 
         Transaction.objects.create(
             user=user,
-            candidate=None,
+            candidate=None,  # No candidate for subscription transactions
             transaction_id=session.id,
-            amount=0,
+            amount=amount,
             payment_method='stripe',
             status='pending',
             description="Stripe endorsement subscription"
