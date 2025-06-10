@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.13.4-slim
 
 # Install system dependencies (includes what's needed for psycopg2 + your listed ones)
 RUN apt-get update && apt-get install -y \
