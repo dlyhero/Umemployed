@@ -355,7 +355,8 @@ class RetakeRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Retake request by {self.user.username} for job {self.job.id}'
+        job_id = self.job.id if self.job else "None"
+        return f'Retake request by {self.user.username} for job {job_id}'
     
 #allow recruiters to rate a candidate
 class Rating(models.Model):

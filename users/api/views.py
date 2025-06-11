@@ -450,3 +450,22 @@ class TestBackgroundProcessView(APIView):
             "message": "Background task triggered. An email will be sent to info@umemployed.com after 1 minute.",
             "task_id": result.id
         }, status=status.HTTP_202_ACCEPTED)
+
+class DeleteAccountView(APIView):
+    """
+    API endpoint to allow an authenticated user to delete their own account.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Delete Account",
+        operation_description="Delete the authenticated user's account.",
+        responses={
+            204: openapi.Response("Account deleted successfully."),
+            401: openapi.Response("Authentication required."),
+        },
+    )
+    def delete(self, request):
+        user = request.user
+        user.delete()
+        return Response({"message": "Account deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
