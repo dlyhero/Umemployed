@@ -193,11 +193,28 @@ from job.models import Rating
 from django.shortcuts import render, get_object_or_404
 from users.models import User
 from django.http import HttpResponseForbidden
+from .models import Subscription  # Ensure Subscription is imported
 
 @login_required(login_url='login')
 def candidate_endorsements(request, candidate_id):
     candidate = get_object_or_404(User, id=candidate_id)
-    
+
+    # Check if the user has an active premium subscription
+    has_premium = Subscription.objects.filter(
+        user=request.user,
+        user_type='user',
+        tier='premium',
+        is_active=True
+    ).exists()
+
+    if has_premium:
+        endorsements = Rating.objects.filter(candidate=candidate)
+        context = {
+            'candidate': candidate,
+            'endorsements': endorsements,
+        }
+        return render(request, 'job/candidate_endorsements.html', context)
+
     # Check if the user has a completed transaction for this candidate
     has_paid = Transaction.objects.filter(
         user=request.user,
