@@ -29,8 +29,24 @@ import logging
 from django.http import HttpResponseRedirect
 from notifications.models import Notification
 User = get_user_model()
-
 logger = logging.getLogger(__name__)
+
+# Updated background task to send an email after a 1-minute delay
+@shared_task
+def test_background_task():
+    import time
+    time.sleep(60)  # Wait for 1 minute
+    logger.warning("Celery test_background_task is running!")
+    from django.core.mail import send_mail
+    send_mail(
+        subject="Background Task Test",
+        message="This is a test email sent from the background Celery task.",
+        from_email="billleynyuy@gmail.com",
+        recipient_list=["billleynyuy@gmail.com"],
+        fail_silently=False,
+    )
+    logger.warning("Celery test_background_task sent the email!")
+    return "Background task completed and email sent"
 
 # Updated background task to send an email after a 1-minute delay
 @shared_task
@@ -260,7 +276,11 @@ def google_authenticate(request):
     """
     token = request.data.get('token')
     if not token:
-        return Response({"error": "Token is required."}, status=status.HTTP_400_BAD_REQUEST)
+        logger.error("Google Auth: No token provided in request body.")
+        return Response({
+            "error": "Token is required.",
+            "error_code": "NO_TOKEN"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
     strategy = load_strategy(request)
     backend = GoogleOAuth2(strategy=strategy)
@@ -275,9 +295,17 @@ def google_authenticate(request):
                 "access": str(refresh.access_token),
             }, status=status.HTTP_200_OK)
         else:
-            return Response({"error": "Authentication failed."}, status=status.HTTP_401_UNAUTHORIZED)
+            logger.error(f"Google Auth: Authentication failed for token: {token}")
+            return Response({
+                "error": "Authentication failed. The token may be invalid, expired, or not issued for this app.",
+                "error_code": "AUTH_FAILED"
+            }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        logger.exception(f"Google Auth: Exception occurred during authentication. Token: {token}")
+        return Response({
+            "error": str(e),
+            "error_code": "EXCEPTION"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 class ChooseAccountTypeView(APIView):
     """
