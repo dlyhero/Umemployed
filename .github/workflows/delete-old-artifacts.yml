@@ -1,0 +1,17 @@
+name: Delete Old Artifacts
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # Runs every day at 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  delete-old-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete artifacts older than 7 days
+        uses: c-hive/delete-artifacts@v3
+        with:
+          age: '7 days'
+          # Optionally, you can set 'skip-recent' to keep the most recent N artifacts
+          skip-recent: 5
