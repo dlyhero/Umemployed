@@ -1,4 +1,4 @@
-name: Delete Old Artifacts
+name: Delete Old Artifactss
 
 on:
   schedule:
