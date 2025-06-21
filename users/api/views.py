@@ -274,14 +274,16 @@ def google_authenticate(request):
     """
     Authenticate a user using Google OAuth2 and return JWT tokens.
     """
+    print(f"Google Auth: Incoming request data: {request.data}")
     token = request.data.get('token')
     if not token:
-        logger.error("Google Auth: No token provided in request body.")
+        print("Google Auth: No token provided in request body.")
         return Response({
             "error": "Token is required.",
             "error_code": "NO_TOKEN"
         }, status=status.HTTP_400_BAD_REQUEST)
 
+    print(f"Google Auth: Received token: {token}")
     strategy = load_strategy(request)
     backend = GoogleOAuth2(strategy=strategy)
 
@@ -290,18 +292,19 @@ def google_authenticate(request):
         if user and user.is_active:
             # Generate JWT tokens
             refresh = RefreshToken.for_user(user)
+            print(f"Google Auth: Authenticated user {user.email} (id={user.id})")
             return Response({
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
             }, status=status.HTTP_200_OK)
         else:
-            logger.error(f"Google Auth: Authentication failed for token: {token}")
+            print(f"Google Auth: Authentication failed for token: {token}")
             return Response({
                 "error": "Authentication failed. The token may be invalid, expired, or not issued for this app.",
                 "error_code": "AUTH_FAILED"
             }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        logger.exception(f"Google Auth: Exception occurred during authentication. Token: {token}")
+        print(f"Google Auth: Exception occurred during authentication. Token: {token}. Exception: {e}")
         return Response({
             "error": str(e),
             "error_code": "EXCEPTION"
