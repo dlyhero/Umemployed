@@ -13,5 +13,4 @@ jobs:
         uses: c-hive/delete-artifacts@v3
         with:
           age: '7 days'
-          # Optionally, you can set 'skip-recent' to keep the most recent N artifacts
           skip-recent: 5
