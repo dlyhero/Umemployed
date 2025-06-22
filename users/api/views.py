@@ -506,3 +506,44 @@ class DeleteAccountView(APIView):
         user = request.user
         user.delete()
         return Response({"message": "Account deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+class GoogleAuthView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        token = request.data.get("token")
+        email = request.data.get("email")
+        name = request.data.get("name")
+        picture = request.data.get("picture")
+
+        if not token or not email:
+            return Response({"error": "Token and email are required."}, status=400)
+
+        try:
+            # Validate Google token
+            idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
+            if idinfo["email"] != email:
+                return Response({"error": "Email mismatch"}, status=400)
+        except Exception as e:
+            logger.error(f"Google token validation failed: {e}")
+            return Response({"error": "Invalid token"}, status=400)
+
+        user, created = User.objects.get_or_create(email=email, defaults={"username": email, "first_name": name})
+        # Optionally update name/picture here
+        if not created:
+            if name and user.first_name != name:
+                user.first_name = name
+                user.save()
+        # You can also store/update the picture if your User model supports it
+
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "access_token": str(refresh.access_token),
+            "refresh_token": str(refresh),
+            "role": getattr(user, "role", "user"),
+            "user": {
+                "email": user.email,
+                "name": user.first_name,
+                "picture": picture,
+            }
+        })
