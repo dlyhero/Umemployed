@@ -28,6 +28,10 @@ from celery import shared_task
 import logging
 from django.http import HttpResponseRedirect
 from notifications.models import Notification
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+from django.conf import settings
+
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
@@ -272,7 +276,7 @@ class PasswordResetConfirmView(APIView):
 @api_view(['POST'])
 def google_authenticate(request):
     """
-    Authenticate a user using Google OAuth2 and return JWT tokens.
+    Authenticate a user using Google ID token and return JWT tokens.
     """
     print(f"Google Auth: Incoming request data: {request.data}")
     token = request.data.get('token')
@@ -284,25 +288,27 @@ def google_authenticate(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     print(f"Google Auth: Received token: {token}")
-    strategy = load_strategy(request)
-    backend = GoogleOAuth2(strategy=strategy)
-
     try:
-        user = backend.do_auth(token)
-        if user and user.is_active:
-            # Generate JWT tokens
-            refresh = RefreshToken.for_user(user)
-            print(f"Google Auth: Authenticated user {user.email} (id={user.id})")
-            return Response({
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            }, status=status.HTTP_200_OK)
-        else:
-            print(f"Google Auth: Authentication failed for token: {token}")
-            return Response({
-                "error": "Authentication failed. The token may be invalid, expired, or not issued for this app.",
-                "error_code": "AUTH_FAILED"
-            }, status=status.HTTP_401_UNAUTHORIZED)
+        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), settings.GOOGLE_CLIENT_ID)
+        email = idinfo.get('email')
+        if not email:
+            return Response({"error": "No email found in token."}, status=status.HTTP_400_BAD_REQUEST)
+        # Get or create user
+        user, created = User.objects.get_or_create(email=email, defaults={
+            'username': email.split('@')[0],
+            'first_name': idinfo.get('given_name', ''),
+            'last_name': idinfo.get('family_name', ''),
+            'is_active': True
+        })
+        if not user.is_active:
+            return Response({"error": "User account is inactive."}, status=status.HTTP_403_FORBIDDEN)
+        # Generate JWT tokens
+        refresh = RefreshToken.for_user(user)
+        print(f"Google Auth: Authenticated user {user.email} (id={user.id})")
+        return Response({
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
     except Exception as e:
         print(f"Google Auth: Exception occurred during authentication. Token: {token}. Exception: {e}")
         return Response({
