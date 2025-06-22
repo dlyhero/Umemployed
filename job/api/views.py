@@ -434,7 +434,26 @@ class JobOptionsAPIView(APIView):
     experience levels, weekly ranges, shifts, and job types.
     """
     def get(self, request):
-        categories = SkillCategory.objects.values('id', 'name')
+        # Group categories by name (case-insensitive), pick the most popular in each group
+        from collections import defaultdict, Counter
+        categories_qs = SkillCategory.objects.all()
+        # Build a mapping: lowercased name -> list of categories
+        name_map = defaultdict(list)
+        for cat in categories_qs:
+            name_map[cat.name.strip().lower()].append(cat)
+        # For each group, pick the category with the most jobs
+        unique_categories = []
+        for group in name_map.values():
+            if len(group) == 1:
+                unique_categories.append(group[0])
+            else:
+                # Pick the category with the most jobs
+                group = sorted(group, key=lambda c: Job.objects.filter(category=c).count(), reverse=True)
+                unique_categories.append(group[0])
+        # Sort alphabetically by name
+        unique_categories = sorted(unique_categories, key=lambda c: c.name.lower())
+        categories = [{'id': c.id, 'name': c.name} for c in unique_categories]
+
         salary_ranges = dict(Job._meta.get_field('salary_range').choices)
         job_location_types = dict(Job._meta.get_field('job_location_type').choices)
         experience_levels = dict(Job._meta.get_field('experience_levels').choices)
@@ -451,7 +470,7 @@ class JobOptionsAPIView(APIView):
         ]
 
         return Response({
-            "categories": list(categories),
+            "categories": categories,
             "salary_ranges": salary_ranges,
             "job_location_types": job_location_types,
             "experience_levels": experience_levels,
