@@ -156,6 +156,14 @@ accept_content = ['application/json']
 result_serializer = 'json'
 task_serializer = 'json'
 
+# Celery task discovery
+CELERY_IMPORTS = [
+    'resume.tasks',
+    'job.tasks',
+    'users.tasks',
+    'messaging.tasks',
+]
+
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
 

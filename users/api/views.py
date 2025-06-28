@@ -31,6 +31,7 @@ from notifications.models import Notification
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from django.conf import settings
+from django.db import transaction
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -291,6 +292,7 @@ def google_authenticate(request):
     try:
         idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), settings.GOOGLE_CLIENT_ID)
         email = idinfo.get('email')
+        picture = idinfo.get('picture', '')  # Get picture from token
         if not email:
             return Response({"error": "No email found in token."}, status=status.HTTP_400_BAD_REQUEST)
         # Get or create user
@@ -503,6 +505,62 @@ class TestBackgroundProcessView(APIView):
             "task_id": result.id
         }, status=status.HTTP_202_ACCEPTED)
 
+class DeleteAccountDebugView(APIView):
+    """
+    Debug endpoint to check what's preventing account deletion.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Debug Account Deletion",
+        operation_description="Check what related objects exist for the user account.",
+        responses={
+            200: openapi.Response("Debug information retrieved successfully."),
+        },
+    )
+    def get(self, request):
+        user = request.user
+        
+        debug_info = {
+            "user_id": user.id,
+            "user_email": user.email,
+            "related_objects": {}
+        }
+        
+        try:
+            # Check all related objects
+            debug_info["related_objects"]["resumes"] = user.resume_set.count() if hasattr(user, 'resume_set') else 0
+            debug_info["related_objects"]["skills"] = user.skills.count() if hasattr(user, 'skills') else 0
+            debug_info["related_objects"]["experiences"] = user.experiences.count() if hasattr(user, 'experiences') else 0
+            debug_info["related_objects"]["work_experiences"] = user.work_experiences.count() if hasattr(user, 'work_experiences') else 0
+            debug_info["related_objects"]["subscriptions"] = user.subscriptions.count() if hasattr(user, 'subscriptions') else 0
+            debug_info["related_objects"]["transactions"] = user.transactions.count() if hasattr(user, 'transactions') else 0
+            
+            # Check for any custom user profile
+            try:
+                from resume.models import UserProfile
+                debug_info["related_objects"]["user_profiles"] = UserProfile.objects.filter(user=user).count()
+            except:
+                debug_info["related_objects"]["user_profiles"] = "N/A"
+            
+            # Check for notifications
+            try:
+                debug_info["related_objects"]["notifications"] = user.notification_set.count() if hasattr(user, 'notification_set') else 0
+            except:
+                debug_info["related_objects"]["notifications"] = "N/A"
+                
+            # Check for company if recruiter
+            try:
+                debug_info["related_objects"]["companies"] = user.company_set.count() if hasattr(user, 'company_set') else 0
+            except:
+                debug_info["related_objects"]["companies"] = "N/A"
+                
+        except Exception as e:
+            debug_info["error"] = str(e)
+        
+        return Response(debug_info, status=status.HTTP_200_OK)
+
+
 class DeleteAccountView(APIView):
     """
     API endpoint to allow an authenticated user to delete their own account.
@@ -515,12 +573,81 @@ class DeleteAccountView(APIView):
         responses={
             204: openapi.Response("Account deleted successfully."),
             401: openapi.Response("Authentication required."),
+            500: openapi.Response("Error occurred while deleting account."),
         },
     )
     def delete(self, request):
         user = request.user
-        user.delete()
-        return Response({"message": "Account deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        
+        try:
+            from django.db import transaction
+            
+            with transaction.atomic():
+                # Log the deletion attempt
+                logger.info(f"Attempting to delete user account: {user.email} (ID: {user.id})")
+                
+                # Revoke all tokens for this user (if token blacklist is installed)
+                try:
+                    from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+                    
+                    # Get all outstanding tokens for this user and blacklist them
+                    outstanding_tokens = OutstandingToken.objects.filter(user=user)
+                    for token in outstanding_tokens:
+                        try:
+                            RefreshToken(token.token).blacklist()
+                        except Exception as e:
+                            logger.warning(f"Could not blacklist token {token.id}: {e}")
+                            
+                except ImportError:
+                    logger.info(f"Token blacklist not installed, skipping token revocation for user {user.id}")
+                except Exception as e:
+                    logger.warning(f"Could not revoke tokens for user {user.id}: {e}")
+                
+                # Get related objects count for logging
+                related_counts = {}
+                try:
+                    related_counts['resumes'] = user.resume_set.count() if hasattr(user, 'resume_set') else 0
+                    related_counts['skills'] = user.skills.count() if hasattr(user, 'skills') else 0
+                    related_counts['experiences'] = user.experiences.count() if hasattr(user, 'experiences') else 0
+                    related_counts['work_experiences'] = user.work_experiences.count() if hasattr(user, 'work_experiences') else 0
+                    related_counts['subscriptions'] = user.subscriptions.count() if hasattr(user, 'subscriptions') else 0
+                    related_counts['transactions'] = user.transactions.count() if hasattr(user, 'transactions') else 0
+                    
+                    logger.info(f"User {user.id} has related objects: {related_counts}")
+                except Exception as e:
+                    logger.warning(f"Could not count related objects for user {user.id}: {e}")
+                
+                # Delete the user (this should cascade to related objects)
+                user_email = user.email
+                user_id = user.id
+                user.delete()
+                
+                logger.info(f"Successfully deleted user account: {user_email} (ID: {user_id})")
+                
+                return Response({
+                    "message": "Account deleted successfully.",
+                    "deleted_user_id": user_id,
+                    "related_objects_deleted": related_counts
+                }, status=status.HTTP_204_NO_CONTENT)
+                
+        except Exception as e:
+            logger.error(f"Error deleting user account {user.id}: {str(e)}", exc_info=True)
+            
+            # Return detailed error information for debugging
+            error_details = {
+                "message": "An error occurred while deleting your account.",
+                "error": str(e),
+                "user_id": user.id
+            }
+            
+            # In production, you might want to hide detailed error info
+            if hasattr(settings, 'DEBUG') and not settings.DEBUG:
+                error_details = {
+                    "message": "An error occurred while deleting your account. Please contact support.",
+                    "error_code": "DELETE_FAILED"
+                }
+            
+            return Response(error_details, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class GoogleAuthView(APIView):
     permission_classes = [AllowAny]

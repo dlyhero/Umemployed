@@ -279,3 +279,26 @@ class EnhancedResume(models.Model):
     def __str__(self):
         return f"Enhanced Resume for {self.user.username} - Job {self.job.id}"
 
+class ResumeEnhancementTask(models.Model):
+    """
+    Model to track the status of resume enhancement tasks.
+    """
+    TASK_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    job = models.ForeignKey('job.Job', on_delete=models.CASCADE)
+    task_id = models.CharField(max_length=255, unique=True)
+    status = models.CharField(max_length=20, choices=TASK_STATUS_CHOICES, default='pending')
+    enhanced_resume = models.ForeignKey(EnhancedResume, on_delete=models.CASCADE, null=True, blank=True)
+    error_message = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Task {self.task_id} - {self.status} - User: {self.user.username}"
+

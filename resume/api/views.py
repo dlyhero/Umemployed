@@ -645,10 +645,12 @@ def user_profile_details_api(request, user_id):
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
 
+from resume.tasks import enhance_resume_task
+from resume.models import ResumeEnhancementTask
 @api_view(['POST'])
 def enhance_resume_api(request, job_id):
     """
-    Enhances the uploaded resume to fit a specific job description.
+    Initiates asynchronous resume enhancement for a specific job description.
 
     Request Body (Form-Data):
         file: Resume file (PDF, DOCX, or TXT).
@@ -658,8 +660,9 @@ def enhance_resume_api(request, job_id):
 
     Response:
         {
-            "message": "Resume enhanced successfully.",
-            "enhanced_resume": {...}
+            "message": "Resume enhancement initiated successfully.",
+            "task_id": "uuid-string",
+            "status_url": "/api/resume/enhancement-status/uuid-string/"
         }
     """
     # Subscription check: require at least standard or premium
@@ -758,49 +761,40 @@ def enhance_resume_api(request, job_id):
         f"Job Description:\n{job_description}\n"
     )
 
-    # Call AI model (OpenAI v1+ compatible)
-    try:
-        openai.api_key = getattr(settings, "OPENAI_API_KEY", None)
-        client = openai.OpenAI(api_key=openai.api_key)
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            max_tokens=1500,
-            temperature=0.7,
-        )
-        ai_content = response.choices[0].message.content
-        enhanced_resume = json.loads(ai_content)
-    except Exception as e:
-        return Response({"error": f"AI enhancement failed: {str(e)}"}, status=500)
-
-    # No grouping logic here; just save and return as provided by AI
-    skills = enhanced_resume.get('skills', {})
-
+    # Validate job exists and initiate async processing
     try:
         job = Job.objects.get(id=job_id)
-        EnhancedResume.objects.create(
+    except Job.DoesNotExist:
+        return Response({"error": "Job not found."}, status=404)
+
+    # Create task record and initiate background processing
+    try:
+        from resume.tasks import enhance_resume_task
+        from resume.models import ResumeEnhancementTask
+        
+        # Create task tracking record first
+        task_record = ResumeEnhancementTask.objects.create(
             user=user,
             job=job,
-            full_name=enhanced_resume.get('full_name'),
-            email=enhanced_resume.get('email'),
-            phone=enhanced_resume.get('phone'),
-            linkedin=enhanced_resume.get('linkedin'),
-            location=enhanced_resume.get('location'),
-            summary=enhanced_resume.get('summary'),
-            skills=skills,  # Save as grouped/categorized object
-            experience=enhanced_resume.get('experience'),
-            education=enhanced_resume.get('education'),
+            task_id='temp',  # Temporary, will be updated
+            status='pending'
         )
+        
+        # Start the Celery task with the record ID
+        task_result = enhance_resume_task.delay(user.id, job_id, resume_text, task_record.id)
+        
+        # Update the task record with the actual task ID
+        task_record.task_id = task_result.id
+        task_record.save()
+        
+        return Response({
+            "message": "Resume enhancement initiated successfully.",
+            "task_id": task_record.task_id,
+            "status_url": f"/api/resume/enhancement-status/{task_record.task_id}/"
+        }, status=202)
+        
     except Exception as e:
-        return Response({"error": f"Failed to save enhanced resume: {str(e)}"}, status=500)
-
-    return Response({
-        "message": "Resume enhanced successfully.",
-        "enhanced_resume": enhanced_resume
-    }, status=200)
+        return Response({"error": f"Failed to initiate resume enhancement: {str(e)}"}, status=500)
 
 from rest_framework.generics import ListAPIView
 
@@ -880,3 +874,83 @@ def check_enhanced_resume_api(request, user_id, job_id):
         return Response({
             "has_enhanced": False
         }, status=200)
+
+from rest_framework.generics import ListAPIView
+
+@api_view(['GET'])
+def resume_enhancement_status(request, task_id):
+    """
+    Check the status of a resume enhancement task.
+    
+    URL Parameter:
+        task_id: The ID of the task to check.
+    
+    Response:
+        {
+            "status": "pending|processing|completed|failed",
+            "message": "Status message",
+            "enhanced_resume": {...},  // Only if completed
+            "error_message": "Error details"  // Only if failed
+        }
+    """
+    try:
+        from .models import ResumeEnhancementTask
+        
+        task_record = ResumeEnhancementTask.objects.get(task_id=task_id, user=request.user)
+        
+        response_data = {
+            "status": task_record.status,
+            "task_id": task_record.task_id,
+            "created_at": task_record.created_at,
+            "updated_at": task_record.updated_at
+        }
+        
+        if task_record.status == 'completed' and task_record.enhanced_resume:
+            # Include the enhanced resume data
+            enhanced_resume = task_record.enhanced_resume
+            response_data["enhanced_resume"] = {
+                "id": enhanced_resume.id,
+                "full_name": enhanced_resume.full_name,
+                "email": enhanced_resume.email,
+                "phone": enhanced_resume.phone,
+                "linkedin": enhanced_resume.linkedin,
+                "location": enhanced_resume.location,
+                "summary": enhanced_resume.summary,
+                "skills": enhanced_resume.skills,
+                "experience": enhanced_resume.experience,
+                "education": enhanced_resume.education,
+                "created_at": enhanced_resume.created_at
+            }
+            response_data["message"] = "Resume enhancement completed successfully."
+            
+        elif task_record.status == 'failed':
+            response_data["error_message"] = task_record.error_message or "An unknown error occurred."
+            response_data["message"] = "Resume enhancement failed."
+            
+        elif task_record.status == 'processing':
+            response_data["message"] = "Resume enhancement is in progress."
+            
+        else:  # pending
+            response_data["message"] = "Resume enhancement is queued for processing."
+        
+        return Response(response_data, status=200)
+        
+    except ResumeEnhancementTask.DoesNotExist:
+        return Response(
+            {"error": "Task not found or you don't have permission to access it."}, 
+            status=404
+        )
+    except Exception as e:
+        return Response(
+            {"error": f"Failed to check task status: {str(e)}"}, 
+            status=500
+        )
+
+
+class SkillListView(ListAPIView):
+    """
+    Read-only endpoint to fetch all available skills (for dropdowns).
+    """
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
+    permission_classes = [AllowAny]
