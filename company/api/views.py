@@ -592,22 +592,41 @@ class RateCandidateAPIView(APIView):
             message=f"You have received a new endorsement from {endorser.username}."
         )
         # Send endorsement email to candidate (no details)
-        subject = "You've received a new endorsement!"
-        html_message = render_to_string(
-            'emails/candidate_endorsed.html',
-            {
-                'candidate_username': candidate.username,
-                'endorser_username': endorser.username,
-            }
-        )
-        send_mail(
-            subject,
-            f"You have received a new endorsement from {endorser.username}.",
-            settings.DEFAULT_FROM_EMAIL,
-            [candidate.email],
-            html_message=html_message,
-            fail_silently=True,
-        )
+        try:
+            subject = "You've received a new endorsement!"
+            html_message = render_to_string(
+                'emails/candidate_endorsed.html',
+                {
+                    'candidate_username': candidate.username,
+                    'endorser_username': endorser.username,
+                }
+            )
+            send_mail(
+                subject,
+                f"You have received a new endorsement from {endorser.username}.",
+                settings.DEFAULT_FROM_EMAIL,
+                [candidate.email],
+                html_message=html_message,
+                fail_silently=True,
+            )
+        except Exception as e:
+            # Log the error but don't fail the entire request
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to send endorsement email to {candidate.email}: {e}")
+            
+            # Send a simple text email as fallback
+            try:
+                send_mail(
+                    subject,
+                    f"You have received a new endorsement from {endorser.username}.",
+                    settings.DEFAULT_FROM_EMAIL,
+                    [candidate.email],
+                    fail_silently=True,
+                )
+            except Exception as fallback_error:
+                logger.error(f"Failed to send fallback endorsement email: {fallback_error}")
+        
         return Response({"message": "Candidate rated successfully"}, status=status.HTTP_200_OK)
 
 class CompanyRelatedUsersAPIView(APIView):

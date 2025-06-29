@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Endorsement Received</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px 0;
+            line-height: 1.6;
+        }
+        .endorsement-box {
+            background-color: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .endorser-info {
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 18px;
+        }
+        .call-to-action {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 12px;
+        }
+        .celebration-icon {
+            font-size: 48px;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 New Endorsement Received!</h1>
+        </div>
+        
+        <div class="content">
+            <div class="celebration-icon">
+                🌟
+            </div>
+            
+            <p>Hello <strong>{{ candidate_username }}</strong>,</p>
+            
+            <p>Great news! You've received a new endorsement that highlights your professional skills and achievements.</p>
+            
+            <div class="endorsement-box">
+                <div class="endorser-info">
+                    Endorsed by: {{ endorser_username }}
+                </div>
+                <p style="margin: 10px 0 0 0; font-style: italic;">
+                    "This endorsement recognizes your professional capabilities and contributions."
+                </p>
+            </div>
+            
+            <p>Endorsements are a great way to showcase your skills and build credibility with potential employers. They help you stand out in the competitive job market!</p>
+            
+            <div class="call-to-action">
+                <a href="#" class="btn">View Your Profile</a>
+            </div>
+            
+            <p><strong>What this means for you:</strong></p>
+            <ul>
+                <li>✅ Enhanced profile credibility</li>
+                <li>✅ Increased visibility to recruiters</li>
+                <li>✅ Professional network validation</li>
+                <li>✅ Better job matching opportunities</li>
+            </ul>
+            
+            <p>Keep building your professional network and collecting endorsements to boost your career prospects!</p>
+            
+            <p>Best regards,<br>
+            <strong>The UmEmployed Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>This email was sent to you because you received an endorsement on UmEmployed.</p>
+            <p>If you have any questions, please contact our support team.</p>
+        </div>
+    </div>
+</body>
+</html>

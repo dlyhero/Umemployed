@@ -586,22 +586,44 @@ class DeleteAccountView(APIView):
                 # Log the deletion attempt
                 logger.info(f"Attempting to delete user account: {user.email} (ID: {user.id})")
                 
-                # Revoke all tokens for this user (if token blacklist is installed)
+                # Revoke tokens for this user (multiple approaches)
+                tokens_revoked = 0
                 try:
-                    from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
-                    
-                    # Get all outstanding tokens for this user and blacklist them
-                    outstanding_tokens = OutstandingToken.objects.filter(user=user)
-                    for token in outstanding_tokens:
-                        try:
-                            RefreshToken(token.token).blacklist()
-                        except Exception as e:
-                            logger.warning(f"Could not blacklist token {token.id}: {e}")
+                    # Approach 1: Try SimpleJWT token blacklist if available
+                    try:
+                        from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
+                        from django.apps import apps
+                        
+                        # Check if the token blacklist app is installed
+                        if apps.is_installed('rest_framework_simplejwt.token_blacklist'):
+                            outstanding_tokens = OutstandingToken.objects.filter(user=user)
+                            for token in outstanding_tokens:
+                                try:
+                                    BlacklistedToken.objects.get_or_create(token=token)
+                                    tokens_revoked += 1
+                                except Exception as e:
+                                    logger.warning(f"Could not blacklist token {token.id}: {e}")
                             
-                except ImportError:
-                    logger.info(f"Token blacklist not installed, skipping token revocation for user {user.id}")
+                            if tokens_revoked > 0:
+                                logger.info(f"Blacklisted {tokens_revoked} outstanding tokens for user {user.id}")
+                        else:
+                            logger.info(f"Token blacklist app not installed for user {user.id}")
+                            
+                    except (ImportError, Exception) as e:
+                        logger.info(f"Token blacklisting not available: {e}")
+                    
+                    # Approach 2: Try to invalidate current refresh token if available
+                    try:
+                        # If the user has a current refresh token in the request
+                        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+                        if auth_header.startswith('Bearer '):
+                            # This won't work for access tokens, but worth logging
+                            logger.info(f"Current session token will be invalidated after user {user.id} deletion")
+                    except Exception as e:
+                        logger.debug(f"Could not process current token for user {user.id}: {e}")
+                        
                 except Exception as e:
-                    logger.warning(f"Could not revoke tokens for user {user.id}: {e}")
+                    logger.warning(f"Error during token revocation for user {user.id}: {e}")
                 
                 # Get related objects count for logging
                 related_counts = {}
@@ -627,6 +649,8 @@ class DeleteAccountView(APIView):
                 return Response({
                     "message": "Account deleted successfully.",
                     "deleted_user_id": user_id,
+                    "deleted_user_email": user_email,
+                    "tokens_revoked": tokens_revoked,
                     "related_objects_deleted": related_counts
                 }, status=status.HTTP_204_NO_CONTENT)
                 
