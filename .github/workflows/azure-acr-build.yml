@@ -1,11 +1,12 @@
-name: Build and Push Docker Image to ACR
+name: Build, Push and Deploy to Azure Container Instances
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,3 +24,23 @@ jobs:
       run: |
         docker build -f Dockerfile.celery -t celeryworkerumemployed.azurecr.io/celery-worker:latest .
         docker push celeryworkerumemployed.azurecr.io/celery-worker:latest
+
+    - name: Azure CLI login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy to Azure Container Instances
+      run: |
+        az container create \
+          --resource-group UmEmployed_RG \
+          --name celery-worker \
+          --image celeryworkerumemployed.azurecr.io/celery-worker:latest \
+          --registry-login-server celeryworkerumemployed.azurecr.io \
+          --registry-username ${{ secrets.ACR_USERNAME }} \
+          --registry-password ${{ secrets.ACR_PASSWORD }} \
+          --restart-policy Always || \
+        az container update \
+          --resource-group UmEmployed_RG \
+          --name celery-worker \
+          --image celeryworkerumemployed.azurecr.io/celery-worker:latest

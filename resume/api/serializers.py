@@ -23,6 +23,17 @@ class SkillSerializer(serializers.ModelSerializer):
         model = Skill
         fields = '__all__'
 
+class SkillListSerializer(serializers.ModelSerializer):
+    """
+    Lightweight serializer for SkillListView to optimize performance.
+    Only includes essential fields for dropdowns and lists.
+    """
+    categories = serializers.StringRelatedField(many=True, read_only=True)
+    
+    class Meta:
+        model = Skill
+        fields = ['id', 'name', 'categories']
+
 class EducationSerializer(serializers.ModelSerializer):
     """
     Serializer for the Education model.

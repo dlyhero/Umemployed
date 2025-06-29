@@ -3,11 +3,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.pagination import PageNumberPagination
 from resume.models import (
     Skill, Education, Experience, ContactInfo, WorkExperience, Language, ResumeAnalysis, ProfileView, SkillCategory, UserLanguage,EnhancedResume
 )
 from .serializers import (
-    SkillSerializer, EducationSerializer, ExperienceSerializer, ContactInfoSerializer, 
+    SkillSerializer, SkillListSerializer, EducationSerializer, ExperienceSerializer, ContactInfoSerializer, 
     WorkExperienceSerializer, LanguageSerializer, UserLanguageSerializer,
     ResumeAnalysisSerializer, ProfileViewSerializer, ResumeSerializer, SkillCategorySerializer, EnhancedResumeSerializer
 )
@@ -798,13 +799,35 @@ def enhance_resume_api(request, job_id):
 
 from rest_framework.generics import ListAPIView
 
+class SkillListPagination(PageNumberPagination):
+    """
+    Custom pagination for SkillListView to prevent memory issues.
+    """
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 500
+
 class SkillListView(ListAPIView):
     """
     Read-only endpoint to fetch all available skills (for dropdowns).
+    Optimized with pagination and prefetch_related to prevent memory issues.
+    Returns skills in alphabetical order.
     """
-    queryset = Skill.objects.all()
-    serializer_class = SkillSerializer
+    queryset = Skill.objects.prefetch_related('categories').order_by('name')
+    serializer_class = SkillListSerializer
     permission_classes = [AllowAny]
+    pagination_class = SkillListPagination
+    
+    def get_queryset(self):
+        """
+        Override to add search functionality and optimize queries.
+        Returns skills in alphabetical order.
+        """
+        queryset = Skill.objects.prefetch_related('categories').order_by('name')
+        search = self.request.query_params.get('search', None)
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+        return queryset
 
 @api_view(['PATCH', 'PUT'])
 def update_resume_fields_api(request):
@@ -945,12 +968,3 @@ def resume_enhancement_status(request, task_id):
             {"error": f"Failed to check task status: {str(e)}"}, 
             status=500
         )
-
-
-class SkillListView(ListAPIView):
-    """
-    Read-only endpoint to fetch all available skills (for dropdowns).
-    """
-    queryset = Skill.objects.all()
-    serializer_class = SkillSerializer
-    permission_classes = [AllowAny]
