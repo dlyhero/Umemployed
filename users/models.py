@@ -35,6 +35,8 @@ class User(AbstractUser):
     is_applicant = models.BooleanField(default=False)
     has_resume = models.BooleanField(default=False)
     has_company = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False, help_text="Designates whether this user has been deleted")
+    deleted_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

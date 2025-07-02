@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import SignupSerializer, LoginSerializer, ForgotPasswordSerializer
+from .serializers import SignupSerializer, LoginSerializer, ForgotPasswordSerializer, ChangePasswordSerializer
 from django.core.mail import send_mail
 from rest_framework.exceptions import ValidationError
 from drf_yasg.utils import swagger_auto_schema
@@ -295,6 +295,15 @@ def google_authenticate(request):
         picture = idinfo.get('picture', '')  # Get picture from token
         if not email:
             return Response({"error": "No email found in token."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        # Check if the user has been deleted
+        deleted_user = User.objects.filter(email=email, is_deleted=True).first()
+        if deleted_user:
+            return Response(
+                {"error": "This account has been deleted. Please contact support."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+            
         # Get or create user
         user, created = User.objects.get_or_create(email=email, defaults={
             'username': email.split('@')[0],
@@ -639,12 +648,26 @@ class DeleteAccountView(APIView):
                 except Exception as e:
                     logger.warning(f"Could not count related objects for user {user.id}: {e}")
                 
-                # Delete the user (this should cascade to related objects)
+                # Soft delete the user instead of hard deleting
+                from django.utils import timezone
                 user_email = user.email
                 user_id = user.id
-                user.delete()
                 
-                logger.info(f"Successfully deleted user account: {user_email} (ID: {user_id})")
+                # Update the user to mark as deleted
+                user.is_deleted = True
+                user.deleted_at = timezone.now()
+                user.is_active = False  # Prevents login
+                
+                # Anonymize personal data for privacy
+                user.first_name = "Deleted"
+                user.last_name = "User"
+                # Keep the email but mark it as deleted to prevent reuse
+                if not user.email.startswith("deleted_"):
+                    user.email = f"deleted_{user.id}_{user.email}"
+                
+                user.save()
+                
+                logger.info(f"Successfully soft-deleted user account: {user_email} (ID: {user_id})")
                 
                 return Response({
                     "message": "Account deleted successfully.",
@@ -673,6 +696,37 @@ class DeleteAccountView(APIView):
             
             return Response(error_details, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class ChangePasswordView(APIView):
+    """
+    API endpoint to allow an authenticated user to change their password.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Change Password",
+        operation_description="Change the authenticated user's password by providing the current password and new password.",
+        request_body=ChangePasswordSerializer,
+        responses={
+            200: openapi.Response("Password changed successfully."),
+            400: openapi.Response("Invalid input data or current password is incorrect."),
+            401: openapi.Response("Authentication required."),
+        },
+    )
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            # Set the new password
+            user = request.user
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            
+            # Return success response
+            return Response(
+                {"message": "Password changed successfully. Please login again with your new password."},
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class GoogleAuthView(APIView):
     permission_classes = [AllowAny]
 
@@ -693,6 +747,14 @@ class GoogleAuthView(APIView):
         except Exception as e:
             logger.error(f"Google token validation failed: {e}")
             return Response({"error": "Invalid token"}, status=400)
+
+        # Check if the user has been deleted
+        deleted_user = User.objects.filter(email=email, is_deleted=True).first()
+        if deleted_user:
+            return Response(
+                {"error": "This account has been deleted. Please contact support."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         user, created = User.objects.get_or_create(email=email, defaults={"username": email, "first_name": name})
         # Optionally update name/picture here

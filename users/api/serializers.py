@@ -23,6 +23,14 @@ class SignupSerializer(serializers.ModelSerializer):
         """
         if data['password'] != data['confirm_password']:
             raise serializers.ValidationError({"confirm_password": "Passwords do not match."})
+            
+        # Check if there's a deleted user with this email
+        email = data['email']
+        if User.objects.filter(email=email, is_deleted=True).exists():
+            raise serializers.ValidationError({
+                "email": "This email address is associated with a deleted account. Please contact support."
+            })
+            
         return data
 
     def create(self, validated_data):
@@ -53,6 +61,10 @@ class LoginSerializer(serializers.Serializer):
         """
         user = User.objects.filter(email=data['email']).first()
         if user and user.check_password(data['password']):
+            # Check if the user has been deleted
+            if user.is_deleted:
+                raise serializers.ValidationError("This account has been deleted. Please contact support.")
+                
             refresh = RefreshToken.for_user(user)
             role = (
                 "recruiter" if user.is_recruiter else
@@ -80,4 +92,30 @@ class ForgotPasswordSerializer(serializers.Serializer):
         """
         if not User.objects.filter(email=value).exists():
             raise serializers.ValidationError("User with this email does not exist.")
+        return value
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """
+    Serializer for changing password.
+    Validates that the current password is correct and the new passwords match.
+    """
+    current_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    confirm_new_password = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, data):
+        """
+        Ensure that new_password and confirm_new_password match.
+        """
+        if data['new_password'] != data['confirm_new_password']:
+            raise serializers.ValidationError({"confirm_new_password": "New passwords do not match."})
+        return data
+
+    def validate_current_password(self, value):
+        """
+        Check if the current password is correct.
+        """
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Current password is incorrect.")
         return value
