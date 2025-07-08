@@ -6,22 +6,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('transactions', '0002_transaction_description_transaction_payment_method_and_more'),
+        ("transactions", "0002_transaction_description_transaction_payment_method_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transaction',
-            name='candidate',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='candidate_transactions', to=settings.AUTH_USER_MODEL),
+            model_name="transaction",
+            name="candidate",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="candidate_transactions",
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='transaction',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transactions', to=settings.AUTH_USER_MODEL),
+            model_name="transaction",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="transactions",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

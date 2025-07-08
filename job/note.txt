@@ -15,13 +15,13 @@ def generate_questions_for_skills(job_title, entry_level=None):
     try:
         skills = Skill.objects.filter(categories__name=job_title)  # Query skills based on job title
         print("Skills found for job title", job_title, ":", skills)
-        
+
         for skill in skills:
             print("Processing skill:", skill.name)
             # Generate MCQs for each skill
             mcqs_data = generate_mcqs_for_skill(skill.name)
             print("MCQs data:", mcqs_data)
-            
+
             if mcqs_data:
                 print(mcqs_data)
                 # Assuming only one question is generated per skill
@@ -33,7 +33,7 @@ def generate_questions_for_skills(job_title, entry_level=None):
                         question = mcq_data['question']
                         options = mcq_data['options']
                         correct_answer = mcq_data['correct_answer']
-                        
+
                         print("Question:", question)
                         print("Options:", options)
                         print("Correct answer:", correct_answer)
@@ -65,7 +65,7 @@ def generate_questions_for_skills(job_title, entry_level=None):
 def generate_mcqs_for_skill(skill_name):
     conversation = [
         {
-            "role": "user", 
+            "role": "user",
             "content": f"Generate 1 technical multiple-choice question and answers related to the skill: {skill_name}. Each question should be followed by four answer choices (A, B, C, D) and a correct answer indicated. Ensure that the response is provided in JSON format, where the MCQ is represented as an object with the following structure: \n\n{{\n  \"question\": \"\",\n  \"options\": {{\n    \"A\": \"\",\n    \"B\": \"\",\n    \"C\": \"\",\n    \"D\": \"\"\n  }},\n  \"correct_answer\": \"\"\n}}"
         }
     ]
@@ -129,4 +129,3 @@ def generate_questions_view(request):
 
     else:
         return JsonResponse({"error": "Method not allowed"}, status=405)
-

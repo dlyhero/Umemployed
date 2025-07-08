@@ -1,13 +1,13 @@
 
 
 document.addEventListener("DOMContentLoaded", function () {
-      
-    
+
+
 
     let currentSkill = "python"; // Default skill
     let questionSetIndex = 0;
     let timer;
-    let timeRemaining = 120; 
+    let timeRemaining = 120;
 
     const skillButtons = document.querySelectorAll(".skill-btn");
     const questionSection = document.getElementById("question-section");

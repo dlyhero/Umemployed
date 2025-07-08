@@ -1,39 +1,70 @@
+import json
+import logging
 import os  # Add this import for accessing environment variables
-from rest_framework.response import Response
+
+import openai  # Assuming you use OpenAI or similar for AI enhancement
+from azure.storage.blob import BlobServiceClient
+from django.conf import settings
+from django.db.models import Max  # Import Max for querying the latest resume
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import ListAPIView
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import PageNumberPagination
-from resume.models import (
-    Skill, Education, Experience, ContactInfo, WorkExperience, Language, ResumeAnalysis, ProfileView, SkillCategory, UserLanguage,EnhancedResume
-)
-from .serializers import (
-    SkillSerializer, SkillListSerializer, EducationSerializer, ExperienceSerializer, ContactInfoSerializer, 
-    WorkExperienceSerializer, LanguageSerializer, UserLanguageSerializer,
-    ResumeAnalysisSerializer, ProfileViewSerializer, ResumeSerializer, SkillCategorySerializer, EnhancedResumeSerializer
-)
-from resume.models import Resume, ResumeDoc, Transcript
-from resume.views import update_resume, display_matching_jobs, upload_resume, update_resume_view
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
-from resume.extract_pdf import extract_text, extract_resume_details, parse_and_save_details, extract_technical_skills  # Import existing functions
-from resume.transcript_job_title import extract_transcript_text  # Import the old function
-from azure.storage.blob import BlobServiceClient
-from django.db.models import Max  # Import Max for querying the latest resume
-import logging
-from job.models import Job  # Import Job model
-from django.conf import settings
-import openai  # Assuming you use OpenAI or similar for AI enhancement
-import json
-from transactions.models import Subscription
-from notifications.models import Notification  # Add this import
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
+from job.models import Job  # Import Job model
+from notifications.models import Notification  # Add this import
+from resume.extract_pdf import (  # Import existing functions
+    extract_resume_details,
+    extract_technical_skills,
+    extract_text,
+    parse_and_save_details,
+)
+from resume.models import (
+    ContactInfo,
+    Education,
+    EnhancedResume,
+    Experience,
+    Language,
+    ProfileView,
+    Resume,
+    ResumeAnalysis,
+    ResumeDoc,
+    Skill,
+    SkillCategory,
+    Transcript,
+    UserLanguage,
+    WorkExperience,
+)
+from resume.transcript_job_title import extract_transcript_text  # Import the old function
+from resume.views import display_matching_jobs, update_resume, update_resume_view, upload_resume
+from transactions.models import Subscription
+
+from .serializers import (
+    ContactInfoSerializer,
+    EducationSerializer,
+    EnhancedResumeSerializer,
+    ExperienceSerializer,
+    LanguageSerializer,
+    ProfileViewSerializer,
+    ResumeAnalysisSerializer,
+    ResumeSerializer,
+    SkillCategorySerializer,
+    SkillListSerializer,
+    SkillSerializer,
+    UserLanguageSerializer,
+    WorkExperienceSerializer,
+)
 
 logger = logging.getLogger(__name__)
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def update_resume_api(request):
     """
     Updates the resume for the authenticated user.
@@ -65,7 +96,7 @@ def update_resume_api(request):
             Notification.objects.create(
                 user=request.user,
                 notification_type=Notification.PROFILE_UPDATED,
-                message="Your resume has been updated successfully."
+                message="Your resume has been updated successfully.",
             )
             return Response({"message": "Resume updated successfully."}, status=200)
         else:
@@ -73,7 +104,8 @@ def update_resume_api(request):
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def resume_details_api(request):
     """
     Retrieves details of the resume for the currently logged-in user.
@@ -91,7 +123,7 @@ def resume_details_api(request):
     user = request.user
     try:
         # Get the latest resume for the logged-in user
-        resume = Resume.objects.filter(user=user).order_by('-created_at').first()
+        resume = Resume.objects.filter(user=user).order_by("-created_at").first()
         if not resume:
             return Response({"error": "No resume found for the current user."}, status=404)
 
@@ -101,7 +133,8 @@ def resume_details_api(request):
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def matching_jobs_api(request):
     """
     Displays jobs matching the user's resume.
@@ -120,7 +153,8 @@ def matching_jobs_api(request):
     """
     return display_matching_jobs(request)
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def upload_resume_api(request):
     """
     Uploads a resume file for the authenticated user and triggers the extraction process.
@@ -136,10 +170,10 @@ def upload_resume_api(request):
             "extracted_details": {...}
         }
     """
-    if 'file' not in request.FILES:
+    if "file" not in request.FILES:
         return Response({"error": "The 'file' field is required."}, status=400)
 
-    file = request.FILES['file']
+    file = request.FILES["file"]
     user = request.user
 
     # Save the file to the ResumeDoc model
@@ -164,7 +198,7 @@ def upload_resume_api(request):
         Notification.objects.create(
             user=user,
             notification_type=Notification.PROFILE_UPDATED,
-            message="Your resume has been uploaded and processed successfully."
+            message="Your resume has been uploaded and processed successfully.",
         )
     except Exception as e:
         logger.error(f"Failed to upload file: {str(e)}")
@@ -182,7 +216,9 @@ def upload_resume_api(request):
         extracted_text = extracted_text_response.data.get("extracted_text", "")
         if not extracted_text.strip():
             logger.error("Extracted text is empty or invalid after calling extract_text.")
-            return Response({"error": "Failed to extract meaningful text from the resume."}, status=400)
+            return Response(
+                {"error": "Failed to extract meaningful text from the resume."}, status=400
+            )
 
         logger.info("Extracted text received in API: %s", extracted_text[:500])
 
@@ -198,17 +234,21 @@ def upload_resume_api(request):
         resume_doc.extracted_text = extracted_text
         resume_doc.save()
 
-        return Response({
-            "message": "Resume uploaded and processed successfully.",
-            "extracted_text": extracted_text,
-            "technical_skills": technical_skills,
-            "extracted_details": extracted_details
-        }, status=200)
+        return Response(
+            {
+                "message": "Resume uploaded and processed successfully.",
+                "extracted_text": extracted_text,
+                "technical_skills": technical_skills,
+                "extracted_details": extracted_details,
+            },
+            status=200,
+        )
     except Exception as e:
         logger.error("Error in upload_resume_api: %s", e)
         return Response({"error": f"Failed to process resume: {str(e)}"}, status=500)
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def analyze_resume_api(request):
     """
     Analyzes the uploaded resume and provides feedback.
@@ -229,9 +269,11 @@ def analyze_resume_api(request):
     """
     return update_resume_view(request)
 
+
 from resume.extract_pdf import extract_text  # Import the existing extract_text function
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def upload_transcript_api(request):
     """
     Handles transcript upload for the authenticated user and triggers processing.
@@ -247,10 +289,10 @@ def upload_transcript_api(request):
             "reasoning": "Reasoning based on the transcript analysis."
         }
     """
-    if 'file' not in request.FILES:
+    if "file" not in request.FILES:
         return Response({"error": "The 'file' field is required."}, status=400)
 
-    file = request.FILES['file']
+    file = request.FILES["file"]
     user = request.user
 
     # Save the file to the Transcript model
@@ -260,16 +302,18 @@ def upload_transcript_api(request):
         print(f"Transcript uploaded: {transcript.file.name}")
 
         # Upload the file to Azure Blob Storage
-        account_name = os.getenv('AZURE_ACCOUNT_NAME')
-        account_key = os.getenv('AZURE_ACCOUNT_KEY')
-        container_name = os.getenv('AZURE_CONTAINER')
+        account_name = os.getenv("AZURE_ACCOUNT_NAME")
+        account_key = os.getenv("AZURE_ACCOUNT_KEY")
+        container_name = os.getenv("AZURE_CONTAINER")
 
         connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};AccountKey={account_key};EndpointSuffix=core.windows.net"
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-        blob_client = blob_service_client.get_blob_client(container=container_name, blob=transcript.file.name)
+        blob_client = blob_service_client.get_blob_client(
+            container=container_name, blob=transcript.file.name
+        )
 
         # Upload the file
-        with file.open('rb') as data:
+        with file.open("rb") as data:
             blob_client.upload_blob(data, overwrite=True)
         print(f"File uploaded to Azure Blob Storage: {transcript.file.name}")
 
@@ -289,16 +333,20 @@ def upload_transcript_api(request):
         transcript.refresh_from_db()
 
         # Return the processed response
-        return Response({
-            "message": "Transcript uploaded and processed successfully.",
-            "extracted_text": transcript.extracted_text,
-            "job_title": transcript.job_title,
-            "reasoning": transcript.reasoning
-        }, status=200)
+        return Response(
+            {
+                "message": "Transcript uploaded and processed successfully.",
+                "extracted_text": transcript.extracted_text,
+                "job_title": transcript.job_title,
+                "reasoning": transcript.reasoning,
+            },
+            status=200,
+        )
     except Exception as e:
         return Response({"error": f"Failed to process transcript: {str(e)}"}, status=500)
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def extract_transcript_api(request):
     """
     Extracts text from an uploaded transcript.
@@ -313,10 +361,11 @@ def extract_transcript_api(request):
             "extracted_text": "This is the extracted text from the transcript."
         }
     """
-    transcript_id = request.data.get('transcript_id')
+    transcript_id = request.data.get("transcript_id")
     transcript = get_object_or_404(Transcript, id=transcript_id)
     extracted_text = transcript.extracted_text  # Assuming text is already extracted
     return Response({"extracted_text": extracted_text})
+
 
 class SkillViewSet(ModelViewSet):
     """
@@ -326,10 +375,11 @@ class SkillViewSet(ModelViewSet):
     - PUT/PATCH: Update an existing skill for the logged-in user.
     - DELETE: Delete a skill for the logged-in user.
     """
+
     serializer_class = SkillSerializer
 
     def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+        if getattr(self, "swagger_fake_view", False) or not self.request.user.is_authenticated:
             return Skill.objects.none()
         return Skill.objects.filter(user=self.request.user)
 
@@ -339,6 +389,7 @@ class SkillViewSet(ModelViewSet):
         data = [{"id": skill.id, "name": skill.name} for skill in queryset]
         return Response(data)
 
+
 class EducationViewSet(ModelViewSet):
     """
     Handles CRUD operations for user education records.
@@ -347,10 +398,11 @@ class EducationViewSet(ModelViewSet):
     - PUT/PATCH: Update an existing education record for the logged-in user.
     - DELETE: Delete an education record for the logged-in user.
     """
+
     serializer_class = EducationSerializer
 
     def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+        if getattr(self, "swagger_fake_view", False) or not self.request.user.is_authenticated:
             return Education.objects.none()
         return Education.objects.filter(user=self.request.user)
 
@@ -362,6 +414,7 @@ class EducationViewSet(ModelViewSet):
         # Ensure the user field is not changed during updates
         serializer.save(user=self.request.user)
 
+
 class ExperienceViewSet(ModelViewSet):
     """
     Handles CRUD operations for user work experiences.
@@ -370,12 +423,14 @@ class ExperienceViewSet(ModelViewSet):
     - PUT/PATCH: Update an existing work experience for the logged-in user.
     - DELETE: Delete a work experience for the logged-in user.
     """
+
     serializer_class = ExperienceSerializer
 
     def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+        if getattr(self, "swagger_fake_view", False) or not self.request.user.is_authenticated:
             return Experience.objects.none()
         return Experience.objects.filter(user=self.request.user)
+
 
 class ContactInfoViewSet(ModelViewSet):
     """
@@ -385,12 +440,14 @@ class ContactInfoViewSet(ModelViewSet):
     - PUT/PATCH: Update existing contact information for the logged-in user.
     - DELETE: Delete contact information for the logged-in user.
     """
+
     serializer_class = ContactInfoSerializer
 
     def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+        if getattr(self, "swagger_fake_view", False) or not self.request.user.is_authenticated:
             return ContactInfo.objects.none()
         return ContactInfo.objects.filter(user=self.request.user)
+
 
 class WorkExperienceViewSet(ModelViewSet):
     """
@@ -400,11 +457,12 @@ class WorkExperienceViewSet(ModelViewSet):
     - PUT/PATCH: Update an existing work experience for the logged-in user.
     - DELETE: Delete a work experience for the logged-in user.
     """
+
     serializer_class = WorkExperienceSerializer
 
     def get_queryset(self):
         # Short-circuit for schema generation or unauthenticated user
-        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+        if getattr(self, "swagger_fake_view", False) or not self.request.user.is_authenticated:
             return WorkExperience.objects.none()
         return WorkExperience.objects.filter(user=self.request.user)
 
@@ -416,6 +474,7 @@ class WorkExperienceViewSet(ModelViewSet):
         # Ensure the user field is not changed during updates
         serializer.save(user=self.request.user)
 
+
 class LanguageViewSet(ModelViewSet):
     """
     Handles CRUD operations for user languages.
@@ -424,11 +483,12 @@ class LanguageViewSet(ModelViewSet):
     - PUT/PATCH: Update an existing language for the logged-in user.
     - DELETE: Delete a language for the logged-in user.
     """
+
     serializer_class = UserLanguageSerializer
 
     def get_queryset(self):
         # Short-circuit for schema generation or unauthenticated user
-        if getattr(self, 'swagger_fake_view', False) or not self.request.user.is_authenticated:
+        if getattr(self, "swagger_fake_view", False) or not self.request.user.is_authenticated:
             return UserLanguage.objects.none()
         return UserLanguage.objects.filter(user_profile__user=self.request.user)
 
@@ -439,28 +499,31 @@ class LanguageViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         # Automatically set the user_profile to the currently authenticated user's profile
-        user_profile = getattr(self.request.user, 'userprofile', None)
+        user_profile = getattr(self.request.user, "userprofile", None)
         if user_profile:
             serializer.save(user_profile=user_profile)
         else:
             raise serializers.ValidationError("User profile not found.")
 
     def perform_update(self, serializer):
-        user_profile = getattr(self.request.user, 'userprofile', None)
+        user_profile = getattr(self.request.user, "userprofile", None)
         if user_profile:
             serializer.save(user_profile=user_profile)
         else:
             raise serializers.ValidationError("User profile not found.")
 
+
 class LanguageListView(ListAPIView):
     """
     Read-only endpoint to fetch all available languages (for dropdowns).
     """
+
     queryset = Language.objects.all()
     serializer_class = LanguageSerializer
     permission_classes = [AllowAny]
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def resume_analyses_api(request):
     """
     Retrieves all resume analyses.
@@ -479,7 +542,7 @@ def resume_analyses_api(request):
     return Response(serializer.data)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def profile_views_api(request):
     """
     Retrieves all profile views.
@@ -496,10 +559,12 @@ def profile_views_api(request):
     serializer = ProfileViewSerializer(profile_views, many=True)
     return Response(serializer.data)
 
+
 from resume.models import ResumeAnalysis  # Import the ResumeAnalysis model
 from resume.resume_analysis import analyze_resume  # Import the old function
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def resume_analysis_api(request):
     """
     Analyzes an uploaded resume file and provides feedback.
@@ -519,10 +584,10 @@ def resume_analysis_api(request):
             }
         }
     """
-    if 'file' not in request.FILES:
+    if "file" not in request.FILES:
         return Response({"error": "The 'file' field is required."}, status=400)
 
-    file = request.FILES['file']
+    file = request.FILES["file"]
     user = request.user
 
     # Save the file to the ResumeDoc model
@@ -551,21 +616,26 @@ def resume_analysis_api(request):
         ResumeAnalysis.objects.create(
             user=resume_doc.user,
             resume=resume_doc,
-            overall_score=analysis_results['overall_score'],
-            criteria_scores=analysis_results['criteria_scores'],
-            improvement_suggestions=analysis_results['improvement_suggestions']
+            overall_score=analysis_results["overall_score"],
+            criteria_scores=analysis_results["criteria_scores"],
+            improvement_suggestions=analysis_results["improvement_suggestions"],
         )
 
         # Return the analysis results
-        return Response({
-            "overall_score": analysis_results['overall_score'],
-            "criteria_scores": analysis_results['criteria_scores'],
-            "improvement_suggestions": analysis_results['improvement_suggestions']
-        }, status=200)
+        return Response(
+            {
+                "overall_score": analysis_results["overall_score"],
+                "criteria_scores": analysis_results["criteria_scores"],
+                "improvement_suggestions": analysis_results["improvement_suggestions"],
+            },
+            status=200,
+        )
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
 
+
 from rest_framework.views import APIView
+
 
 class SkillCategoryListView(APIView):
     """
@@ -584,12 +654,14 @@ class SkillCategoryListView(APIView):
             ...
         ]
     """
+
     def get(self, request):
-        skill_categories = SkillCategory.objects.all().order_by('name')  # Sort alphabetically
+        skill_categories = SkillCategory.objects.all().order_by("name")  # Sort alphabetically
         serializer = SkillCategorySerializer(skill_categories, many=True)
         return Response(serializer.data)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def user_profile_details_api(request, user_id):
     """
     Retrieves a user's skills (from Resume), contact information, work experience, and languages by user ID.
@@ -634,21 +706,27 @@ def user_profile_details_api(request, user_id):
         profile_image = resume.profile_image.url if resume and resume.profile_image else None
         description = resume.description if resume else None
 
-        return Response({
-            "skills": skills_serializer.data if resume else [],
-            "contact_info": contact_info_serializer.data if contact_info else None,
-            "work_experience": work_experience_serializer.data,
-            "education": education_serializer.data,
-            "languages": languages_serializer.data,
-            "profile_image": profile_image,
-            "description": description
-        }, status=200)
+        return Response(
+            {
+                "skills": skills_serializer.data if resume else [],
+                "contact_info": contact_info_serializer.data if contact_info else None,
+                "work_experience": work_experience_serializer.data,
+                "education": education_serializer.data,
+                "languages": languages_serializer.data,
+                "profile_image": profile_image,
+                "description": description,
+            },
+            status=200,
+        )
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
 
-from resume.tasks import enhance_resume_task
+
 from resume.models import ResumeEnhancementTask
-@api_view(['POST'])
+from resume.tasks import enhance_resume_task
+
+
+@api_view(["POST"])
 def enhance_resume_api(request, job_id):
     """
     Initiates asynchronous resume enhancement for a specific job description.
@@ -668,14 +746,20 @@ def enhance_resume_api(request, job_id):
     """
     # Subscription check: require at least standard or premium
     user = request.user
-    subscription = Subscription.objects.filter(user=user, user_type='user', is_active=True).order_by('-started_at').first()
-    if not subscription or subscription.tier not in ['standard', 'premium']:
+    subscription = (
+        Subscription.objects.filter(user=user, user_type="user", is_active=True)
+        .order_by("-started_at")
+        .first()
+    )
+    if not subscription or subscription.tier not in ["standard", "premium"]:
         return Response(
-            {"error": "You need a Standard or Premium subscription to use the resume enhancer. Please upgrade your plan."},
-            status=403
+            {
+                "error": "You need a Standard or Premium subscription to use the resume enhancer. Please upgrade your plan."
+            },
+            status=403,
         )
 
-    file = request.FILES.get('file')
+    file = request.FILES.get("file")
     user = request.user
 
     if not file:
@@ -696,7 +780,9 @@ def enhance_resume_api(request, job_id):
             return extracted_text_response
         resume_text = extracted_text_response.data.get("extracted_text", "")
         if not resume_text.strip():
-            return Response({"error": "Failed to extract meaningful text from the resume."}, status=400)
+            return Response(
+                {"error": "Failed to extract meaningful text from the resume."}, status=400
+            )
     except Exception as e:
         return Response({"error": f"Failed to extract text: {str(e)}"}, status=500)
 
@@ -722,7 +808,7 @@ def enhance_resume_api(request, job_id):
         "MAINTAIN PROFESSIONAL, CONCISE LANGUAGE FOCUSED ON IMPACT AND RESULTS,\n"
         "FOR THE 'skills' SECTION, GROUP/CATEGORIZE THE SKILLS INTO RELEVANT CATEGORIES (e.g., 'Programming Languages', 'Machine Learning', 'Software', etc.) "
         "AND RETURN THEM AS AN OBJECT WHERE EACH KEY IS A CATEGORY AND THE VALUE IS A LIST OF SKILLS IN THAT CATEGORY. "
-        "EXAMPLE: {\"Programming Languages\": [\"Python\", \"SQL\"], \"Machine Learning\": [\"KNN\", \"XGBoost\"]}\n"
+        'EXAMPLE: {"Programming Languages": ["Python", "SQL"], "Machine Learning": ["KNN", "XGBoost"]}\n'
         "FOR THE 'education' SECTION, RETURN A LIST OF ALL EDUCATION ENTRIES FOUND, NOT JUST ONE. "
         "FOR THE 'experience' SECTION, RETURN A LIST OF ALL WORK EXPERIENCE ENTRIES FOUND, NOT JUST ONE. "
         "FOR THE 'certifications' SECTION, RETURN A LIST OF ALL CERTIFICATIONS FOUND, NOT JUST ONE. "
@@ -739,7 +825,7 @@ def enhance_resume_api(request, job_id):
         "###WHAT NOT TO DO###\n"
         f"NEVER INCLUDE SECTIONS OUTSIDE THE ALLOWED LIST: {section_str},\n"
         "NEVER COPY-PASTE LARGE CHUNKS FROM THE JOB DESCRIPTION WITHOUT ADAPTATION,\n"
-        "NEVER USE GENERIC, VAGUE LANGUAGE (E.G., \"responsible for\", \"worked on\"),\n"
+        'NEVER USE GENERIC, VAGUE LANGUAGE (E.G., "responsible for", "worked on"),\n'
         "NEVER INCLUDE GRAPHICS, COLUMNS, IMAGES, OR TABLES (NON-ATS COMPATIBLE),\n"
         "NEVER OMIT RELEVANT KEYWORDS OR INDUSTRY TERMINOLOGY FOUND IN THE JOB DESCRIPTION,\n"
         "NEVER INTRODUCE FABRICATED INFORMATION OR FAKE EXPERIENCES,\n\n"
@@ -770,42 +856,46 @@ def enhance_resume_api(request, job_id):
 
     # Create task record and initiate background processing
     try:
-        from resume.tasks import enhance_resume_task
         from resume.models import ResumeEnhancementTask
-        
+        from resume.tasks import enhance_resume_task
+
         # Create task tracking record first
         task_record = ResumeEnhancementTask.objects.create(
-            user=user,
-            job=job,
-            task_id='temp',  # Temporary, will be updated
-            status='pending'
+            user=user, job=job, task_id="temp", status="pending"  # Temporary, will be updated
         )
-        
+
         # Start the Celery task with the record ID
         task_result = enhance_resume_task.delay(user.id, job_id, resume_text, task_record.id)
-        
+
         # Update the task record with the actual task ID
         task_record.task_id = task_result.id
         task_record.save()
-        
-        return Response({
-            "message": "Resume enhancement initiated successfully.",
-            "task_id": task_record.task_id,
-            "status_url": f"/api/resume/enhancement-status/{task_record.task_id}/"
-        }, status=202)
-        
+
+        return Response(
+            {
+                "message": "Resume enhancement initiated successfully.",
+                "task_id": task_record.task_id,
+                "status_url": f"/api/resume/enhancement-status/{task_record.task_id}/",
+            },
+            status=202,
+        )
+
     except Exception as e:
         return Response({"error": f"Failed to initiate resume enhancement: {str(e)}"}, status=500)
 
+
 from rest_framework.generics import ListAPIView
+
 
 class SkillListPagination(PageNumberPagination):
     """
     Custom pagination for SkillListView to prevent memory issues.
     """
+
     page_size = 100
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 500
+
 
 class SkillListView(ListAPIView):
     """
@@ -813,23 +903,25 @@ class SkillListView(ListAPIView):
     Optimized with pagination and prefetch_related to prevent memory issues.
     Returns skills in alphabetical order.
     """
-    queryset = Skill.objects.prefetch_related('categories').order_by('name')
+
+    queryset = Skill.objects.prefetch_related("categories").order_by("name")
     serializer_class = SkillListSerializer
     permission_classes = [AllowAny]
     pagination_class = SkillListPagination
-    
+
     def get_queryset(self):
         """
         Override to add search functionality and optimize queries.
         Returns skills in alphabetical order.
         """
-        queryset = Skill.objects.prefetch_related('categories').order_by('name')
-        search = self.request.query_params.get('search', None)
+        queryset = Skill.objects.prefetch_related("categories").order_by("name")
+        search = self.request.query_params.get("search", None)
         if search:
             queryset = queryset.filter(name__icontains=search)
         return queryset
 
-@api_view(['PATCH', 'PUT'])
+
+@api_view(["PATCH", "PUT"])
 def update_resume_fields_api(request):
     """
     Update specific fields of the authenticated user's Resume.
@@ -849,7 +941,8 @@ def update_resume_fields_api(request):
     else:
         return Response(serializer.errors, status=400)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def enhancement_history_api(request):
     """
@@ -867,11 +960,12 @@ def enhancement_history_api(request):
             ...
         ]
     """
-    enhanced_resumes = EnhancedResume.objects.filter(user=request.user).order_by('-created_at')
+    enhanced_resumes = EnhancedResume.objects.filter(user=request.user).order_by("-created_at")
     serializer = EnhancedResumeSerializer(enhanced_resumes, many=True)
     return Response(serializer.data, status=200)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def check_enhanced_resume_api(request, user_id, job_id):
     """
     Checks if a user has enhanced a resume for a particular job.
@@ -889,25 +983,22 @@ def check_enhanced_resume_api(request, user_id, job_id):
     enhanced_resume = EnhancedResume.objects.filter(user_id=user_id, job_id=job_id).first()
     if enhanced_resume:
         serializer = EnhancedResumeSerializer(enhanced_resume)
-        return Response({
-            "has_enhanced": True,
-            "enhanced_resume": serializer.data
-        }, status=200)
+        return Response({"has_enhanced": True, "enhanced_resume": serializer.data}, status=200)
     else:
-        return Response({
-            "has_enhanced": False
-        }, status=200)
+        return Response({"has_enhanced": False}, status=200)
+
 
 from rest_framework.generics import ListAPIView
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def resume_enhancement_status(request, task_id):
     """
     Check the status of a resume enhancement task.
-    
+
     URL Parameter:
         task_id: The ID of the task to check.
-    
+
     Response:
         {
             "status": "pending|processing|completed|failed",
@@ -918,17 +1009,17 @@ def resume_enhancement_status(request, task_id):
     """
     try:
         from .models import ResumeEnhancementTask
-        
+
         task_record = ResumeEnhancementTask.objects.get(task_id=task_id, user=request.user)
-        
+
         response_data = {
             "status": task_record.status,
             "task_id": task_record.task_id,
             "created_at": task_record.created_at,
-            "updated_at": task_record.updated_at
+            "updated_at": task_record.updated_at,
         }
-        
-        if task_record.status == 'completed' and task_record.enhanced_resume:
+
+        if task_record.status == "completed" and task_record.enhanced_resume:
             # Include the enhanced resume data
             enhanced_resume = task_record.enhanced_resume
             response_data["enhanced_resume"] = {
@@ -942,29 +1033,27 @@ def resume_enhancement_status(request, task_id):
                 "skills": enhanced_resume.skills,
                 "experience": enhanced_resume.experience,
                 "education": enhanced_resume.education,
-                "created_at": enhanced_resume.created_at
+                "created_at": enhanced_resume.created_at,
             }
             response_data["message"] = "Resume enhancement completed successfully."
-            
-        elif task_record.status == 'failed':
-            response_data["error_message"] = task_record.error_message or "An unknown error occurred."
+
+        elif task_record.status == "failed":
+            response_data["error_message"] = (
+                task_record.error_message or "An unknown error occurred."
+            )
             response_data["message"] = "Resume enhancement failed."
-            
-        elif task_record.status == 'processing':
+
+        elif task_record.status == "processing":
             response_data["message"] = "Resume enhancement is in progress."
-            
+
         else:  # pending
             response_data["message"] = "Resume enhancement is queued for processing."
-        
+
         return Response(response_data, status=200)
-        
+
     except ResumeEnhancementTask.DoesNotExist:
         return Response(
-            {"error": "Task not found or you don't have permission to access it."}, 
-            status=404
+            {"error": "Task not found or you don't have permission to access it."}, status=404
         )
     except Exception as e:
-        return Response(
-            {"error": f"Failed to check task status: {str(e)}"}, 
-            status=500
-        )
+        return Response({"error": f"Failed to check task status: {str(e)}"}, status=500)

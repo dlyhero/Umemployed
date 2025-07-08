@@ -1,9 +1,11 @@
-from celery import shared_task
-from django.core.mail import send_mail
-from django.conf import settings
 import logging
 
+from celery import shared_task
+from django.conf import settings
+from django.core.mail import send_mail
+
 logger = logging.getLogger(__name__)
+
 
 @shared_task
 def send_message_email_task(email, sender_name, message_text, conversation_id):

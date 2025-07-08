@@ -4,50 +4,49 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0069_job_application_jobmatch_profileview_and_more'),
+        ("resume", "0069_job_application_jobmatch_profileview_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='application',
-            name='job',
+            model_name="application",
+            name="job",
         ),
         migrations.RemoveField(
-            model_name='application',
-            name='user',
+            model_name="application",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='jobmatch',
-            name='job',
+            model_name="jobmatch",
+            name="job",
         ),
         migrations.RemoveField(
-            model_name='jobmatch',
-            name='user',
+            model_name="jobmatch",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='skillendorsement',
-            name='endorsed_by',
+            model_name="skillendorsement",
+            name="endorsed_by",
         ),
         migrations.RemoveField(
-            model_name='skillendorsement',
-            name='skill',
+            model_name="skillendorsement",
+            name="skill",
         ),
         migrations.RemoveField(
-            model_name='skillendorsement',
-            name='user',
+            model_name="skillendorsement",
+            name="user",
         ),
         migrations.DeleteModel(
-            name='Job',
+            name="Job",
         ),
         migrations.DeleteModel(
-            name='Application',
+            name="Application",
         ),
         migrations.DeleteModel(
-            name='JobMatch',
+            name="JobMatch",
         ),
         migrations.DeleteModel(
-            name='SkillEndorsement',
+            name="SkillEndorsement",
         ),
     ]

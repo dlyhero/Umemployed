@@ -4,104 +4,109 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('company', '0003_alter_company_id'),
+        ("company", "0003_alter_company_id"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='company',
-            old_name='est_date',
-            new_name='founded',
+            model_name="company",
+            old_name="est_date",
+            new_name="founded",
         ),
         migrations.RenameField(
-            model_name='company',
-            old_name='state',
-            new_name='headquarters',
+            model_name="company",
+            old_name="state",
+            new_name="headquarters",
         ),
         migrations.RemoveField(
-            model_name='company',
-            name='city',
+            model_name="company",
+            name="city",
         ),
         migrations.AddField(
-            model_name='company',
-            name='about_us',
+            model_name="company",
+            name="about_us",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='contact_email',
+            model_name="company",
+            name="contact_email",
             field=models.EmailField(blank=True, max_length=254, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='contact_phone',
+            model_name="company",
+            name="contact_phone",
             field=models.CharField(blank=True, max_length=20, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='cover_photo',
-            field=models.ImageField(blank=True, default='company/cover_photos/default_cover.jpg', upload_to='company/cover_photos'),
+            model_name="company",
+            name="cover_photo",
+            field=models.ImageField(
+                blank=True,
+                default="company/cover_photos/default_cover.jpg",
+                upload_to="company/cover_photos",
+            ),
         ),
         migrations.AddField(
-            model_name='company',
-            name='facebook',
+            model_name="company",
+            name="facebook",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='industry',
+            model_name="company",
+            name="industry",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='instagram',
+            model_name="company",
+            name="instagram",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='job_openings',
+            model_name="company",
+            name="job_openings",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='linkedin',
+            model_name="company",
+            name="linkedin",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='mission_statement',
+            model_name="company",
+            name="mission_statement",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='size',
+            model_name="company",
+            name="size",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='twitter',
+            model_name="company",
+            name="twitter",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='video_introduction',
+            model_name="company",
+            name="video_introduction",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='vision_statement',
+            model_name="company",
+            name="vision_statement",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='website_url',
+            model_name="company",
+            name="website_url",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='logo',
-            field=models.ImageField(blank=True, default='company/logos/default_logo.jpg', upload_to='company/logos'),
+            model_name="company",
+            name="logo",
+            field=models.ImageField(
+                blank=True, default="company/logos/default_logo.jpg", upload_to="company/logos"
+            ),
         ),
     ]

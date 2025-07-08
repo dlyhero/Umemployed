@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0038_retakerequest'),
+        ("job", "0038_retakerequest"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='has_started',
+            model_name="application",
+            name="has_started",
             field=models.BooleanField(default=False),
         ),
     ]

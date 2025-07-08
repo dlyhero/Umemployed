@@ -8,13 +8,13 @@ asideItems.forEach(item => {
   item.addEventListener("click", (event) => {
     // Prevent default link behavior if necessary
     event.preventDefault();
-    
+
     // Remove 'active' class from all items
     asideItems.forEach(i => i.classList.remove("active"));
-    
+
     // Add 'active' class to the clicked item
     item.classList.add("active");
-    
+
     // Optionally navigate to the link
     const link = item.getAttribute('href');
     if (link) {
@@ -67,5 +67,3 @@ function setupBackdropMenu() {
 
 
 setupBackdropMenu();
-
-

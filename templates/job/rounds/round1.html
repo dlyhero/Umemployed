@@ -13,7 +13,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    
+
 <style>
     /* General Styles */
     body{
@@ -63,12 +63,12 @@
 
     /* For Mobile View */
     @media (max-width: 640px) {
-        
+
     }
 
-  
 
-  
+
+
     /* Button Styles */
     .skill-btn {
         display: inline-block;
@@ -132,7 +132,7 @@
       height: 100%;
       object-fit: cover;
     }
-   
+
     /*for the scroller */
     #questions-container {
         max-height: 450px; /* Default height */
@@ -177,20 +177,20 @@
 {% block content %}
 
 <body class="text-sm" data-job="{{ job.id }}" style>
-    
+
     <main class="container max-w-7xl mx-auto flex-col p-6 bg-white sm:bg-transparent">
-        
+
     <div class="main-camera-container flex flex-col sm:flex-row justify-between items-start">
         <div class="main-container w-full max-w-7xl mr-0 mx-auto bg-white rounded-lg p-2 sm:p-8 sm:border border-gray-300 flex flex-col">
-            
+
             <!-- Header Section -->
             <header id="header" class="header-main flex items-center p-4 rounded-lg mb-6 relative bg-blue-100 border-l-4 border-blue-500">
                 <div class="left-bar"></div>
                 <div class="flex-1 flex items-center justify-between">
                     <h1 class="text-lg md:text-2xl font-medium tracking-tight">Skill Assessment</h1>
                     <div id="timer" class="flex items-center space-x-2 bg-gray-800 border border-gray-700 py-2 px-4 rounded-lg shadow-md text-white">
-                        
-                       
+
+
                     </div>
                 </div>
             </header>
@@ -199,22 +199,22 @@
     <p id="loader-message"></p>
 </div>
 
-            
+
 
             <!-- Content Section -->
             <div class="flex flex-col sm:flex-row gap-6 flex-1 overflow-hidden">
-                
+
                 <div class="w-full sm:w-[20%]  p-0 m-0 h-24 sm:h-full flex items-center">
                     <div id="skill-sidebar" class=" h-20 sm:h-full w-full px-4 sm:p-5 sm:border rounded-lg flex sm:flex-col  gap-3 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden">
                         {% for skill in skills %}
                         <div class="p-0 m-0 flex items-center">
-                            
+
                             <button class="skill-btn py-2 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-nowrap rounded-lg sm:mb-2 hover:opacity-90 transition-opacity duration-150" data-skill="{{ skill.id }}">{{ skill.name }}</button>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
-                
+
 
                 <!-- Main Content for Questions -->
                 <div class="w-full sm:w-3/4 flex flex-col overflow-hidden">
@@ -274,8 +274,8 @@
     </main>
 
     {% block footer %}
-    
-    
+
+
     {% endblock footer %}
     <footer class="text-gray-800 text-center p-3 mt-[5%]">
       <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
@@ -310,10 +310,10 @@
         </div>
       </div>
     </footer>
-    
+
 
    <script>
-    const jobId = "{{ job.id }}"; 
+    const jobId = "{{ job.id }}";
     var totalTime = {{ total_time }};
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -373,7 +373,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('Questions container not found');
             return;
         }
-        
+
         questionsContainer.innerHTML = questions.map(question => `
             <fieldset class="mb-2">
                 <legend class="font-semibold mb-2">${question.question}</legend>

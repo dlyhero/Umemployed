@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0057_alter_resume_cv'),
+        ("resume", "0057_alter_resume_cv"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='resume',
-            name='cv',
-            field=models.FileField(blank=True, default='resume/cv/Nyuydine_CV_Resume.pdf', upload_to='resume/cv'),
+            model_name="resume",
+            name="cv",
+            field=models.FileField(
+                blank=True, default="resume/cv/Nyuydine_CV_Resume.pdf", upload_to="resume/cv"
+            ),
         ),
     ]

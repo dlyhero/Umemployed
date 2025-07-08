@@ -1,14 +1,17 @@
-from django.db import models
-from users.models import User
-import uuid
-from django.contrib.auth import get_user_model
-from django_countries.fields import CountryField
-from django.conf import settings
 import random
 import string
+import uuid
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
+from django_countries.fields import CountryField
+
+from users.models import User
 
 User = get_user_model()
+
 
 class Company(models.Model):
     INDUSTRY_CHOICES = [
@@ -41,9 +44,9 @@ class Company(models.Model):
     industry = models.CharField(max_length=50, choices=INDUSTRY_CHOICES, null=True, blank=True)
     size = models.CharField(max_length=50, choices=SIZE_CHOICES, null=True, blank=True)
     location = models.CharField(max_length=100, null=True, blank=True)
-    founded = models.IntegerField(null=True, blank=True) 
+    founded = models.IntegerField(null=True, blank=True)
     website_url = models.URLField(max_length=200, null=True, blank=True)
-    country = CountryField(blank_label='(select country)') 
+    country = CountryField(blank_label="(select country)")
 
     # Contact Information
     contact_email = models.EmailField(null=True, blank=True)
@@ -57,8 +60,12 @@ class Company(models.Model):
     video_introduction = models.URLField(blank=True, null=True)
 
     # Media
-    logo = models.ImageField(upload_to="company/logos", blank=True, default="resume/images/default.jpg")
-    cover_photo = models.ImageField(upload_to="company/cover_photos", blank=True, default="resume/images/default.jpg")
+    logo = models.ImageField(
+        upload_to="company/logos", blank=True, default="resume/images/default.jpg"
+    )
+    cover_photo = models.ImageField(
+        upload_to="company/cover_photos", blank=True, default="resume/images/default.jpg"
+    )
 
     # Job Openings with CKEditor
     job_openings = CKEditor5Field(null=True, blank=True)
@@ -69,13 +76,15 @@ class Company(models.Model):
     def __str__(self):
         return self.name if self.name else "Unnamed Company"
 
+
 import pytz
+
 
 class Interview(models.Model):
     candidate = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
-    timezone = models.CharField(max_length=50, default='UTC')
+    timezone = models.CharField(max_length=50, default="UTC")
     meeting_link = models.URLField()
     room_id = models.CharField(max_length=8, unique=True, editable=False)
     note = models.TextField(null=True, blank=True)
@@ -88,7 +97,7 @@ class Interview(models.Model):
         super().save(*args, **kwargs)
 
     def generate_room_id(self):
-        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        return "".join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
     def __str__(self):
         return f"Interview with {self.candidate.username} on {self.date} at {self.time} ({self.timezone})"

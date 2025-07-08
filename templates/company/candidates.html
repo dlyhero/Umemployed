@@ -9,14 +9,14 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-        <script src="https://cdn.tailwindcss.com"></script> 
-        
+        <script src="https://cdn.tailwindcss.com"></script>
+
 
 
 {% endblock %}
 {% block content %}
 
-  
+
    <main class="container max-w-6xl mx-auto p-2 md:p-4 rounded-lg flex flex-col items-center ">
 
     <section class="w-full container max-w-6xl p-2">
@@ -136,7 +136,7 @@
                   <span class="text-lg font-semibold">Resume match: {{ application.matching_percentage }}% </span>
                   <span class="text-gray-600">Quiz Score: {{ application.quiz_score }}%</span>
                 </div>
-                
+
               </div>
               <div class="space-y-4"> <!-- Added space-y-4 for vertical spacing -->
                 <div class="text-base font-semibold">About Candidate:</div>
@@ -176,7 +176,7 @@
           <p class="text-gray-500">No candidates found.</p>
           </div>
         {% endif %}
-       
+
       </div>
       </div>
       </div>
@@ -210,12 +210,12 @@
         </div>
       </div>
     </div>
-    
+
    <!-- View Resume Button -->
     <div class="my-4">
-    <a id="candidateResumeLink" 
-       class="text-[#1e90ff] underline" 
-       target="_blank" 
+    <a id="candidateResumeLink"
+       class="text-[#1e90ff] underline"
+       target="_blank"
        title="View Resume">
        <i class="fas fa-eye"></i> View Resume
     </a>

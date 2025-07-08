@@ -2,19 +2,25 @@
 
 import django.core.validators
 from django.db import migrations, models
+
 import resume.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0058_alter_resume_cv'),
+        ("resume", "0058_alter_resume_cv"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='resumedoc',
-            name='file',
-            field=models.FileField(upload_to='resumes/', validators=[django.core.validators.FileExtensionValidator(['pdf', 'docx', 'txt']), resume.models.validate_file_mime_type]),
+            model_name="resumedoc",
+            name="file",
+            field=models.FileField(
+                upload_to="resumes/",
+                validators=[
+                    django.core.validators.FileExtensionValidator(["pdf", "docx", "txt"]),
+                    resume.models.validate_file_mime_type,
+                ],
+            ),
         ),
     ]

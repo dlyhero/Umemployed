@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("job", "0044_alter_job_salary_range"),
         ("resume", "0071_contactinfo_city_contactinfo_date_of_birth"),
@@ -45,9 +44,7 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 (
                     "job",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="job.job"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="job.job"),
                 ),
                 (
                     "user",

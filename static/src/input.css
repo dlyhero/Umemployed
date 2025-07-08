@@ -40,7 +40,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   cursor: pointer;
-  
+
 }
 .suggested-skills li {
   border: 1px solid #1e90ff;
@@ -99,11 +99,3 @@ body {
 .custom-checkbox:checked + .custom-label:after {
   transform: rotate(-45deg) scale(1);
 }
-
-
-
-
-
-
-
-

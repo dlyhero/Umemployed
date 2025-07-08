@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0006_remove_application_round1_completed_and_more'),
+        ("job", "0006_remove_application_round1_completed_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='total_scores',
+            model_name="application",
+            name="total_scores",
             field=models.JSONField(default=dict),
         ),
     ]

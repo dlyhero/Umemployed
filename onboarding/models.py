@@ -1,6 +1,9 @@
-from django.db import models
-from resume.models import Resume
 import random
+
+from django.db import models
+
+from resume.models import Resume
+
 
 class GeneralKnowledgeQuestion(models.Model):
     """
@@ -9,6 +12,7 @@ class GeneralKnowledgeQuestion(models.Model):
     Attributes:
         question (str): The text of the question.
     """
+
     question = models.CharField(max_length=200)
 
     def __str__(self):
@@ -20,6 +24,7 @@ class GeneralKnowledgeQuestion(models.Model):
         """
         return self.question
 
+
 class GeneralKnowledgeAnswer(models.Model):
     """
     Model to store general knowledge answers.
@@ -29,6 +34,7 @@ class GeneralKnowledgeAnswer(models.Model):
         answer (str): The text of the answer.
         is_correct (bool): Indicates if this answer is correct or not.
     """
+
     question = models.ForeignKey(GeneralKnowledgeQuestion, on_delete=models.CASCADE)
     answer = models.CharField(max_length=100)
     is_correct = models.BooleanField(default=False)
@@ -42,8 +48,11 @@ class GeneralKnowledgeAnswer(models.Model):
         """
         return self.answer
 
-from job.models import Application
+
 import uuid
+
+from job.models import Application
+
 
 class QuizResponse(models.Model):
     """
@@ -55,6 +64,7 @@ class QuizResponse(models.Model):
         application (ForeignKey): The application associated with this response.
         created_at (DateTimeField): The date and time when the response was created.
     """
+
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
     answer = models.ForeignKey(GeneralKnowledgeAnswer, on_delete=models.CASCADE)
     application = models.ForeignKey(Application, on_delete=models.CASCADE, default=None)
@@ -79,7 +89,9 @@ class QuizResponse(models.Model):
         """
         if not self.application:
             # If the application is not set, retrieve it based on the associated resume
-            self.application = Application.objects.filter(user=self.resume.user, has_completed_quiz=False).first()
+            self.application = Application.objects.filter(
+                user=self.resume.user, has_completed_quiz=False
+            ).first()
 
         # Save the QuizResponse instance
         super().save(*args, **kwargs)

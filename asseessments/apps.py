@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class AsseessmentsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'asseessments'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "asseessments"

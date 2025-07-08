@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0008_rename_years_workexperience_role_and_more'),
+        ("resume", "0008_rename_years_workexperience_role_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='education',
-            name='field_of_study',
+            model_name="education",
+            name="field_of_study",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

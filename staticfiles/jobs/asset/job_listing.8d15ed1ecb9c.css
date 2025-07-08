@@ -50,7 +50,7 @@
             font-size: 18px;
             color: #666;
         }
-      
+
         @media (max-width: 768px) {
             .carousel {
                 display: flex;
@@ -62,4 +62,3 @@
                 scroll-snap-align: start;
             }
         }
-       

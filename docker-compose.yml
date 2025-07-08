@@ -10,7 +10,7 @@ services:
     volumes:
       - .:/app
       - ./media:/app/media
-    ports:  
+    ports:
       - "${PORT:-8000}:${PORT:-8000}"
     environment:
       DEBUG: "0"
@@ -48,4 +48,3 @@ services:
       SITE_URL: https://umemployed-f6fdddfffmhjhjcj.canadacentral-01.azurewebsites.net
     depends_on:
       - web
-

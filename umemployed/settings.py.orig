@@ -4,7 +4,7 @@ import geopy
 import dotenv
 dotenv.load_dotenv()
 from decouple import config
-import dj_database_url  
+import dj_database_url
 import django_heroku
 import redis
 import logging
@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'resume', 
+    'resume',
     'company',
     'dashboard',
     'job',
@@ -63,16 +63,16 @@ INSTALLED_APPS = [
     'social_features',
     'messaging',
     'notifications',
-    
+
     'channels',
     'cities_light',
-    
+
     'django_ckeditor_5',
     'videochat',
-    
+
     'paypal.standard.ipn',
     'transactions',
-    'corsheaders',  
+    'corsheaders',
 ]
 
 
@@ -151,8 +151,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK='bootstrap5'
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', 
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
@@ -229,11 +229,11 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # options: "none", "optional", "mandat
 ACCOUNT_EMAIL_REQUIRED = True
 
 # Only allow login if the email is verified
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'switch_account'  # If user is logged in
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'switch_account' 
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'switch_account'
 
 LOGIN_URL='/accounts/user/login'
 LOGOUT_URL='logout'
@@ -349,12 +349,12 @@ OPENAI_API_KEY = config('OPENAI_API_KEY')
 SECRET_KEY = config('SECRET_KEY')
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
-PAYPAL_RECEIVER_EMAIL = 'business@umemployed.com' 
+PAYPAL_RECEIVER_EMAIL = 'business@umemployed.com'
 PAYPAL_TEST = True  # Set to False for live transactions
 
 
 # Stripe API Keys
-STRIPE_LIVE_MODE = True 
+STRIPE_LIVE_MODE = True
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='your-default-stripe-secret-key')
 STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='your-default-stripe-publishable-key')
 STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='your-default-stripe-webhook-secret')

@@ -4,20 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('company', '0012_alter_company_user'),
+        ("company", "0012_alter_company_user"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='company',
-            name='cover_photo',
-            field=models.ImageField(blank=True, default='resume/images/default.jpg', upload_to='company/cover_photos'),
+            model_name="company",
+            name="cover_photo",
+            field=models.ImageField(
+                blank=True, default="resume/images/default.jpg", upload_to="company/cover_photos"
+            ),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='logo',
-            field=models.ImageField(blank=True, default='resume/images/default.jpg', upload_to='company/logos'),
+            model_name="company",
+            name="logo",
+            field=models.ImageField(
+                blank=True, default="resume/images/default.jpg", upload_to="company/logos"
+            ),
         ),
     ]

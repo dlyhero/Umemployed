@@ -73,9 +73,9 @@
 
       <p class="mt-4 text-gray-600">All transactions are secure and encrypted.</p>
     </div>
-    
+
   </div>
-  
+
 
   {% block footer %}
 
@@ -88,19 +88,19 @@
       const paypalOption = document.getElementById('paypal')
       const proceedButton = document.getElementById('proceed-button')
       const paypalForm = document.getElementById('paypalForm')
-    
+
       stripeOption.addEventListener('click', function () {
         stripeOption.classList.add('border-[#1e90ff]', 'bg-blue-50')
         paypalOption.classList.remove('border-[#1e90ff]', 'bg-blue-50')
         proceedButton.disabled = false
       })
-    
+
       paypalOption.addEventListener('click', function () {
         paypalOption.classList.add('border-[#1e90ff]', 'bg-blue-50')
         stripeOption.classList.remove('border-[#1e90ff]', 'bg-blue-50')
         proceedButton.disabled = false
       })
-    
+
       proceedButton.addEventListener('click', function () {
         if (stripeOption.classList.contains('border-[#1e90ff]')) {
           // Handle Stripe payment

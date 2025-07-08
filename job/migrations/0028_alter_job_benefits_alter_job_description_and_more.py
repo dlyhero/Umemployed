@@ -3,31 +3,31 @@
 from django.db import migrations
 from django_ckeditor_5.fields import CKEditor5Field
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
-        ('job', '0027_alter_mcq_id_alter_skillquestion_id'),
+        ("job", "0027_alter_mcq_id_alter_skillquestion_id"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='job',
-            name='benefits',
-            field=CKEditor5Field(default='...'),
+            model_name="job",
+            name="benefits",
+            field=CKEditor5Field(default="..."),
         ),
         migrations.AlterField(
-            model_name='job',
-            name='description',
-            field=CKEditor5Field(default='We are looking for ...', max_length=1000),
+            model_name="job",
+            name="description",
+            field=CKEditor5Field(default="We are looking for ...", max_length=1000),
         ),
         migrations.AlterField(
-            model_name='job',
-            name='ideal_candidate',
+            model_name="job",
+            name="ideal_candidate",
             field=CKEditor5Field(),
         ),
         migrations.AlterField(
-            model_name='job',
-            name='responsibilities',
-            field=CKEditor5Field(default='You will be in charge of ...', max_length=1000),
+            model_name="job",
+            name="responsibilities",
+            field=CKEditor5Field(default="You will be in charge of ...", max_length=1000),
         ),
     ]

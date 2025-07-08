@@ -89,7 +89,7 @@
 
     /* Progress bar styles */
     .progress-container {
-        
+
         margin-top: 20px;
     }
 
@@ -142,32 +142,32 @@
             </div>
         </div>
 
-        <form id="upload-form" method="post" enctype="multipart/form-data" class="w-full h-full flex flex-col items-center">  
-            {% csrf_token %}  
-            <label id="drop-area" for="input-file" class="w-full text-black h-full border border-gray-300 flex flex-col justify-center items-center px-4 py-4 md:p-8 text-center bg-white rounded-xl mb-4">  
-                <div id="file-view" class="w-full h-full rounded-xl border-2 border-gray-300 border-dashed md:p-6 flex flex-col justify-center items-center"> 
+        <form id="upload-form" method="post" enctype="multipart/form-data" class="w-full h-full flex flex-col items-center">
+            {% csrf_token %}
+            <label id="drop-area" for="input-file" class="w-full text-black h-full border border-gray-300 flex flex-col justify-center items-center px-4 py-4 md:p-8 text-center bg-white rounded-xl mb-4">
+                <div id="file-view" class="w-full h-full rounded-xl border-2 border-gray-300 border-dashed md:p-6 flex flex-col justify-center items-center">
                     <i class="fas fa-cloud-upload-alt fa-3x mt-6 mb-4 text-[#1e90ff]"></i>
 
-                    <p class="text-lg">  
-                        Choose files to upload <br />  
-                        <span class="hidden md:block">or drag and drop here</span>  
-                    </p>  
-                    {% if resume_doc %}  
-                        <p class="mt-0" style="font-size: 12px; font-style: italic;"><strong>Current File:</strong> {{ resume_doc.file.name }}</p> <!-- Display the uploaded filename -->  
-                        <p class="mt-0" style="font-size: 12px; font-style: italic;"><strong>Last Updated:</strong> {{ resume_doc.updated_at }}</p>  
-                    {% else %}  
-                        <p class="mt-2">No resume uploaded yet.</p>  
-                    {% endif %}  
-                    <input id="input-file" type="file" name="file" class="hidden">  
-                </div>  
-            </label>  
-            <p id="file-name" class="mt-2 text-white text-center"></p> <!-- Filename Display -->  
-            <button type="submit" class="w-4/5 mx-auto border border-[#1e90ff] text-[#1e80ff] font-semibold py-2 px-4 rounded-full mt-4">  
-                Upload  
-            </button>  
-        </form>  
+                    <p class="text-lg">
+                        Choose files to upload <br />
+                        <span class="hidden md:block">or drag and drop here</span>
+                    </p>
+                    {% if resume_doc %}
+                        <p class="mt-0" style="font-size: 12px; font-style: italic;"><strong>Current File:</strong> {{ resume_doc.file.name }}</p> <!-- Display the uploaded filename -->
+                        <p class="mt-0" style="font-size: 12px; font-style: italic;"><strong>Last Updated:</strong> {{ resume_doc.updated_at }}</p>
+                    {% else %}
+                        <p class="mt-2">No resume uploaded yet.</p>
+                    {% endif %}
+                    <input id="input-file" type="file" name="file" class="hidden">
+                </div>
+            </label>
+            <p id="file-name" class="mt-2 text-white text-center"></p> <!-- Filename Display -->
+            <button type="submit" class="w-4/5 mx-auto border border-[#1e90ff] text-[#1e80ff] font-semibold py-2 px-4 rounded-full mt-4">
+                Upload
+            </button>
+        </form>
 
-        
+
 
     </div>
   </section>
@@ -203,8 +203,8 @@
     </div>
 </div>
 {% block footer %}
-    
-    
+
+
     {% endblock footer %}
     <footer class="text-gray-800 text-center p-3 mt-[5%]">
       <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Preview the file content  
+    // Preview the file content
 function previewFile(file) {
     const reader = new FileReader();
     reader.onload = function (e) {

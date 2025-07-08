@@ -15,7 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="{% static 'new_design/styles/general.css' %}" />
-  
+
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* Font Definitions */
@@ -26,9 +26,9 @@
       font-weight: 400;
       font-style: normal;
     }
-  
+
     /* Add other @font-face rules here */
-  
+
     /* Base Styles */
     body {
       font-family: 'Source Sans Pro', sans-serif;
@@ -36,65 +36,65 @@
       line-height: 1.6;
       background-color: rgb(229, 231, 235);
     }
-  
+
     h1, h2, h3 {
       font-family: 'Source Serif Pro', serif;
       font-weight: 600;
     }
-  
+
     p {
       font-family: 'Source Sans Pro', sans-serif;
       font-weight: 400;
     }
-  
+
     .light-text {
       font-weight: 300;
     }
-  
+
     .italic-text {
       font-style: italic;
     }
-  
+
     /* Responsive Scaling */
     :root {
       --base-font-size: 14px;
       --scale-factor: 0.9;
     }
-  
+
     @media (min-width: 768px) {
       :root {
         --scale-factor: 1.1;
       }
     }
-  
+
     @media (min-width: 1024px) {
       :root {
         --scale-factor: 1.2;
       }
     }
-  
+
     @media (min-width: 1440px) {
       :root {
         --scale-factor: 1.3;
       }
     }
-  
+
     h1 {
       font-size: clamp(1.2rem, 1.2rem * var(--scale-factor), 2rem);
     }
-  
+
     h2 {
       font-size: clamp(1rem, 1rem * var(--scale-factor), 1.5rem);
     }
-  
+
     p {
       font-size: clamp(0.85rem, 0.85rem * var(--scale-factor), 1.2rem);
     }
-  
+
     h3 {
       font-size: clamp(0.95rem, 0.95rem * var(--scale-factor), 1.3rem);
     }
-  
+
     /* Alerts */
     .alert {
       border-radius: 8px;
@@ -104,13 +104,13 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       position: relative;
     }
-  
+
     .alert.primary {
       background-color: #f0f9ff;
       border: 1px solid #b3e5fc;
       color: #0277bd;
     }
-  
+
     .alert .close-btn {
       position: absolute;
       top: 10px;
@@ -121,7 +121,7 @@
       font-size: 16px;
       cursor: pointer;
     }
-  
+
     /* Header and Mobile Menu */
     header {
       background-color: white;
@@ -130,7 +130,7 @@
       align-items: center;
       padding: 1rem;
     }
-  
+
     #mobileMenu {
       background-color: white;
       height: 100vh;
@@ -143,49 +143,49 @@
       width: 100%;
       transition: transform 0.3s ease-in-out;
     }
-  
+
     #mobileMenu.hidden {
       transform: translateX(-100%);
     }
-  
+
     #mobileMenu.visible {
       transform: translateX(0);
     }
-  
+
     /* Logo and SVG Text */
     :root {
       --logo-size: 50px;
       --svg-text-size: 40px;
     }
-  
+
     .logo {
       width: var(--logo-size);
       height: var(--logo-size);
     }
-  
+
     .svg-text {
       font-size: var(--svg-text-size);
     }
-  
+
     @media (max-width: 768px) {
       :root {
         --logo-size: 50px;
         --svg-text-size: 30px;
       }
     }
-  
+
     @media (max-width: 480px) {
       :root {
         --logo-size: 48px;
         --svg-text-size: 25px;
       }
     }
-  
+
     /* Transitions */
     button, a {
       transition: all 0.3s ease;
     }
-  
+
     button:hover, a:hover {
       opacity: 0.8;
       transform: scale(1.05);
@@ -204,9 +204,9 @@
       font-weight: 400;
       font-style: normal;
     }
-  
+
     /* Add other @font-face rules here */
-  
+
     /* Base Styles */
     body {
       font-family: 'Source Sans Pro', sans-serif;
@@ -214,65 +214,65 @@
       line-height: 1.6;
       background-color: rgb(229, 231, 235);
     }
-  
+
     h1, h2, h3 {
       font-family: 'Source Serif Pro', serif;
       font-weight: 600;
     }
-  
+
     p {
       font-family: 'Source Sans Pro', sans-serif;
       font-weight: 400;
     }
-  
+
     .light-text {
       font-weight: 300;
     }
-  
+
     .italic-text {
       font-style: italic;
     }
-  
+
     /* Responsive Scaling */
     :root {
       --base-font-size: 14px;
       --scale-factor: 0.9;
     }
-  
+
     @media (min-width: 768px) {
       :root {
         --scale-factor: 1.1;
       }
     }
-  
+
     @media (min-width: 1024px) {
       :root {
         --scale-factor: 1.2;
       }
     }
-  
+
     @media (min-width: 1440px) {
       :root {
         --scale-factor: 1.3;
       }
     }
-  
+
     h1 {
       font-size: clamp(1.2rem, 1.2rem * var(--scale-factor), 2rem);
     }
-  
+
     h2 {
       font-size: clamp(1rem, 1rem * var(--scale-factor), 1.5rem);
     }
-  
+
     p {
       font-size: clamp(0.85rem, 0.85rem * var(--scale-factor), 1.2rem);
     }
-  
+
     h3 {
       font-size: clamp(0.95rem, 0.95rem * var(--scale-factor), 1.3rem);
     }
-  
+
     /* Alerts */
     .alert {
       border-radius: 8px;
@@ -282,13 +282,13 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       position: relative;
     }
-  
+
     .alert.primary {
       background-color: #f0f9ff;
       border: 1px solid #b3e5fc;
       color: #0277bd;
     }
-  
+
     .alert .close-btn {
       position: absolute;
       top: 10px;
@@ -299,7 +299,7 @@
       font-size: 16px;
       cursor: pointer;
     }
-  
+
     /* Header and Mobile Menu */
     header {
       background-color: white;
@@ -308,7 +308,7 @@
       align-items: center;
       padding: 1rem;
     }
-  
+
     #mobileMenu {
       background-color: white;
       height: 100vh;
@@ -321,54 +321,54 @@
       width: 100%;
       transition: transform 0.3s ease-in-out;
     }
-  
+
     #mobileMenu.hidden {
       transform: translateX(-100%);
     }
-  
+
     #mobileMenu.visible {
       transform: translateX(0);
     }
-  
+
     /* Logo and SVG Text */
     :root {
       --logo-size: 50px;
       --svg-text-size: 40px;
     }
-  
+
     .logo {
       width: var(--logo-size);
       height: var(--logo-size);
     }
-  
+
     .svg-text {
       font-size: var(--svg-text-size);
     }
-  
+
     @media (max-width: 768px) {
       :root {
         --logo-size: 50px;
         --svg-text-size: 30px;
       }
     }
-  
+
     @media (max-width: 480px) {
       :root {
         --logo-size: 48px;
         --svg-text-size: 25px;
       }
     }
-  
+
     /* Transitions */
     button, a {
       transition: all 0.3s ease;
     }
-  
+
     button:hover, a:hover {
       opacity: 0.8;
       transform: scale(1.05);
     }
-    
+
   </style>
 </head>
 
@@ -879,7 +879,7 @@
   </script>
   <script type="text/javascript">
     const suggestedSkills = JSON.parse('{{ suggested_skills_json|escapejs }}')
-    const skills = JSON.parse('{{ skills_json|escapejs }}'); 
+    const skills = JSON.parse('{{ skills_json|escapejs }}');
   </script>
   <script type="module" src="{% static 'scripts/Profile.js' %}"></script>
   <script type="module" src="{% static 'data/user.js' %}"></script>

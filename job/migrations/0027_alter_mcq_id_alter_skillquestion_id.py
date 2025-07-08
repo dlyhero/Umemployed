@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0026_alter_applicantanswer_id_alter_application_id'),
+        ("job", "0026_alter_applicantanswer_id_alter_application_id"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='mcq',
-            name='id',
+            model_name="mcq",
+            name="id",
             field=models.BigAutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
-            model_name='skillquestion',
-            name='id',
+            model_name="skillquestion",
+            name="id",
             field=models.BigAutoField(primary_key=True, serialize=False),
         ),
     ]

@@ -10,7 +10,7 @@
     .job {
       position: relative; /* This is important for absolute positioning */
     }
-    
+
     .job .relative {
       position: absolute; /* Position the button container absolutely */
       right: 0; /* Align to the right */
@@ -183,7 +183,7 @@
                                     <span class="font-medium text-red-600">Incomplete</span>
                                 </div>
                             </div>
-                            
+
                         </div>
                 <div class="relative md:ml-4 mt-2 md:mt-0">
                   <button class="text-gray-600 hover:text-gray-800 focus:outline-none" onclick="toggleMenu('menu-{{ job.id }}')"><i class="fas fa-ellipsis-v"></i></button>
@@ -222,12 +222,12 @@
       const dropdown = document.getElementById('filter-dropdown')
       dropdown.classList.toggle('hidden')
     }
-    
+
     function toggleMobileFilter() {
       const filterForm = document.getElementById('filter-form')
       filterForm.classList.toggle('hidden')
     }
-    
+
     // Close dropdown if clicked outside
     window.onclick = function (event) {
       if (!event.target.matches('#desktop-filter-btn')) {
@@ -250,26 +250,26 @@
       { title: 'Product Designer', posted: '10 minutes ago', status: 'Public', type: 'Contract', proposals: 4, messaged: 2, hired: 1 }
       // Add more job items here...
     ]
-    
+
     // Pagination settings
     const itemsPerPage = 2
     let currentPage = 1
-    
+
     // Function to render job items
     function rnderJobs(page) {
       const jobList = document.querySelector('.job-list')
       jobList.innerHTML = '' // Clear current job items
-    
+
       const start = (page - 1) * itemsPerPage
       const end = start + itemsPerPage
       const paginatedJobs = jobs.slice(start, end)
-    
+
       paginatedJobs.forEach((job, index) => {
         jobList.innerHTML += `
-                
+
             `
       })
-    
+
       // Event listeners for opening/closing the modal
       document.querySelectorAll('.modal-toggle').forEach((btn) => {
         btn.addEventListener('click', function (e) {
@@ -279,7 +279,7 @@
           modal.classList.toggle('hidden')
         })
       })
-    
+
       // Close modals when clicking outside
       document.addEventListener('click', function (e) {
         document.querySelectorAll('.modal').forEach((modal) => {
@@ -288,7 +288,7 @@
           }
         })
       })
-    
+
       // Prevent modal from closing when clicking inside
       document.querySelectorAll('.modal').forEach((modal) => {
         modal.addEventListener('click', function (e) {
@@ -296,13 +296,13 @@
         })
       })
     }
-    
+
     // Function to update pagination controls
     function updatePaginationControls() {
       document.getElementById('prev-page').disabled = currentPage === 1
       document.getElementById('next-page').disabled = currentPage === Math.ceil(jobs.length / itemsPerPage)
     }
-    
+
     // Event Listeners for pagination buttons
     document.getElementById('prev-page').addEventListener('click', () => {
       if (currentPage > 1) {
@@ -311,7 +311,7 @@
         updatePaginationControls()
       }
     })
-    
+
     document.getElementById('next-page').addEventListener('click', () => {
       if (currentPage < Math.ceil(jobs.length / itemsPerPage)) {
         currentPage++
@@ -319,7 +319,7 @@
         updatePaginationControls()
       }
     })
-    
+
     // Initial render
     renderJobs(currentPage)
     updatePaginationControls()
@@ -333,7 +333,7 @@
         }
       })
     })
-    
+
     function toggleMenu(menuId) {
       const menu = document.getElementById(menuId)
       menu.classList.toggle('hidden')

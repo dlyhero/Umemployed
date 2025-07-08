@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('message', '0002_message_read'),
+        ("message", "0002_message_read"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='message',
-            options={'ordering': ['created']},
+            name="message",
+            options={"ordering": ["created"]},
         ),
     ]

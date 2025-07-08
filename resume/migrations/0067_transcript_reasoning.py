@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0066_transcript_delete_transcriptdoc'),
+        ("resume", "0066_transcript_delete_transcriptdoc"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transcript',
-            name='reasoning',
+            model_name="transcript",
+            name="reasoning",
             field=models.TextField(blank=True, null=True),
         ),
     ]

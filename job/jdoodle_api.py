@@ -1,5 +1,7 @@
-import requests
 import json
+
+import requests
+
 
 def execute_code(script, language, version_index):
     """
@@ -24,7 +26,7 @@ def execute_code(script, language, version_index):
         "clientSecret": client_secret,
         "script": script,
         "language": language,
-        "versionIndex": version_index
+        "versionIndex": version_index,
     }
 
     try:

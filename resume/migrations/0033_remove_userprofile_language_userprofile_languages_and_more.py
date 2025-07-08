@@ -4,29 +4,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0032_language'),
+        ("resume", "0032_language"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='userprofile',
-            name='language',
+            model_name="userprofile",
+            name="language",
         ),
         migrations.AddField(
-            model_name='userprofile',
-            name='languages',
-            field=models.ManyToManyField(related_name='users', to='resume.language'),
+            model_name="userprofile",
+            name="languages",
+            field=models.ManyToManyField(related_name="users", to="resume.language"),
         ),
         migrations.AlterField(
-            model_name='resume',
-            name='date_of_birth',
-            field=models.DateField(default='2024-07-26', null=True),
+            model_name="resume",
+            name="date_of_birth",
+            field=models.DateField(default="2024-07-26", null=True),
         ),
         migrations.AlterField(
-            model_name='userprofile',
-            name='country',
+            model_name="userprofile",
+            name="country",
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
     ]

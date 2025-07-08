@@ -1,6 +1,6 @@
-{% extends "resume/base.html" %} 
+{% extends "resume/base.html" %}
 {% load static %}
-{% load crispy_forms_tags %} 
+{% load crispy_forms_tags %}
 {% block search_bar %}
 {% endblock search_bar %}
 {% block content %}
@@ -23,7 +23,7 @@
                 <!-- Search Bar -->
                 <input type="text" placeholder="Search transactions..."
                     class="px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#1e90ff] w-48 sm:w-64">
-                
+
                 <!-- Filter Dropdown -->
                 <select class="px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#1e90ff]">
                     <option value="all">All</option>
@@ -98,12 +98,12 @@
             <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
           </div>
           <div class="text-sm ">
-                          
+
             <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300"
               >Privacy Policy
               </a
             >
-            
+
             <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
           </div>
         </div>

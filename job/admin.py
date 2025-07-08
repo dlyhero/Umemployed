@@ -1,6 +1,19 @@
 from atexit import register
+
 from django.contrib import admin
-from .models import Job, Application,MCQ,ApplicantAnswer, Shortlist,SkillQuestion,SavedJob,CompletedSkills,Shortlist, RetakeRequest
+
+from .models import (
+    MCQ,
+    ApplicantAnswer,
+    Application,
+    CompletedSkills,
+    Job,
+    RetakeRequest,
+    SavedJob,
+    Shortlist,
+    SkillQuestion,
+)
+
 # Register your models here.
 
 admin.site.register(Job)

@@ -4,82 +4,130 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ApplicantAnswer',
+            name="ApplicantAnswer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('answer', models.CharField(max_length=255)),
-                ('score', models.IntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("answer", models.CharField(max_length=255)),
+                ("score", models.IntegerField(default=0)),
             ],
         ),
         migrations.CreateModel(
-            name='Application',
+            name="Application",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quiz_score', models.IntegerField(default=0)),
-                ('matching_percentage', models.FloatField(default=0.0)),
-                ('overall_match_percentage', models.FloatField(default=0.0)),
-                ('has_completed_quiz', models.BooleanField(default=False)),
-                ('round1_completed', models.BooleanField(default=False)),
-                ('round2_completed', models.BooleanField(default=False)),
-                ('round3_completed', models.BooleanField(default=False)),
-                ('round1_score', models.IntegerField(default=0)),
-                ('round2_score', models.IntegerField(default=0)),
-                ('round3_score', models.IntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("quiz_score", models.IntegerField(default=0)),
+                ("matching_percentage", models.FloatField(default=0.0)),
+                ("overall_match_percentage", models.FloatField(default=0.0)),
+                ("has_completed_quiz", models.BooleanField(default=False)),
+                ("round1_completed", models.BooleanField(default=False)),
+                ("round2_completed", models.BooleanField(default=False)),
+                ("round3_completed", models.BooleanField(default=False)),
+                ("round1_score", models.IntegerField(default=0)),
+                ("round2_score", models.IntegerField(default=0)),
+                ("round3_score", models.IntegerField(default=0)),
             ],
         ),
         migrations.CreateModel(
-            name='Job',
+            name="Job",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('location', models.CharField(max_length=100)),
-                ('salary', models.PositiveBigIntegerField(default=35000)),
-                ('ideal_candidate', models.TextField()),
-                ('is_available', models.BooleanField(default=False)),
-                ('description', models.TextField(default='We are looking for ...', max_length=255)),
-                ('responsibilities', models.TextField(default='You will be in charge of ...', max_length=255)),
-                ('benefits', models.TextField(default='...')),
-                ('level', models.CharField(choices=[('Beginner', 'Beginner'), ('Mid', 'Mid'), ('Expert', 'Expert')], default='Beginner', max_length=10)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("location", models.CharField(max_length=100)),
+                ("salary", models.PositiveBigIntegerField(default=35000)),
+                ("ideal_candidate", models.TextField()),
+                ("is_available", models.BooleanField(default=False)),
+                ("description", models.TextField(default="We are looking for ...", max_length=255)),
+                (
+                    "responsibilities",
+                    models.TextField(default="You will be in charge of ...", max_length=255),
+                ),
+                ("benefits", models.TextField(default="...")),
+                (
+                    "level",
+                    models.CharField(
+                        choices=[("Beginner", "Beginner"), ("Mid", "Mid"), ("Expert", "Expert")],
+                        default="Beginner",
+                        max_length=10,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='MCQ',
+            name="MCQ",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('question', models.CharField(max_length=255)),
-                ('option_a', models.CharField(max_length=100)),
-                ('option_b', models.CharField(max_length=100)),
-                ('option_c', models.CharField(max_length=100)),
-                ('option_d', models.CharField(max_length=100)),
-                ('correct_answer', models.CharField(choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')], max_length=1)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("question", models.CharField(max_length=255)),
+                ("option_a", models.CharField(max_length=100)),
+                ("option_b", models.CharField(max_length=100)),
+                ("option_c", models.CharField(max_length=100)),
+                ("option_d", models.CharField(max_length=100)),
+                (
+                    "correct_answer",
+                    models.CharField(
+                        choices=[("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")], max_length=1
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='SavedJob',
+            name="SavedJob",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('saved_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("saved_at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.CreateModel(
-            name='SkillQuestion',
+            name="SkillQuestion",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('question', models.CharField(max_length=255)),
-                ('option_a', models.CharField(max_length=100)),
-                ('option_b', models.CharField(max_length=100)),
-                ('option_c', models.CharField(max_length=100)),
-                ('option_d', models.CharField(max_length=100)),
-                ('correct_answer', models.CharField(choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')], max_length=1)),
-                ('entry_level', models.CharField(blank=True, max_length=100, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("question", models.CharField(max_length=255)),
+                ("option_a", models.CharField(max_length=100)),
+                ("option_b", models.CharField(max_length=100)),
+                ("option_c", models.CharField(max_length=100)),
+                ("option_d", models.CharField(max_length=100)),
+                (
+                    "correct_answer",
+                    models.CharField(
+                        choices=[("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")], max_length=1
+                    ),
+                ),
+                ("entry_level", models.CharField(blank=True, max_length=100, null=True)),
             ],
         ),
     ]

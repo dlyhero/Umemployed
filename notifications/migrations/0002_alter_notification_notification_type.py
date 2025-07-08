@@ -4,15 +4,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('notifications', '0001_initial'),
+        ("notifications", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='notification',
-            name='notification_type',
-            field=models.CharField(choices=[('job_application', 'Job Application Received'), ('new_job_posted', 'New Job Posted'), ('endorsement', 'Endorsement Received'), ('interview_scheduled', 'Interview Scheduled'), ('account_alert', 'Account Security Alert'), ('upcoming_event', 'Upcoming Event Reminder'), ('new_message', 'New Message Received'), ('special_offer', 'Special Offer'), ('profile_updated', 'Profile Updated')], max_length=500),
+            model_name="notification",
+            name="notification_type",
+            field=models.CharField(
+                choices=[
+                    ("job_application", "Job Application Received"),
+                    ("new_job_posted", "New Job Posted"),
+                    ("endorsement", "Endorsement Received"),
+                    ("interview_scheduled", "Interview Scheduled"),
+                    ("account_alert", "Account Security Alert"),
+                    ("upcoming_event", "Upcoming Event Reminder"),
+                    ("new_message", "New Message Received"),
+                    ("special_offer", "Special Offer"),
+                    ("profile_updated", "Profile Updated"),
+                ],
+                max_length=500,
+            ),
         ),
     ]

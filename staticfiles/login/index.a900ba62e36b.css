@@ -41,7 +41,7 @@ body {
   font-weight: 600;
 }
 
-.courasol { 
+.courasol {
   border-right: 1px solid #e0dfdf82;
 }
 
@@ -152,7 +152,7 @@ footer{
 .article-list{
   display: flex;
   flex-wrap: wrap;
- 
+
 }
 li.article, li.job{
   font-size: 14px;
@@ -173,7 +173,7 @@ li.job:hover, li.article:hover{
 .job-link{
   padding: 0.5em 1em;
   color: var(--secondaryColor);
-  border-color: var(--secondaryColor); 
+  border-color: var(--secondaryColor);
 }
 
 #call-btn{
@@ -188,6 +188,3 @@ li.job:hover, li.article:hover{
   background-position: center;
   background-size: contain;
 }
-
-
-

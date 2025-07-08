@@ -148,10 +148,10 @@
         </svg>
         </a>
         {% endif %}
-       
+
       </div>
-    
-      <!-- Carousel Container 
+
+      <!-- Carousel Container
        -->
       <div
         class="image-container max-w-7xl
@@ -162,7 +162,7 @@
     </div>
   </section>
 
- 
+
  <section class="container max-w-7xl px-4 lg:px-6  mx-auto py-12">
     <!-- Section Header -->
     <div class="mb-8">
@@ -188,7 +188,7 @@
       </button>
     </div>
 
-    <!-- Job Cards Scrollable Container 
+    <!-- Job Cards Scrollable Container
     -->
     <div
     class="flex gap-2 sm:gap-4 overflow-x-auto px-4 mx-auto scroll-smooth snap-x snap-mandatory"
@@ -369,7 +369,7 @@
         <a href="{% url 'dashboard' %}" class="bg-gradient-to-r from-[#1e90ff] to-[#1e80ff] text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300">Create Profile</a>
       </div>
     </div>
-  
+
     <!-- Section 2: Your Employers -->
     <div class="image-section flex flex-col lg:flex-row-reverse items-center gap-12 mb-12 lg:mb-0">
       <img src="{% static 'new_design/images/employers.png' %}" alt="Your Employers" class="lg:w-1/2 w-full object-cover rounded-lg" />
@@ -379,7 +379,7 @@
         <a href="{% url 'home' %}" class="bg-gradient-to-r from-[#1e90ff] to-[#1e80ff] text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300">View More</a>
       </div>
     </div>
-  
+
     <!-- Section 3: How It Works -->
     <div class="image-section flex flex-col lg:flex-row items-center  gap-12 mb-12 lg:mb-0">
       <img src="{% static 'new_design/images/learn.png' %}" alt="How It Works" class="lg:w-1/2 w-full object-cover rounded-lg" />
@@ -391,8 +391,8 @@
     </div>
    </div>
   </section>
-  
-  
+
+
 
   <section class="border-b">
     <div class="container max-w-7xl
@@ -406,7 +406,7 @@
           Discover opportunities from companies actively hiring on our platform.
         </p>
       </div>
-  
+
       <!-- Companies List -->
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6">
         {% if featured_companies %} {% for company in featured_companies %}
@@ -422,7 +422,7 @@
                 <img src="{{company.logo.url}}" alt="{{company.name}} Logo" class="w-[60px] h-[60px] object-cover rounded-full">
               </div>
             </div>
-  
+
             <div class="h-[120px] group-hover:h-32 w-full duration-200 p-3 md:p-4 z-10">
               <div class="w-fit p-1.5 rounded-md bg-gray-100 flex flex-row items-center gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 text-[#1e90ff]">
@@ -444,7 +444,7 @@
         </a>
         {% endfor %} {% endif %}
       </div>
-  
+
       <!-- Call to Action Button -->
       <div class="mt-12 text-center">
         <a href="{% url 'company-list' %}" class="inline-block bg-[#1e90ff] hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full transition transform hover:scale-105 duration-300">
@@ -463,7 +463,7 @@
                 Expand Your Horizons
             </h2>
             <p class="mt-4 text-base sm:text-lg text-gray-700">
-                Discover job opportunities tailored to your skills and ambitions with UmEmployed. 
+                Discover job opportunities tailored to your skills and ambitions with UmEmployed.
                 <br class="hidden lg:inline">
                 Connect with companies actively seeking top talent for roles that match your background and goals.
             </p>
@@ -494,7 +494,7 @@
             <!-- Image Section -->
             <div class="relative w-full md:w-1/2 h-[300px] md:h-[440px] rounded-xl overflow-hidden border-[4px] border-white ring-1 ring-gray-200 mt-8 md:mt-0">
                 <img src="{% static 'new_design/images/newfeature.jpg' %}" alt="Empowering Careers" class="rounded-xl object-cover w-full h-full">
-                
+
             </div>
         </div>
     </div>
@@ -926,7 +926,7 @@
                       stroke-width: 1.2805;
                       stroke-miterlimit: 10;
                     "
-                    points="286.527,254.06 296.542,252.057 
+                    points="286.527,254.06 296.542,252.057
 					298.545,247.697 				"
                   />
                   <path
@@ -1457,7 +1457,7 @@
                   />
                   <polygon
                     style="fill: #e2e7ff"
-                    points="163.123,438.127 159.762,438.127 158.922,438.127 155.561,438.127 121.111,451.805 
+                    points="163.123,438.127 159.762,438.127 158.922,438.127 155.561,438.127 121.111,451.805
 					197.573,451.805 				"
                   />
                   <g>
@@ -1547,10 +1547,10 @@
     </div>
   </section>
 
-  
 
- 
- 
+
+
+
 </main>
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -1696,7 +1696,7 @@ function showNotification(message) {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible'); // Add the 'visible' class to trigger the animation
-        } 
+        }
       });
     }, options);
 

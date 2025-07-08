@@ -4,26 +4,38 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('transactions', '0001_initial'),
+        ("transactions", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transaction',
-            name='description',
+            model_name="transaction",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='transaction',
-            name='payment_method',
-            field=models.CharField(choices=[('paypal', 'PayPal'), ('stripe', 'Stripe')], default='paypal', max_length=20),
+            model_name="transaction",
+            name="payment_method",
+            field=models.CharField(
+                choices=[("paypal", "PayPal"), ("stripe", "Stripe")],
+                default="paypal",
+                max_length=20,
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='transaction',
-            name='status',
-            field=models.CharField(choices=[('pending', 'Pending'), ('completed', 'Completed'), ('failed', 'Failed'), ('refunded', 'Refunded')], default='pending', max_length=20),
+            model_name="transaction",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("pending", "Pending"),
+                    ("completed", "Completed"),
+                    ("failed", "Failed"),
+                    ("refunded", "Refunded"),
+                ],
+                default="pending",
+                max_length=20,
+            ),
         ),
     ]

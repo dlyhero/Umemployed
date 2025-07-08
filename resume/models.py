@@ -1,59 +1,71 @@
-from django.db import models
-from users.models import User
-from datetime import date
-from django.core.validators import FileExtensionValidator
-from django.core.exceptions import ValidationError
-import magic
-import uuid
 import os
+import uuid
+from datetime import date
 
-ext_validator = FileExtensionValidator(['pdf', 'docx', 'txt'])  
+import magic
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
+from django.db import models
+
+from users.models import User
+
+ext_validator = FileExtensionValidator(["pdf", "docx", "txt"])
+
 
 def validate_file_mime_type(file):
-    accept = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain', 'application/zip']
-    
+    accept = [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "text/plain",
+        "application/zip",
+    ]
+
     # Read first 1024 bytes to detect MIME type
     file_mime_type = magic.from_buffer(file.read(1024), mime=True)
-    print(f'File MIME type: {file_mime_type}')
-    
+    print(f"File MIME type: {file_mime_type}")
+
     # Reset file pointer after reading for MIME type detection
     file.seek(0)
-    
+
     # Extract file extension
     ext = os.path.splitext(file.name)[1].lower()
-    
+
     # Allow application/zip for .docx files
-    if ext == '.docx' and file_mime_type == 'application/zip':
-        file_mime_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    
+    if ext == ".docx" and file_mime_type == "application/zip":
+        file_mime_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
     # Raise validation error if MIME type is not allowed
     if file_mime_type not in accept:
-        raise ValidationError("Unsupported file type")  
-    
+        raise ValidationError("Unsupported file type")
+
+
 class SkillCategory(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
+
 class Skill(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skills', default='1')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="skills", default="1")
     name = models.CharField(max_length=100)
     categories = models.ManyToManyField(SkillCategory)  # Change ForeignKey to ManyToManyField
-    is_extracted = models.BooleanField(default=False)  # Indicates whether the skill was extracted from a job description
-
+    is_extracted = models.BooleanField(
+        default=False
+    )  # Indicates whether the skill was extracted from a job description
 
     def __str__(self):
         return self.name
 
-    
 
 class Education(models.Model):
     resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     institution_name = models.CharField(max_length=100)
-    field_of_study = models.CharField(max_length=255, null=True, blank=True, default='Not specified') 
-    degree = models.CharField(max_length=100, default='Not specified')  
+    field_of_study = models.CharField(
+        max_length=255, null=True, blank=True, default="Not specified"
+    )
+    degree = models.CharField(max_length=100, default="Not specified")
     graduation_year = models.IntegerField()
 
     def __str__(self):
@@ -61,7 +73,9 @@ class Education(models.Model):
 
 
 class Experience(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, related_name='experiences')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, default=None, related_name="experiences"
+    )
     resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
     company_name = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
@@ -83,13 +97,17 @@ class Resume(models.Model):
     date_of_birth = models.DateField(default=date.today, null=True)
     phone = models.CharField(max_length=20, null=True)
     description = models.TextField(max_length=500, default="I am a ...")
-    profile_image = models.ImageField(upload_to="resume/images", blank=True, default="resume/images/default.jpg")
-    cv = models.FileField(upload_to='resume/cv', default="resume/cv/Nyuydine_CV_Resume.pdf", blank=True)
+    profile_image = models.ImageField(
+        upload_to="resume/images", blank=True, default="resume/images/default.jpg"
+    )
+    cv = models.FileField(
+        upload_to="resume/cv", default="resume/cv/Nyuydine_CV_Resume.pdf", blank=True
+    )
     category = models.ForeignKey(SkillCategory, on_delete=models.CASCADE, null=True)
     skills = models.ManyToManyField(Skill)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         first_name = self.first_name if self.first_name else "Unknown"
         surname = self.surname if self.surname else "User"
@@ -97,8 +115,16 @@ class Resume(models.Model):
 
     def calculate_completion_percentage(self):
         required_fields = [
-            'first_name', 'surname', 'state', 'country', 'job_title', 
-            'date_of_birth', 'phone', 'description', 'profile_image', 'cv'
+            "first_name",
+            "surname",
+            "state",
+            "country",
+            "job_title",
+            "date_of_birth",
+            "phone",
+            "description",
+            "profile_image",
+            "cv",
         ]
         filled_fields = [field for field in required_fields if getattr(self, field)]
         completion_percentage = (len(filled_fields) / len(required_fields)) * 100
@@ -110,19 +136,28 @@ class Resume(models.Model):
             return "Congratulations! Your profile is 100% complete."
         else:
             return f"Your profile is {completion_percentage:.2f}% complete. Please complete the remaining fields."
-        
+
+
+import os
+
 from azure.storage.blob import BlobServiceClient
-import os      
-account_name = os.getenv('AZURE_ACCOUNT_NAME')
-account_key = os.getenv('AZURE_ACCOUNT_KEY')
-container_name = os.getenv('AZURE_CONTAINER')
+
+account_name = os.getenv("AZURE_ACCOUNT_NAME")
+account_key = os.getenv("AZURE_ACCOUNT_KEY")
+container_name = os.getenv("AZURE_CONTAINER")
+
+
 class ResumeDoc(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='resumes/', validators=[ext_validator, validate_file_mime_type])
+    file = models.FileField(
+        upload_to="resumes/", validators=[ext_validator, validate_file_mime_type]
+    )
     extracted_text = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    extracted_skills = models.ManyToManyField(Skill, blank=True, related_name='resume_extracted_skills')
+    extracted_skills = models.ManyToManyField(
+        Skill, blank=True, related_name="resume_extracted_skills"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -132,16 +167,18 @@ class ResumeDoc(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         # Upload the file to Azure Blob Storage
-        account_name = os.getenv('AZURE_ACCOUNT_NAME')
-        account_key = os.getenv('AZURE_ACCOUNT_KEY')
-        container_name = os.getenv('AZURE_CONTAINER')
+        account_name = os.getenv("AZURE_ACCOUNT_NAME")
+        account_key = os.getenv("AZURE_ACCOUNT_KEY")
+        container_name = os.getenv("AZURE_CONTAINER")
 
         connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};AccountKey={account_key};EndpointSuffix=core.windows.net"
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-        blob_client = blob_service_client.get_blob_client(container=container_name, blob=self.file.name)
+        blob_client = blob_service_client.get_blob_client(
+            container=container_name, blob=self.file.name
+        )
 
         try:
-            with open(self.file.path, 'rb') as data:
+            with open(self.file.path, "rb") as data:
                 blob_client.upload_blob(data, overwrite=True)
             print(f"File uploaded to Azure Blob Storage: {self.file.name}")
         except Exception as e:
@@ -149,14 +186,17 @@ class ResumeDoc(models.Model):
 
     def __str__(self):
         return f"Resume for {self.user.username}"
-    
+
+
 from django_countries.fields import CountryField
+
+
 class ContactInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=254)
     phone = models.CharField(max_length=20)
-    country = CountryField(default='US')  # Default to 'US'
+    country = CountryField(default="US")  # Default to 'US'
     job_title = models.ForeignKey(SkillCategory, on_delete=models.SET_NULL, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)  # New field
     city = models.CharField(max_length=100, null=True, blank=True)  # New field
@@ -179,9 +219,12 @@ class ContactInfo(models.Model):
 
     def __str__(self):
         return f"Contact Information for {self.user.username}"
-    
+
+
 class WorkExperience(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, related_name='work_experiences')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, default=None, related_name="work_experiences"
+    )
     resume = models.ForeignKey("Resume", on_delete=models.CASCADE, null=True)
     company_name = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
@@ -191,18 +234,20 @@ class WorkExperience(models.Model):
     def __str__(self):
         return f"{self.role} at {self.company_name}"
 
+
+import pycountry
 from django.db import models
 from django_countries.fields import CountryField
-import pycountry
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     country = CountryField()
     resume_analysis_attempts = models.PositiveIntegerField(default=0)
 
-
     def __str__(self):
         return f"{self.user.username}'s Profile"
+
 
 class Language(models.Model):
     name = models.CharField(max_length=100)
@@ -210,28 +255,27 @@ class Language(models.Model):
     def __str__(self):
         return self.name
 
+
 class UserLanguage(models.Model):
     PROFICIENCY_CHOICES = [
-        ('beginner', 'Beginner'),
-        ('intermediate', 'Intermediate'),
-        ('advanced', 'Advanced'),
-        ('native', 'Native'),
+        ("beginner", "Beginner"),
+        ("intermediate", "Intermediate"),
+        ("advanced", "Advanced"),
+        ("native", "Native"),
     ]
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     proficiency = models.CharField(
-        max_length=20,
-        choices=PROFICIENCY_CHOICES,
-        blank=True,
-        null=True
+        max_length=20, choices=PROFICIENCY_CHOICES, blank=True, null=True
     )
 
     def __str__(self):
         return f"{self.user_profile.user.username} - {self.language.name}"
-    
+
+
 class ResumeAnalysis(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='resume_analyses')
-    resume = models.ForeignKey(ResumeDoc, on_delete=models.CASCADE, related_name='analyses')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="resume_analyses")
+    resume = models.ForeignKey(ResumeDoc, on_delete=models.CASCADE, related_name="analyses")
     overall_score = models.FloatField()
     criteria_scores = models.JSONField()  # Stores scores for each criterion
     improvement_suggestions = models.JSONField()  # Stores improvement suggestions
@@ -239,10 +283,11 @@ class ResumeAnalysis(models.Model):
 
     def __str__(self):
         return f"Resume Analysis for {self.user.username} on {self.analyzed_at}"
-    
+
+
 class Transcript(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='transcripts/')
+    file = models.FileField(upload_to="transcripts/")
     extracted_text = models.TextField(blank=True, null=True)
     job_title = models.CharField(max_length=255, blank=True, null=True)  # New field
     reasoning = models.TextField(blank=True, null=True)
@@ -251,20 +296,24 @@ class Transcript(models.Model):
     def __str__(self):
         return f"Transcript for {self.user.username}"
 
+
 class ProfileView(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     viewed_at = models.DateTimeField(auto_now_add=True)
 
+
 class EnhancedResume(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    job = models.ForeignKey('job.Job', on_delete=models.CASCADE)
+    job = models.ForeignKey("job.Job", on_delete=models.CASCADE)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=50, blank=True, null=True)
     linkedin = models.URLField(blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     summary = models.TextField(blank=True, null=True)
-    skills = models.JSONField(blank=True, null=True)  # Dict of grouped/categorized skills, e.g. {"Programming Languages": [...], ...}
+    skills = models.JSONField(
+        blank=True, null=True
+    )  # Dict of grouped/categorized skills, e.g. {"Programming Languages": [...], ...}
     experience = models.JSONField(blank=True, null=True)  # List of jobs
     education = models.JSONField(blank=True, null=True)  # List of education entries
     certifications = models.JSONField(blank=True, null=True)
@@ -279,26 +328,29 @@ class EnhancedResume(models.Model):
     def __str__(self):
         return f"Enhanced Resume for {self.user.username} - Job {self.job.id}"
 
+
 class ResumeEnhancementTask(models.Model):
     """
     Model to track the status of resume enhancement tasks.
     """
+
     TASK_STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('processing', 'Processing'),
-        ('completed', 'Completed'),
-        ('failed', 'Failed'),
+        ("pending", "Pending"),
+        ("processing", "Processing"),
+        ("completed", "Completed"),
+        ("failed", "Failed"),
     ]
-    
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    job = models.ForeignKey('job.Job', on_delete=models.CASCADE)
+    job = models.ForeignKey("job.Job", on_delete=models.CASCADE)
     task_id = models.CharField(max_length=255, unique=True)
-    status = models.CharField(max_length=20, choices=TASK_STATUS_CHOICES, default='pending')
-    enhanced_resume = models.ForeignKey(EnhancedResume, on_delete=models.CASCADE, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=TASK_STATUS_CHOICES, default="pending")
+    enhanced_resume = models.ForeignKey(
+        EnhancedResume, on_delete=models.CASCADE, null=True, blank=True
+    )
     error_message = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return f"Task {self.task_id} - {self.status} - User: {self.user.username}"
-

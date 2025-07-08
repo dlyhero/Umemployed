@@ -5,15 +5,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('message', '0004_message_idd'),
+        ("message", "0004_message_idd"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='message',
-            name='replyTo',
-            field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, related_name='replies', to='message.message'),
+            model_name="message",
+            name="replyTo",
+            field=models.ForeignKey(
+                blank=True,
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_DEFAULT,
+                related_name="replies",
+                to="message.message",
+            ),
         ),
     ]

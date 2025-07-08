@@ -1,109 +1,109 @@
-{% extends 'resume/base.html' %}  
-{% load static %}  
-{% block custom_css %}  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />  
-  <script src="https://cdn.tailwindcss.com"></script>  
-  <link rel="stylesheet" href="{% static 'build/css/skills.css' %}">  
+{% extends 'resume/base.html' %}
+{% load static %}
+{% block custom_css %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{% static 'build/css/skills.css' %}">
 
-  <!-- Loader CSS -->  
-  <style>  
-    .loader .logo-loader img{  
-        width: 150px;  
-        height: 150px;  
-        border-radius: 50%;  
-        background-size: cover;  
-        margin: 0 auto;  
-    }  
+  <!-- Loader CSS -->
+  <style>
+    .loader .logo-loader img{
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-size: cover;
+        margin: 0 auto;
+    }
 
-    @keyframes blink {  
-        0%, 50%, 100% { opacity: 1; }  
-        25%, 75% { opacity: 0; }  
-    }  
+    @keyframes blink {
+        0%, 50%, 100% { opacity: 1; }
+        25%, 75% { opacity: 0; }
+    }
 
-    .blinking {  
-        animation: blink 6s infinite;  
-    }  
-  </style>  
-{% endblock %}  
-{% block content %}  
-<main class="flex-grow w-full px-2 md:px-3 lg:w-[100%] mx-auto">  
-    <div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50">  
-        <div class="loader">  
-            <div class="logo-loader blinking">  
-                <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">  
-            </div>  
-            <br><br>  
-            <span><p>Processing, this might take some seconds.</p></span>  
-        </div>  
-    </div>  
+    .blinking {
+        animation: blink 6s infinite;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+<main class="flex-grow w-full px-2 md:px-3 lg:w-[100%] mx-auto">
+    <div id="loader" class="hidden fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50">
+        <div class="loader">
+            <div class="logo-loader blinking">
+                <img style="no-repeat center center" src="{% static 'build/logo/logo-color.png' %}">
+            </div>
+            <br><br>
+            <span><p>Processing, this might take some seconds.</p></span>
+        </div>
+    </div>
 
-    <form id="select-skills-form" class="p-8 w-full max-w-4xl text-center mx-auto" method="POST">  
-        {% csrf_token %}  
-        <h1 class="text-2xl font-bold mb-4">Select skills that suit the role and we will get the questions ready!</h1>  
+    <form id="select-skills-form" class="p-8 w-full max-w-4xl text-center mx-auto" method="POST">
+        {% csrf_token %}
+        <h1 class="text-2xl font-bold mb-4">Select skills that suit the role and we will get the questions ready!</h1>
 
-        <ul id="skills-list" class="skills-list flex flex-wrap gap-2 justify-center">  
-            {% for skill in extracted_skills %}  
-                <li>  
-                    <input type="checkbox" id="skill-{{ skill.id }}" name="extracted_skills" value="{{ skill.id }}">  
-                    <label class="border border-gray-300" for="skill-{{ skill.id }}">{{ skill.name }}</label>  
-                </li>  
-            {% endfor %}  
-        </ul>  
+        <ul id="skills-list" class="skills-list flex flex-wrap gap-2 justify-center">
+            {% for skill in extracted_skills %}
+                <li>
+                    <input type="checkbox" id="skill-{{ skill.id }}" name="extracted_skills" value="{{ skill.id }}">
+                    <label class="border border-gray-300" for="skill-{{ skill.id }}">{{ skill.name }}</label>
+                </li>
+            {% endfor %}
+        </ul>
 
-        <label for="id_level">Level:</label>  
-        <select id="id_level" name="level">  
-            <option value="Beginner">Beginner</option>  
-            <option value="Mid">Mid</option>  
-            <option value="Expert">Expert</option>  
-        </select>  
+        <label for="id_level">Level:</label>
+        <select id="id_level" name="level">
+            <option value="Beginner">Beginner</option>
+            <option value="Mid">Mid</option>
+            <option value="Expert">Expert</option>
+        </select>
 
-        <button type="submit" id="submit-button" class="mt-6 px-4 py-2 bg-[#1e90ff] text-white rounded-lg hover:bg-blue-500 font-bold">Submit</button>  
-    </form>  
-</main>  
+        <button type="submit" id="submit-button" class="mt-6 px-4 py-2 bg-[#1e90ff] text-white rounded-lg hover:bg-blue-500 font-bold">Submit</button>
+    </form>
+</main>
 
-{% block footer %}  
-{% endblock footer %}  
-<footer class="text-gray-800 text-center p-3">  
-    <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">  
-        <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>  
-        <div class="flex space-x-4 items-center">  
-            <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300"><i class="fab fa-twitter text-black"></i></a>  
-            <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300"><i class="fab fa-linkedin text-black"></i></a>  
-            <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300"><i class="fab fa-facebook text-black"></i></a>  
-            <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">  
-        </div>  
-        <div class="text-sm">  
-            <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Privacy Policy</a>  
-            <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>  
-        </div>  
-    </div>  
-</footer>  
-<br><br><br><br><br><br><br>  
+{% block footer %}
+{% endblock footer %}
+<footer class="text-gray-800 text-center p-3">
+    <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
+        <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
+        <div class="flex space-x-4 items-center">
+            <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300"><i class="fab fa-twitter text-black"></i></a>
+            <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300"><i class="fab fa-linkedin text-black"></i></a>
+            <a href="{% url 'feature-not-implemented' %}" class="text-white hover:text-gray-300"><i class="fab fa-facebook text-black"></i></a>
+            <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
+        </div>
+        <div class="text-sm">
+            <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Privacy Policy</a>
+            <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
+        </div>
+    </div>
+</footer>
+<br><br><br><br><br><br><br>
 
-<!-- JavaScript for handling form submission and skill selection -->  
-<script>  
-document.addEventListener('DOMContentLoaded', function () {  
-    const selectSkillsForm = document.getElementById('select-skills-form');  
-    const loader = document.getElementById('loader');  
-    const skillCheckboxes = document.querySelectorAll('input[name="extracted_skills"]');  
-    
-    // Limit the number of selected skills  
-    skillCheckboxes.forEach(checkbox => {  
-        checkbox.addEventListener('change', () => {  
-            const selectedSkills = Array.from(skillCheckboxes).filter(checkbox => checkbox.checked);  
-            if (selectedSkills.length > 5) {  
-                checkbox.checked = false; // Uncheck the current checkbox  
-                alert('You are allowed to select only 5 most valuable skills.');  
-            }  
-        });  
-    });  
+<!-- JavaScript for handling form submission and skill selection -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const selectSkillsForm = document.getElementById('select-skills-form');
+    const loader = document.getElementById('loader');
+    const skillCheckboxes = document.querySelectorAll('input[name="extracted_skills"]');
 
-    selectSkillsForm.addEventListener('submit', function () {  
-        loader.classList.remove('hidden');  
-    });  
-});  
-</script>  
+    // Limit the number of selected skills
+    skillCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            const selectedSkills = Array.from(skillCheckboxes).filter(checkbox => checkbox.checked);
+            if (selectedSkills.length > 5) {
+                checkbox.checked = false; // Uncheck the current checkbox
+                alert('You are allowed to select only 5 most valuable skills.');
+            }
+        });
+    });
 
-<script src="{% static 'build/scripts/skills.js' %}"></script>  
-<script type="module" src="{% static 'build/scripts/dashboard.js' %}"></script>  
+    selectSkillsForm.addEventListener('submit', function () {
+        loader.classList.remove('hidden');
+    });
+});
+</script>
+
+<script src="{% static 'build/scripts/skills.js' %}"></script>
+<script type="module" src="{% static 'build/scripts/dashboard.js' %}"></script>
 {% endblock %}

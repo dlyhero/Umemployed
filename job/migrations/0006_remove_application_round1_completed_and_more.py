@@ -4,39 +4,38 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0005_alter_job_id'),
+        ("job", "0005_alter_job_id"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='application',
-            name='round1_completed',
+            model_name="application",
+            name="round1_completed",
         ),
         migrations.RemoveField(
-            model_name='application',
-            name='round1_score',
+            model_name="application",
+            name="round1_score",
         ),
         migrations.RemoveField(
-            model_name='application',
-            name='round2_completed',
+            model_name="application",
+            name="round2_completed",
         ),
         migrations.RemoveField(
-            model_name='application',
-            name='round2_score',
+            model_name="application",
+            name="round2_score",
         ),
         migrations.RemoveField(
-            model_name='application',
-            name='round3_completed',
+            model_name="application",
+            name="round3_completed",
         ),
         migrations.RemoveField(
-            model_name='application',
-            name='round3_score',
+            model_name="application",
+            name="round3_score",
         ),
         migrations.AddField(
-            model_name='application',
-            name='round_scores',
+            model_name="application",
+            name="round_scores",
             field=models.JSONField(default=dict),
         ),
     ]

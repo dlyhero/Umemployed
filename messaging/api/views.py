@@ -1,13 +1,16 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
-from messaging.models import Conversation, ChatMessage
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from .serializers import ConversationSerializer, ChatMessageSerializer
+from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from messaging.models import ChatMessage, Conversation
+
+from .serializers import ChatMessageSerializer, ConversationSerializer
 
 User = get_user_model()
+
 
 class ConversationListAPIView(APIView):
     """
@@ -27,6 +30,7 @@ class ConversationListAPIView(APIView):
         }
     ]
     """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -35,6 +39,7 @@ class ConversationListAPIView(APIView):
         ) | Conversation.objects.filter(participant2=request.user)
         serializer = ConversationSerializer(conversations, many=True)
         return Response(serializer.data)
+
 
 class ChatMessageListAPIView(APIView):
     """
@@ -63,6 +68,7 @@ class ChatMessageListAPIView(APIView):
         }
     ]
     """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request, conversation_id):
@@ -70,7 +76,7 @@ class ChatMessageListAPIView(APIView):
         if request.user not in [conversation.participant1, conversation.participant2]:
             return Response({"error": "Unauthorized"}, status=403)
 
-        messages = ChatMessage.objects.filter(conversation=conversation).order_by('timestamp')
+        messages = ChatMessage.objects.filter(conversation=conversation).order_by("timestamp")
         serializer = ChatMessageSerializer(messages, many=True)
         return Response(serializer.data)
 
@@ -79,7 +85,7 @@ class ChatMessageListAPIView(APIView):
         if request.user not in [conversation.participant1, conversation.participant2]:
             return Response({"error": "Unauthorized"}, status=403)
 
-        text = request.data.get('text')
+        text = request.data.get("text")
         if not text:
             return Response({"error": "Message text is required"}, status=400)
 
@@ -87,6 +93,7 @@ class ChatMessageListAPIView(APIView):
             conversation=conversation, sender=request.user, text=text
         )
         return Response({"message": "Message sent successfully"}, status=201)
+
 
 class StartConversationAPIView(APIView):
     """
@@ -105,10 +112,11 @@ class StartConversationAPIView(APIView):
         "conversation_id": 1
     }
     """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        user_id = request.data.get('user_id')
+        user_id = request.data.get("user_id")
         if not user_id:
             return Response({"error": "User ID is required"}, status=400)
 
@@ -117,6 +125,7 @@ class StartConversationAPIView(APIView):
             participant1=request.user, participant2=other_user
         )
         return Response({"conversation_id": conversation.id}, status=201)
+
 
 class SearchInboxAPIView(APIView):
     """
@@ -138,20 +147,25 @@ class SearchInboxAPIView(APIView):
         }
     ]
     """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        query = request.query_params.get('query', '').strip()
+        query = request.query_params.get("query", "").strip()
         if not query:
             return Response({"error": "Search query is required."}, status=400)
 
         conversations = Conversation.objects.filter(
-            (Q(participant1__username__icontains=query) | Q(participant2__username__icontains=query)) &
-            (Q(participant1=request.user) | Q(participant2=request.user))
+            (
+                Q(participant1__username__icontains=query)
+                | Q(participant2__username__icontains=query)
+            )
+            & (Q(participant1=request.user) | Q(participant2=request.user))
         )
 
         serializer = ConversationSerializer(conversations, many=True)
         return Response(serializer.data)
+
 
 class MarkMessagesAsReadAPIView(APIView):
     """
@@ -166,6 +180,7 @@ class MarkMessagesAsReadAPIView(APIView):
         "message": "Messages marked as read."
     }
     """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, conversation_id):
@@ -173,8 +188,11 @@ class MarkMessagesAsReadAPIView(APIView):
         if request.user not in [conversation.participant1, conversation.participant2]:
             return Response({"error": "Unauthorized"}, status=403)
 
-        ChatMessage.objects.filter(conversation=conversation, sender__ne=request.user, is_read=False).update(is_read=True)
+        ChatMessage.objects.filter(
+            conversation=conversation, sender__ne=request.user, is_read=False
+        ).update(is_read=True)
         return Response({"message": "Messages marked as read."}, status=200)
+
 
 class DeleteConversationAPIView(APIView):
     """
@@ -189,6 +207,7 @@ class DeleteConversationAPIView(APIView):
         "message": "Conversation deleted successfully."
     }
     """
+
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, conversation_id):
@@ -199,7 +218,10 @@ class DeleteConversationAPIView(APIView):
         conversation.delete()
         return Response({"message": "Conversation deleted successfully."}, status=200)
 
+
 from messaging.models import MessageReaction
+
+
 class MessageReactionAPIView(APIView):
     """
     Endpoint to add or remove a reaction to a message.
@@ -217,11 +239,12 @@ class MessageReactionAPIView(APIView):
     - 201 Created (POST): Confirms the reaction was added successfully.
     - 200 OK (DELETE): Confirms the reaction was removed successfully.
     """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, message_id):
         message = get_object_or_404(ChatMessage, id=message_id)
-        reaction = request.data.get('reaction')
+        reaction = request.data.get("reaction")
         if not reaction:
             return Response({"error": "Reaction is required."}, status=400)
 
@@ -234,7 +257,7 @@ class MessageReactionAPIView(APIView):
 
     def delete(self, request, message_id):
         message = get_object_or_404(ChatMessage, id=message_id)
-        reaction = request.data.get('reaction')
+        reaction = request.data.get("reaction")
         if not reaction:
             return Response({"error": "Reaction is required."}, status=400)
 
@@ -245,6 +268,7 @@ class MessageReactionAPIView(APIView):
             reaction_obj.delete()
             return Response({"message": "Reaction removed successfully."}, status=200)
         return Response({"error": "Reaction not found."}, status=404)
+
 
 class UpdateMessageAPIView(APIView):
     """
@@ -259,17 +283,19 @@ class UpdateMessageAPIView(APIView):
     Response:
     - 200 OK: Confirms the message was updated successfully.
     """
+
     permission_classes = [IsAuthenticated]
 
     def put(self, request, message_id):
         message = get_object_or_404(ChatMessage, id=message_id, sender=request.user)
-        new_text = request.data.get('text')
+        new_text = request.data.get("text")
         if not new_text:
             return Response({"error": "Message text is required."}, status=400)
 
         message.text = new_text
         message.save()
         return Response({"message": "Message updated successfully."}, status=200)
+
 
 class DeleteMessageAPIView(APIView):
     """
@@ -280,12 +306,14 @@ class DeleteMessageAPIView(APIView):
     Response:
     - 200 OK: Confirms the message was deleted successfully.
     """
+
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, message_id):
         message = get_object_or_404(ChatMessage, id=message_id, sender=request.user)
         message.delete()
         return Response({"message": "Message deleted successfully."}, status=200)
+
 
 class BulkDeleteMessagesAPIView(APIView):
     """
@@ -300,6 +328,7 @@ class BulkDeleteMessagesAPIView(APIView):
     Response:
     - 200 OK: Confirms the messages were deleted successfully.
     """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, conversation_id):
@@ -307,7 +336,7 @@ class BulkDeleteMessagesAPIView(APIView):
         if request.user not in [conversation.participant1, conversation.participant2]:
             return Response({"error": "Unauthorized"}, status=403)
 
-        message_ids = request.data.get('message_ids', [])
+        message_ids = request.data.get("message_ids", [])
         if not message_ids:
             return Response({"error": "Message IDs are required."}, status=400)
 

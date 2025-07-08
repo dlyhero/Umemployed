@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0062_resumeanalysis'),
+        ("resume", "0062_resumeanalysis"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='resume_analysis_attempts',
+            model_name="userprofile",
+            name="resume_analysis_attempts",
             field=models.PositiveIntegerField(default=0),
         ),
     ]

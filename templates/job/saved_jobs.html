@@ -7,8 +7,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-        <script src="https://cdn.tailwindcss.com"></script> 
-        
+        <script src="https://cdn.tailwindcss.com"></script>
+
         <style>
             /* Hide scrollbar for a cleaner look */
         .scrollbar-hide::-webkit-scrollbar {
@@ -18,14 +18,14 @@
             -ms-overflow-style: none; /* IE and Edge */
             scrollbar-width: none; /* Firefox */
         }
-        
+
         </style>
 
 {% endblock %}
 {% block content %}
 <!-- Main Content -->
     <main class="container bg-white mx-auto max-w-7xl p-4 md:mt-2 mb-2 rounded-lg border border-gray-300">
-       
+
         <section class="bg-white rounded-lg border border-gray-300 shadow-sm p-4 my-5">
             <ul class="flex justify-start space-x-4 border-b border-gray-200 overflow-x-auto scrollbar-hide">
               <li>
@@ -53,7 +53,7 @@
               {% endif %}
             </ul>
           </section>
-        
+
 
         <section id="search-ctn-mobile" class="my-5 lg:hidden p-2">
             <div
@@ -114,7 +114,7 @@
                         Filters
                     </button>
                 </div>
-                
+
             </div>
         </section>
 
@@ -207,7 +207,7 @@
                     </h4>
                     <p class="text-sm text-gray-500">Saved {{job.created_at}}</p>
                     <div class="text-sm text-gray-600 mt-1">
-                        <span class="font-medium text-green-600 capitalize">{{job.job_location_type}}</span> 
+                        <span class="font-medium text-green-600 capitalize">{{job.job_location_type}}</span>
                     </div>
                 </div>
                 <div class="flex justify-end items-start mt-2 md:mt-0 relative w-full sm:w-fit space-x-4 items-center">
@@ -288,7 +288,7 @@
             const filterSection = document.getElementById('filters-section');
             filterSection.classList.toggle('hidden');
         }
-        
+
        // Function to render job items
 function rnderJobs(page) {
     const jobList = document.querySelector('.job-list');
@@ -300,7 +300,7 @@ function rnderJobs(page) {
 
     paginatedJobs.forEach((job, index) => {
         jobList.innerHTML += `
-            
+
         `;
     });
 
@@ -336,4 +336,3 @@ function rnderJobs(page) {
 
 
 {% endblock %}
-

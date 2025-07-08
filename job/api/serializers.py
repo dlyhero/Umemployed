@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from ..models import Job, Application, SavedJob, Company
+
+from ..models import Application, Company, Job, SavedJob
+
 
 class JobSerializer(serializers.ModelSerializer):
     is_saved = serializers.SerializerMethodField()
@@ -11,32 +13,48 @@ class JobSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
         fields = [
-            'id', 'title', 'hire_number', 'job_location_type', 'job_type', 
-            'location', 'salary_range', 'category', 'description', 
-            'responsibilities', 'benefits', 'requirements', 'level', 
-            'experience_levels', 'weekly_ranges', 'shifts', 'created_at', 
-            'is_saved', 'is_applied', 'company', 'has_started'
+            "id",
+            "title",
+            "hire_number",
+            "job_location_type",
+            "job_type",
+            "location",
+            "salary_range",
+            "category",
+            "description",
+            "responsibilities",
+            "benefits",
+            "requirements",
+            "level",
+            "experience_levels",
+            "weekly_ranges",
+            "shifts",
+            "created_at",
+            "is_saved",
+            "is_applied",
+            "company",
+            "has_started",
         ]
         extra_kwargs = {
-            'description': {'required': False},
-            'responsibilities': {'required': False},
-            'benefits': {'required': False},
-            'requirements': {'required': False},
-            'level': {'required': False},
-            'experience_levels': {'required': False},
-            'weekly_ranges': {'required': False},
-            'shifts': {'required': False},
+            "description": {"required": False},
+            "responsibilities": {"required": False},
+            "benefits": {"required": False},
+            "requirements": {"required": False},
+            "level": {"required": False},
+            "experience_levels": {"required": False},
+            "weekly_ranges": {"required": False},
+            "shifts": {"required": False},
         }
 
     def get_is_saved(self, obj):
-        request = self.context.get('request', None)
-        if request and hasattr(request, 'user') and request.user.is_authenticated:
+        request = self.context.get("request", None)
+        if request and hasattr(request, "user") and request.user.is_authenticated:
             return SavedJob.objects.filter(user=request.user, job=obj).exists()
         return False
 
     def get_is_applied(self, obj):
-        request = self.context.get('request', None)
-        if request and hasattr(request, 'user') and request.user.is_authenticated:
+        request = self.context.get("request", None)
+        if request and hasattr(request, "user") and request.user.is_authenticated:
             return Application.objects.filter(user=request.user, job=obj).exists()
         return False
 
@@ -63,25 +81,24 @@ class JobSerializer(serializers.ModelSerializer):
         }
 
     def get_has_started(self, obj):
-        request = self.context.get('request', None)
-        if request and hasattr(request, 'user') and request.user.is_authenticated:
+        request = self.context.get("request", None)
+        if request and hasattr(request, "user") and request.user.is_authenticated:
             application = Application.objects.filter(user=request.user, job=obj).first()
             return application.has_started if application else False
         return False
 
     def get_requirements(self, obj):
         # Return list of {id, name} for each requirement (skill)
-        return [
-            {"id": skill.id, "name": skill.name}
-            for skill in obj.requirements.all()
-        ]
+        return [{"id": skill.id, "name": skill.name} for skill in obj.requirements.all()]
+
 
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
-        fields = ['id', 'job', 'quiz_score', 'matching_percentage', 'status', 'created_at']
+        fields = ["id", "job", "quiz_score", "matching_percentage", "status", "created_at"]
+
 
 class SavedJobSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedJob
-        fields = ['id', 'job', 'saved_at']
+        fields = ["id", "job", "saved_at"]

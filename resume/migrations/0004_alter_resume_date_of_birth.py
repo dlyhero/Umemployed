@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0003_alter_resume_id_alter_resumedoc_id'),
+        ("resume", "0003_alter_resume_id_alter_resumedoc_id"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='resume',
-            name='date_of_birth',
-            field=models.DateField(default='2024-05-01', null=True),
+            model_name="resume",
+            name="date_of_birth",
+            field=models.DateField(default="2024-05-01", null=True),
         ),
     ]

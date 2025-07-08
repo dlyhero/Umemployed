@@ -4,20 +4,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0007_alter_user_is_applicant'),
+        ("users", "0007_alter_user_is_applicant"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='deleted_at',
+            model_name="user",
+            name="deleted_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='user',
-            name='is_deleted',
-            field=models.BooleanField(default=False, help_text='Designates whether this user has been deleted'),
+            model_name="user",
+            name="is_deleted",
+            field=models.BooleanField(
+                default=False, help_text="Designates whether this user has been deleted"
+            ),
         ),
     ]

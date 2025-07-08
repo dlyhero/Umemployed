@@ -231,55 +231,54 @@ article a:hover {
     margin: 0 auto;
     padding: 10px;
   }
-  
+
   header {
     padding: 5px;
   }
-  
+
   header h1 {
     font-size: 20px;
   }
-  
+
   header nav a {
     margin-right: 5px;
   }
-  
+
   header img {
     width: 40px;
     height: 40px;
   }
-  
+
   .banner {
     height: 300px;
   }
-  
+
   .banner .hero-content {
     flex-direction: column;
   }
-  
+
   .banner .hero-content img {
     width: 100%;
     height: auto;
     border-radius: 0;
   }
-  
+
   .banner .hero-content .text-container {
     padding: 10px;
     border-radius: 0;
   }
-  
+
   .banner .hero-content h2 {
     font-size: 18px;
   }
-  
+
   .banner .hero-content p {
     font-size: 14px;
     margin-bottom: 10px;
   }
-  
+
   .grid {
     grid-template-columns: repeat(2, 1fr);
     height: auto;
   }
 }
-  

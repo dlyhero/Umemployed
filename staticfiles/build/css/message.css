@@ -1,4 +1,4 @@
- 
+
   html,
   body {
     padding: 0;
@@ -6,7 +6,7 @@
     overflow: hidden;
     height: 100%;
   }
- 
+
 
   #chat-messages {
     max-height: calc(100vh - 160px);
@@ -21,12 +21,12 @@
   #message-sidebar::-webkit-scrollbar {
     width: 1px;
   }
- 
+
   body {
     padding: env(safe-area-inset-top) env(safe-area-inset-right)
       env(safe-area-inset-bottom) env(safe-area-inset-left);
     box-sizing: border-box;
-  
+
     height: calc(var(--vh, 1vh) * 100);
   }
 
@@ -36,29 +36,29 @@
         opacity: 0;
         transform: translateX(-50%);
       }
-  
+
       100% {
         opacity: 1;
         transform: translateX(0);
       }
     }
-  
+
     @keyframes slide-in-right {
       0% {
         opacity: 0;
         transform: translateX(50%);
       }
-  
+
       100% {
         opacity: 1;
         transform: translateX(0);
       }
     }
-  
+
     .animate-slide-in-left {
       animation: slide-in-left 0.5s ease-out;
     }
-  
+
     .animate-slide-in-right {
       animation: slide-in-right 0.5s ease-out;
     }

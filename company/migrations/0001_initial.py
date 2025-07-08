@@ -4,22 +4,32 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Company',
+            name="Company",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(blank=True, max_length=100, null=True)),
-                ('logo', models.ImageField(blank=True, default='media/resume/images/PXL_20231104_141008232.MP.jpg', upload_to='resume/images')),
-                ('est_date', models.PositiveIntegerField(blank=True, null=True)),
-                ('city', models.CharField(blank=True, max_length=50, null=True)),
-                ('state', models.CharField(blank=True, max_length=100, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("name", models.CharField(blank=True, max_length=100, null=True)),
+                (
+                    "logo",
+                    models.ImageField(
+                        blank=True,
+                        default="media/resume/images/PXL_20231104_141008232.MP.jpg",
+                        upload_to="resume/images",
+                    ),
+                ),
+                ("est_date", models.PositiveIntegerField(blank=True, null=True)),
+                ("city", models.CharField(blank=True, max_length=50, null=True)),
+                ("state", models.CharField(blank=True, max_length=100, null=True)),
             ],
         ),
     ]

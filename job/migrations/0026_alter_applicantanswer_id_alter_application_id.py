@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0025_alter_applicantanswer_application'),
+        ("job", "0025_alter_applicantanswer_application"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='applicantanswer',
-            name='id',
+            model_name="applicantanswer",
+            name="id",
             field=models.BigAutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
-            model_name='application',
-            name='id',
+            model_name="application",
+            name="id",
             field=models.BigAutoField(primary_key=True, serialize=False),
         ),
     ]

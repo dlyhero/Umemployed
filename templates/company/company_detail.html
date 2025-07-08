@@ -9,7 +9,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-<script src="https://cdn.tailwindcss.com"></script> 
+<script src="https://cdn.tailwindcss.com"></script>
 {% endblock %}
 
 {% block content %}
@@ -44,23 +44,23 @@
                     <!-- Right: Actions -->
                     <div class="flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-6">
                         {% if is_owner %}
-                        <a href="{% url 'update_company' company.id %}" 
+                        <a href="{% url 'update_company' company.id %}"
                            class="bg-white text-[#1e90ff] font-semibold px-5 py-3 rounded-full hover:bg-gray-100 flex items-center space-x-2">
                             <span>Edit Company</span> <i class="fas fa-edit"></i>
                         </a>
                         {% else %}
-                        <button 
+                        <button
                            class="border border-[#1e90ff] text-[#1e90ff] font-semibold px-5 py-3 rounded-full hover:bg-gray-100 flex items-center space-x-2">
                             <span>Follow</span> <i class="fas fa-plus"></i>
                         </button>
                         {% endif %}
-                        <a href="{{ company.website_url }}" 
+                        <a href="{{ company.website_url }}"
                            class="text-white font-medium px-5 py-3 rounded-full bg-[#1e90ff] hover:bg-[#1e90aa] flex items-center space-x-2">
                             <span>Visit Website</span> <i class="fas fa-external-link-alt"></i>
                         </a>
                     </div>
                 </div>
-                
+
                 <!-- Company Overview Card -->
                 <div class="bg-white p-8 border border-gray-300 rounded-lg mt-2">
                     <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6 flex items-center">
@@ -76,7 +76,7 @@
                         <p class="text-gray-700">{{ company.description|safe }}</p>
                     </div>
                     <!-- Mission -->
-                    
+
                     <div class="text-xl p-4 border-2 border-dashed rounded-lg mt-2">
                         <h3 class="font-bold text-gray-900 mb-4 flex items-center">
                             <i class="fas fa-bullseye text-blue-500 text-xl mr-2"></i>
@@ -106,7 +106,7 @@
                             </div>
                             <h3 class="text-2xl font-semibold text-gray-800 mb-4">Culture & Work Environment</h3>
                             <p class="text-gray-700 leading-relaxed">
-                                At <span class="font-bold">{{company.name}}</span>, we foster a culture of innovation, collaboration, and respect. 
+                                At <span class="font-bold">{{company.name}}</span>, we foster a culture of innovation, collaboration, and respect.
                                 Our team members enjoy flexible working conditions and continuous learning opportunities.
                             </p>
                         </div>
@@ -118,7 +118,7 @@
                             </div>
                             <h3 class="text-2xl font-semibold text-gray-800 mb-4">Sustainability Initiatives</h3>
                             <p class="text-gray-700 leading-relaxed">
-                                We are committed to environmental sustainability. Through various initiatives, we aim to reduce our carbon footprint 
+                                We are committed to environmental sustainability. Through various initiatives, we aim to reduce our carbon footprint
                                 and contribute positively to the planet.
                             </p>
                         </div>
@@ -165,7 +165,7 @@
                                         <span>Already Applied</span>
                                     </span>
                                     {% else %}
-                                    <a href="{% url 'job:job_details' job.id %}" 
+                                    <a href="{% url 'job:job_details' job.id %}"
                                        class="inline-block border border-[#1e90ff] text-[#1e90ff] py-2 px-5 mt-2 rounded-full text-sm font-semibold transition-colors duration-200 flex items-center space-x-2">
                                         <span>Apply Now</span> <i class="fas fa-arrow-right"></i>
                                     </a>
@@ -176,14 +176,14 @@
                             <!-- Footer for Owners (Edit/Delete Actions) -->
                             {% if is_owner %}
                             <div class="border-t border-gray-200 bg-gray-100 p-4 flex justify-between items-center">
-                                <a href="{% url 'view_my_jobs' company.id %}" 
+                                <a href="{% url 'view_my_jobs' company.id %}"
                                    class="text-gray-500 font-medium text-sm hover:underline flex items-center space-x-2">
                                    <i class="fa-solid fa-edit"></i>
                                    <span>Edit</span>
                                 </a>
                                 <form action="{% url 'view_my_jobs' company.id %}" method="POST">
                                     {% csrf_token %}
-                                    <button type="submit" 
+                                    <button type="submit"
                                             class="text-gray-500 font-medium text-sm hover:underline flex items-center space-x-2">
                                         <i class="fa-solid fa-trash-alt"></i>
                                         <span>Delete</span>
@@ -198,7 +198,7 @@
                         {% endif %}
                     </div>
                     <div class="text-center mt-4">
-                        <a href="{% url 'company-jobs-list' company.id %}" 
+                        <a href="{% url 'company-jobs-list' company.id %}"
                            class="text-gray-900 text-base font-medium transition-colors duration-200 inline-block mt-2 flex items-center justify-center space-x-2">
                             <span>View all jobs</span> <i class="fas fa-arrow-right"></i>
                         </a>
@@ -243,7 +243,7 @@
                             <i class="fas fa-globe text-blue-500 text-xl"></i>
                         </div>
                         <p class="text-gray-500">Website</p>
-                        <a href="{{ company.website_url }}" 
+                        <a href="{{ company.website_url }}"
                            class="text-[#1e90ff] text-lg font-bold hover:underline flex items-center space-x-2">
                             <span>Visit Site</span> <i class="fas fa-external-link-alt"></i>
                         </a>

@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function resetTimer() {
     clearInterval(timer);
-    timeRemaining = totalTime; 
+    timeRemaining = totalTime;
     updateTimerDisplay();
     timer = setInterval(() => {
       timeRemaining--;

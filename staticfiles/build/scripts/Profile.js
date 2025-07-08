@@ -173,4 +173,3 @@ function initializeSuggestedSkills() {
   });
   suggestedSkillsContainer.innerHTML = suggestedSkillHtml;
 }
-

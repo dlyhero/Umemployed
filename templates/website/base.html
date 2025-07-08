@@ -9,7 +9,7 @@
     <title>Job Listing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    
+
     <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -20,11 +20,11 @@
     <link rel="stylesheet" href="{% static 'build/css/general.css' %}" />
     <link rel="stylesheet" href="{% static 'build/css/employer.css' %}" />
     <style>
-        header { 
-          
-            left: 0; 
-            right: 0; 
-            z-index: 100; 
+        header {
+
+            left: 0;
+            right: 0;
+            z-index: 100;
             background-color: White;
         }
         .dropdown-menu {
@@ -106,9 +106,9 @@
         }
     </style>
     {% block custom_css %}
-    
-      
-      
+
+
+
       {% endblock %}
 </head>
 
@@ -133,7 +133,7 @@
               >
                 <i id="messages-icon" class="fas fa-lg fa-briefcase text-xl icon"></i>
                 <span class="hidden md:block">Jobs</span>
-               
+
               </a>
             </li>
                 <li class="relative">
@@ -147,7 +147,7 @@
               class="fas fa-lg fa-envelopes text-xl icon"
             ></i>
             <span class="hidden md:block">Messages</span>
-           
+
           </a>
         </li>
                 <li class="relative">
@@ -158,7 +158,7 @@
           >
             <i id="notifications-icon" class="fas fa-bell text-xl icon"></i>
             <span class="hidden md:block">Notifications</span>
-            
+
           </a>
         </li>
             </ul>
@@ -188,7 +188,7 @@
                             </a>
                         {% endif %}
                     </div>
-                    
+
                     {% if user.is_authenticated %}
                         <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
                             <a href="{% url 'dashboard' %}" class="flex items-center gap-1">
@@ -214,7 +214,7 @@
                                 Contact us
                             </a>
                         </div>
-                        
+
                         {% if user.has_company %}
                             <div class="py-3 px-6 text-gray-700 hover:bg-gray-100 transition-all">
                                 <a href="{% url 'view_applications' user_company.id %}" class="flex items-center gap-1">
@@ -223,7 +223,7 @@
                                 </a>
                             </div>
                         {% endif %}
-                        
+
                         <hr class="my-2" />
                         <div class="user-mail py-3 px-6 font-bold text-gray-700">
                             {{ user.email }}
@@ -277,8 +277,8 @@
 
 
 
-  
-    
+
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -336,7 +336,7 @@
         });
     </script>
 
-    
+
 </body>
 
 </html>

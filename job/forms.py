@@ -1,21 +1,34 @@
 from django import forms
-from .models import Job, ApplicantAnswer, MCQ
-from resume.models import Skill, SkillCategory
 from django_ckeditor_5.widgets import CKEditor5Widget
+
+from resume.models import Skill, SkillCategory
+
+from .models import MCQ, ApplicantAnswer, Job
 
 
 class CreateJobForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ['title', 'hire_number','job_location_type', 'job_type', 'location', 'salary_range', 'category']  # Removed 'responsibilities' and 'ideal_candidate'
+        fields = [
+            "title",
+            "hire_number",
+            "job_location_type",
+            "job_type",
+            "location",
+            "salary_range",
+            "category",
+        ]  # Removed 'responsibilities' and 'ideal_candidate'
 
     category = forms.ModelChoiceField(queryset=SkillCategory.objects.all())
     widgets = {
-        'location': forms.Select(attrs={
-            'class': 'border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]',
-            'id': 'job-location',
-        })
+        "location": forms.Select(
+            attrs={
+                "class": "border border-gray-400 p-[11px] w-full bg-transparent rounded-lg outline-1 outline-[#1e90ff]",
+                "id": "job-location",
+            }
+        )
     }
+
 
 class JobDescriptionForm(forms.Form):
     """
@@ -26,24 +39,27 @@ class JobDescriptionForm(forms.Form):
         responsibilities (CharField): CKEditorWidget field for job responsibilities.
         ideal_candidate (CharField): CKEditorWidget field for ideal candidate description.
     """
+
     description = forms.CharField(widget=CKEditor5Widget())
     responsibilities = forms.CharField(widget=CKEditor5Widget())
     ideal_candidate = forms.CharField(widget=CKEditor5Widget())
 
     class Meta:
         model = Job
-        fields = ['description', 'responsibilities', 'ideal_candidate']
+        fields = ["description", "responsibilities", "ideal_candidate"]
+
 
 class JobTypeForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ['job_type', 'experience_levels', 'weekly_ranges', 'shifts']
+        fields = ["job_type", "experience_levels", "weekly_ranges", "shifts"]
         widgets = {
-            'job_type': forms.HiddenInput(),
-            'experience_levels': forms.HiddenInput(),
-            'weekly_ranges': forms.HiddenInput(),
-            'shifts': forms.HiddenInput(),
+            "job_type": forms.HiddenInput(),
+            "experience_levels": forms.HiddenInput(),
+            "weekly_ranges": forms.HiddenInput(),
+            "shifts": forms.HiddenInput(),
         }
+
 
 class SkillForm(forms.ModelForm):
     """
@@ -53,28 +69,29 @@ class SkillForm(forms.ModelForm):
         extracted_skills (CheckboxSelectMultiple): Checkbox field for selecting extracted skills.
         level (ChoiceField): Field for selecting the skill level.
     """
+
     LEVEL_CHOICES = [
-        ('Beginner', 'Beginner'),
-        ('Mid', 'Mid'),
-        ('Expert', 'Expert'),
+        ("Beginner", "Beginner"),
+        ("Mid", "Mid"),
+        ("Expert", "Expert"),
     ]
 
     level = forms.ChoiceField(choices=LEVEL_CHOICES)
 
     class Meta:
         model = Job
-        fields = ['extracted_skills', 'level']
+        fields = ["extracted_skills", "level"]
         widgets = {
-            'extracted_skills': forms.CheckboxSelectMultiple(),
+            "extracted_skills": forms.CheckboxSelectMultiple(),
         }
 
     def __init__(self, *args, **kwargs):
-        job_instance = kwargs.pop('job_instance')
+        job_instance = kwargs.pop("job_instance")
         super().__init__(*args, **kwargs)
-        
+
         # Initialize extracted_skills with the job's extracted skills
         if job_instance.extracted_skills.exists():
-            self.fields['extracted_skills'].initial = job_instance.extracted_skills.all()
+            self.fields["extracted_skills"].initial = job_instance.extracted_skills.all()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -91,15 +108,30 @@ class JobUpdateForm(forms.ModelForm):
     class Meta:
         model = Job
         fields = [
-            'title', 'hire_number', 'job_location_type', 'location', 'salary', 
-            'requirements', 'extracted_skills', 'ideal_candidate', 'is_available',
-            'description', 'responsibilities', 'benefits', 'level', 'category', 
-            'job_type', 'experience_levels', 'weekly_ranges', 'shifts'
+            "title",
+            "hire_number",
+            "job_location_type",
+            "location",
+            "salary",
+            "requirements",
+            "extracted_skills",
+            "ideal_candidate",
+            "is_available",
+            "description",
+            "responsibilities",
+            "benefits",
+            "level",
+            "category",
+            "job_type",
+            "experience_levels",
+            "weekly_ranges",
+            "shifts",
         ]
         widgets = {
-            'requirements': forms.CheckboxSelectMultiple,
-            'extracted_skills': forms.CheckboxSelectMultiple,
+            "requirements": forms.CheckboxSelectMultiple,
+            "extracted_skills": forms.CheckboxSelectMultiple,
         }
+
 
 class UpdateJobForm(forms.ModelForm):
     """
@@ -111,9 +143,11 @@ class UpdateJobForm(forms.ModelForm):
         model (Job): The Job model.
         exclude (tuple): Fields to exclude from the form.
     """
+
     class Meta:
         model = Job
-        exclude = ('user', 'company')
+        exclude = ("user", "company")
+
 
 class ApplicantAnswerForm(forms.ModelForm):
     """
@@ -123,9 +157,10 @@ class ApplicantAnswerForm(forms.ModelForm):
         model (ApplicantAnswer): The ApplicantAnswer model.
         fields (list): All fields of the ApplicantAnswer model.
     """
+
     class Meta:
         model = ApplicantAnswer
-        fields = '__all__'
+        fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         """
@@ -136,4 +171,3 @@ class ApplicantAnswerForm(forms.ModelForm):
             **kwargs: Arbitrary keyword arguments.
         """
         super().__init__(*args, **kwargs)
-

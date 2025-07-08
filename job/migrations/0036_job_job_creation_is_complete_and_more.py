@@ -4,30 +4,66 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0035_skillquestion_area'),
+        ("job", "0035_skillquestion_area"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='job',
-            name='job_creation_is_complete',
+            model_name="job",
+            name="job_creation_is_complete",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='job',
-            name='experience_levels',
-            field=models.CharField(blank=True, choices=[('noExperience', 'No Experience Needed'), ('under1Year', 'Under 1 Year'), ('1-3Years', '1-3 Years'), ('3-5Years', '3-5 Years'), ('5-10Years', '5-10 Years'), ('10+Years', '10+ Years')], max_length=255),
+            model_name="job",
+            name="experience_levels",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("noExperience", "No Experience Needed"),
+                    ("under1Year", "Under 1 Year"),
+                    ("1-3Years", "1-3 Years"),
+                    ("3-5Years", "3-5 Years"),
+                    ("5-10Years", "5-10 Years"),
+                    ("10+Years", "10+ Years"),
+                ],
+                max_length=255,
+            ),
         ),
         migrations.AlterField(
-            model_name='job',
-            name='shifts',
-            field=models.CharField(blank=True, choices=[('morningShift', 'Morning Shift'), ('dayShift', 'Day Shift'), ('eveningShift', 'Evening Shift'), ('nightShift', 'Night Shift'), ('eightHourShift', '8 Hours Shift'), ('tenHourShift', '10 Hours Shift'), ('twelveHourShift', '12 Hours Shift'), ('otherShift', 'Other'), ('noneShift', 'None')], max_length=255),
+            model_name="job",
+            name="shifts",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("morningShift", "Morning Shift"),
+                    ("dayShift", "Day Shift"),
+                    ("eveningShift", "Evening Shift"),
+                    ("nightShift", "Night Shift"),
+                    ("eightHourShift", "8 Hours Shift"),
+                    ("tenHourShift", "10 Hours Shift"),
+                    ("twelveHourShift", "12 Hours Shift"),
+                    ("otherShift", "Other"),
+                    ("noneShift", "None"),
+                ],
+                max_length=255,
+            ),
         ),
         migrations.AlterField(
-            model_name='job',
-            name='weekly_ranges',
-            field=models.CharField(blank=True, choices=[('mondayToFriday', 'Monday to Friday'), ('weekendsNeeded', 'Weekends Needed'), ('everyWeekend', 'Every Weekend'), ('rotatingWeekend', 'Rotating Weekend'), ('noneWeekend', 'None Weekend'), ('weekendsOnly', 'Weekends Only'), ('other', 'Other')], max_length=255),
+            model_name="job",
+            name="weekly_ranges",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("mondayToFriday", "Monday to Friday"),
+                    ("weekendsNeeded", "Weekends Needed"),
+                    ("everyWeekend", "Every Weekend"),
+                    ("rotatingWeekend", "Rotating Weekend"),
+                    ("noneWeekend", "None Weekend"),
+                    ("weekendsOnly", "Weekends Only"),
+                    ("other", "Other"),
+                ],
+                max_length=255,
+            ),
         ),
     ]

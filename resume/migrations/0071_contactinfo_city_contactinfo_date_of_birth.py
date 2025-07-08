@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("resume", "0070_remove_application_job_remove_application_user_and_more"),
     ]

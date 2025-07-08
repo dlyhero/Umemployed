@@ -137,7 +137,7 @@ color: #297FB8; /* Primary color for icons */
                   </ul>
                 </div>
               </div>
-          
+
               <!-- Date Applied -->
               <div class="text-right flex flex-col justify-center sm:text-left sm:items-end sm:ml-auto">
                 <h2 class="font-semibold text-gray-800 text-sm mb-1 hidden sm:block">Date <span class="font-normal">Applied</span></h2>
@@ -145,7 +145,7 @@ color: #297FB8; /* Primary color for icons */
               </div>
             </div>
           </div>
-          
+
 
           <div class="candidate__bio mb-3 p-6 bg-white  shadow-sm rounded-md w-full">
             <h3 class="text-2xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">Biography</h3>
@@ -323,32 +323,32 @@ color: #297FB8; /* Primary color for icons */
       </section>
     </div>
   </main>
- 
-  
+
+
   <script>
     let currentIndex = 0
     const slides = document.querySelectorAll('.carousel-slide')
     const totalSlides = slides.length
     const slideWidth = slides[0].offsetWidth
-    
+
     function showSlide(index) {
       const offset = -index * slideWidth
       document.querySelector('.carousel-wrapper').style.transform = `translateX(${offset}px)`
     }
-    
+
     function prevSlide() {
       currentIndex = (currentIndex - 1 + totalSlides) % totalSlides
       showSlide(currentIndex)
     }
-    
+
     function nextSlide() {
       currentIndex = (currentIndex + 1) % totalSlides
       showSlide(currentIndex)
     }
-    
+
     // Automatic slide transition
     setInterval(nextSlide, 5000)
-    
+
     // Initialize carousel
     showSlide(currentIndex)
   </script>

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("job", "0042_rename_recruiter_rating_endorser_remove_rating_job_and_more"),
     ]
@@ -14,9 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="shortlist",
             name="created_at",
-            field=models.DateTimeField(
-                auto_now_add=True, default=django.utils.timezone.now
-            ),
+            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
             preserve_default=False,
         ),
     ]

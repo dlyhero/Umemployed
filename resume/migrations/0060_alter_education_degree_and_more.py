@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0059_alter_resumedoc_file'),
+        ("resume", "0059_alter_resumedoc_file"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='education',
-            name='degree',
-            field=models.CharField(default='Not specified', max_length=100),
+            model_name="education",
+            name="degree",
+            field=models.CharField(default="Not specified", max_length=100),
         ),
         migrations.AlterField(
-            model_name='education',
-            name='field_of_study',
-            field=models.CharField(blank=True, default='Not specified', max_length=255, null=True),
+            model_name="education",
+            name="field_of_study",
+            field=models.CharField(blank=True, default="Not specified", max_length=255, null=True),
         ),
     ]

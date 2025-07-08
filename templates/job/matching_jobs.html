@@ -1,4 +1,4 @@
-{% extends 'users/base.html' %} 
+{% extends 'users/base.html' %}
  {% load static %}
 {% block content %}
 <head>
@@ -87,7 +87,7 @@
           allJobs[i].style.display = 'none';
         }
       }
-      
+
       // Update the button text based on visibility
       if (visibleJobs >= totalJobs) {
         showMoreButton.textContent = 'See Less Jobs';
@@ -102,14 +102,14 @@
     // Event listener for "See More Jobs" button
     showMoreButton.addEventListener('click', function(e) {
       e.preventDefault();
-      
+
       // Toggle the number of visible jobs
       if (visibleJobs >= totalJobs) {
         visibleJobs = 6; // Reset to the initial number of visible jobs
       } else {
         visibleJobs += 6; // Increase the number of visible jobs by 6
       }
-      
+
       toggleJobsVisibility(); // Toggle visibility of jobs
     });
   });

@@ -14,7 +14,7 @@
       padding: 0;
       overflow: hidden;
     }
-    
+
     /* Mobile Layout Adjustments */
     @media (max-width: 768px) {
       .inbox {
@@ -27,7 +27,7 @@
         display: block; /* Show chat when contact is clicked */
       }
     }
-    
+
     /* Desktop Layout: Inbox and Chat side by side */
     @media (min-width: 768px) {
       .inbox {
@@ -37,36 +37,36 @@
         display: block; /* Show chat */
       }
     }
-    
+
     .msg-profile {
       border-radius: 50%;
       object-fit: cover;
     }
-    
+
     .bubble.send::before {
       top: -8px;
       left: 10px;
       border-bottom: 10px solid #e7e5e5;
     }
-    
+
     .bubble.receive::before {
       border-bottom: 10px solid #1e90ff;
       top: -8px;
       right: 10px;
     }
-    
+
     .bubble::before {
       content: '';
       position: absolute;
       border-left: 10px solid transparent;
       border-right: 10px solid transparent;
     }
-    
+
     .bubble {
       position: relative;
       border-radius: 10px;
     }
-    
+
     .bubble p {
       margin: 0;
     }
@@ -128,11 +128,11 @@
               </div>
               {% for message in messages %}
                 <div class="{% if message.sender == request.user %}
-                    
+
                     sender flex space-x-2 flex justify-end
 
                   {% else %}
-                    
+
                     receiver flex space-x-2
 
                   {% endif %}">
@@ -196,15 +196,15 @@
   <script>
     const conversationId = '{{ conversation.id }}'
     let chatSocket
-    
+
     function connectWebSocket() {
       const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
       chatSocket = new WebSocket(protocol + window.location.host + '/ws/chat/' + conversationId + '/')
-    
+
       chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data)
         const messageDiv = document.createElement('div')
-    
+
         if (data.sender === '{{ request.user.username }}') {
           messageDiv.className = 'sender flex space-x-2 justify-end'
           messageDiv.innerHTML = `
@@ -223,20 +223,20 @@
           </div>
         `
         }
-    
+
         const messagesContainer = document.querySelector('#messagess')
         messagesContainer.appendChild(messageDiv)
         messagesContainer.scrollTop = messagesContainer.scrollHeight
       }
-    
+
       chatSocket.onclose = function (e) {
         console.error('Chat socket closed unexpectedly. Reconnecting...')
         setTimeout(connectWebSocket, 1000) // Retry connection after 1 second
       }
     }
-    
+
     connectWebSocket()
-    
+
     document.querySelector('#chat-message-input').focus()
     document.querySelector('#chat-message-input').onkeyup = function (e) {
       if (e.keyCode === 13) {
@@ -244,12 +244,12 @@
         document.querySelector('#chat-message-submit').click()
       }
     }
-    
+
     document.querySelector('#chat-message-submit').onclick = function (e) {
       e.preventDefault()
       const messageInputDom = document.querySelector('#chat-message-input')
       const message = messageInputDom.value.trim()
-    
+
       if (message) {
         chatSocket.send(
           JSON.stringify({
@@ -260,18 +260,18 @@
         messageInputDom.value = ''
       }
     }
-    
+
     // Function to scroll to the bottom of the messages container
     function scrollToBottom() {
       var messageContainer = document.getElementById('chatContainer')
       messageContainer.scrollTop = messageContainer.scrollHeight
     }
-    
+
     // Scroll to the bottom when the page is loaded
     window.onload = function () {
       scrollToBottom()
     }
-    
+
     // Optionally, you can trigger this function after new messages are sent
     const chatForm = document.getElementById('chat-form')
     chatForm.addEventListener('submit', function () {
@@ -315,7 +315,7 @@
       });
     });
   });
-  
+
 
 </script>
 

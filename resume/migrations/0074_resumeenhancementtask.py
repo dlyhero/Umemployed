@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("job", "0044_alter_job_salary_range"),
         ("resume", "0073_userlanguage_proficiency"),
@@ -54,9 +53,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "job",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="job.job"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="job.job"),
                 ),
                 (
                     "user",

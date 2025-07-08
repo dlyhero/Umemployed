@@ -1,6 +1,6 @@
-{% extends "resume/base.html" %} 
+{% extends "resume/base.html" %}
 {% load static %}
-{% load crispy_forms_tags %} 
+{% load crispy_forms_tags %}
 {% block search_bar %}
     {% endblock search_bar %}
 {% block content %}
@@ -57,12 +57,12 @@
             <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
           </div>
           <div class="text-sm ">
-                          
+
             <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300"
               >Privacy Policy
               </a
             >
-            
+
             <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
           </div>
         </div>
@@ -73,4 +73,3 @@
 
 </div>
 {% endblock content %}
-

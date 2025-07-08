@@ -43,9 +43,9 @@
         font-weight: 400;
         font-style: normal;
       }
-    
+
       /* Add other @font-face rules here */
-    
+
       /* Base Styles */
       body {
         font-family: 'Source Sans Pro', sans-serif;
@@ -53,65 +53,65 @@
         line-height: 1.6;
         background-color: rgb(229, 231, 235);
       }
-    
+
       h1, h2, h3 {
         font-family: 'Source Serif Pro', serif;
         font-weight: 600;
       }
-    
+
       p {
         font-family: 'Source Sans Pro', sans-serif;
         font-weight: 400;
       }
-    
+
       .light-text {
         font-weight: 300;
       }
-    
+
       .italic-text {
         font-style: italic;
       }
-    
+
       /* Responsive Scaling */
       :root {
         --base-font-size: 14px;
         --scale-factor: 0.9;
       }
-    
+
       @media (min-width: 768px) {
         :root {
           --scale-factor: 1.1;
         }
       }
-    
+
       @media (min-width: 1024px) {
         :root {
           --scale-factor: 1.2;
         }
       }
-    
+
       @media (min-width: 1440px) {
         :root {
           --scale-factor: 1.3;
         }
       }
-    
+
       h1 {
         font-size: clamp(1.2rem, 1.2rem * var(--scale-factor), 2rem);
       }
-    
+
       h2 {
         font-size: clamp(1rem, 1rem * var(--scale-factor), 1.5rem);
       }
-    
+
       p {
         font-size: clamp(0.85rem, 0.85rem * var(--scale-factor), 1.2rem);
       }
-    
+
       h3 {
         font-size: clamp(0.95rem, 0.95rem * var(--scale-factor), 1.3rem);
       }
-    
+
       /* Alerts */
       .alert {
         border-radius: 8px;
@@ -121,13 +121,13 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         position: relative;
       }
-    
+
       .alert.primary {
         background-color: #f0f9ff;
         border: 1px solid #b3e5fc;
         color: #0277bd;
       }
-    
+
       .alert .close-btn {
         position: absolute;
         top: 10px;
@@ -138,7 +138,7 @@
         font-size: 16px;
         cursor: pointer;
       }
-    
+
       /* Header and Mobile Menu */
       header {
         background-color: white;
@@ -147,7 +147,7 @@
         align-items: center;
         padding: 1rem;
       }
-    
+
       #mobileMenu {
         background-color: white;
         height: 100vh;
@@ -160,49 +160,49 @@
         width: 100%;
         transition: transform 0.3s ease-in-out;
       }
-    
+
       #mobileMenu.hidden {
         transform: translateX(-100%);
       }
-    
+
       #mobileMenu.visible {
         transform: translateX(0);
       }
-    
+
       /* Logo and SVG Text */
       :root {
         --logo-size: 50px;
         --svg-text-size: 40px;
       }
-    
+
       .logo {
         width: var(--logo-size);
         height: var(--logo-size);
       }
-    
+
       .svg-text {
         font-size: var(--svg-text-size);
       }
-    
+
       @media (max-width: 768px) {
         :root {
           --logo-size: 50px;
           --svg-text-size: 30px;
         }
       }
-    
+
       @media (max-width: 480px) {
         :root {
           --logo-size: 48px;
           --svg-text-size: 25px;
         }
       }
-    
+
       /* Transitions */
       button, a {
         transition: all 0.3s ease;
       }
-    
+
       button:hover, a:hover {
         opacity: 0.8;
         transform: scale(1.05);
@@ -219,11 +219,11 @@
         <div id="left-section" class="flex items-center">
           <div class="logo-wrap flex items-center mr-10">
             <a href="{% url 'index' %}">
-  
+
               <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
                 <text x="0" y="40" class="svg-text" font-size="40" fill="#1e90ff" font-weight="bold">UE</text>
               </svg>
-  
+
             </a>
           </div>
           <ul class="hidden md:flex items-center gap-8">
@@ -233,9 +233,9 @@
             {% endif %}
           </ul>
         </div>
-  
+
         <div class="middle-section flex flex-1 max-w-xl">
-  
+
           {% block search_bar %}
           <div
             class="search-wrapper w-full hidden lg:flex flex-1  mx-auto bg-white pr- 2 pl-4 py-2 border rounded-full shadow sm:shadow-none">
@@ -253,7 +253,7 @@
           {% endblock search_bar %}
         </div>
         <div id="right-section">
-  
+
           <ul class="flex gap-4 items-center">
             {% if user.is_authenticated %}
             {% if user.is_applicant %}
@@ -265,21 +265,21 @@
             </li>
             <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
               <a href="{% url 'update-resume' %}"> Settings</a>
-  
+
             </li>
-  
+
             <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
               <a href="{% url 'dashboard' %}">Dashboard</a>
             </li>
-  
+
             {% elif user.is_recruiter and user.has_company and user_company %}
-  
+
             <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
               <i>Logged as Recruiter</i>
             </li>
             <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
               <a href="{% url 'update_company' user_company.id %}"> Settings</a>
-  
+
             </li>
             <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
               <a href="{% url 'company_dashboard' user_company.id %}">Dashboard</a>
@@ -288,12 +288,12 @@
             <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
               <i>Logged as Recruiter, No company created</i>
             </li>
-  
+
             <li class="hidden sm:block font-semibold hover:text-[#1e90ff] transition-colors">
               <a href="{% url 'create_company' %}">Create Company</a>
             </li>
             {% else %}
-  
+
             {% endif %}
             {% endif %}
             <li>
@@ -339,11 +339,11 @@
               </a>
               {% endif %}
             </li>
-  
-  
-  
-  
-  
+
+
+
+
+
             <li>
               <button id="mobileMenuButton" class="sm:hidden">
                 <i class="fas fa-bars"></i>
@@ -410,22 +410,22 @@
                     class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
                     <i class="fas fa-file-invoice"></i> Transaction History
                   </a>
-  
+
                   {% endif %}
-  
+
                 </div>
                 <div class="authentication flex flex-col gap-4">
                   {% if user.is_applicant %}
                   <a href="{% url 'dashboard' %}"
                     class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold">
                     <i class="fas fa-tachometer-alt"></i> Dashboard
-  
+
                   </a>
                   {% elif user.is_recruiter and user.has_company and user_company%}
                   <a href="{% url 'company_dashboard' user_company.id %}"
                     class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold">
                     <i class="fas fa-tachometer-alt"></i> Dashboard
-  
+
                   </a>
                   {% else %}
                   {% endif %}
@@ -433,7 +433,7 @@
                     class="w-full bg-[#1e90ff] text-white px-6 py-3 rounded-full text-center font-semibold">
                     <i class="fas fa-sign-in-alt"></i> Logout
                   </a>
-  
+
                   {% else %}
                   <a href="{% url 'change_account_type' %}"
                     class="menu-item flex items-center gap-2 font-semibold hover:text-[#1e90ff] transition-colors">
@@ -494,7 +494,7 @@
                 <a href="{% url 'contact_us' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Contact Us</a>
                 <a href="{% url 'partners' %}" class="text-sm font-semibold text-gray-700 hover:text-blue-600">Partners</a>
             </nav>
-  
+
           <!-- Actions Section -->
           <div class="space-y-6">
             <!-- Help Center -->
@@ -508,7 +508,7 @@
                 <p class="text-xs text-gray-500">Visit our Support Center.</p>
               </div>
             </div>
-  
+
             <!-- Account Settings -->
             <div class="flex items-center space-x-4">
               <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -523,7 +523,7 @@
                 <p class="text-xs text-gray-500">Manage your preferences.</p>
               </div>
             </div>
-  
+
             <!-- Language Selector -->
             <div>
               <label for="language" class="block text-xs text-gray-500 mb-1">Select Language</label>
@@ -538,14 +538,14 @@
             </div>
           </div>
         </div>
-  
+
         <!-- Copyright -->
         <p class="text-xs text-gray-500 mt-8 text-center md:text-left">
           © 2025 UmEmployed. All rights reserved.
         </p>
       </div>
     </footer>
-  
+
     <!-- Sidebar -->
     <div
       id="mobileMenu"
@@ -590,7 +590,7 @@
                   href="{% url 'dashboard' %}"
                   class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
                 >
-                <i class="fas fa-tachometer-alt"></i> Dashboard  
+                <i class="fas fa-tachometer-alt"></i> Dashboard
 
                 </a>
                 {% elif user.is_recruiter and user.has_company and user_company%}
@@ -598,7 +598,7 @@
                   href="{% url 'company_dashboard' user_company.id %}"
                   class="w-full bg-transparent border px-6 py-3 rounded-full text-[#1e90ff] text-center font-semibold"
                 >
-                <i class="fas fa-tachometer-alt"></i> Dashboard  
+                <i class="fas fa-tachometer-alt"></i> Dashboard
 
                 </a>
                 {% else %}
@@ -650,7 +650,7 @@
     </div>
     {% endblock %}
 
-   
+
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -669,7 +669,7 @@
         });
       });
 
-    
+
       const optionBtn = document.getElementById("option-btn");
       const optionMenu = document.getElementById("option-menu");
       const backdropMenu = document.getElementById("backdrop-menu");

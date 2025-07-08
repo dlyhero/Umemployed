@@ -3,12 +3,12 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-2xl font-semibold text-[#1e90ff] mb-6">People Related to your Company</h1>
-    
+
     <!-- Search Input -->
     <div class="mb-6">
         <input type="text" id="search-input" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition" placeholder="Search by name or email...">
     </div>
-    
+
     <div id="user-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for user in related_users %}
         <div class="bg-white p-6 rounded-lg shadow-md user-card">

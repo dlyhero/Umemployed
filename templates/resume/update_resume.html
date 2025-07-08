@@ -15,7 +15,7 @@
         margin: 0 auto;
     }
 
-  
+
     @keyframes blink {
         0%,
         50%,
@@ -92,14 +92,14 @@
                     <label for="{{ form.job_title.id_for_label }}" class="block text-gray-600 font-semibold mb-1">Job Title</label>
                     {{ form.job_title|add_class:"border w-full rounded-lg px-3 py-2 text-gray-700 bg-transparent border-gray-300 focus:ring-1 focus:ring-blue-500" }}
                 </div>
-                
+
                 <div class="flex justify-end">
                     <button type="submit" id="save-info-btn" class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-[#1e90ff] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Save
                     </button>
                 </div>
                 </div>
-            </form> 
+            </form>
         </div>
 
         <!-- Additional Features -->
@@ -204,8 +204,8 @@
     </div>
 </div>
 {% block footer %}
-    
-    
+
+
     {% endblock footer %}
     <footer class="text-gray-800 text-center p-3">
       <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
@@ -232,12 +232,12 @@
           <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
         </div>
         <div class="text-sm ">
-                        
+
           <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300"
             >Privacy Policy
             </a
           >
-          
+
           <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
         </div>
       </div>
@@ -278,6 +278,3 @@ document.getElementById('contact-info-form').addEventListener('submit', function
   </body>
 </html>
 {% endblock %}
-
-
-

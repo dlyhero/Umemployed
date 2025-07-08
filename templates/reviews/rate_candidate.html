@@ -55,7 +55,7 @@
     <!-- Hidden input for star rating -->
     <input type="hidden" id="star-rating" name="stars" value="{{ form.stars.value|default_if_none:'' }}" />
 
-    
+
 
     <!-- Survey Questions -->
     <div>
@@ -175,9 +175,9 @@
     const endorsementSection = document.getElementById('endorsement-section')
     const starRatingInput = document.getElementById('star-rating')
     const endorsementForm = document.getElementById('endorsement-form')
-    
+
     let selectedRating = 0
-    
+
     stars.forEach((star) => {
       star.addEventListener('click', () => {
         selectedRating = star.getAttribute('data-rating')
@@ -188,13 +188,13 @@
         proceedButton.classList.remove('hidden')
       })
     })
-    
+
     proceedButton.addEventListener('click', () => {
       starRatingSection.classList.add('hidden')
       endorsementSection.classList.remove('hidden')
       starRatingInput.value = selectedRating // Set the star rating value in the hidden input
     })
-    
+
     endorsementForm.addEventListener('submit', (event) => {
       if (selectedRating === 0) {
         event.preventDefault()
@@ -209,12 +209,12 @@
       const dropdown = document.getElementById('filter-dropdown')
       dropdown.classList.toggle('hidden')
     }
-    
+
     function toggleMobileFilter() {
       const filterForm = document.getElementById('filter-form')
       filterForm.classList.toggle('hidden')
     }
-    
+
     // Close dropdown if clicked outside
     window.onclick = function (event) {
       if (!event.target.matches('#desktop-filter-btn')) {

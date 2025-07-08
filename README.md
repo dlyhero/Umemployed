@@ -1,77 +1,142 @@
-UmEmployed
-UmEmployed is a Django-based web application designed to help job seekers find employment opportunities.
+# Umemployed
 
-Installation
-To get started with UmEmployed, follow the steps below:
+A modern platform connecting job seekers with recruiters, featuring resume management, job listings, and recruitment tools.
 
-Clone the repository to your local machine:
+## Overview
 
-git clone https://github.com/your-username/UmEmployed.git
+Umemployed is a comprehensive employment platform that streamlines the job search and recruitment process. The platform serves both job seekers and recruiters with specialized features for each user type.
 
+### Key Features
 
-Navigate to the project directory:
+- **For Job Seekers**:
+  - Profile and resume management
+  - Job search and application
+  - Skill assessment
+  - Interview scheduling
 
-cd UmEmployed
+- **For Recruiters**:
+  - Company profile management
+  - Job posting and management
+  - Candidate search and filtering
+  - Interview scheduling
 
-Create a virtual environment (optional but recommended) to isolate your project dependencies:
+## Tech Stack
 
+- **Backend**: Django REST Framework
+- **Database**: PostgreSQL (production), SQLite (development)
+- **Task Queue**: Celery with Redis
+- **Real-time Communication**: Django Channels
+- **Authentication**: JWT with SimpleJWT
+- **Frontend**: Separate React/Next.js application
+- **Deployment**: Docker, Azure App Service
 
-python3 -m venv venv
+## Setup and Installation
 
+### Prerequisites
 
-Activate the virtual environment:
+- Python 3.8+
+- Redis
+- PostgreSQL (for production)
 
-For Windows:
+### Local Development Setup
 
-venv\Scripts\activate
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/umemployed.git
+   cd umemployed
+   ```
 
-For Unix/macOS:
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv myenv
+   source myenv/bin/activate  # On Windows: myenv\Scripts\activate
+   ```
 
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-source venv/bin/activate
-Install the project dependencies:
+4. Copy the example environment file and configure your environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
+5. Run database migrations:
+   ```bash
+   python manage.py migrate
+   ```
 
-pip install -r requirements.txt
+6. Start the development server:
+   ```bash
+   python manage.py runserver
+   ```
 
+7. Start Celery worker (in a separate terminal):
+   ```bash
+   celery -A umemployed worker -l info
+   ```
 
+### Docker Setup
 
-Rename the .env.example file to .env and update the database configuration with your PostgreSQL credentials:
+To run the application using Docker:
 
+```bash
+docker-compose up -d
+```
 
-DATABASE_NAME=your_database_name
-DATABASE_USER=your_username
-DATABASE_PASSWORD=your_password
-DATABASE_HOST=your_host
-DATABASE_PORT=your_port
+## API Documentation
 
+API documentation is available at `/api/docs/` when the server is running.
 
-Apply the database migrations:
+## Testing
 
-python manage.py migrate
+Run the test suite with:
 
+```bash
+pytest
+```
 
+## Deployment
 
-Start the development server:
+The application is configured for deployment to Azure App Service using GitHub Actions. See the `.github/workflows/` directory for deployment configuration.
 
+## Project Structure
 
-python manage.py runserver
-Open your web browser and visit http://localhost:8000 to access the UmEmployed application.
+```
+umemployed/
+├── api/                  # API endpoints and serializers
+├── asseessments/         # Assessment module
+├── company/              # Company management module
+├── dashboard/            # User dashboard module
+├── job/                  # Job listing and search module
+├── messages/             # User messaging module
+├── messaging/            # Additional messaging features
+├── notifications/        # Notification system
+├── resume/               # Resume management module
+├── social_features/      # Social networking features
+├── static/               # Static files
+├── templates/            # HTML templates
+├── transactions/         # Payment and subscription module
+├── umemployed/           # Project configuration
+├── users/                # User management module
+├── videochat/            # Video conferencing module
+└── website/              # Public website pages
+```
 
-Usage
-Create an account or log in with existing credentials.
-Explore job listings by category, location, or search for specific keywords.
-Apply for job openings by submitting your resume and cover letter.
-Manage your job applications and track their status.
-Update your profile information and preferences.
-Contributing
-Not allowed at the moment
+## Contributing
 
-License
-This project is licensed under the MIT License.
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin feature/my-new-feature`
+5. Submit a pull request
 
-Acknowledgments:
-This project was inspired by the need to simplify the job search process.
-Special thanks to the Django community for their excellent documentation and support.
+## License
 
-daphne -p 8000 umemployed.asgi:application
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+This project was inspired by the need to simplify the job search process. Special thanks to the Django community for their excellent documentation and support.

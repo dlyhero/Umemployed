@@ -4,10 +4,8 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('company', '0005_company_created_at_company_updated_at'),
+        ("company", "0005_company_created_at_company_updated_at"),
     ]
 
-    operations = [
-    ]
+    operations = []

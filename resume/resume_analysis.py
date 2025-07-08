@@ -1,43 +1,45 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.http import JsonResponse
+import json
+import logging
+import os
+
+import dotenv
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import ResumeDoc, ResumeAnalysis, UserProfile
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from openai import OpenAI
+
 from .extract_pdf import extract_text
 from .forms import ResumeForm
-import json
-import dotenv
-from openai import OpenAI
-import os
-import logging
+from .models import ResumeAnalysis, ResumeDoc, UserProfile
 
 dotenv.load_dotenv()
-api_key = os.environ.get('OPENAI_API_KEY')
+api_key = os.environ.get("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 logger = logging.getLogger(__name__)
 
-@login_required(login_url='login')
+
+@login_required(login_url="login")
 def analyze_resume_view(request):
     """
     Handles the resume analysis workflow.
     """
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ResumeForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 resume_doc = ResumeDoc.objects.get(user=request.user)
-                resume_doc.file = form.cleaned_data['file']
-                resume_doc.extracted_text = ''
+                resume_doc.file = form.cleaned_data["file"]
+                resume_doc.extracted_text = ""
                 resume_doc.extracted_skills.clear()
                 resume_doc.save()
             except ResumeDoc.DoesNotExist:
                 resume_doc = ResumeDoc.objects.create(
-                    user=request.user,
-                    file=form.cleaned_data['file']
+                    user=request.user, file=form.cleaned_data["file"]
                 )
 
-            file_path = resume_doc.file.url.lstrip('/')
+            file_path = resume_doc.file.url.lstrip("/")
             extract_text(request, file_path)
             resume_doc.refresh_from_db()
 
@@ -46,16 +48,17 @@ def analyze_resume_view(request):
             ResumeAnalysis.objects.create(
                 user=request.user,
                 resume=resume_doc,
-                overall_score=analysis_results['overall_score'],
-                criteria_scores=analysis_results['criteria_scores'],
-                improvement_suggestions=analysis_results['improvement_suggestions']
+                overall_score=analysis_results["overall_score"],
+                criteria_scores=analysis_results["criteria_scores"],
+                improvement_suggestions=analysis_results["improvement_suggestions"],
             )
 
-            return JsonResponse({'status': 'success', 'redirect_url': reverse('resume_analysis')})
+            return JsonResponse({"status": "success", "redirect_url": reverse("resume_analysis")})
         else:
-            return JsonResponse({'status': 'error', 'message': 'Invalid file format.'}, status=400)
+            return JsonResponse({"status": "error", "message": "Invalid file format."}, status=400)
     else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+        return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)
+
 
 def analyze_resume(request, extracted_text):
     """
@@ -64,7 +67,7 @@ def analyze_resume(request, extracted_text):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if user_profile.resume_analysis_attempts >= 19:
-        return redirect(reverse('paypal-payment'))
+        return redirect(reverse("paypal-payment"))
 
     user_profile.resume_analysis_attempts += 1
     user_profile.save()
@@ -74,24 +77,24 @@ def analyze_resume(request, extracted_text):
                 ### INSTRUCTIONS ###
                 -Your response MUST not contain any other attached information or any complementary text, I strictly want but the json response, nothing else.
                 - YOU MUST ANALYZE THE RESUME BASED ON THE FOLLOWING 15 CRITERIA:
-                  1. **STRUCTURE & FORMATTING** (Is the resume well-organized and formatted for readability?)  
-                  2. **CLARITY & CONCISENESS** (Is the information clear and to the point?)  
-                  3. **PROFESSIONAL TONE** (Does the resume maintain a professional tone?)  
-                  4. **GRAMMAR & SPELLING** (Are there any grammar, spelling, or punctuation mistakes?)  
-                  5. **ACHIEVEMENTS & METRICS** (Does the resume use quantified achievements?)  
-                  6. **RELEVANCE TO JOB** (Are skills and experiences aligned with target roles?)  
-                  7. **KEYWORDS & ATS OPTIMIZATION** (Does the resume contain relevant industry keywords for ATS compatibility?)  
-                  8. **WORK EXPERIENCE DETAIL** (Is work experience well-detailed and impactful?)  
-                  9. **EDUCATION & CERTIFICATIONS** (Are education and certifications clearly stated?)  
-                  10. **SKILLS SECTION EFFECTIVENESS** (Are the listed skills relevant and well-presented?)  
-                  11. **ACTION VERBS & LANGUAGE** (Are strong action verbs used to describe experience?)  
-                  12. **CONSISTENCY & FLOW** (Is the information presented in a logical and smooth manner?)  
-                  13. **CONTACT INFORMATION COMPLETENESS** (Does it include essential contact details?)  
-                  14. **CUSTOMIZATION FOR SPECIFIC JOB** (Is the resume tailored to a specific job or generic?)  
-                  15. **OVERALL IMPACT & READABILITY** (Does the resume make a strong impression?)  
+                  1. **STRUCTURE & FORMATTING** (Is the resume well-organized and formatted for readability?)
+                  2. **CLARITY & CONCISENESS** (Is the information clear and to the point?)
+                  3. **PROFESSIONAL TONE** (Does the resume maintain a professional tone?)
+                  4. **GRAMMAR & SPELLING** (Are there any grammar, spelling, or punctuation mistakes?)
+                  5. **ACHIEVEMENTS & METRICS** (Does the resume use quantified achievements?)
+                  6. **RELEVANCE TO JOB** (Are skills and experiences aligned with target roles?)
+                  7. **KEYWORDS & ATS OPTIMIZATION** (Does the resume contain relevant industry keywords for ATS compatibility?)
+                  8. **WORK EXPERIENCE DETAIL** (Is work experience well-detailed and impactful?)
+                  9. **EDUCATION & CERTIFICATIONS** (Are education and certifications clearly stated?)
+                  10. **SKILLS SECTION EFFECTIVENESS** (Are the listed skills relevant and well-presented?)
+                  11. **ACTION VERBS & LANGUAGE** (Are strong action verbs used to describe experience?)
+                  12. **CONSISTENCY & FLOW** (Is the information presented in a logical and smooth manner?)
+                  13. **CONTACT INFORMATION COMPLETENESS** (Does it include essential contact details?)
+                  14. **CUSTOMIZATION FOR SPECIFIC JOB** (Is the resume tailored to a specific job or generic?)
+                  15. **OVERALL IMPACT & READABILITY** (Does the resume make a strong impression?)
 
-                - YOU MUST PROVIDE A SCORE FROM 0 TO 10 FOR EACH CRITERION  
-                - THE FINAL SCORE MUST BE A WEIGHTED AVERAGE OF ALL 15 SCORES, OUT OF 100  
+                - YOU MUST PROVIDE A SCORE FROM 0 TO 10 FOR EACH CRITERION
+                - THE FINAL SCORE MUST BE A WEIGHTED AVERAGE OF ALL 15 SCORES, OUT OF 100
                 - OUTPUT THE RESULTS IN A JSON FORMAT AS FOLLOWS:
 
                 ### JSON OUTPUT FORMAT ###
@@ -140,14 +143,12 @@ def analyze_resume(request, extracted_text):
 
     conversation = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": f"Analyze the following resume text:\n\n{extracted_text}"}
+        {"role": "user", "content": f"Analyze the following resume text:\n\n{extracted_text}"},
     ]
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=conversation,
-            timeout=120
+            model="gpt-3.5-turbo", messages=conversation, timeout=120
         )
 
         response_content = response.choices[0].message.content
@@ -160,20 +161,17 @@ def analyze_resume(request, extracted_text):
 
     except Exception as e:
         logger.error(f"Error analyzing resume: {e}")
-        return {
-            "overall_score": 0,
-            "criteria_scores": {},
-            "improvement_suggestions": {}
-        }
+        return {"overall_score": 0, "criteria_scores": {}, "improvement_suggestions": {}}
 
-@login_required(login_url='login')
+
+@login_required(login_url="login")
 def resume_analysis(request):
     """
     Displays the resume analysis results.
     """
     try:
-        latest_analysis = ResumeAnalysis.objects.filter(user=request.user).latest('analyzed_at')
-        return render(request, 'resume/resume_analysis.html', {'analysis': latest_analysis})
+        latest_analysis = ResumeAnalysis.objects.filter(user=request.user).latest("analyzed_at")
+        return render(request, "resume/resume_analysis.html", {"analysis": latest_analysis})
     except ResumeAnalysis.DoesNotExist:
         messages.error(request, "No analysis found. Please analyze your resume first.")
-        return redirect('analyze_resume')
+        return redirect("analyze_resume")

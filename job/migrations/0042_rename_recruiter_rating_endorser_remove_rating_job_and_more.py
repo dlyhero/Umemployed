@@ -4,49 +4,86 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0041_rating'),
+        ("job", "0041_rating"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='rating',
-            old_name='recruiter',
-            new_name='endorser',
+            model_name="rating",
+            old_name="recruiter",
+            new_name="endorser",
         ),
         migrations.RemoveField(
-            model_name='rating',
-            name='job',
+            model_name="rating",
+            name="job",
         ),
         migrations.AddField(
-            model_name='rating',
-            name='communication',
-            field=models.CharField(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')], default='Good', max_length=50),
+            model_name="rating",
+            name="communication",
+            field=models.CharField(
+                choices=[
+                    ("Excellent", "Excellent"),
+                    ("Good", "Good"),
+                    ("Average", "Average"),
+                    ("Below Average", "Below Average"),
+                ],
+                default="Good",
+                max_length=50,
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='rating',
-            name='professionalism',
-            field=models.CharField(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')], default='Good', max_length=50),
+            model_name="rating",
+            name="professionalism",
+            field=models.CharField(
+                choices=[
+                    ("Excellent", "Excellent"),
+                    ("Good", "Good"),
+                    ("Average", "Average"),
+                    ("Below Average", "Below Average"),
+                ],
+                default="Good",
+                max_length=50,
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='rating',
-            name='reliability',
-            field=models.CharField(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')], default='Good', max_length=50),
+            model_name="rating",
+            name="reliability",
+            field=models.CharField(
+                choices=[
+                    ("Excellent", "Excellent"),
+                    ("Good", "Good"),
+                    ("Average", "Average"),
+                    ("Below Average", "Below Average"),
+                ],
+                default="Good",
+                max_length=50,
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='rating',
-            name='skills',
-            field=models.CharField(choices=[('Yes', 'Yes'), ('No', 'No')], default='Yes', max_length=3),
+            model_name="rating",
+            name="skills",
+            field=models.CharField(
+                choices=[("Yes", "Yes"), ("No", "No")], default="Yes", max_length=3
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='rating',
-            name='teamwork',
-            field=models.CharField(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Average', 'Average'), ('Below Average', 'Below Average')], default='Good', max_length=50),
+            model_name="rating",
+            name="teamwork",
+            field=models.CharField(
+                choices=[
+                    ("Excellent", "Excellent"),
+                    ("Good", "Good"),
+                    ("Average", "Average"),
+                    ("Below Average", "Below Average"),
+                ],
+                default="Good",
+                max_length=50,
+            ),
             preserve_default=False,
         ),
     ]

@@ -4,15 +4,26 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0029_job_salary_range'),
+        ("job", "0029_job_salary_range"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='job',
-            name='job_type',
-            field=models.CharField(blank=True, choices=[('full_time', 'Full-Time'), ('part_time', 'Part-Time'), ('contract', 'Contract'), ('temporary', 'Temporary'), ('internship', 'Internship'), ('freelance', 'Freelance')], max_length=20, verbose_name='Job Type'),
+            model_name="job",
+            name="job_type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("full_time", "Full-Time"),
+                    ("part_time", "Part-Time"),
+                    ("contract", "Contract"),
+                    ("temporary", "Temporary"),
+                    ("internship", "Internship"),
+                    ("freelance", "Freelance"),
+                ],
+                max_length=20,
+                verbose_name="Job Type",
+            ),
         ),
     ]

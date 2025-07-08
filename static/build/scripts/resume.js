@@ -32,4 +32,3 @@ setupBackdropMenu();
 
 // Initialize the sidebar and backdrop menu functionality
 sideBar();
-

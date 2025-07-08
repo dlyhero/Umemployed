@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0034_alter_application_overall_match_percentage'),
+        ("job", "0034_alter_application_overall_match_percentage"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='skillquestion',
-            name='area',
+            model_name="skillquestion",
+            name="area",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

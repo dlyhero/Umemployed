@@ -40,7 +40,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   cursor: pointer;
-  
+
 }
 .suggested-skills li {
   border: 1px solid #1e90ff;
@@ -105,10 +105,3 @@ body {
   backdrop-filter: blur(0.5px); /* Adjust the blur radius */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
 }
-
-
-
-
-
-
-

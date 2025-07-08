@@ -4,15 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('job', '0032_application_video_file'),
+        ("job", "0032_application_video_file"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='status',
-            field=models.CharField(choices=[('pending', 'Pending'), ('rejected', 'Rejected'), ('accepted', 'Accepted')], default='pending', max_length=10),
+            model_name="application",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("pending", "Pending"),
+                    ("rejected", "Rejected"),
+                    ("accepted", "Accepted"),
+                ],
+                default="pending",
+                max_length=10,
+            ),
         ),
     ]

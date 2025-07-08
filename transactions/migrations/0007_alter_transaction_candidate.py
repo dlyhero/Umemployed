@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("transactions", "0006_remove_subscription_daily_limit"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),

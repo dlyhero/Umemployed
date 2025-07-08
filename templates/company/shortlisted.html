@@ -9,8 +9,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-        <script src="https://cdn.tailwindcss.com"></script> 
-        
+        <script src="https://cdn.tailwindcss.com"></script>
+
 <style>
 .loader {
     border: 16px solid #f3f3f3;
@@ -30,7 +30,7 @@
 {% endblock %}
 {% block content %}
 
-  
+
 <main class="container max-w-7xl mx-auto p-2 md:p-4 rounded-lg flex flex-col items-center ">
 
     <section class="w-full container p-2">
@@ -42,7 +42,7 @@
             <span class="air3-tab-btn-text">Candidates</span>
           </a>
         </li>
-        
+
         <li>
           <a href="{% url 'feature-not-implemented' %}" onclick="showTab('archived')"
             class="text-gray-600 hover:text-gray-800 py-1 px-4 md:px-6 rounded-full border-b-4 border-transparent hover:border-gray-300 transition-all duration-300">
@@ -102,7 +102,7 @@
                                 <div class="text-gray-500">{{ application.user.location }}</div>
                                 <div class="text-gray-600 line-clamp-2 text-wrap">{{application.user.resume.job_title}}</div>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class=" p-2 w-fit items-start  md:mt-4">
@@ -133,8 +133,8 @@
 
                         </div>
                       </div>
-                       
-                      
+
+
                     </div>
                 </div>
 
@@ -269,12 +269,12 @@
         </div>
       </div>
     </div>
-    
+
    <!-- View Resume Button -->
     <div class="my-4">
-    <a id="candidateResumeLink" 
-       class="text-[#1e90ff] underline" 
-       target="_blank" 
+    <a id="candidateResumeLink"
+       class="text-[#1e90ff] underline"
+       target="_blank"
        title="View Resume">
        <i class="fas fa-eye"></i> View Resume
     </a>

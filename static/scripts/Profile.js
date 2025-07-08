@@ -83,7 +83,7 @@ function handleSkillInput() {
       filteredSkills.forEach((skill) => {
         const skillElement = document.createElement("div");
         skillElement.classList.add("suggested-skill");
-        
+
         const skillLabel = document.createElement("label");
         skillLabel.setAttribute("for", `skill-${skill.id}`);
         skillLabel.classList.add("custom-label");

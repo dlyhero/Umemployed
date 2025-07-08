@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('message', '0003_alter_message_options'),
+        ("message", "0003_alter_message_options"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='message',
-            name='idd',
+            model_name="message",
+            name="idd",
             field=models.PositiveIntegerField(default=0),
         ),
     ]

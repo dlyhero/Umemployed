@@ -26,7 +26,7 @@ main {
   column-gap: 24px;
   row-gap: 12px;
   justify-content: center;
-  
+
 }
 
 .nav-item:first-child{
@@ -46,7 +46,7 @@ main {
   main {
     grid-template-columns: 80%;
     margin: 0 auto;
-    
+
   }
  section.aside-right, section.aside-left{
   display: none;
@@ -98,4 +98,3 @@ main {
 .full-text {
   display: block;
 }
-

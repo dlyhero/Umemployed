@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
  {% block custom_css %}
-    
+
     <style>
-      
+
  /* Styling for the skill suggestion checkmarks */
 .suggested-skill {
   display: flex;
@@ -73,7 +73,7 @@
     overflow: auto; /* Enable scroll if needed */
     background-color: rgba(0,0,0,0.4); /* Black background with opacity */
   }
-  
+
     /* Add some basic styling for demonstration */
     .hidden {
       display: none;
@@ -87,7 +87,7 @@
     .absolute {
       position: absolute;
     }
-  
+
 
 
   /* Modal Content */
@@ -118,13 +118,13 @@
   opacity: 0.8;
 }
 
-    </style>  
+    </style>
 
   <head>
     <!-- Other head elements -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-      
+
   {% endblock %}
 {% block content %}
 
@@ -185,11 +185,11 @@
           </a>
         </section>
       </aside>
-   
-   
-   
-   
-   
+
+
+
+
+
       <div class="w-full lg:w-1/2 rounded-lg sm:mt-2  lg:order-2">
       <section
           class="user-profile mx-auto sm:p-4 sm:rounded-lg sm:bg-white sm:border border-gray-300"
@@ -234,20 +234,20 @@
               <div
                 class="email text-base mb-1 flex items-center text-gray-700 font-semibold text-sm"
               >
-                
+
                 <div class="email"> <i class="fa-solid fa-envelope text-blue-500 mr-2"></i>{{ contact_info.email }}</div>
               </div>
               <div
                 class="phone text-base mb-1 flex items-center text-gray-700 font-semibold text-sm"
               >
                 <div class="phone"><i class="fa-solid fa-phone text-blue-500 mr-2"></i>{{ contact_info.phone }}</div>
-                
+
               </div>
               <div
                 class="country text-base mb-1 flex items-center text-gray-700 font-semibold text-sm"
               >
                  <div class="country"> <i class="fa-solid fa-earth-americas text-blue-500 mr-2"></i>{{ contact_info.country.name }}</div>
-                
+
               </div>
             </div>
             <a
@@ -271,7 +271,7 @@
               <div class="day text-gray-500">Added today</div>
             </div>
           </div>
-    
+
 
 <div class="relative inline-block text-left">
   <button id="cv-btn" class="text-3xl font-bold" onclick="toggleMenu()">
@@ -310,7 +310,7 @@
   document.addEventListener('click', function(event) {
     var menu = document.getElementById("dropdownMenu");
     var button = document.getElementById("cv-btn");
-    
+
     if (!button.contains(event.target) && !menu.contains(event.target)) {
       menu.classList.add('hidden');
       menu.classList.remove('block');
@@ -331,7 +331,7 @@
             {% csrf_token %}
             <div class="w-full p-4 mb-2">
               <label for="job"> Job </label><br />
-              
+
             </div>
             <div class="p-2 border rounded-lg mb-4 mx-4 bg-blue-50">
               <select
@@ -344,7 +344,7 @@
                   <option value="{{ job.id }}">{{ job.name }}</option>
                 {% endfor %}
               </select>
-              
+
             </div>
             <div class="p-4 flex justify-between border-t">
               <div></div>
@@ -364,7 +364,7 @@
         </div>
       </div>
     </section>
-    
+
     <section id="skills-sec" class="mb-2 bg-white p-2 rounded-lg">
     <div class="flex justify-between items-center mb-2 p-2">
         <h2 class="font-bold text-xl text-[#1e90ff]">Skills</h2>
@@ -380,7 +380,7 @@
                 <p class="font-bold text-lg">Add skill</p>
                 <button id="skill-modal-btn" class="text-2xl">&times;</button>
             </div>
-            
+
             <!-- Modal Body -->
             <div class="p-4">
                 <label for="input-skill" class="block font-medium mb-2">Skill</label>
@@ -574,8 +574,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-    
-    
+
+
     <section id="lang-sec" class="mb-2 bg-white p-2 rounded-lg">
         <div class="flex justify-between items-center mb-2 p-2">
             <h2 class="font-bold text-xl text-[#1e90ff]">Languages</h2>
@@ -596,7 +596,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </ul>
         </div>
     </section>
-    
+
     <section id="country-sec" class="mb-2 bg-white p-2 rounded-lg">
         <div class="flex justify-between items-center mb-2 p-2">
             <h2 class="font-bold text-xl text-[#1e90ff]">Country</h2>
@@ -608,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <p>{{ country_name }}</p>
         </div>
     </section>
-    
+
     <!-- Language Modal -->
     <div id="language-modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center hidden">
         <div class="bg-white sm:p-4 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </form>
         </div>
     </div>
-    
+
     <!-- Country Modal -->
     <div id="country-modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center hidden">
         <div class="bg-white sm:p-4 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
@@ -645,19 +645,19 @@ document.addEventListener('DOMContentLoaded', function() {
       function showLanguageModal() {
           document.getElementById('language-modal').classList.remove('hidden');
       }
-  
+
       function showCountryModal() {
           document.getElementById('country-modal').classList.remove('hidden');
       }
-  
+
       document.getElementById('cancel-lang-btn').addEventListener('click', function() {
           document.getElementById('language-modal').classList.add('hidden');
       });
-  
+
       document.getElementById('cancel-country-btn').addEventListener('click', function() {
           document.getElementById('country-modal').classList.add('hidden');
       });
-  
+
       function deleteLanguage(languageId) {
           fetch(`/dashboard/delete_language/${languageId}/`, {
               method: 'POST',
@@ -679,23 +679,23 @@ document.addEventListener('DOMContentLoaded', function() {
           });
       }
   </script>
-  
-  
+
+
     <script>
-  
+
     document.getElementById('add-lang-btn').addEventListener('click', function() {
       document.getElementById('modal').classList.remove('hidden');
     });
-  
+
     document.getElementById('cancel-btn').addEventListener('click', function() {
       document.getElementById('modal').classList.add('hidden');
     });
-  
+
     document.getElementById('lang-form').addEventListener('submit', function(event) {
       event.preventDefault();
       const language = document.getElementById('language').value;
       const country = document.getElementById('country').value;
-  
+
       document.getElementById('modal').classList.add('hidden');
     });
   </script>
@@ -742,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function() {
       {% endfor %}
     </div>
   </section>
-  
+
   <!-- Experience Modal -->
   <div id="experience-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
       <div class="bg-white sm:p-4 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
@@ -774,26 +774,26 @@ document.addEventListener('DOMContentLoaded', function() {
           </form>
       </div>
   </div>
-  
-  
-  
+
+
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const addExperienceBtn = document.getElementById('add-experience-btn');
       const experienceModal = document.getElementById('experience-modal');
       const experienceFormId = document.getElementById('experience-form-id');
       const experienceIdInput = document.getElementById('experience-id');
-  
+
       addExperienceBtn.addEventListener('click', () => {
           experienceFormId.reset(); // Reset form fields
           experienceIdInput.value = ''; // Clear the ID for new entries
           experienceModal.classList.remove('hidden'); // Show the modal
       });
-  
+
       document.getElementById('cancel-edit').addEventListener('click', () => {
           experienceModal.classList.add('hidden'); // Hide the modal
       });
-  
+
       window.editExperience = (id) => {
           fetch(`/dashboard/experience/${id}/`) // Your URL pattern for fetching experience details
               .then(response => response.json())
@@ -806,7 +806,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   experienceModal.classList.remove('hidden'); // Show the modal
               });
       };
-  
+
       window.deleteExperience = (id) => {
           fetch(`/dashboard/experience/${id}/delete/`, { // Your URL pattern for deleting experience
               method: 'DELETE',
@@ -819,10 +819,10 @@ document.addEventListener('DOMContentLoaded', function() {
           });
       };
   });
-  
-  
+
+
   </script>
-  
+
   <section id="education-sec" class="mb-2 bg-white p-2 rounded-lg">
     <div class="flex justify-between items-center mb-2 p-2">
       <h2 class="font-bold text-xl text-[#1e90ff]">Education</h2>
@@ -830,7 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="{% static 'build/img/plus-svgrepo-com.svg' %}" alt="plus icon" />
       </button>
     </div>
-  
+
     <div id="education-list" class="p-2">
       {% for education in educations %}
       <div id="education-{{ education.id }}" class="education border p-2 mb-2 rounded-lg font-bold flex justify-between items-center">
@@ -859,7 +859,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
       {% endfor %}
     </div>
-  
+
    <!-- Modal Structure -->
   <div id="education-modal" class="fixed inset-0 bg-gray-600 bg-opacity-10 flex items-center justify-center hidden">
       <div class="bg-white sm:p-4 rounded-lg shadow-lg w-[90%] sm:w-[80%] md:w-[65%] lg:w-[50%]">
@@ -887,7 +887,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </form>
       </div>
   </div>
-  
+
   </section>
   <section
   class="sm:bg-white rounded-lg sm:p-4 mb-2 sm:border border-gray-300"
@@ -1124,7 +1124,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       </aside>
 
-      
+
 
 
 

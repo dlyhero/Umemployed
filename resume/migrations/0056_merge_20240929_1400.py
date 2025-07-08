@@ -4,11 +4,9 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('resume', '0055_alter_resume_cv_alter_resume_date_of_birth_and_more'),
-        ('resume', '0055_alter_resume_date_of_birth'),
+        ("resume", "0055_alter_resume_cv_alter_resume_date_of_birth_and_more"),
+        ("resume", "0055_alter_resume_date_of_birth"),
     ]
 
-    operations = [
-    ]
+    operations = []

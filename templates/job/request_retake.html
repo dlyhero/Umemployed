@@ -1,220 +1,220 @@
-{% extends 'resume/base.html' %}  
-{% load static %}  
-{% block search_bar %}  
-{% endblock search_bar %}  
-{% block custom_css %}  
-<link rel="stylesheet" href="{% static 'build/css/style.css' %}" />  
-<script src="https://cdn.tailwindcss.com"></script>  
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />  
-<style>  
-    /* Additional custom styles */  
-    .fade-in {  
-        animation: fadeIn 0.5s ease-in-out;  
-    }  
+{% extends 'resume/base.html' %}
+{% load static %}
+{% block search_bar %}
+{% endblock search_bar %}
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'build/css/style.css' %}" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<style>
+    /* Additional custom styles */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
 
-    @keyframes fadeIn {  
-        from {  
-            opacity: 0;  
-        }  
-        to {  
-            opacity: 1;  
-        }  
-    }  
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
 
-    .scale-up {  
-        transform: scale(1);  
-        transition: transform 0.3s ease;  
-    }  
+    .scale-up {
+        transform: scale(1);
+        transition: transform 0.3s ease;
+    }
 
-    .scale-up:hover {  
-        transform: scale(1.05);  
-    }  
+    .scale-up:hover {
+        transform: scale(1.05);
+    }
 
-    .modal-enter {  
-        opacity: 0;  
-        transform: translateY(-20px);  
-        transition: opacity 0.3s ease, transform 0.3s ease;  
-    }  
+    .modal-enter {
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
 
-    .modal-enter-active {  
-        opacity: 1;  
-        transform: translateY(0);  
-    }  
+    .modal-enter-active {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-    .success-message {  
-        display: none; /* Hidden by default */  
-        text-align: center;  
-        margin: 20px 0;  
-    }  
-</style>  
-{% endblock %}  
-{% block content %}  
-<div class="h-[90vh] flex flex-col justify-around">  
-    <main class="w-full">  
-        <div class="md:bg-white sm:border border-gray-200 rounded-lg py-6 px-6 max-w-2xl mx-auto fade-in">  
-            <div class="flex flex-col items-center text-center">  
-                <div class="text-red-500 text-6xl mb-4">  
-                    <i class="fas fa-times fa-sm"></i>  
-                </div>  
-                <h1 class="text-xl font-semibold text-gray-800 mb-2">  
-                    Notice  
-                </h1>  
-                <p class="text-gray-600 mb-4 text-wrap text-center">  
-                    You are seeing this page because you have already had access to the questions in one way or the other and you cannot retake the test again. This is to avoid assessment malpractices and ensure fairness in the evaluation process.   
-                </p>  
-                <p class="text-gray-600 mb-4 text-wrap text-center">  
-                    Remember, as you accepted before starting the evaluation, you agreed to complete it in one sitting. If you believe you have a valid reason to retake the test, you can submit a request. Otherwise, if you are satisfied with your performance, you can click done.  
-                </p>  
+    .success-message {
+        display: none; /* Hidden by default */
+        text-align: center;
+        margin: 20px 0;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="h-[90vh] flex flex-col justify-around">
+    <main class="w-full">
+        <div class="md:bg-white sm:border border-gray-200 rounded-lg py-6 px-6 max-w-2xl mx-auto fade-in">
+            <div class="flex flex-col items-center text-center">
+                <div class="text-red-500 text-6xl mb-4">
+                    <i class="fas fa-times fa-sm"></i>
+                </div>
+                <h1 class="text-xl font-semibold text-gray-800 mb-2">
+                    Notice
+                </h1>
+                <p class="text-gray-600 mb-4 text-wrap text-center">
+                    You are seeing this page because you have already had access to the questions in one way or the other and you cannot retake the test again. This is to avoid assessment malpractices and ensure fairness in the evaluation process.
+                </p>
+                <p class="text-gray-600 mb-4 text-wrap text-center">
+                    Remember, as you accepted before starting the evaluation, you agreed to complete it in one sitting. If you believe you have a valid reason to retake the test, you can submit a request. Otherwise, if you are satisfied with your performance, you can click done.
+                </p>
 
-                <div class="flex space-x-4 w-[80%] mx-auto">  
-                    <button id="request-btn" class="flex-1 border border-green-500 scale-up hover:bg-green-700 hover:text-white text-green-500 font-bold py-2 px-4 rounded-full transition duration-300">  
-                        Request to Retake  
-                    </button>  
-                    <a href="{% url 'home' %}" class="flex-1 bg-[#1e90ff] scale-up hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-full transition duration-300">  
-                        Done  
-                    </a>  
-                </div>  
-            </div>  
-        </div>  
-    </main>  
-    {% block footer %}  
-    {% endblock footer %}  
-    <footer class="text-gray-800 text-center p-3">  
-        <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">  
-            <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>  
-            <div class="flex space-x-4 items-center">  
-                <a href="https://twitter.com/UmEmployed" class="text-white hover:text-gray-300">  
-                    <i class="fab fa-twitter text-black"></i>  
-                </a>  
-                <a href="https://linkedin.com/company/umemployed" class="text-white hover:text-gray-300">  
-                    <i class="fab fa-linkedin text-black"></i>  
-                </a>  
-                <a href="https://facebook.com/UmEmployed" class="text-white hover:text-gray-300">  
-                    <i class="fab fa-facebook text-black"></i>  
-                </a>  
-            </div>  
-            <div class="text-sm">  
-                <a href="/privacy-policy" class="hover:text-gray-300">Privacy Policy</a> |  
-                <a href="/contact-us" class="hover:text-gray-300">Contact Us</a>  
-            </div>  
-        </div>  
-    </footer>  
-</div>  
+                <div class="flex space-x-4 w-[80%] mx-auto">
+                    <button id="request-btn" class="flex-1 border border-green-500 scale-up hover:bg-green-700 hover:text-white text-green-500 font-bold py-2 px-4 rounded-full transition duration-300">
+                        Request to Retake
+                    </button>
+                    <a href="{% url 'home' %}" class="flex-1 bg-[#1e90ff] scale-up hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-full transition duration-300">
+                        Done
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+    {% block footer %}
+    {% endblock footer %}
+    <footer class="text-gray-800 text-center p-3">
+        <div class="flex flex-col sm:flex-row justify-center gap-2 items-center">
+            <p class="text-sm">© 2024 UmEmployed. All rights reserved.</p>
+            <div class="flex space-x-4 items-center">
+                <a href="https://twitter.com/UmEmployed" class="text-white hover:text-gray-300">
+                    <i class="fab fa-twitter text-black"></i>
+                </a>
+                <a href="https://linkedin.com/company/umemployed" class="text-white hover:text-gray-300">
+                    <i class="fab fa-linkedin text-black"></i>
+                </a>
+                <a href="https://facebook.com/UmEmployed" class="text-white hover:text-gray-300">
+                    <i class="fab fa-facebook text-black"></i>
+                </a>
+            </div>
+            <div class="text-sm">
+                <a href="/privacy-policy" class="hover:text-gray-300">Privacy Policy</a> |
+                <a href="/contact-us" class="hover:text-gray-300">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+</div>
 
-<!-- Modal -->  
-<div id="request-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">  
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full modal-enter">  
-        <h2 class="text-xl font-semibold mb-4">Request to Retake</h2>  
-        <form id="request-form" method="post" action="{% url 'job:report_test' job.id %}">  
-            {% csrf_token %}  
-            <div class="mb-4">  
-                <label for="reason" class="block text-gray-700">Reason for Request</label>  
-                <textarea id="reason" name="reason" rows="4" class="w-full p-2 border border-gray-300 rounded-lg" required></textarea>  
-            </div>  
-            <div class="flex justify-end">  
-                <button type="button" id="close-modal" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg mr-2">Cancel</button>  
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Submit</button>  
-            </div>  
-        </form>  
-        <div id="success-message" class="success-message fade-in">  
-            <i class="fas fa-check-circle text-green-500 text-3xl"></i>  
-            <p class="text-green-600 mt-2">Request submitted successfully!</p>  
-        </div>  
-    </div>  
-</div>  
+<!-- Modal -->
+<div id="request-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full modal-enter">
+        <h2 class="text-xl font-semibold mb-4">Request to Retake</h2>
+        <form id="request-form" method="post" action="{% url 'job:report_test' job.id %}">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="reason" class="block text-gray-700">Reason for Request</label>
+                <textarea id="reason" name="reason" rows="4" class="w-full p-2 border border-gray-300 rounded-lg" required></textarea>
+            </div>
+            <div class="flex justify-end">
+                <button type="button" id="close-modal" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg mr-2">Cancel</button>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Submit</button>
+            </div>
+        </form>
+        <div id="success-message" class="success-message fade-in">
+            <i class="fas fa-check-circle text-green-500 text-3xl"></i>
+            <p class="text-green-600 mt-2">Request submitted successfully!</p>
+        </div>
+    </div>
+</div>
 
-<script>  
-    document.addEventListener("DOMContentLoaded", function() {  
-        const requestBtn = document.getElementById('request-btn');  
-        const requestModal = document.getElementById('request-modal');  
-        const closeModal = document.getElementById('close-modal');  
-        const requestForm = document.getElementById('request-form');  
-        const successMessage = document.getElementById('success-message');  
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const requestBtn = document.getElementById('request-btn');
+        const requestModal = document.getElementById('request-modal');
+        const closeModal = document.getElementById('close-modal');
+        const requestForm = document.getElementById('request-form');
+        const successMessage = document.getElementById('success-message');
 
-        requestBtn.addEventListener('click', function() {  
-            requestModal.classList.remove('hidden');  
-            requestModal.firstElementChild.classList.add('modal-enter-active');  
-        });  
+        requestBtn.addEventListener('click', function() {
+            requestModal.classList.remove('hidden');
+            requestModal.firstElementChild.classList.add('modal-enter-active');
+        });
 
-        closeModal.addEventListener('click', function() {  
-            requestModal.classList.add('hidden');  
-            requestModal.firstElementChild.classList.remove('modal-enter-active');  
-            successMessage.style.display = 'none'; // Reset success message  
-        });  
+        closeModal.addEventListener('click', function() {
+            requestModal.classList.add('hidden');
+            requestModal.firstElementChild.classList.remove('modal-enter-active');
+            successMessage.style.display = 'none'; // Reset success message
+        });
 
-        requestForm.addEventListener("submit", function(event) {  
-            event.preventDefault(); // Prevent default form submission  
-            const formData = new FormData(requestForm); // Collect the form data  
+        requestForm.addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+            const formData = new FormData(requestForm); // Collect the form data
 
-            // Send the data using fetch  
-            fetch(requestForm.action, {  
-                method: 'POST',  
-                body: formData,  
-                headers: {  
-                    'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token for Django  
-                }  
-            })  
-            .then(response => {  
-                if (response.ok) {  
-                    return response.json(); // Assuming the server responds with JSON  
-                }  
-                throw new Error('Network response was not ok.');  
-            })  
-            .then(data => {  
-                // Hide the modal and show the success message  
-                requestModal.classList.add('hidden');  
-                successMessage.style.display = 'block';  
+            // Send the data using fetch
+            fetch(requestForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token for Django
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); // Assuming the server responds with JSON
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                // Hide the modal and show the success message
+                requestModal.classList.add('hidden');
+                successMessage.style.display = 'block';
 
-                // Optionally reset the form  
-                requestForm.reset();  
+                // Optionally reset the form
+                requestForm.reset();
 
-                // Automatically hide the success message after a few seconds  
-                setTimeout(() => {  
-                    successMessage.style.display = 'none';  
-                }, 10000); // Hide after 5 seconds  
-            })  
-            .catch(error => {  
-                console.error('There was a problem with the request:', error);  
-                // Optionally show an error message to the user  
-            });  
-            // Simulate a successful submission (replace this with actual AJAX form submission in your project)  
-            setTimeout(() => {  
-                // Hide the form and show the success message  
-                requestModal.classList.add('hidden');  
-                successMessage.style.display = 'block';  
-                
-                // Optionally append the success message to the main content if you want:  
-                document.querySelector('.flex.flex-col.items-center').appendChild(successMessage);  
-                
-                // Reset the form  
-                requestForm.reset();  
+                // Automatically hide the success message after a few seconds
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 10000); // Hide after 5 seconds
+            })
+            .catch(error => {
+                console.error('There was a problem with the request:', error);
+                // Optionally show an error message to the user
+            });
+            // Simulate a successful submission (replace this with actual AJAX form submission in your project)
+            setTimeout(() => {
+                // Hide the form and show the success message
+                requestModal.classList.add('hidden');
+                successMessage.style.display = 'block';
 
-                // Optionally, you can automatically hide the success message after a few seconds  
-                setTimeout(() => {  
-                    successMessage.style.display = 'none';  
-                }, 5000); // Hide after 5 seconds  
-            }, 1000); // Simulate network delay  
-        });  
+                // Optionally append the success message to the main content if you want:
+                document.querySelector('.flex.flex-col.items-center').appendChild(successMessage);
 
-        window.addEventListener('click', function(event) {  
-            if (event.target === requestModal) {  
-                requestModal.classList.add('hidden');  
-                requestModal.firstElementChild.classList.remove('modal-enter-active');  
-                successMessage.style.display = 'none'; // Reset success message  
-            }  
-        });  
-    });  
-</script>  
-<script src="{% static 'jobs/asset/job_listing.js' %}"></script>  
-<script src="{% static 'scripts/dashboard.js' %}"></script>  
-<script>  
-    document.addEventListener("DOMContentLoaded", function() {  
-        const alerts = document.querySelectorAll('.primary .alert');  
-        alerts.forEach(alert => {  
-            setTimeout(() => {  
-                alert.style.display = 'none';  
-            }, 10000); // 10 seconds  
-        });  
-    });  
-</script>  
+                // Reset the form
+                requestForm.reset();
+
+                // Optionally, you can automatically hide the success message after a few seconds
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 5000); // Hide after 5 seconds
+            }, 1000); // Simulate network delay
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === requestModal) {
+                requestModal.classList.add('hidden');
+                requestModal.firstElementChild.classList.remove('modal-enter-active');
+                successMessage.style.display = 'none'; // Reset success message
+            }
+        });
+    });
+</script>
+<script src="{% static 'jobs/asset/job_listing.js' %}"></script>
+<script src="{% static 'scripts/dashboard.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const alerts = document.querySelectorAll('.primary .alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 10000); // 10 seconds
+        });
+    });
+</script>
 {% endblock %}

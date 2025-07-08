@@ -1,37 +1,52 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
-from django.contrib import messages
-from django.db.models import Q
-from django.core.mail import send_mail
-from django.conf import settings
-from django.db import transaction
-from ..models import Job, Application, SavedJob, SkillCategory, User, Shortlist, Company, SkillQuestion, CompletedSkills, ApplicantAnswer, RetakeRequest
-from resume.models import Skill
-from ..tasks import generate_questions_task
-from ..job_description_algorithm import extract_technical_skills
-from .serializers import JobSerializer, ApplicationSerializer, SavedJobSerializer
-from ..generate_skills import generate_questions_task
-from django_countries import countries  # Import the correct iterable for countries
-from notifications.utils import notify_user, notify_user_declined
-from rest_framework.filters import SearchFilter, OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.pagination import PageNumberPagination
+import json
 import logging
-from transactions.models import Subscription 
+import random
+import re
+
 import openai
 from django.conf import settings
-import json
-import re
-import random
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.db import transaction
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from django_countries import countries  # Import the correct iterable for countries
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from company.api.views import update_and_notify_top10  # Add this import
-from transactions.api.permissions import HasActiveSubscription
 from notifications.models import Notification
+from notifications.utils import notify_user, notify_user_declined
+from resume.models import Skill
+from transactions.api.permissions import HasActiveSubscription
+from transactions.models import Subscription
+
+from ..generate_skills import generate_questions_task
+from ..job_description_algorithm import extract_technical_skills
+from ..models import (
+    ApplicantAnswer,
+    Application,
+    Company,
+    CompletedSkills,
+    Job,
+    RetakeRequest,
+    SavedJob,
+    Shortlist,
+    SkillCategory,
+    SkillQuestion,
+    User,
+)
+from ..tasks import generate_questions_task
+from .serializers import ApplicationSerializer, JobSerializer, SavedJobSerializer
 
 logger = logging.getLogger(__name__)
+
 
 class JobListAPIView(ListAPIView):
     queryset = Job.objects.filter(job_creation_is_complete=True)
@@ -39,8 +54,9 @@ class JobListAPIView(ListAPIView):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['request'] = self.request
+        context["request"] = self.request
         return context
+
 
 class JobDetailAPIView(RetrieveAPIView):
     queryset = Job.objects.all()
@@ -48,8 +64,9 @@ class JobDetailAPIView(RetrieveAPIView):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['request'] = self.request
+        context["request"] = self.request
         return context
+
 
 class ApplyJobAPIView(APIView):
     def post(self, request, job_id):
@@ -60,13 +77,19 @@ class ApplyJobAPIView(APIView):
         existing_application = Application.objects.filter(user=user, job=job).first()
 
         if existing_application:
-            return Response({"message": "You have already applied for this job."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "You have already applied for this job."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Create a new application
         application = Application.objects.create(user=user, job=job)
         application.save()
 
-        return Response({"message": "Job application submitted successfully."}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": "Job application submitted successfully."}, status=status.HTTP_201_CREATED
+        )
+
 
 class SaveJobAPIView(APIView):
     def post(self, request, job_id):
@@ -82,6 +105,7 @@ class SaveJobAPIView(APIView):
             saved_job.delete()
             return Response({"message": "Job removed successfully."}, status=status.HTTP_200_OK)
 
+
 class WithdrawApplicationAPIView(APIView):
     def delete(self, request, job_id):
         user = request.user
@@ -94,11 +118,16 @@ class WithdrawApplicationAPIView(APIView):
                 Notification.objects.create(
                     user=job.company.user,
                     notification_type=Notification.JOB_APPLICATION,
-                    message=f"{user.get_full_name() or user.username} has withdrawn their application for '{job.title}'."
+                    message=f"{user.get_full_name() or user.username} has withdrawn their application for '{job.title}'.",
                 )
-            return Response({"message": "Your application has been withdrawn."}, status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Your application has been withdrawn."}, status=status.HTTP_200_OK
+            )
         else:
-            return Response({"message": "You haven't applied for this job."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "You haven't applied for this job."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
 
 class ShortlistCandidateAPIView(APIView):
     def post(self, request, job_id, candidate_id):
@@ -107,16 +136,23 @@ class ShortlistCandidateAPIView(APIView):
         recruiter = request.user
         # Check if the candidate is already shortlisted for the job
         if Shortlist.objects.filter(recruiter=recruiter, candidate=candidate, job=job).exists():
-            return Response({"message": "Candidate is already shortlisted for this job."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "Candidate is already shortlisted for this job."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         Shortlist.objects.create(recruiter=recruiter, candidate=candidate, job=job)
         # Notify candidate
         Notification.objects.create(
             user=candidate,
             notification_type=Notification.JOB_APPLICATION,
-            message=f"You have been shortlisted for the job '{job.title}' at {job.company.name if job.company else ''}."
+            message=f"You have been shortlisted for the job '{job.title}' at {job.company.name if job.company else ''}.",
         )
-        return Response({"message": "Candidate has been shortlisted successfully."}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": "Candidate has been shortlisted successfully."},
+            status=status.HTTP_201_CREATED,
+        )
+
 
 class DeclineCandidateAPIView(APIView):
     def post(self, request, job_id, candidate_id):
@@ -127,7 +163,10 @@ class DeclineCandidateAPIView(APIView):
         # Check if the recruiter is associated with the job
         company = get_object_or_404(Company, user=recruiter)
         if job.company != company:
-            return Response({"message": "You are not authorized to decline this candidate."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"message": "You are not authorized to decline this candidate."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         # Get the application object
         application = get_object_or_404(Application, job=job, user=candidate)
@@ -136,7 +175,11 @@ class DeclineCandidateAPIView(APIView):
         application.delete()
 
         # Send notification to the candidate
-        notify_user_declined(candidate, f"Your application for the job '{job.title}' has been declined.", Notification.JOB_APPLICATION)
+        notify_user_declined(
+            candidate,
+            f"Your application for the job '{job.title}' has been declined.",
+            Notification.JOB_APPLICATION,
+        )
 
         # Send email to the candidate
         subject = "Application Declined"
@@ -149,52 +192,64 @@ class DeclineCandidateAPIView(APIView):
 
                     Wishing you the very best in your job search.
 
-                    Warm regards,  
+                    Warm regards,
                     {company.name}
                     """
         from_email = settings.DEFAULT_FROM_EMAIL
         send_mail(subject, message, from_email, [candidate.email])
 
-        return Response({"message": "Candidate has been declined successfully."}, status=status.HTTP_200_OK)
+        return Response(
+            {"message": "Candidate has been declined successfully."}, status=status.HTTP_200_OK
+        )
+
 
 class SavedJobsListAPIView(ListAPIView):
     serializer_class = JobSerializer
 
     def get_queryset(self):
-        saved_jobs = SavedJob.objects.filter(user=self.request.user).select_related('job')
-        return Job.objects.filter(id__in=saved_jobs.values_list('job_id', flat=True))
+        saved_jobs = SavedJob.objects.filter(user=self.request.user).select_related("job")
+        return Job.objects.filter(id__in=saved_jobs.values_list("job_id", flat=True))
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['request'] = self.request
+        context["request"] = self.request
         return context
+
 
 class GenerateQuestionsAPIView(APIView):
     def post(self, request):
-        job_title = request.data.get('job_title')
-        entry_level = request.data.get('entry_level')
-        skill_name = request.data.get('skill_name')
-        questions_per_skill = request.data.get('questions_per_skill', 5)
+        job_title = request.data.get("job_title")
+        entry_level = request.data.get("entry_level")
+        skill_name = request.data.get("skill_name")
+        questions_per_skill = request.data.get("questions_per_skill", 5)
 
         generate_questions_task.delay(job_title, entry_level, skill_name, questions_per_skill)
-        return Response({"message": "Question generation started."}, status=status.HTTP_202_ACCEPTED)
+        return Response(
+            {"message": "Question generation started."}, status=status.HTTP_202_ACCEPTED
+        )
+
 
 class ExtractTechnicalSkillsAPIView(APIView):
     def post(self, request):
-        job_title = request.data.get('job_title')
-        job_description = request.data.get('job_description')
+        job_title = request.data.get("job_title")
+        job_description = request.data.get("job_description")
 
         if not job_title or not job_description:
-            return Response({"error": "Job title and description are required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Job title and description are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         skills = extract_technical_skills(job_title, job_description)
         return Response({"skills": skills}, status=status.HTTP_200_OK)
+
 
 class AppliedJobsListAPIView(ListAPIView):
     serializer_class = ApplicationSerializer
 
     def get_queryset(self):
         return Application.objects.filter(user=self.request.user)
+
 
 class CreateJobStep1APIView(APIView):
     """
@@ -225,21 +280,35 @@ class CreateJobStep1APIView(APIView):
     - 201 Created: Returns the created job details.
     - 400 Bad Request: Returns validation errors.
     """
+
     permission_classes = [IsAuthenticated, HasActiveSubscription]
-    required_user_type = 'recruiter'
+    required_user_type = "recruiter"
 
     def post(self, request):
         user = request.user
-        subscription = Subscription.objects.filter(user=user, user_type='recruiter', is_active=True).first()
+        subscription = Subscription.objects.filter(
+            user=user, user_type="recruiter", is_active=True
+        ).first()
         if not subscription:
-            return Response({"message": "No active recruiter subscription found."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"message": "No active recruiter subscription found."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         # Check daily posting limit
-        if not subscription.can_perform_action('posting'):
-            return Response({"message": "You have reached your daily job posting limit for your subscription tier."}, status=status.HTTP_403_FORBIDDEN)
+        if not subscription.can_perform_action("posting"):
+            return Response(
+                {
+                    "message": "You have reached your daily job posting limit for your subscription tier."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
         # Example: Only allow AI job description for premium recruiters
         if request.data.get("use_ai_job_description"):
-            if not subscription.has_feature('ai_job_description'):
-                return Response({"message": "Your subscription does not include AI job description feature."}, status=status.HTTP_403_FORBIDDEN)
+            if not subscription.has_feature("ai_job_description"):
+                return Response(
+                    {"message": "Your subscription does not include AI job description feature."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
         data = {
             "title": request.data.get("title"),
@@ -253,9 +322,10 @@ class CreateJobStep1APIView(APIView):
         serializer = JobSerializer(data=data)
         if serializer.is_valid():
             serializer.save(user=user, company=user.company)
-            subscription.increment_usage('posting')  # Increment usage after successful post
+            subscription.increment_usage("posting")  # Increment usage after successful post
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CreateJobStep2APIView(APIView):
     """
@@ -281,12 +351,15 @@ class CreateJobStep2APIView(APIView):
     - 404 Not Found: If the job does not exist or the user is unauthorized.
     - 400 Bad Request: Returns validation errors.
     """
+
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, job_id):
         job = Job.objects.filter(id=job_id, user=request.user).first()
         if not job:
-            return Response({"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         data = {
             "job_type": request.data.get("job_type"),
@@ -299,6 +372,7 @@ class CreateJobStep2APIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CreateJobStep3APIView(APIView):
     """
@@ -324,12 +398,15 @@ class CreateJobStep3APIView(APIView):
     - 404 Not Found: If the job does not exist or the user is unauthorized.
     - 400 Bad Request: Returns validation errors.
     """
+
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, job_id):
         job = Job.objects.filter(id=job_id, user=request.user).first()
         if not job:
-            return Response({"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         data = {
             "description": request.data.get("description"),
@@ -341,17 +418,23 @@ class CreateJobStep3APIView(APIView):
             serializer.save()
 
             # Extract technical skills from the job description
-            extracted_skills = extract_technical_skills(job.title, serializer.validated_data.get("description"))
+            extracted_skills = extract_technical_skills(
+                job.title, serializer.validated_data.get("description")
+            )
             if extracted_skills:
                 for skill_name in extracted_skills:
                     skill, _ = Skill.objects.get_or_create(name=skill_name)
                     job.extracted_skills.add(skill)
 
-            return Response({
-                "job": serializer.data,
-                "extracted_skills": [skill.name for skill in job.extracted_skills.all()]
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "job": serializer.data,
+                    "extracted_skills": [skill.name for skill in job.extracted_skills.all()],
+                },
+                status=status.HTTP_200_OK,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CreateJobStep4APIView(APIView):
     """
@@ -375,12 +458,15 @@ class CreateJobStep4APIView(APIView):
     - 404 Not Found: If the job does not exist or the user is unauthorized.
     - 400 Bad Request: Returns validation errors.
     """
+
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, job_id):
         job = Job.objects.filter(id=job_id, user=request.user).first()
         if not job:
-            return Response({"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         # Extract requirements and level from the request
         requirements = request.data.get("requirements", [])
@@ -390,9 +476,14 @@ class CreateJobStep4APIView(APIView):
         try:
             skills = Skill.objects.filter(id__in=requirements)
             if len(skills) != len(requirements):
-                return Response({"error": "One or more skill IDs are invalid."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "One or more skill IDs are invalid."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         except Exception as e:
-            return Response({"error": f"Error validating skills: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": f"Error validating skills: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Update the job's requirements and level
         job.requirements.set(skills)  # Use `set` to update ManyToManyField
@@ -404,38 +495,47 @@ class CreateJobStep4APIView(APIView):
         Notification.objects.create(
             user=request.user,
             notification_type=Notification.NEW_JOB_POSTED,
-            message=f"Your job '{job.title}' is now available and visible to candidates."
+            message=f"Your job '{job.title}' is now available and visible to candidates.",
         )
 
         # Generate questions for the selected skills
         generated_questions = []
         for skill in skills:
             result = generate_questions_task(job.title, level, skill.name, 5)
-            if result['success']:
-                generated_questions.extend(result['questions'])
+            if result["success"]:
+                generated_questions.extend(result["questions"])
 
         # Check if questions were successfully generated
         if generated_questions:
-            return Response({
-                "job": JobSerializer(job).data,
-                "generated_questions": generated_questions,
-                "message": "Questions generated successfully and emails sent."
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "job": JobSerializer(job).data,
+                    "generated_questions": generated_questions,
+                    "message": "Questions generated successfully and emails sent.",
+                },
+                status=status.HTTP_200_OK,
+            )
         else:
-            return Response({
-                "job": JobSerializer(job).data,
-                "generated_questions": [],
-                "message": "Failed to generate questions."
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {
+                    "job": JobSerializer(job).data,
+                    "generated_questions": [],
+                    "message": "Failed to generate questions.",
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
 
 class JobOptionsAPIView(APIView):
     """
-    Endpoint to fetch job-related options such as categories, salary ranges, locations, job location types, 
+    Endpoint to fetch job-related options such as categories, salary ranges, locations, job location types,
     experience levels, weekly ranges, shifts, and job types.
     """
+
     def get(self, request):
         # Group categories by name (case-insensitive), pick the most popular in each group
-        from collections import defaultdict, Counter
+        from collections import Counter, defaultdict
+
         categories_qs = SkillCategory.objects.all()
         # Build a mapping: lowercased name -> list of categories
         name_map = defaultdict(list)
@@ -448,37 +548,42 @@ class JobOptionsAPIView(APIView):
                 unique_categories.append(group[0])
             else:
                 # Pick the category with the most jobs
-                group = sorted(group, key=lambda c: Job.objects.filter(category=c).count(), reverse=True)
+                group = sorted(
+                    group, key=lambda c: Job.objects.filter(category=c).count(), reverse=True
+                )
                 unique_categories.append(group[0])
         # Sort alphabetically by name
         unique_categories = sorted(unique_categories, key=lambda c: c.name.lower())
-        categories = [{'id': c.id, 'name': c.name} for c in unique_categories]
+        categories = [{"id": c.id, "name": c.name} for c in unique_categories]
 
-        salary_ranges = dict(Job._meta.get_field('salary_range').choices)
-        job_location_types = dict(Job._meta.get_field('job_location_type').choices)
-        experience_levels = dict(Job._meta.get_field('experience_levels').choices)
-        weekly_ranges = dict(Job._meta.get_field('weekly_ranges').choices)
-        shifts = dict(Job._meta.get_field('shifts').choices)
-        job_types = dict(Job._meta.get_field('job_type').choices)
+        salary_ranges = dict(Job._meta.get_field("salary_range").choices)
+        job_location_types = dict(Job._meta.get_field("job_location_type").choices)
+        experience_levels = dict(Job._meta.get_field("experience_levels").choices)
+        weekly_ranges = dict(Job._meta.get_field("weekly_ranges").choices)
+        shifts = dict(Job._meta.get_field("shifts").choices)
+        job_types = dict(Job._meta.get_field("job_type").choices)
         countries_list = [
             {
-                'code': code,
-                'name': name,
-                'flag_url': f'https://flagcdn.com/w40/{code.lower()}.png'  # Flag URL
+                "code": code,
+                "name": name,
+                "flag_url": f"https://flagcdn.com/w40/{code.lower()}.png",  # Flag URL
             }
             for code, name in countries
         ]
 
-        return Response({
-            "categories": categories,
-            "salary_ranges": salary_ranges,
-            "job_location_types": job_location_types,
-            "experience_levels": experience_levels,
-            "weekly_ranges": weekly_ranges,
-            "shifts": shifts,
-            "job_types": job_types,
-            "locations": countries_list,
-        })
+        return Response(
+            {
+                "categories": categories,
+                "salary_ranges": salary_ranges,
+                "job_location_types": job_location_types,
+                "experience_levels": experience_levels,
+                "weekly_ranges": weekly_ranges,
+                "shifts": shifts,
+                "job_types": job_types,
+                "locations": countries_list,
+            }
+        )
+
 
 class ExtractedSkillsAPIView(APIView):
     """
@@ -490,15 +595,19 @@ class ExtractedSkillsAPIView(APIView):
     - 200 OK: Returns a list of extracted skill IDs and names.
     - 404 Not Found: If the job does not exist or the user is unauthorized.
     """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request, job_id):
         job = Job.objects.filter(id=job_id, user=request.user).first()
         if not job:
-            return Response({"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND
+            )
 
-        extracted_skills = job.extracted_skills.values('id', 'name')
+        extracted_skills = job.extracted_skills.values("id", "name")
         return Response({"extracted_skills": list(extracted_skills)}, status=status.HTTP_200_OK)
+
 
 class SearchJobsAPIView(ListAPIView):
     """
@@ -510,32 +619,35 @@ class SearchJobsAPIView(ListAPIView):
     - Sorting by created date or salary.
     - Pagination for large result sets.
     """
+
     queryset = Job.objects.filter(job_creation_is_complete=True)
     serializer_class = JobSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
-    search_fields = ['title', 'description']
-    filterset_fields = ['location', 'salary_range', 'job_type', 'category']
-    ordering_fields = ['created_at', 'salary']
+    search_fields = ["title", "description"]
+    filterset_fields = ["location", "salary_range", "job_type", "category"]
+    ordering_fields = ["created_at", "salary"]
     pagination_class = PageNumberPagination
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['request'] = self.request
+        context["request"] = self.request
         return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        keyword = self.request.query_params.get('keyword', None)
+        keyword = self.request.query_params.get("keyword", None)
         if keyword:
             queryset = queryset.filter(
                 Q(title__icontains=keyword) | Q(description__icontains=keyword)
             )
         return queryset
 
+
 class JobQuestionsAPIView(APIView):
     """
     API endpoint to fetch all questions for a job categorized by skills and submit all answers at once.
     """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request, job_id):
@@ -554,15 +666,27 @@ class JobQuestionsAPIView(APIView):
         """
         user = request.user
         # Check user subscription and application limit
-        subscription = Subscription.objects.filter(user=user, user_type='user', is_active=True).first()
+        subscription = Subscription.objects.filter(
+            user=user, user_type="user", is_active=True
+        ).first()
         if not subscription:
-            return Response({"message": "No active user subscription found."}, status=status.HTTP_403_FORBIDDEN)
-        if not subscription.can_perform_action('application'):
-            return Response({"message": "You have reached your daily job application limit for your subscription tier."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"message": "No active user subscription found."}, status=status.HTTP_403_FORBIDDEN
+            )
+        if not subscription.can_perform_action("application"):
+            return Response(
+                {
+                    "message": "You have reached your daily job application limit for your subscription tier."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
         # Example: Only allow resume enhancer for premium users
         if request.query_params.get("use_resume_enhancer") == "true":
-            if not subscription.has_feature('resume_enhancer'):
-                return Response({"message": "Your subscription does not include resume enhancer feature."}, status=status.HTTP_403_FORBIDDEN)
+            if not subscription.has_feature("resume_enhancer"):
+                return Response(
+                    {"message": "Your subscription does not include resume enhancer feature."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
         job = get_object_or_404(Job, id=job_id)
         skills = job.requirements.all()
@@ -577,23 +701,35 @@ class JobQuestionsAPIView(APIView):
 
         categorized_questions = {}
         for skill in skills:
-            questions = SkillQuestion.objects.filter(skill=skill, entry_level=job.level).order_by('?')
+            questions = SkillQuestion.objects.filter(skill=skill, entry_level=job.level).order_by(
+                "?"
+            )
             categorized_questions[skill.name] = [
                 {
                     "id": question.id,
                     "question": question.question,
-                    "options": [question.option_a, question.option_b, question.option_c, question.option_d]
+                    "options": [
+                        question.option_a,
+                        question.option_b,
+                        question.option_c,
+                        question.option_d,
+                    ],
                 }
                 for question in questions
             ]
 
-        subscription.increment_usage('application')  # Increment usage after successful application start
+        subscription.increment_usage(
+            "application"
+        )  # Increment usage after successful application start
 
-        return Response({
-            "job_title": job.title,
-            "total_time": total_time,  # Total time in seconds
-            "questions_by_skill": categorized_questions
-        }, status=200)
+        return Response(
+            {
+                "job_title": job.title,
+                "total_time": total_time,  # Total time in seconds
+                "questions_by_skill": categorized_questions,
+            },
+            status=200,
+        )
 
     def post(self, request, job_id):
         """
@@ -649,17 +785,14 @@ class JobQuestionsAPIView(APIView):
                     question=question,
                     answer=answer,
                     job=job,
-                    application=application
+                    application=application,
                 )
                 applicant_answer.calculate_score()
                 total_score += applicant_answer.score
 
                 # Mark the skill as completed
                 CompletedSkills.objects.update_or_create(
-                    user=user,
-                    job=job,
-                    skill=skill,
-                    defaults={"is_completed": True}
+                    user=user, job=job, skill=skill, defaults={"is_completed": True}
                 )
 
             # Update application scores
@@ -673,21 +806,26 @@ class JobQuestionsAPIView(APIView):
         Notification.objects.create(
             user=user,
             notification_type=Notification.JOB_APPLICATION,
-            message=f"You have completed the quiz for the job '{job.title}'."
+            message=f"You have completed the quiz for the job '{job.title}'.",
         )
         # Notify recruiter/company owner of new candidate quiz completion
         if job.company and job.company.user:
             Notification.objects.create(
                 user=job.company.user,
                 notification_type=Notification.JOB_APPLICATION,
-                message=f"{user.get_full_name() or user.username} has completed the quiz for '{job.title}'."
+                message=f"{user.get_full_name() or user.username} has completed the quiz for '{job.title}'.",
             )
-        return Response({"message": "All responses submitted successfully.", "total_score": total_score}, status=200)
+        return Response(
+            {"message": "All responses submitted successfully.", "total_score": total_score},
+            status=200,
+        )
+
 
 class ReportTestAPIView(APIView):
     """
     API endpoint to report issues with a test for a specific job.
     """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, job_id):
@@ -711,36 +849,46 @@ class ReportTestAPIView(APIView):
             fail_silently=False,
         )
 
-        return Response({"message": "Retake request submitted successfully."}, status=status.HTTP_200_OK)
+        return Response(
+            {"message": "Retake request submitted successfully."}, status=status.HTTP_200_OK
+        )
+
 
 class TailoredJobDescriptionAPIView(APIView):
     """
     Generates and saves a tailored job description, responsibilities, and benefits for a job using AI.
     Expects job details and a list of required skills (not saved).
     """
+
     def post(self, request, job_id):
         # Subscription check: require at least standard or premium
         user = request.user
-        subscription = Subscription.objects.filter(user=user, user_type='recruiter', is_active=True).order_by('-started_at').first()
-        if not subscription or subscription.tier not in ['standard', 'premium']:
+        subscription = (
+            Subscription.objects.filter(user=user, user_type="recruiter", is_active=True)
+            .order_by("-started_at")
+            .first()
+        )
+        if not subscription or subscription.tier not in ["standard", "premium"]:
             return Response(
-                {"error": "You need a Standard or Premium recruiter subscription to use the AI job description feature. Please upgrade your plan."},
-                status=403
+                {
+                    "error": "You need a Standard or Premium recruiter subscription to use the AI job description feature. Please upgrade your plan."
+                },
+                status=403,
             )
 
         job = get_object_or_404(Job, id=job_id)
         # Extract job fields from request or use job instance as fallback
-        title = request.data.get('title', job.title)
-        hire_number = request.data.get('hire_number', job.hire_number)
-        job_location_type = request.data.get('job_location_type', job.job_location_type)
-        job_type = request.data.get('job_type', job.job_type)
-        location = request.data.get('location', str(job.location))
-        salary_range = request.data.get('salary_range', job.salary_range)
-        category = request.data.get('category', job.category.name if job.category else "")
-        experience_levels = request.data.get('experience_levels', job.experience_levels)
-        weekly_ranges = request.data.get('weekly_ranges', job.weekly_ranges)
-        shifts = request.data.get('shifts', job.shifts)
-        skills = request.data.get('skills', [])  # List of required skills from frontend
+        title = request.data.get("title", job.title)
+        hire_number = request.data.get("hire_number", job.hire_number)
+        job_location_type = request.data.get("job_location_type", job.job_location_type)
+        job_type = request.data.get("job_type", job.job_type)
+        location = request.data.get("location", str(job.location))
+        salary_range = request.data.get("salary_range", job.salary_range)
+        category = request.data.get("category", job.category.name if job.category else "")
+        experience_levels = request.data.get("experience_levels", job.experience_levels)
+        weekly_ranges = request.data.get("weekly_ranges", job.weekly_ranges)
+        shifts = request.data.get("shifts", job.shifts)
+        skills = request.data.get("skills", [])  # List of required skills from frontend
 
         # randomization to the prompt for tone/style
         style_options = [
@@ -784,17 +932,17 @@ class TailoredJobDescriptionAPIView(APIView):
             f"Required Skills: {', '.join(skills)}\n\n"
             "###EXAMPLES###\n"
             "description: \"Join our mission-driven team as a Senior Data Scientist (5+ years experience required), where you'll build scalable solutions impacting thousands of users. You'll collaborate with cross-functional teams, leverage modern technologies, and contribute to a culture of innovation and excellence.\"\n"
-            "responsibilities: \"- Design, develop, and deploy high-quality software solutions\n"
+            'responsibilities: "- Design, develop, and deploy high-quality software solutions\n'
             "- Collaborate with product managers and designers to define requirements\n"
             "- Implement best practices for code quality, testing, and documentation\n"
             "- Mentor junior engineers and contribute to team knowledge sharing\n"
             "- Leverage at least 5 years of experience in data science to drive impactful projects\n"
-            "- Continuously improve system performance and scalability\"\n"
-            "benefits: \"- Competitive salary and performance bonuses\n"
+            '- Continuously improve system performance and scalability"\n'
+            'benefits: "- Competitive salary and performance bonuses\n'
             "- Comprehensive health, dental, and vision insurance\n"
             "- Flexible remote work options\n"
             "- Professional development budget\n"
-            "- Inclusive and collaborative team culture\"\n"
+            '- Inclusive and collaborative team culture"\n'
             "###END###\n"
         )
 
@@ -806,7 +954,7 @@ class TailoredJobDescriptionAPIView(APIView):
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
                 max_tokens=1000,
                 temperature=0.7,
@@ -814,9 +962,9 @@ class TailoredJobDescriptionAPIView(APIView):
             ai_content = response.choices[0].message.content
 
             # Clean up control characters and invalid JSON before parsing
-            ai_content_clean = re.sub(r'[\x00-\x1F\x7F]', '', ai_content)
+            ai_content_clean = re.sub(r"[\x00-\x1F\x7F]", "", ai_content)
             # Optionally, try to extract the first JSON object if extra text is present
-            match = re.search(r'\{.*\}', ai_content_clean, re.DOTALL)
+            match = re.search(r"\{.*\}", ai_content_clean, re.DOTALL)
             if match:
                 ai_content_clean = match.group(0)
 
@@ -826,16 +974,21 @@ class TailoredJobDescriptionAPIView(APIView):
 
         # Save to job fields
         try:
-            job.description = result.get('description', job.description)
-            job.responsibilities = result.get('responsibilities', job.responsibilities)
-            job.benefits = result.get('benefits', job.benefits)
+            job.description = result.get("description", job.description)
+            job.responsibilities = result.get("responsibilities", job.responsibilities)
+            job.benefits = result.get("benefits", job.benefits)
             job.save()
         except Exception as e:
-            return Response({"error": f"Failed to save tailored job description: {str(e)}"}, status=500)
+            return Response(
+                {"error": f"Failed to save tailored job description: {str(e)}"}, status=500
+            )
 
-        return Response({
-            "message": "Tailored job description generated and saved successfully.",
-            "description": job.description,
-            "responsibilities": job.responsibilities,
-            "benefits": job.benefits
-        }, status=200)
+        return Response(
+            {
+                "message": "Tailored job description generated and saved successfully.",
+                "description": job.description,
+                "responsibilities": job.responsibilities,
+                "benefits": job.benefits,
+            },
+            status=200,
+        )

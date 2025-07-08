@@ -83,37 +83,37 @@
         opacity: 0;
         transform: translateX(-50%);
       }
-  
+
       100% {
         opacity: 1;
         transform: translateX(0);
       }
     }
-  
+
     @keyframes slide-in-right {
       0% {
         opacity: 0;
         transform: translateX(50%);
       }
-  
+
       100% {
         opacity: 1;
         transform: translateX(0);
       }
     }
-  
+
     .animate-slide-in-left {
       animation: slide-in-left 0.5s ease-out;
     }
-  
+
     .animate-slide-in-right {
       animation: slide-in-right 0.5s ease-out;
     }
     </style>
      {% block custom_css %}
-    
-      
-      
+
+
+
     {% endblock %}
 
 <!-- Then include Bootstrap's JavaScript -->
@@ -121,7 +121,7 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  
+
   </head>
   <body class="text-sm  bg-gray-100 flex flex-col">
     <header
@@ -132,7 +132,7 @@
       <div class="logo-wrap flex items-center">
         <img
           class="w-7 md:w-9"
-          src="{% static 'build/logo/logo-color.png' %}" 
+          src="{% static 'build/logo/logo-color.png' %}"
           alt="Logo"
         />
         <span class="text-[#1e90ff] hidden md:block md:text-xl font-bold"
@@ -140,7 +140,7 @@
         >
       </div>
     </a>
-      
+
     </div>
     <nav class="flex md:gap-x-4 items-center">
       <ul class="flex gap-x-2 md:gap-x-4 items-center">
@@ -393,7 +393,7 @@
     </div>
 
 
-    
+
     <!-- Main Content -->
     <main class="flex flex-1 overflow-hidden bg-gray-100 sm:p-2 sm:gap-2 ">
       <!-- Sidebar -->

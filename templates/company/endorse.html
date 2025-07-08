@@ -9,7 +9,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-<script src="https://cdn.tailwindcss.com"></script> 
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
     body{
@@ -73,21 +73,21 @@
             <!-- Candidate and Endorser Info -->
             <div>
                 <label for="candidate-name" class="block text-gray-700 font-medium mb-2">Candidate Name</label>
-                <input type="text" id="candidate-name" name="candidate_name" 
-                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-600" 
+                <input type="text" id="candidate-name" name="candidate_name"
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-600"
                        value="{{ candidate_name }}" readonly>
             </div>
             <div>
                 <label for="endorser-name" class="block text-gray-700 font-medium mb-2">Your Name</label>
-                <input type="text" id="endorser-name" name="endorser_name" 
-                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-600" 
+                <input type="text" id="endorser-name" name="endorser_name"
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-600"
                        value="{{ endorser_name }}" readonly>
             </div>
 
             <!-- Survey Questions -->
             <div>
                 <label for="professionalism" class="block text-gray-700 font-medium mb-2">How would you rate the candidate's professionalism?</label>
-                <select id="professionalism" name="professionalism" 
+                <select id="professionalism" name="professionalism"
                         class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition">
                     <option value="Excellent">Excellent</option>
                     <option value="Good">Good</option>
@@ -112,14 +112,14 @@
 
             <div>
                 <label for="additional-comments" class="block text-gray-700 font-medium mb-2">Additional Comments</label>
-                <textarea id="additional-comments" name="additional_comments" 
-                          class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition resize-none h-36" 
+                <textarea id="additional-comments" name="additional_comments"
+                          class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e90ff] transition resize-none h-36"
                           placeholder="Write any additional comments about the candidate here..."></textarea>
             </div>
 
             <!-- Submit Button -->
             <div class="text-center">
-                <button type="submit" 
+                <button type="submit"
                         class="w-full py-3 bg-[#1e90ff] text-white font-semibold rounded-full hover:bg-blue-600 transition">
                     Submit Endorsement
                 </button>
@@ -150,7 +150,7 @@
                 </li>
             </ul>
         </aside>
-        
+
     </div>
 
     <div class="text-gray-800 text-center p-3 lg:absolute bottom-0">
@@ -178,12 +178,12 @@
             <img src="{% static 'new_design/logo/privacy.jpeg' %}" alt="" class="w-10 h-5">
           </div>
           <div class="text-sm ">
-                          
+
             <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300"
               >Privacy Policy
               </a
             >
-            
+
             <a href="{% url 'feature-not-implemented' %}" class="hover:text-gray-300">Contact Us</a>
           </div>
         </div>

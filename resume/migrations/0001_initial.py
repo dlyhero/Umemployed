@@ -2,74 +2,125 @@
 
 import django.core.validators
 from django.db import migrations, models
+
 import resume.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Education',
+            name="Education",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('institution_name', models.CharField(max_length=100)),
-                ('degree', models.CharField(max_length=100)),
-                ('graduation_year', models.IntegerField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("institution_name", models.CharField(max_length=100)),
+                ("degree", models.CharField(max_length=100)),
+                ("graduation_year", models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='Experience',
+            name="Experience",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('company_name', models.CharField(max_length=100)),
-                ('years', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("company_name", models.CharField(max_length=100)),
+                ("years", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='Resume',
+            name="Resume",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('first_name', models.CharField(blank=True, max_length=100, null=True)),
-                ('surname', models.CharField(blank=True, max_length=100, null=True)),
-                ('state', models.CharField(blank=True, max_length=100, null=True)),
-                ('country', models.CharField(blank=True, max_length=100, null=True)),
-                ('job_title', models.CharField(blank=True, max_length=100, null=True)),
-                ('date_of_birth', models.DateField(default='2024-04-26', null=True)),
-                ('phone', models.CharField(max_length=20, null=True)),
-                ('description', models.TextField(default='I am a ...', max_length=500)),
-                ('profile_image', models.ImageField(blank=True, default='media/resume/images/PXL_20231104_141008232.MP.jpg', upload_to='resume/images')),
-                ('cv', models.FileField(default='', upload_to='resume/cv', validators=[django.core.validators.FileExtensionValidator(['pdf']), resume.models.validate_file_mime_type])),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("first_name", models.CharField(blank=True, max_length=100, null=True)),
+                ("surname", models.CharField(blank=True, max_length=100, null=True)),
+                ("state", models.CharField(blank=True, max_length=100, null=True)),
+                ("country", models.CharField(blank=True, max_length=100, null=True)),
+                ("job_title", models.CharField(blank=True, max_length=100, null=True)),
+                ("date_of_birth", models.DateField(default="2024-04-26", null=True)),
+                ("phone", models.CharField(max_length=20, null=True)),
+                ("description", models.TextField(default="I am a ...", max_length=500)),
+                (
+                    "profile_image",
+                    models.ImageField(
+                        blank=True,
+                        default="media/resume/images/PXL_20231104_141008232.MP.jpg",
+                        upload_to="resume/images",
+                    ),
+                ),
+                (
+                    "cv",
+                    models.FileField(
+                        default="",
+                        upload_to="resume/cv",
+                        validators=[
+                            django.core.validators.FileExtensionValidator(["pdf"]),
+                            resume.models.validate_file_mime_type,
+                        ],
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='SkillCategory',
+            name="SkillCategory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='Skill',
+            name="Skill",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('is_extracted', models.BooleanField(default=False)),
-                ('categories', models.ManyToManyField(to='resume.skillcategory')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("is_extracted", models.BooleanField(default=False)),
+                ("categories", models.ManyToManyField(to="resume.skillcategory")),
             ],
         ),
         migrations.CreateModel(
-            name='ResumeDoc',
+            name="ResumeDoc",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(upload_to='resumes/')),
-                ('extracted_text', models.TextField(blank=True)),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('extracted_skills', models.ManyToManyField(blank=True, related_name='resume_extracted_skills', to='resume.skill')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("file", models.FileField(upload_to="resumes/")),
+                ("extracted_text", models.TextField(blank=True)),
+                ("uploaded_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "extracted_skills",
+                    models.ManyToManyField(
+                        blank=True, related_name="resume_extracted_skills", to="resume.skill"
+                    ),
+                ),
             ],
         ),
     ]
