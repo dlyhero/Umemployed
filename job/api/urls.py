@@ -100,4 +100,27 @@ urlpatterns = [
     path(
         "<int:job_id>/questions/", views.JobQuestionsAPIView.as_view(), name="job_questions_api"
     ),  # Fetch and submit job questions
+    # Job update endpoints (no ChatGPT calls)
+    path(
+        "<int:job_id>/update-step1/", views.UpdateJobStep1APIView.as_view(), name="update_job_step1"
+    ),  # Update Step 1: Basic job details
+    path(
+        "<int:job_id>/update-step2/", views.UpdateJobStep2APIView.as_view(), name="update_job_step2"
+    ),  # Update Step 2: Job preferences
+    path(
+        "<int:job_id>/update-step3/", views.UpdateJobStep3APIView.as_view(), name="update_job_step3"
+    ),  # Update Step 3: Job description (no skill extraction)
+    path(
+        "<int:job_id>/update-step4/", views.UpdateJobStep4APIView.as_view(), name="update_job_step4"
+    ),  # Update Step 4: Job requirements (no question generation)
+    path(
+        "<int:job_id>/toggle-availability/", views.UpdateJobAvailabilityAPIView.as_view(), name="toggle_job_availability"
+    ),  # Toggle job availability (publish/unpublish)
+    # Recruiter job management
+    path(
+        "my-jobs/", views.RecruiterJobListAPIView.as_view(), name="recruiter_job_list"
+    ),  # List all jobs created by recruiter
+    path(
+        "my-jobs/<int:pk>/", views.RecruiterJobDetailAPIView.as_view(), name="recruiter_job_detail"
+    ),  # Get detailed information about recruiter's job
 ]

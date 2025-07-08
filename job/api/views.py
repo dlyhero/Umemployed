@@ -207,6 +207,9 @@ class SavedJobsListAPIView(ListAPIView):
     serializer_class = JobSerializer
 
     def get_queryset(self):
+        # Short-circuit for Swagger schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Job.objects.none()
         saved_jobs = SavedJob.objects.filter(user=self.request.user).select_related("job")
         return Job.objects.filter(id__in=saved_jobs.values_list("job_id", flat=True))
 
@@ -248,6 +251,9 @@ class AppliedJobsListAPIView(ListAPIView):
     serializer_class = ApplicationSerializer
 
     def get_queryset(self):
+        # Short-circuit for Swagger schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Application.objects.none()
         return Application.objects.filter(user=self.request.user)
 
 
@@ -992,3 +998,366 @@ class TailoredJobDescriptionAPIView(APIView):
             },
             status=200,
         )
+
+
+class UpdateJobStep1APIView(APIView):
+    """
+    Endpoint to update the first step of an existing job (basic details).
+
+    This step includes:
+    - Title
+    - Hire number
+    - Job location type
+    - Job type
+    - Location
+    - Salary range
+    - Category
+
+    Method: PATCH
+    URL: /api/jobs/<job_id>/update-step1/
+    Request Body:
+    {
+        "title": "Senior Software Engineer",
+        "hire_number": 5,
+        "job_location_type": "hybrid",
+        "job_type": "Full_time",
+        "location": "CA",
+        "salary_range": "100001-150000",
+        "category": 2
+    }
+    Response:
+    - 200 OK: Returns the updated job details.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    - 400 Bad Request: Returns validation errors.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, job_id):
+        job = Job.objects.filter(id=job_id, user=request.user).first()
+        if not job:
+            return Response(
+                {"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        data = {
+            "title": request.data.get("title"),
+            "hire_number": request.data.get("hire_number"),
+            "job_location_type": request.data.get("job_location_type"),
+            "job_type": request.data.get("job_type"),
+            "location": request.data.get("location"),
+            "salary_range": request.data.get("salary_range"),
+            "category": request.data.get("category"),
+        }
+        
+        # Remove None values to only update provided fields
+        data = {k: v for k, v in data.items() if v is not None}
+        
+        serializer = JobSerializer(job, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "job": serializer.data,
+                    "message": "Job basic details updated successfully."
+                },
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateJobStep2APIView(APIView):
+    """
+    Endpoint to update the second step of an existing job (preferences).
+
+    This step includes:
+    - Job type
+    - Experience levels
+    - Weekly ranges
+    - Shifts
+
+    Method: PATCH
+    URL: /api/jobs/<job_id>/update-step2/
+    Request Body:
+    {
+        "job_type": "Full_time",
+        "experience_levels": "3-5Years",
+        "weekly_ranges": "mondayToFriday",
+        "shifts": "dayShift"
+    }
+    Response:
+    - 200 OK: Returns the updated job details.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    - 400 Bad Request: Returns validation errors.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, job_id):
+        job = Job.objects.filter(id=job_id, user=request.user).first()
+        if not job:
+            return Response(
+                {"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        data = {
+            "job_type": request.data.get("job_type"),
+            "experience_levels": request.data.get("experience_levels"),
+            "weekly_ranges": request.data.get("weekly_ranges"),
+            "shifts": request.data.get("shifts"),
+        }
+        
+        # Remove None values to only update provided fields
+        data = {k: v for k, v in data.items() if v is not None}
+        
+        serializer = JobSerializer(job, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "job": serializer.data,
+                    "message": "Job preferences updated successfully."
+                },
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateJobStep3APIView(APIView):
+    """
+    Endpoint to update the third step of an existing job (description and content).
+
+    This step includes:
+    - Description
+    - Responsibilities
+    - Benefits
+
+    Note: This endpoint does NOT extract technical skills or call ChatGPT.
+    Skills extraction is only done during the initial job creation process.
+
+    Method: PATCH
+    URL: /api/jobs/<job_id>/update-step3/
+    Request Body:
+    {
+        "description": "We are seeking an experienced software engineer...",
+        "responsibilities": "Lead development of web applications...",
+        "benefits": "Competitive salary, health benefits, remote work..."
+    }
+    Response:
+    - 200 OK: Returns the updated job details.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    - 400 Bad Request: Returns validation errors.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, job_id):
+        job = Job.objects.filter(id=job_id, user=request.user).first()
+        if not job:
+            return Response(
+                {"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        data = {
+            "description": request.data.get("description"),
+            "responsibilities": request.data.get("responsibilities"),
+            "benefits": request.data.get("benefits"),
+        }
+        
+        # Remove None values to only update provided fields
+        data = {k: v for k, v in data.items() if v is not None}
+        
+        serializer = JobSerializer(job, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            
+            # No skill extraction during updates - only return the updated job
+            return Response(
+                {
+                    "job": serializer.data,
+                    "message": "Job description updated successfully."
+                },
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateJobStep4APIView(APIView):
+    """
+    Endpoint to update the fourth step of an existing job (requirements and level).
+
+    This step includes:
+    - Requirements (skills selected from previously extracted skills)
+    - Level (skill level)
+
+    Note: This endpoint does NOT generate new questions or call ChatGPT.
+    Question generation is only done during the initial job creation process.
+
+    Method: PATCH
+    URL: /api/jobs/<job_id>/update-step4/
+    Request Body:
+    {
+        "requirements": [1, 2, 3],
+        "level": "Expert"
+    }
+    Response:
+    - 200 OK: Returns the updated job details.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    - 400 Bad Request: Returns validation errors.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, job_id):
+        job = Job.objects.filter(id=job_id, user=request.user).first()
+        if not job:
+            return Response(
+                {"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Extract requirements and level from the request
+        requirements = request.data.get("requirements")
+        level = request.data.get("level")
+
+        # Update requirements if provided
+        if requirements is not None:
+            try:
+                skills = Skill.objects.filter(id__in=requirements)
+                if len(skills) != len(requirements):
+                    return Response(
+                        {"error": "One or more skill IDs are invalid."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                job.requirements.set(skills)
+            except Exception as e:
+                return Response(
+                    {"error": f"Error validating skills: {str(e)}"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Update level if provided
+        if level is not None:
+            job.level = level
+
+        job.save()
+
+        # Create notification for job update
+        Notification.objects.create(
+            user=request.user,
+            notification_type=Notification.NEW_JOB_POSTED,
+            message=f"Your job '{job.title}' has been updated successfully.",
+        )
+
+        # No question generation during updates - only return the updated job
+        return Response(
+            {
+                "job": JobSerializer(job).data,
+                "message": "Job requirements updated successfully."
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class UpdateJobAvailabilityAPIView(APIView):
+    """
+    Endpoint to toggle job availability (publish/unpublish).
+
+    Method: PATCH
+    URL: /api/jobs/<job_id>/toggle-availability/
+    Request Body:
+    {
+        "is_available": true
+    }
+    Response:
+    - 200 OK: Returns the updated job availability status.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, job_id):
+        job = Job.objects.filter(id=job_id, user=request.user).first()
+        if not job:
+            return Response(
+                {"error": "Job not found or unauthorized."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        is_available = request.data.get("is_available")
+        if is_available is None:
+            return Response(
+                {"error": "is_available field is required."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        job.is_available = is_available
+        job.save()
+
+        status_text = "published" if is_available else "unpublished"
+        
+        # Create notification
+        Notification.objects.create(
+            user=request.user,
+            notification_type=Notification.NEW_JOB_POSTED,
+            message=f"Your job '{job.title}' has been {status_text}.",
+        )
+
+        return Response(
+            {
+                "job_id": job.id,
+                "title": job.title,
+                "is_available": job.is_available,
+                "message": f"Job has been {status_text} successfully."
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class RecruiterJobListAPIView(ListAPIView):
+    """
+    Endpoint to list all jobs created by the authenticated recruiter.
+
+    Method: GET
+    URL: /api/jobs/my-jobs/
+    Response:
+    - 200 OK: Returns a list of jobs created by the recruiter.
+    """
+
+    serializer_class = JobSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Short-circuit for Swagger schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Job.objects.none()
+        return Job.objects.filter(user=self.request.user).order_by('-created_at')
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
+
+
+class RecruiterJobDetailAPIView(RetrieveAPIView):
+    """
+    Endpoint to get detailed information about a specific job created by the recruiter.
+
+    Method: GET
+    URL: /api/jobs/my-jobs/<job_id>/
+    Response:
+    - 200 OK: Returns detailed job information.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    """
+
+    serializer_class = JobSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Short-circuit for Swagger schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return Job.objects.none()
+        return Job.objects.filter(user=self.request.user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
