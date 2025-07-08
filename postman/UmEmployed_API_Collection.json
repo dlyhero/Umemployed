@@ -1,0 +1,663 @@
+{
+  "info": {
+    "name": "UmEmployed API Collection",
+    "description": "Complete API collection for UmEmployed platform including Job Management and Messaging",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "jobId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "conversationId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "messageId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"your_username\",\n  \"password\": \"your_password\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/login/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "login", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('token', response.access);",
+                  "    console.log('Token saved:', response.access);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "📋 Job Management",
+      "item": [
+        {
+          "name": "Job Creation Flow",
+          "item": [
+            {
+              "name": "Step 1: Create Basic Job",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Senior Python Developer\",\n  \"hire_number\": 3,\n  \"job_location_type\": \"remote\",\n  \"job_type\": \"Full_time\",\n  \"location\": \"US\",\n  \"salary_range\": \"100001-150000\",\n  \"category\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/create-step1/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "create-step1", ""]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    pm.environment.set('jobId', response.id);",
+                      "    console.log('Job ID saved:', response.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Step 2: Add Preferences",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"job_type\": \"Full_time\",\n  \"experience_levels\": \"3-5Years\",\n  \"weekly_ranges\": \"mondayToFriday\",\n  \"shifts\": \"dayShift\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/{{jobId}}/create-step2/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "{{jobId}}", "create-step2", ""]
+                }
+              }
+            },
+            {
+              "name": "Step 3: Add Description (AI)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"We are seeking an experienced Python developer with Django expertise to join our innovative team. The ideal candidate will have strong problem-solving skills and experience with REST APIs, database design, and modern web development practices.\",\n  \"responsibilities\": \"Lead development of web applications, mentor junior developers, design and implement scalable solutions, collaborate with cross-functional teams, conduct code reviews.\",\n  \"benefits\": \"Competitive salary, comprehensive health insurance, 401k matching, flexible remote work, professional development budget, collaborative team environment.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/{{jobId}}/create-step3/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "{{jobId}}", "create-step3", ""]
+                }
+              }
+            },
+            {
+              "name": "Step 4: Finalize Job (AI)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"requirements\": [1, 5, 8],\n  \"level\": \"Mid\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/{{jobId}}/create-step4/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "{{jobId}}", "create-step4", ""]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Job Update Flow (No AI)",
+          "item": [
+            {
+              "name": "Update Basic Details",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Senior Python Developer (Remote)\",\n  \"salary_range\": \"150001+\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/{{jobId}}/update-step1/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "{{jobId}}", "update-step1", ""]
+                }
+              }
+            },
+            {
+              "name": "Update Description (No AI)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"Updated job description with new requirements...\",\n  \"benefits\": \"Enhanced benefits package including stock options...\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/{{jobId}}/update-step3/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "{{jobId}}", "update-step3", ""]
+                }
+              }
+            },
+            {
+              "name": "Toggle Job Availability",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"is_available\": false\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/{{jobId}}/toggle-availability/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "{{jobId}}", "toggle-availability", ""]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Job Management",
+          "item": [
+            {
+              "name": "Get My Jobs",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/my-jobs/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "my-jobs", ""]
+                }
+              }
+            },
+            {
+              "name": "Get Job Details",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/my-jobs/{{jobId}}/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "my-jobs", "{{jobId}}", ""]
+                }
+              }
+            },
+            {
+              "name": "Get Job Options",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/jobs/job-options/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "jobs", "job-options", ""]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "💬 Messaging",
+      "item": [
+        {
+          "name": "Conversations",
+          "item": [
+            {
+              "name": "Get All Conversations",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/conversations/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "conversations", ""]
+                }
+              }
+            },
+            {
+              "name": "Start Conversation",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 2\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/conversations/start/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "conversations", "start", ""]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    pm.environment.set('conversationId', response.conversation_id);",
+                      "    console.log('Conversation ID saved:', response.conversation_id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Search Conversations",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/search-inbox/?query=john",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "search-inbox", ""],
+                  "query": [
+                    {
+                      "key": "query",
+                      "value": "john"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Delete Conversation",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}/delete/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "conversations", "{{conversationId}}", "delete", ""]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Messages",
+          "item": [
+            {
+              "name": "Get Messages",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}/messages/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "conversations", "{{conversationId}}", "messages", ""]
+                }
+              }
+            },
+            {
+              "name": "Send Message",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"text\": \"Hello! How are you doing today?\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}/messages/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "conversations", "{{conversationId}}", "messages", ""]
+                }
+              }
+            },
+            {
+              "name": "Update Message",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"text\": \"Updated message text\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/messages/{{messageId}}/update/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "messages", "{{messageId}}", "update", ""]
+                }
+              }
+            },
+            {
+              "name": "Delete Message",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/messages/{{messageId}}/delete/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "messages", "{{messageId}}", "delete", ""]
+                }
+              }
+            },
+            {
+              "name": "Mark Messages as Read",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/conversations/{{conversationId}}/mark-read/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "conversations", "{{conversationId}}", "mark-read", ""]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reactions",
+          "item": [
+            {
+              "name": "Add Reaction",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reaction\": \"like\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/messages/{{messageId}}/reactions/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "messages", "{{messageId}}", "reactions", ""]
+                }
+              }
+            },
+            {
+              "name": "Remove Reaction",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reaction\": \"like\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/messages/messages/{{messageId}}/reactions/",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "messages", "messages", "{{messageId}}", "reactions", ""]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔍 Public Job Endpoints",
+      "item": [
+        {
+          "name": "List All Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/jobs/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", "jobs", ""]
+            }
+          }
+        },
+        {
+          "name": "Search Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/jobs/search/?keyword=python&location=US&job_type=Full_time",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", "jobs", "search", ""],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "python"
+                },
+                {
+                  "key": "location",
+                  "value": "US"
+                },
+                {
+                  "key": "job_type",
+                  "value": "Full_time"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Apply for Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/jobs/{{jobId}}/apply/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", "jobs", "{{jobId}}", "apply", ""]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
