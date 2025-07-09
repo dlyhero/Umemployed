@@ -10,7 +10,6 @@ media
 db.sqlite3
 
 tests/
-*.md
 *.psd
 *.zip
 Source-Font-Family
