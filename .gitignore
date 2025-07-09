@@ -10,7 +10,6 @@ media
 db.sqlite3
 
 tests/
-docs/
 *.md
 *.psd
 *.zip
