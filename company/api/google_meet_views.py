@@ -72,6 +72,12 @@ class GoogleConnectAPIView(APIView):
             # Store OAuth state and user ID in session for callback
             request.session['oauth_state'] = state
             request.session['oauth_user_id'] = request.user.id
+            request.session.save()  # Force session save
+            
+            # Debug logging
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"OAuth Connect - Stored state: {state}, User ID: {request.user.id}")
             
             return Response({
                 'authorization_url': authorization_url,
@@ -101,11 +107,32 @@ class GoogleOAuthCallbackAPIView(APIView):
             code = request.GET.get('code')
             state = request.GET.get('state')
             stored_state = request.session.get('oauth_state')
-            user_id = request.session.get('oauth_user_id')  # We'll store this in the connect endpoint
+            user_id = request.session.get('oauth_user_id')
             
-            if not code or not state or state != stored_state or not user_id:
+            # Debug logging to help identify the issue
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"OAuth Debug - Code: {bool(code)}, State: {state}, Stored State: {stored_state}, User ID: {user_id}")
+            
+            if not code:
                 frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
-                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=Invalid OAuth response or session expired')
+                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=Authorization code missing')
+            
+            if not state:
+                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=State parameter missing')
+            
+            if not stored_state:
+                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=Session expired - please try connecting again')
+            
+            if state != stored_state:
+                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=State mismatch - security error')
+            
+            if not user_id:
+                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=User session lost - please login and try again')
             
             # Get the user from session
             try:

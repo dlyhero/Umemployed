@@ -167,19 +167,17 @@ CRISPY_ALLOWED_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "easyaudit.middleware.easyaudit.EasyAuditMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "easyaudit.middleware.easyaudit.EasyAuditMiddleware",  # Moved after auth
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
-    "users.middleware.EmailVerificationMiddleware",  # Added to support account verifcation
-    # 'umemployed.middleware.RedirectBasedOnRoleMiddleware',
-    # Add the account middleware:
+    "users.middleware.EmailVerificationMiddleware",
     "allauth.account.middleware.AccountMiddleware",
 ]
 
@@ -279,6 +277,8 @@ USE_X_FORWARDED_HOST = True
 CSRF_TRUSTED_ORIGINS = [
     "https://umemployed-f6fdddfffmhjhjcj.canadacentral-01.azurewebsites.net",
     "https://umemployed.azurewebsites.net",
+    "http://localhost:8000",  # Add local backend
+    "http://127.0.0.1:8000",  # Add alternative local backend
 ]
 SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",
@@ -559,8 +559,30 @@ SWAGGER_SETTINGS = {
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
 
 # CORS configuration
-# CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be included in cross-origin requests
-CORS_ALLOW_HEADERS = ["*"]  # Allow all headers
-CORS_ALLOW_METHODS = ["*"]  # Allow all HTTP methods
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://umemployed-front-end.vercel.app"]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000", 
+    "https://umemployed-front-end.vercel.app",
+    "http://127.0.0.1:3000",  # Add this for local development
+]
+
+# Session configuration
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Store sessions in database
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+SESSION_SAVE_EVERY_REQUEST = True  # Save session on every request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Don't expire when browser closes
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_HTTPONLY = True  # Prevent XSS attacks
+SESSION_COOKIE_SAMESITE = 'Lax'  # Allow cross-origin requests but with protection
