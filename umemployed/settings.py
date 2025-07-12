@@ -279,6 +279,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://umemployed.azurewebsites.net",
     "http://localhost:8000",  # Add local backend
     "http://127.0.0.1:8000",  # Add alternative local backend
+    "https://umemployed-front-end.vercel.app",  # Add frontend
 ]
 SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",
@@ -576,6 +577,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000", 
     "https://umemployed-front-end.vercel.app",
     "http://127.0.0.1:3000",  # Add this for local development
+    "https://umemployed-f6fdddfffmhjhjcj.canadacentral-01.azurewebsites.net",  # Azure backend
 ]
 
 # Session configuration
@@ -584,5 +586,6 @@ SESSION_COOKIE_AGE = 1209600  # 2 weeks
 SESSION_SAVE_EVERY_REQUEST = True  # Save session on every request
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Don't expire when browser closes
 SESSION_COOKIE_SECURE = True  # Use secure cookies in production
-SESSION_COOKIE_HTTPONLY = True  # Prevent XSS attacks
-SESSION_COOKIE_SAMESITE = 'None'  # Allow cross-origin requests but with protection
+SESSION_COOKIE_HTTPONLY = False  # Must be False for cross-origin OAuth
+SESSION_COOKIE_SAMESITE = 'None'  # Allow cross-origin requests
+SESSION_COOKIE_NAME = 'umemployed_sessionid'  # Custom name to avoid conflicts

@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from users.models import User
-from ..models import Interview, GoogleCredentials
+from ..models import Interview, GoogleCredentials, OAuthState
 from ..google_utils import GoogleCalendarManager, credentials_to_dict, credentials_from_dict
 
 
@@ -69,15 +69,19 @@ class GoogleConnectAPIView(APIView):
             redirect_uri = request.build_absolute_uri('/api/company/google/callback/')
             authorization_url, state = GoogleCalendarManager.get_authorization_url(request, redirect_uri)
             
-            # Store OAuth state and user ID in session for callback
-            request.session['oauth_state'] = state
-            request.session['oauth_user_id'] = request.user.id
-            request.session.save()  # Force session save
+            # Store OAuth state in database instead of session
+            # Clean up old states for this user (older than 1 hour)
+            from datetime import datetime, timedelta
+            cutoff_time = datetime.now() - timedelta(hours=1)
+            OAuthState.objects.filter(user=request.user, created_at__lt=cutoff_time).delete()
+            
+            # Store new state
+            oauth_state = OAuthState.objects.create(user=request.user, state=state)
             
             # Debug logging
             import logging
             logger = logging.getLogger(__name__)
-            logger.error(f"OAuth Connect - Stored state: {state}, User ID: {request.user.id}")
+            logger.error(f"OAuth Connect - Stored state in DB: {state}, User ID: {request.user.id}")
             
             return Response({
                 'authorization_url': authorization_url,
@@ -106,13 +110,11 @@ class GoogleOAuthCallbackAPIView(APIView):
         try:
             code = request.GET.get('code')
             state = request.GET.get('state')
-            stored_state = request.session.get('oauth_state')
-            user_id = request.session.get('oauth_user_id')
             
             # Debug logging to help identify the issue
             import logging
             logger = logging.getLogger(__name__)
-            logger.error(f"OAuth Debug - Code: {bool(code)}, State: {state}, Stored State: {stored_state}, User ID: {user_id}")
+            logger.error(f"OAuth Debug - Code: {bool(code)}, State: {state}")
             
             if not code:
                 frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
@@ -122,25 +124,14 @@ class GoogleOAuthCallbackAPIView(APIView):
                 frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
                 return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=State parameter missing')
             
-            if not stored_state:
-                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
-                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=Session expired - please try connecting again')
-            
-            if state != stored_state:
-                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
-                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=State mismatch - security error')
-            
-            if not user_id:
-                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
-                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=User session lost - please login and try again')
-            
-            # Get the user from session
+            # Look up state in database instead of session
             try:
-                from users.models import User
-                user = User.objects.get(id=user_id)
-            except User.DoesNotExist:
+                oauth_state = OAuthState.objects.get(state=state)
+                user = oauth_state.user
+                logger.error(f"OAuth Debug - Found state in DB for user: {user.id}")
+            except OAuthState.DoesNotExist:
                 frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
-                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=User not found')
+                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=Invalid or expired OAuth state')
             
             redirect_uri = request.build_absolute_uri('/api/company/google/callback/')
             authorization_response = request.build_absolute_uri()
@@ -159,9 +150,8 @@ class GoogleOAuthCallbackAPIView(APIView):
                 google_creds.credentials_json = json.dumps(credentials_to_dict(credentials))
                 google_creds.save()
             
-            # Clear OAuth session data
-            request.session.pop('oauth_state', None)
-            request.session.pop('oauth_user_id', None)
+            # Clean up OAuth state
+            oauth_state.delete()
             
             # Redirect to company-specific dashboard with success
             frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
@@ -177,19 +167,6 @@ class GoogleOAuthCallbackAPIView(APIView):
         except Exception as e:
             # Redirect to frontend with error
             frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
-            
-            # Try to get company ID from session user if available
-            user_id = request.session.get('oauth_user_id')
-            if user_id:
-                try:
-                    from users.models import User
-                    user = User.objects.get(id=user_id)
-                    company_id = user.company.id
-                    return HttpResponseRedirect(f'{frontend_url}/companies/{company_id}/dashboard?google_oauth=error&message={str(e)}')
-                except (User.DoesNotExist, AttributeError):
-                    pass
-            
-            # Fallback to general dashboard
             return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message={str(e)}')
 
 

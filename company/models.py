@@ -123,3 +123,19 @@ class GoogleCredentials(models.Model):
 
     class Meta:
         verbose_name_plural = "Google Credentials"
+
+
+class OAuthState(models.Model):
+    """Temporary storage for OAuth state parameters"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    state = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['state']),
+            models.Index(fields=['created_at']),
+        ]
+    
+    def __str__(self):
+        return f"OAuth State for {self.user.email}: {self.state[:20]}..."
