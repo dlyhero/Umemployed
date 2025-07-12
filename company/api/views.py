@@ -1,4 +1,6 @@
+import json
 import random
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -6,6 +8,7 @@ from django.db.models import Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from drf_yasg import openapi
@@ -15,14 +18,15 @@ from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from job.models import Application, Job, Rating, Shortlist  # Import Shortlist model
+from job.models import Application, Job, Rating, Shortlist
 from notifications.models import Notification
 from resume.models import Resume, WorkExperience
 from transactions.models import Transaction
 from users.models import User
 
 from ..forms import RatingForm
-from ..models import Company, Interview
+from ..models import Company, Interview, GoogleCredentials
+from ..google_utils import GoogleCalendarManager, credentials_to_dict, credentials_from_dict
 from .serializers import CompanySerializer
 
 
@@ -1053,6 +1057,97 @@ def update_and_notify_top10(job):
 
 # --- Usage Example ---
 # In your application creation view (not shown), after saving a new Application:
-# update_and_notify_top10(job)
 
-# You must add BooleanFields to Application model: top5_flag and top10_flag (default False)
+
+# ====== GOOGLE MEET INTEGRATION API ENDPOINTS ======
+
+class GoogleConnectAPIView(APIView):
+    """API view to initiate Google OAuth flow for Calendar access"""
+    permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        operation_description="Get Google OAuth authorization URL",
+        responses={200: "Authorization URL generated"}
+    )
+    def get(self, request):
+        try:
+            redirect_uri = request.build_absolute_uri('/api/company/google/callback/')
+            authorization_url, state = GoogleCalendarManager.get_authorization_url(request, redirect_uri)
+            request.session['oauth_state'] = state
+            
+            return Response({
+                'authorization_url': authorization_url,
+                'state': state
+            })
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GoogleOAuthCallbackAPIView(APIView):
+    """API view to handle Google OAuth callback and store tokens"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        try:
+            code = request.GET.get('code')
+            state = request.GET.get('state')
+            stored_state = request.session.get('oauth_state')
+            
+            if not code or not state or state != stored_state:
+                return Response({'error': 'Invalid OAuth response'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            redirect_uri = request.build_absolute_uri('/api/company/google/callback/')
+            authorization_response = request.build_absolute_uri()
+            
+            credentials = GoogleCalendarManager.exchange_code_for_tokens(
+                authorization_response, state, redirect_uri
+            )
+            
+            # Store credentials in database
+            google_creds, created = GoogleCredentials.objects.get_or_create(
+                user=request.user,
+                defaults={'credentials_json': json.dumps(credentials_to_dict(credentials))}
+            )
+            
+            if not created:
+                google_creds.credentials_json = json.dumps(credentials_to_dict(credentials))
+                google_creds.save()
+            
+            return Response({
+                'success': True,
+                'message': 'Google Calendar connected successfully!'
+            })
+            
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CheckGoogleConnectionAPIView(APIView):
+    """API view to check if user has Google Calendar connected"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        try:
+            google_creds = GoogleCredentials.objects.get(user=request.user)
+            return Response({'connected': True})
+        except GoogleCredentials.DoesNotExist:
+            return Response({'connected': False})
+
+
+class DisconnectGoogleAPIView(APIView):
+    """API view to disconnect Google Calendar integration"""
+    permission_classes = [IsAuthenticated]
+    
+    def delete(self, request):
+        try:
+            google_creds = GoogleCredentials.objects.get(user=request.user)
+            google_creds.delete()
+            return Response({
+                'success': True,
+                'message': 'Google Calendar disconnected successfully.'
+            })
+        except GoogleCredentials.DoesNotExist:
+            return Response({
+                'success': True,
+                'message': 'Google Calendar was not connected.'
+            })

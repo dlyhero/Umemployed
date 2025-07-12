@@ -1,6 +1,14 @@
 from django.urls import path
 
 from . import views
+from .google_meet_views import (
+    CheckGoogleConnectionAPIView,
+    CreateGoogleMeetInterviewAPIView,
+    DisconnectGoogleAPIView,
+    GoogleConnectAPIView,
+    GoogleOAuthCallbackAPIView,
+    ListInterviewsAPIView,
+)
 
 urlpatterns = [
     path("create-company/", views.CreateCompanyAPIView.as_view(), name="api_create_company"),
@@ -84,5 +92,37 @@ urlpatterns = [
         "my-shortlisted-jobs/<int:user_id>/",
         views.MyShortlistedJobsAPIView.as_view(),
         name="api_my_shortlisted_jobs",
+    ),
+    
+    # Google Meet Integration endpoints
+    path(
+        "google/connect/",
+        GoogleConnectAPIView.as_view(),
+        name="api_google_connect"
+    ),
+    path(
+        "google/callback/",
+        GoogleOAuthCallbackAPIView.as_view(),
+        name="api_google_oauth_callback"
+    ),
+    path(
+        "google/check-connection/",
+        CheckGoogleConnectionAPIView.as_view(),
+        name="api_check_google_connection"
+    ),
+    path(
+        "google/disconnect/",
+        DisconnectGoogleAPIView.as_view(),
+        name="api_disconnect_google"
+    ),
+    path(
+        "google/create-interview/",
+        CreateGoogleMeetInterviewAPIView.as_view(),
+        name="api_create_google_meet_interview"
+    ),
+    path(
+        "interviews/",
+        ListInterviewsAPIView.as_view(),
+        name="api_list_interviews"
     ),
 ]

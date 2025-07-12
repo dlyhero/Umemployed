@@ -33,8 +33,12 @@ urlpatterns = [
     path("<int:company_id>/jobs/", views.company_jobs_list_view, name="company-jobs-list"),
     path("companies/", views.company_list_view, name="company-list"),
     path("create_interview/", views.create_interview, name="create_interview"),
-    path("rate_candidate/<int:candidate_id>/", views.rate_candidate, name="rate_candidate"),
-    path("related-users/", views.company_related_users, name="company_related_users"),
+    # Google Meet integration
+    path("google/connect/", views.google_connect, name="google_connect"),
+    path("google/callback/", views.google_oauth_callback, name="google_oauth_callback"),
+    path("google/check-connection/", views.check_google_connection, name="check_google_connection"),
+    path("google/disconnect/", views.disconnect_google, name="disconnect_google"),
+    path("create_google_meet_interview/", views.create_google_meet_interview, name="create_google_meet_interview"),
     # payments
     path(
         "pay-endorsement/<int:candidate_id>/",

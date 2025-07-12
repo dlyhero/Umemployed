@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Google Meet Interview Scheduled</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #4285f4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 0 0 8px 8px;
+        }
+        .meeting-details {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4285f4;
+        }
+        .meet-button {
+            display: inline-block;
+            background-color: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .meet-button:hover {
+            background-color: #3367d6;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📅 Interview Scheduled</h1>
+        <p>Your interview has been scheduled via UmEmployed Meet</p>
+    </div>
+    
+    <div class="content">
+        <p>Hello {{ candidate.first_name }},</p>
+        
+        <p>Great news! Your interview for the <strong>{{ job_title }}</strong> position at <strong>{{ company_name }}</strong> has been scheduled.</p>
+        
+        <div class="meeting-details">
+            <h3>📋 Interview Details</h3>
+            <p><strong>Position:</strong> {{ job_title }}</p>
+            <p><strong>Company:</strong> {{ company_name }}</p>
+            <p><strong>Date:</strong> {{ date|date:"F d, Y" }}</p>
+            <p><strong>Time:</strong> {{ time|time:"g:i A" }} {{ timezone }}</p>
+            <p><strong>Interviewer:</strong> {{ recruiter.get_full_name }}</p>
+            
+            {% if note %}
+            <p><strong>Additional Notes:</strong></p>
+            <p>{{ note }}</p>
+            {% endif %}
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="{{ meeting_link }}" class="meet-button">🎥 Join Google Meet</a>
+        </div>
+        
+        <p><strong>Meeting Link:</strong> <a href="{{ meeting_link }}">{{ meeting_link }}</a></p>
+        
+        <div style="background-color: #fff3cd; padding: 15px; border-radius: 6px; margin: 20px 0;">
+            <h4>💡 Tips for your interview:</h4>
+            <ul>
+                <li>Test your camera and microphone beforehand</li>
+                <li>Join the meeting 5-10 minutes early</li>
+                <li>Ensure you have a stable internet connection</li>
+                <li>Find a quiet, well-lit space for the interview</li>
+                <li>Have your resume and any questions ready</li>
+            </ul>
+        </div>
+        
+        <p>This event has been automatically added to your Google Calendar. You'll receive email reminders before the interview.</p>
+        
+        <p>If you need to reschedule or have any questions, please contact the recruiter directly.</p>
+        
+        <p>Good luck with your interview!</p>
+        
+        <p>Best regards,<br>
+        The {{ company_name }} Team</p>
+    </div>
+    
+    <div class="footer">
+        <p>This interview was scheduled through Umemployed. If you have any technical issues, please contact our support team.</p>
+    </div>
+</body>
+</html>

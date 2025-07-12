@@ -1,3 +1,4 @@
+import json
 import logging
 import random
 import string
@@ -11,6 +12,9 @@ from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 from job.models import Application, Job, Rating
 from resume.models import ContactInfo, Resume, ResumeDoc, UserLanguage, UserProfile, WorkExperience
@@ -19,7 +23,8 @@ from users.models import User
 
 from .decorators import company_belongs_to_user
 from .forms import CreateCompanyForm, RatingForm, UpdateCompanyForm
-from .models import Company, Interview
+from .models import Company, Interview, GoogleCredentials
+from .google_utils import GoogleCalendarManager, credentials_to_dict, credentials_from_dict
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -625,3 +630,237 @@ def start_payment_for_endorsement(request, candidate_id):
     # Store the candidate ID in the session
     request.session["candidate_id"] = candidate_id
     return render(request, "company/payments/start_payment.html", {"candidate": candidate})
+
+
+# Google Meet Integration Views
+
+@login_required(login_url="login")
+def google_connect(request):
+    """Start Google OAuth flow for calendar access"""
+    redirect_uri = request.build_absolute_uri(reverse('google_oauth_callback'))
+    authorization_url, state = GoogleCalendarManager.get_authorization_url(request, redirect_uri)
+    request.session['oauth_state'] = state
+    return redirect(authorization_url)
+
+
+@login_required(login_url="login")
+def google_oauth_callback(request):
+    """Handle Google OAuth callback and store credentials"""
+    try:
+        state = request.session.get('oauth_state')
+        if not state:
+            messages.error(request, "OAuth state not found. Please try again.")
+            return redirect('company_dashboard')
+        
+        redirect_uri = request.build_absolute_uri(reverse('google_oauth_callback'))
+        authorization_response = request.build_absolute_uri()
+        
+        credentials = GoogleCalendarManager.exchange_code_for_tokens(
+            authorization_response, state, redirect_uri
+        )
+        
+        # Store credentials in database
+        google_creds, created = GoogleCredentials.objects.get_or_create(
+            user=request.user,
+            defaults={'credentials_json': json.dumps(credentials_to_dict(credentials))}
+        )
+        
+        if not created:
+            google_creds.credentials_json = json.dumps(credentials_to_dict(credentials))
+            google_creds.save()
+        
+        messages.success(request, "Google Calendar connected successfully! You can now schedule Google Meet interviews.")
+        
+        # Clean up session
+        if 'oauth_state' in request.session:
+            del request.session['oauth_state']
+        
+        # Redirect to where user was trying to go
+        next_url = request.session.get('google_connect_next', 'company_dashboard')
+        if 'google_connect_next' in request.session:
+            del request.session['google_connect_next']
+        
+        return redirect(next_url)
+        
+    except Exception as e:
+        messages.error(request, f"Error connecting to Google: {str(e)}")
+        return redirect('company_dashboard')
+
+
+@login_required(login_url="login")
+def check_google_connection(request):
+    """API endpoint to check if user has Google Calendar connected"""
+    try:
+        google_creds = GoogleCredentials.objects.get(user=request.user)
+        return JsonResponse({'connected': True})
+    except GoogleCredentials.DoesNotExist:
+        return JsonResponse({'connected': False})
+
+
+def create_google_meet_interview(request):
+    """Create an interview with Google Meet link"""
+    if request.method == "POST":
+        try:
+            candidate_id = request.POST.get("candidate_id")
+            job_title = request.POST.get("job_title")
+            date_str = request.POST.get("date")
+            time_str = request.POST.get("time")
+            timezone_str = request.POST.get("timezone", "UTC")
+            note = request.POST.get("note", "")
+
+            candidate = User.objects.get(id=candidate_id)
+            recruiter = request.user
+
+            # Check if recruiter has Google credentials
+            try:
+                google_creds = GoogleCredentials.objects.get(user=recruiter)
+                credentials_dict = json.loads(google_creds.credentials_json)
+                credentials = credentials_from_dict(credentials_dict)
+            except GoogleCredentials.DoesNotExist:
+                return JsonResponse({
+                    "error": "Google Calendar not connected",
+                    "needs_google_auth": True,
+                    "connect_url": reverse('google_connect')
+                }, status=400)
+
+            # Parse date and time
+            interview_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            interview_time = datetime.strptime(time_str, "%H:%M").time()
+            
+            # Combine date and time
+            interview_datetime = datetime.combine(interview_date, interview_time)
+            # Add timezone awareness if needed
+            interview_datetime = timezone.make_aware(interview_datetime, timezone.get_current_timezone())
+            
+            # Set end time (1 hour later)
+            end_datetime = interview_datetime + timedelta(hours=1)
+
+            # Get job info
+            job = Job.objects.get(title=job_title)
+            company_name = job.company.name
+
+            # Create Google Calendar event
+            calendar_manager = GoogleCalendarManager(credentials)
+            
+            event_summary = f"Interview: {job_title} - {candidate.get_full_name()}"
+            event_description = f"""
+Interview for position: {job_title}
+Company: {company_name}
+Candidate: {candidate.get_full_name()} ({candidate.email})
+Recruiter: {recruiter.get_full_name()} ({recruiter.email})
+
+Notes: {note}
+            """.strip()
+            
+            attendees = [candidate.email, recruiter.email]
+            
+            # Create the event
+            event = calendar_manager.create_meet_event(
+                summary=event_summary,
+                start_datetime=interview_datetime,
+                end_datetime=end_datetime,
+                attendees_emails=attendees,
+                description=event_description
+            )
+            
+            # Extract Google Meet link
+            meet_link = event.get('conferenceData', {}).get('entryPoints', [{}])[0].get('uri', '')
+            
+            # Create interview record
+            interview = Interview.objects.create(
+                candidate=candidate,
+                recruiter=recruiter,
+                interview_type='google_meet',
+                date=interview_date,
+                time=interview_time,
+                timezone=timezone_str,
+                meeting_link=meet_link,
+                google_event_id=event['id'],
+                note=note
+            )
+
+            # Send email notifications
+            send_google_meet_emails(interview, job, company_name)
+
+            return JsonResponse({
+                "message": "Google Meet interview created successfully.",
+                "meet_link": meet_link,
+                "event_id": event['id']
+            })
+
+        except Exception as e:
+            return JsonResponse({"error": f"Failed to create Google Meet interview: {str(e)}"}, status=500)
+
+    return JsonResponse({"error": "Invalid request method."}, status=400)
+
+
+def send_google_meet_emails(interview, job, company_name):
+    """Send email notifications for Google Meet interview"""
+    candidate = interview.candidate
+    recruiter = interview.recruiter
+    
+    # Render email templates
+    candidate_email_content = render_to_string(
+        "emails/candidate_google_meet_interview_email.html",
+        {
+            "candidate": candidate,
+            "job_title": job.title,
+            "date": interview.date,
+            "time": interview.time,
+            "timezone": interview.timezone,
+            "meeting_link": interview.meeting_link,
+            "note": interview.note,
+            "company_name": company_name,
+            "recruiter": recruiter,
+        },
+    )
+
+    recruiter_email_content = render_to_string(
+        "emails/recruiter_google_meet_interview_email.html",
+        {
+            "recruiter": recruiter,
+            "candidate": candidate,
+            "job_title": job.title,
+            "date": interview.date,
+            "time": interview.time,
+            "timezone": interview.timezone,
+            "meeting_link": interview.meeting_link,
+            "note": interview.note,
+            "company_name": company_name,
+        },
+    )
+
+    # Send emails
+    try:
+        send_mail(
+            "Google Meet Interview Scheduled",
+            candidate_email_content,
+            "from@example.com",
+            [candidate.email],
+            fail_silently=False,
+            html_message=candidate_email_content,
+        )
+
+        send_mail(
+            "Google Meet Interview Scheduled",
+            recruiter_email_content,
+            "from@example.com",
+            [recruiter.email],
+            fail_silently=False,
+            html_message=recruiter_email_content,
+        )
+    except Exception as e:
+        logger.error(f"Failed to send interview emails: {str(e)}")
+
+
+@login_required(login_url="login")
+def disconnect_google(request):
+    """Disconnect Google Calendar integration"""
+    try:
+        google_creds = GoogleCredentials.objects.get(user=request.user)
+        google_creds.delete()
+        messages.success(request, "Google Calendar disconnected successfully.")
+    except GoogleCredentials.DoesNotExist:
+        messages.info(request, "Google Calendar was not connected.")
+    
+    return redirect('company_dashboard')

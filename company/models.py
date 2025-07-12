@@ -81,12 +81,20 @@ import pytz
 
 
 class Interview(models.Model):
+    INTERVIEW_TYPES = [
+        ('custom', 'Custom Video Chat'),
+        ('google_meet', 'Google Meet'),
+    ]
+    
     candidate = models.ForeignKey(User, on_delete=models.CASCADE)
+    recruiter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interviews_created', null=True, blank=True)
+    interview_type = models.CharField(max_length=20, choices=INTERVIEW_TYPES, default='custom')
     date = models.DateField()
     time = models.TimeField()
     timezone = models.CharField(max_length=50, default="UTC")
     meeting_link = models.URLField()
     room_id = models.CharField(max_length=8, unique=True, editable=False)
+    google_event_id = models.CharField(max_length=255, null=True, blank=True, help_text="Google Calendar event ID")
     note = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -101,3 +109,17 @@ class Interview(models.Model):
 
     def __str__(self):
         return f"Interview with {self.candidate.username} on {self.date} at {self.time} ({self.timezone})"
+
+
+class GoogleCredentials(models.Model):
+    """Store Google OAuth credentials for users"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='google_credentials')
+    credentials_json = models.TextField(help_text="JSON-encoded Google OAuth credentials")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Google credentials for {self.user.email}"
+
+    class Meta:
+        verbose_name_plural = "Google Credentials"
