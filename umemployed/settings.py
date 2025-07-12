@@ -266,9 +266,16 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SOCIAL_AUTH_GOOGLE_OAUTH_SECRET  # This is th
 LOGIN_REDIRECT_URL = "/"  # URL to redirect to after login
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    "openid",
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
+    "https://www.googleapis.com/auth/calendar.events",
 ]
+
+# Additional Google OAuth2 settings
+SOCIAL_AUTH_GOOGLE_OAUTH2_USE_DEPRECATED_API = False
+SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'access_type': 'offline', 'approval_prompt': 'force'}
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
@@ -330,6 +337,10 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
+
+# Ensure timezone-aware datetime objects
+import django.utils.timezone
+django.utils.timezone.activate('UTC')
 
 # Azure Blob Storage settings
 AZURE_ACCOUNT_NAME = config("AZURE_ACCOUNT_NAME")
@@ -578,6 +589,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://umemployed-front-end.vercel.app",
     "http://127.0.0.1:3000",  # Add this for local development
     "https://umemployed-f6fdddfffmhjhjcj.canadacentral-01.azurewebsites.net",  # Azure backend
+    "https://accounts.google.com",  # Allow Google OAuth
 ]
 
 # Session configuration

@@ -71,8 +71,9 @@ class GoogleConnectAPIView(APIView):
             
             # Store OAuth state in database instead of session
             # Clean up old states for this user (older than 1 hour)
-            from datetime import datetime, timedelta
-            cutoff_time = datetime.now() - timedelta(hours=1)
+            from django.utils import timezone
+            from datetime import timedelta
+            cutoff_time = timezone.now() - timedelta(hours=1)
             OAuthState.objects.filter(user=request.user, created_at__lt=cutoff_time).delete()
             
             # Store new state
