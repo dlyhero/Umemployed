@@ -275,7 +275,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 # Additional Google OAuth2 settings
 SOCIAL_AUTH_GOOGLE_OAUTH2_USE_DEPRECATED_API = False
 SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
-SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'access_type': 'offline', 'approval_prompt': 'force'}
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+    'access_type': 'offline', 
+    'approval_prompt': 'force',
+    'include_granted_scopes': 'true',
+    'prompt': 'consent'
+}
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True

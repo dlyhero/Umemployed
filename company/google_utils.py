@@ -9,8 +9,16 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 
-# Google Calendar API scopes
-SCOPES = ['https://www.googleapis.com/auth/calendar.events']
+# Google Calendar API scopes - use settings if available, otherwise fallback
+SCOPES_LIST = getattr(settings, 'SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE', [
+    'openid',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/calendar.events'
+])
+
+# Convert scopes to the format expected by Google OAuth (list)
+SCOPES = SCOPES_LIST if isinstance(SCOPES_LIST, list) else SCOPES_LIST.split(' ')
 
 # Path to your credentials.json file
 CREDENTIALS_FILE = os.path.join(settings.BASE_DIR, 'credentials.json')
@@ -28,6 +36,11 @@ class GoogleCalendarManager:
     @staticmethod
     def get_authorization_url(request, redirect_uri: str) -> Tuple[str, str]:
         """Generate Google OAuth authorization URL"""
+        # Debug logging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"OAuth Scopes being used: {SCOPES}")
+        
         flow = Flow.from_client_secrets_file(
             CREDENTIALS_FILE,
             scopes=SCOPES,
@@ -55,6 +68,16 @@ class GoogleCalendarManager:
         flow.fetch_token(authorization_response=authorization_response)
         return flow.credentials
     
+    @staticmethod
+    def clear_old_oauth_states(user):
+        """Clear old OAuth states for a user"""
+        from django.utils import timezone
+        from datetime import timedelta
+        from .models import OAuthState
+        
+        cutoff_time = timezone.now() - timedelta(hours=1)
+        OAuthState.objects.filter(user=user, created_at__lt=cutoff_time).delete()
+
     def create_meet_event(self, 
                          summary: str,
                          start_datetime: datetime,

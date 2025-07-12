@@ -69,12 +69,8 @@ class GoogleConnectAPIView(APIView):
             redirect_uri = request.build_absolute_uri('/api/company/google/callback/')
             authorization_url, state = GoogleCalendarManager.get_authorization_url(request, redirect_uri)
             
-            # Store OAuth state in database instead of session
-            # Clean up old states for this user (older than 1 hour)
-            from django.utils import timezone
-            from datetime import timedelta
-            cutoff_time = timezone.now() - timedelta(hours=1)
-            OAuthState.objects.filter(user=request.user, created_at__lt=cutoff_time).delete()
+            # Clear old OAuth states for this user
+            GoogleCalendarManager.clear_old_oauth_states(request.user)
             
             # Store new state
             oauth_state = OAuthState.objects.create(user=request.user, state=state)
