@@ -1088,13 +1088,17 @@ class GoogleOAuthCallbackAPIView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
+        from django.shortcuts import redirect
+        
         try:
             code = request.GET.get('code')
             state = request.GET.get('state')
             stored_state = request.session.get('oauth_state')
             
             if not code or not state or state != stored_state:
-                return Response({'error': 'Invalid OAuth response'}, status=status.HTTP_400_BAD_REQUEST)
+                # Redirect to frontend with error
+                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+                return redirect(f"{frontend_url}/dashboard/settings?google_oauth=error&message=Invalid OAuth response")
             
             redirect_uri = request.build_absolute_uri('/api/company/google/callback/')
             authorization_response = request.build_absolute_uri()
@@ -1113,13 +1117,18 @@ class GoogleOAuthCallbackAPIView(APIView):
                 google_creds.credentials_json = json.dumps(credentials_to_dict(credentials))
                 google_creds.save()
             
-            return Response({
-                'success': True,
-                'message': 'Google Calendar connected successfully!'
-            })
+            # Clear the OAuth state from session
+            if 'oauth_state' in request.session:
+                del request.session['oauth_state']
+            
+            # Redirect back to frontend with success message
+            frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+            return redirect(f"{frontend_url}/dashboard/settings?google_oauth=success&message=Google Calendar connected successfully")
             
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # Redirect to frontend with error
+            frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+            return redirect(f"{frontend_url}/dashboard/settings?google_oauth=error&message={str(e)}")
 
 
 class CheckGoogleConnectionAPIView(APIView):

@@ -5,6 +5,8 @@ import json
 from datetime import datetime, timedelta
 
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
+from django.conf import settings
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -66,7 +68,10 @@ class GoogleConnectAPIView(APIView):
         try:
             redirect_uri = request.build_absolute_uri('/api/company/google/callback/')
             authorization_url, state = GoogleCalendarManager.get_authorization_url(request, redirect_uri)
+            
+            # Store OAuth state and user ID in session for callback
             request.session['oauth_state'] = state
+            request.session['oauth_user_id'] = request.user.id
             
             return Response({
                 'authorization_url': authorization_url,
@@ -78,7 +83,7 @@ class GoogleConnectAPIView(APIView):
 
 class GoogleOAuthCallbackAPIView(APIView):
     """Handle Google OAuth callback and store tokens"""
-    permission_classes = [IsAuthenticated]
+    permission_classes = []  # No authentication required for OAuth callback
     
     @swagger_auto_schema(
         operation_description="Handle Google OAuth callback",
@@ -96,9 +101,19 @@ class GoogleOAuthCallbackAPIView(APIView):
             code = request.GET.get('code')
             state = request.GET.get('state')
             stored_state = request.session.get('oauth_state')
+            user_id = request.session.get('oauth_user_id')  # We'll store this in the connect endpoint
             
-            if not code or not state or state != stored_state:
-                return Response({'error': 'Invalid OAuth response'}, status=status.HTTP_400_BAD_REQUEST)
+            if not code or not state or state != stored_state or not user_id:
+                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=Invalid OAuth response or session expired')
+            
+            # Get the user from session
+            try:
+                from users.models import User
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message=User not found')
             
             redirect_uri = request.build_absolute_uri('/api/company/google/callback/')
             authorization_response = request.build_absolute_uri()
@@ -107,9 +122,9 @@ class GoogleOAuthCallbackAPIView(APIView):
                 authorization_response, state, redirect_uri
             )
             
-            # Store credentials in database
+            # Store credentials in database for the user
             google_creds, created = GoogleCredentials.objects.get_or_create(
-                user=request.user,
+                user=user,
                 defaults={'credentials_json': json.dumps(credentials_to_dict(credentials))}
             )
             
@@ -117,13 +132,38 @@ class GoogleOAuthCallbackAPIView(APIView):
                 google_creds.credentials_json = json.dumps(credentials_to_dict(credentials))
                 google_creds.save()
             
-            return Response({
-                'success': True,
-                'message': 'Google Calendar connected successfully!'
-            })
+            # Clear OAuth session data
+            request.session.pop('oauth_state', None)
+            request.session.pop('oauth_user_id', None)
+            
+            # Redirect to company-specific dashboard with success
+            frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+            
+            # Get company ID for this user
+            try:
+                company_id = user.company.id
+                return HttpResponseRedirect(f'{frontend_url}/companies/{company_id}/dashboard?google_oauth=success')
+            except AttributeError:
+                # If user doesn't have a company, redirect to general dashboard
+                return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=success')
             
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # Redirect to frontend with error
+            frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+            
+            # Try to get company ID from session user if available
+            user_id = request.session.get('oauth_user_id')
+            if user_id:
+                try:
+                    from users.models import User
+                    user = User.objects.get(id=user_id)
+                    company_id = user.company.id
+                    return HttpResponseRedirect(f'{frontend_url}/companies/{company_id}/dashboard?google_oauth=error&message={str(e)}')
+                except (User.DoesNotExist, AttributeError):
+                    pass
+            
+            # Fallback to general dashboard
+            return HttpResponseRedirect(f'{frontend_url}/dashboard/settings?google_oauth=error&message={str(e)}')
 
 
 class DisconnectGoogleAPIView(APIView):

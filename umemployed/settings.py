@@ -555,6 +555,9 @@ SWAGGER_SETTINGS = {
     "JSON_EDITOR": True,
 }
 
+# Frontend URL for OAuth redirects
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+
 # CORS configuration
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies to be included in cross-origin requests

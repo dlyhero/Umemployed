@@ -50,7 +50,9 @@ GET /api/company/interviews/ - List user's interviews
 3. User is redirected to Google OAuth consent screen
 4. After consent, Google redirects to `/api/company/google/callback/`
 5. Backend stores OAuth tokens in database
-6. User can now create Google Meet interviews
+6. **Backend redirects user to company-specific dashboard** (`/companies/{company_id}/dashboard?google_oauth=success`)
+7. Frontend can detect successful connection via URL parameters and show success message
+8. User can now create Google Meet interviews
 
 ### Interview Creation:
 1. Frontend sends POST request to `/api/company/google/create-interview/`
