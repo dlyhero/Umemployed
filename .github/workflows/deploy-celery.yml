@@ -117,11 +117,11 @@ jobs:
           --environment-variables \
             DEBUG=0 \
             DJANGO_ALLOWED_HOSTS="*" \
-            DB_NAME="${{ secrets.DB_NAME }}" \
-            DB_USER="${{ secrets.DB_USER }}" \
-            DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            DB_HOST="${{ secrets.DB_HOST }}" \
-            DB_PORT="${{ secrets.DB_PORT }}" \
+            AZURE_DB_NAME="${{ secrets.DB_NAME }}" \
+            AZURE_DB_USER="${{ secrets.DB_USER }}" \
+            AZURE_DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            AZURE_DB_HOST="${{ secrets.DB_HOST }}" \
+            AZURE_DB_PORT="${{ secrets.DB_PORT }}" \
             REDIS_URL="${{ secrets.REDIS_URL }}" \
             REDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" \
             SECRET_KEY="${{ secrets.SECRET_KEY }}" \
@@ -163,11 +163,11 @@ jobs:
           --environment-variables \
             DEBUG=0 \
             DJANGO_ALLOWED_HOSTS="*" \
-            DB_NAME="${{ secrets.DB_NAME }}" \
-            DB_USER="${{ secrets.DB_USER }}" \
-            DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            DB_HOST="${{ secrets.DB_HOST }}" \
-            DB_PORT="${{ secrets.DB_PORT }}" \
+            AZURE_DB_NAME="${{ secrets.DB_NAME }}" \
+            AZURE_DB_USER="${{ secrets.DB_USER }}" \
+            AZURE_DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            AZURE_DB_HOST="${{ secrets.DB_HOST }}" \
+            AZURE_DB_PORT="${{ secrets.DB_PORT }}" \
             REDIS_URL="${{ secrets.REDIS_URL }}" \
             REDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" \
             SECRET_KEY="${{ secrets.SECRET_KEY }}" \
