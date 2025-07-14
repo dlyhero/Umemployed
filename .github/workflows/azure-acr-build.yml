@@ -32,6 +32,23 @@ jobs:
 
     - name: Deploy to Azure Container Instances
       run: |
+        echo "🚀 Deploying Celery Worker to Azure Container Instances..."
+        
+        # Delete existing container if it exists
+        echo "Checking for existing container..."
+        if az container show --resource-group UmEmployed_RG --name celery-worker >/dev/null 2>&1; then
+          echo "Deleting existing container..."
+          az container delete \
+            --resource-group UmEmployed_RG \
+            --name celery-worker \
+            --yes
+          echo "✅ Existing container deleted"
+        else
+          echo "No existing container found"
+        fi
+        
+        # Create new container with proper configuration
+        echo "Creating new Celery worker container..."
         az container create \
           --resource-group UmEmployed_RG \
           --name celery-worker \
@@ -39,8 +56,32 @@ jobs:
           --registry-login-server celeryworkerumemployed.azurecr.io \
           --registry-username ${{ secrets.ACR_USERNAME }} \
           --registry-password ${{ secrets.ACR_PASSWORD }} \
-          --restart-policy Always || \
-        az container update \
+          --restart-policy Always \
+          --cpu 1 \
+          --memory 1.5 \
+          --command-line "celery -A umemployed worker --loglevel=info --concurrency=2" \
+          --environment-variables \
+            DJANGO_SETTINGS_MODULE=umemployed.settings \
+            AZURE_DB_NAME="${{ secrets.AZURE_DB_NAME }}" \
+            AZURE_DB_USER="${{ secrets.AZURE_DB_USER }}" \
+            AZURE_DB_PASSWORD="${{ secrets.AZURE_DB_PASSWORD }}" \
+            AZURE_DB_HOST="${{ secrets.AZURE_DB_HOST }}" \
+            AZURE_DB_PORT="${{ secrets.AZURE_DB_PORT }}" \
+            REDIS_URL="${{ secrets.REDIS_URL }}" \
+            SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+            DEBUG=False \
+            REDIS_SSL_CERT_REQS=none \
+            SOCIAL_AUTH_GOOGLE_OAUTH_KEY="${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH_KEY }}" \
+            SOCIAL_AUTH_GOOGLE_OAUTH_SECRET="${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH_SECRET }}"
+        
+        echo "✅ Celery worker deployed successfully!"
+        
+        # Get container status
+        echo "📊 Container Status:"
+        az container show \
           --resource-group UmEmployed_RG \
           --name celery-worker \
-          --image celeryworkerumemployed.azurecr.io/celery-worker:latest
+          --query "{name:name,state:containers[0].instanceView.currentState.state,image:containers[0].image,restartCount:containers[0].instanceView.restartCount}" \
+          --output table
+        
+        echo "📋 To view logs: az container logs --resource-group UmEmployed_RG --name celery-worker"
