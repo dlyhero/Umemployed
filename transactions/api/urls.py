@@ -36,6 +36,11 @@ urlpatterns = [
         name="api_subscription_status",
     ),
     path(
+        "subscription-debug/",
+        views.SubscriptionDebugAPIView.as_view(),
+        name="api_subscription_debug",
+    ),
+    path(
         "endorsement-subscribe/",
         views.CreateEndorsementSubscriptionAPIView.as_view(),
         name="api_endorsement_subscribe",

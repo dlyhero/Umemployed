@@ -42,7 +42,7 @@ from ..models import (
     SkillQuestion,
     User,
 )
-from ..tasks import generate_questions_task
+from ..tasks import generate_questions_task, smart_generate_questions_task
 from .serializers import ApplicationSerializer, JobSerializer, SavedJobSerializer
 
 logger = logging.getLogger(__name__)
@@ -504,32 +504,17 @@ class CreateJobStep4APIView(APIView):
             message=f"Your job '{job.title}' is now available and visible to candidates.",
         )
 
-        # Generate questions for the selected skills
-        generated_questions = []
+        # Generate questions for the selected skills using smart generation
         for skill in skills:
-            result = generate_questions_task(job.title, level, skill.name, 5)
-            if result["success"]:
-                generated_questions.extend(result["questions"])
+            smart_generate_questions_task.delay(job.id, skill.id, level, 5)
 
-        # Check if questions were successfully generated
-        if generated_questions:
-            return Response(
-                {
-                    "job": JobSerializer(job).data,
-                    "generated_questions": generated_questions,
-                    "message": "Questions generated successfully and emails sent.",
-                },
-                status=status.HTTP_200_OK,
-            )
-        else:
-            return Response(
-                {
-                    "job": JobSerializer(job).data,
-                    "generated_questions": [],
-                    "message": "Failed to generate questions.",
-                },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        return Response(
+            {
+                "job": JobSerializer(job).data,
+                "message": "Job creation step 4 completed. Smart question generation started in background.",
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class JobOptionsAPIView(APIView):
@@ -1361,3 +1346,95 @@ class RecruiterJobDetailAPIView(RetrieveAPIView):
         context = super().get_serializer_context()
         context["request"] = self.request
         return context
+
+
+class JobCreationProgressAPIView(APIView):
+    """
+    Endpoint to check the progress of job creation, specifically question generation.
+    
+    Method: GET
+    URL: /api/jobs/<job_id>/creation-progress/
+    Response:
+    {
+        "job_id": 123,
+        "is_complete": false,
+        "progress": {
+            "total_skills": 3,
+            "completed_skills": 1,
+            "percentage": 33.33,
+            "skills_status": {
+                "Python": true,
+                "JavaScript": false,
+                "React": false
+            }
+        }
+    }
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, job_id):
+        job = Job.objects.filter(id=job_id, user=request.user).first()
+        if not job:
+            return Response(
+                {"error": "Job not found or unauthorized."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Get all required skills
+        skills = job.requirements.all()
+        total_skills = skills.count()
+        
+        if total_skills == 0:
+            return Response({
+                "job_id": job.id,
+                "is_complete": job.job_creation_is_complete,
+                "progress": {
+                    "total_skills": 0,
+                    "completed_skills": 0,
+                    "percentage": 100,
+                    "skills_status": {}
+                }
+            })
+
+        # Get detailed status for each skill
+        from job.models import SkillGenerationStatus
+        skill_statuses = SkillGenerationStatus.objects.filter(job=job)
+        status_map = {s.skill_id: s for s in skill_statuses}
+        
+        completed_skills = 0
+        skills_status = {}
+        
+        for skill in skills:
+            status_obj = status_map.get(skill.id)
+            if status_obj:
+                is_complete = status_obj.status in ['ai_success', 'fallback_used', 'skipped']
+                skills_status[skill.name] = {
+                    "complete": is_complete,
+                    "status": status_obj.status,
+                    "questions_count": status_obj.questions_generated,
+                    "ai_attempts": status_obj.ai_attempts,
+                    "source": status_obj.status
+                }
+                if is_complete:
+                    completed_skills += 1
+            else:
+                skills_status[skill.name] = {
+                    "complete": False,
+                    "status": "pending",
+                    "questions_count": 0,
+                    "ai_attempts": 0,
+                    "source": "pending"
+                }
+
+        percentage = (completed_skills / total_skills) * 100
+
+        return Response({
+            "job_id": job.id,
+            "is_complete": job.job_creation_is_complete,
+            "progress": {
+                "total_skills": total_skills,
+                "completed_skills": completed_skills,
+                "percentage": round(percentage, 2),
+                "skills_status": skills_status
+            }
+        })

@@ -661,3 +661,92 @@ class EndorsementSubscriptionStatusAPIView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class SubscriptionDebugAPIView(APIView):
+    """
+    Debug endpoint to check user's subscription status and permissions.
+    Useful for troubleshooting job creation permission issues.
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user
+        
+        # Get all subscriptions for the user
+        all_subscriptions = Subscription.objects.filter(user=user).order_by('-started_at')
+        
+        # Get active subscription
+        active_subscription = Subscription.objects.filter(
+            user=user, is_active=True
+        ).order_by('-started_at').first()
+        
+        # Get active recruiter subscription specifically
+        active_recruiter_subscription = Subscription.objects.filter(
+            user=user, user_type="recruiter", is_active=True
+        ).order_by('-started_at').first()
+        
+        # Check permissions for job creation
+        can_create_jobs = bool(active_recruiter_subscription)
+        job_creation_limit = None
+        job_creation_usage = 0
+        
+        if active_recruiter_subscription:
+            can_perform_posting = active_recruiter_subscription.can_perform_action("posting")
+            job_creation_limit = active_recruiter_subscription.get_daily_limit()
+            
+            # Get today's usage
+            from transactions.models import DailyUsage
+            today = timezone.now().date()
+            usage = DailyUsage.objects.filter(
+                user=user, date=today, usage_type="posting"
+            ).first()
+            if usage:
+                job_creation_usage = usage.count
+        else:
+            can_perform_posting = False
+        
+        response_data = {
+            "user_id": user.id,
+            "user_email": user.email,
+            "total_subscriptions": all_subscriptions.count(),
+            "active_subscription": {
+                "exists": bool(active_subscription),
+                "user_type": active_subscription.user_type if active_subscription else None,
+                "tier": active_subscription.tier if active_subscription else None,
+                "is_active": active_subscription.is_active if active_subscription else None,
+                "started_at": active_subscription.started_at if active_subscription else None,
+            },
+            "recruiter_subscription": {
+                "exists": bool(active_recruiter_subscription),
+                "tier": active_recruiter_subscription.tier if active_recruiter_subscription else None,
+                "is_active": active_recruiter_subscription.is_active if active_recruiter_subscription else None,
+                "started_at": active_recruiter_subscription.started_at if active_recruiter_subscription else None,
+            },
+            "permissions": {
+                "can_create_jobs": can_create_jobs,
+                "can_perform_posting_action": can_perform_posting,
+                "job_creation_daily_limit": job_creation_limit,
+                "job_creation_usage_today": job_creation_usage,
+                "jobs_remaining_today": job_creation_limit - job_creation_usage if job_creation_limit else "unlimited",
+            },
+            "all_subscriptions": [
+                {
+                    "id": sub.id,
+                    "user_type": sub.user_type,
+                    "tier": sub.tier,
+                    "is_active": sub.is_active,
+                    "started_at": sub.started_at,
+                    "ended_at": sub.ended_at,
+                }
+                for sub in all_subscriptions
+            ],
+            "troubleshooting": {
+                "missing_recruiter_subscription": not bool(active_recruiter_subscription),
+                "subscription_inactive": active_subscription and not active_subscription.is_active if active_subscription else False,
+                "wrong_user_type": active_subscription and active_subscription.user_type != "recruiter" if active_subscription else False,
+                "reached_daily_limit": not can_perform_posting if active_recruiter_subscription else False,
+            }
+        }
+        
+        return Response(response_data, status=status.HTTP_200_OK)

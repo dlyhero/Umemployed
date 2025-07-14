@@ -86,6 +86,9 @@ urlpatterns = [
     path(
         "<int:job_id>/create-step4/", views.CreateJobStep4APIView.as_view(), name="create_job_step4"
     ),  # Step 4: Update job requirements
+    path(
+        "<int:job_id>/creation-progress/", views.JobCreationProgressAPIView.as_view(), name="job_creation_progress"
+    ),  # Check job creation progress
     # Job options
     path(
         "job-options/", views.JobOptionsAPIView.as_view(), name="job_options"

@@ -129,6 +129,10 @@ class Job(models.Model):
     job_creation_is_complete = models.BooleanField(
         default=False
     )  # to check if job creation has been done in all stages
+    questions_generation_progress = models.JSONField(
+        default=dict,
+        help_text="Tracks which skills have questions generated: {'skill_id': True/False}"
+    )  # Track progress of question generation per skill
 
     def get_absolute_url(self):
         return reverse("job:job_details", args=[str(self.id)])
@@ -160,6 +164,12 @@ class MCQ(models.Model):
 class SkillQuestion(models.Model):
     """Model for Skill Questions."""
 
+    QUESTION_SOURCE_CHOICES = [
+        ('ai_generated', 'AI Generated'),
+        ('fallback_pool', 'Fallback Pool'),
+        ('manual', 'Manual'),
+    ]
+
     id = models.BigAutoField(primary_key=True)
     question = models.CharField(max_length=255)
     option_a = models.CharField(max_length=100)
@@ -179,6 +189,17 @@ class SkillQuestion(models.Model):
     area = models.CharField(
         max_length=255, blank=True, null=True
     )  # New field for area of expertise
+    source = models.CharField(
+        max_length=20, 
+        choices=QUESTION_SOURCE_CHOICES, 
+        default='ai_generated',
+        help_text="Source of the question (AI generated, fallback pool, etc.)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        # Ensure we don't duplicate questions for the same job-skill combination
+        unique_together = ['job', 'skill', 'question']
 
     def __str__(self):
         return self.question
@@ -457,3 +478,80 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.stars} stars for {self.candidate} by {self.endorser}"
+
+
+class QuestionPool(models.Model):
+    """
+    Pre-generated pool of questions for common skills.
+    Used as fallback when AI generation fails.
+    """
+    
+    DIFFICULTY_CHOICES = [
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+    ]
+    
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    question = models.TextField()
+    option_a = models.CharField(max_length=200)
+    option_b = models.CharField(max_length=200)
+    option_c = models.CharField(max_length=200)
+    option_d = models.CharField(max_length=200)
+    correct_answer = models.CharField(
+        max_length=1, choices=[("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")]
+    )
+    difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES)
+    area = models.CharField(max_length=255, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    usage_count = models.PositiveIntegerField(default=0)
+    
+    class Meta:
+        unique_together = ['skill', 'question']
+        
+    def __str__(self):
+        return f"{self.skill.name} - {self.question[:50]}..."
+
+
+class SkillGenerationStatus(models.Model):
+    """
+    Track the status of question generation for each skill in a job.
+    Helps manage retries and fallback strategies.
+    """
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('ai_success', 'AI Generation Successful'),
+        ('ai_failed', 'AI Generation Failed'),
+        ('fallback_used', 'Fallback Questions Used'),
+        ('generic_used', 'Generic Questions Used'),
+        ('experience_based', 'Experience-Based Questions Used'),
+        ('portfolio_only', 'Portfolio Review Only'),
+        ('manual_required', 'Manual Intervention Required'),
+    ]
+    
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='skill_statuses')
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    ai_attempts = models.PositiveIntegerField(default=0)
+    last_attempt_at = models.DateTimeField(null=True, blank=True)
+    error_message = models.TextField(blank=True, null=True)
+    questions_generated = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ['job', 'skill']
+        
+    def can_retry_ai(self):
+        """Check if we can retry AI generation (max 3 attempts)"""
+        return self.ai_attempts < 3
+        
+    def should_use_fallback(self):
+        """Check if we should use fallback questions"""
+        return self.ai_attempts >= 3 and self.status == 'ai_failed'
+        
+    def __str__(self):
+        return f"{self.job.title} - {self.skill.name} ({self.status})"

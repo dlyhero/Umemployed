@@ -24,19 +24,27 @@ class HasActiveSubscription(BasePermission):
             self.message = "Authentication required."
             return False
 
-        subscription = (
-            Subscription.objects.filter(user=user, is_active=True).order_by("-started_at").first()
-        )
-        if not subscription:
-            self.message = "No active subscription found. Please upgrade your plan."
-            return False
+        # If a specific user_type is required, filter by that type first
+        if required_user_type:
+            subscription = (
+                Subscription.objects.filter(
+                    user=user, user_type=required_user_type, is_active=True
+                ).order_by("-started_at").first()
+            )
+            if not subscription:
+                self.message = f"This action requires a {required_user_type.capitalize()} subscription."
+                return False
+        else:
+            # If no specific user_type is required, get any active subscription
+            subscription = (
+                Subscription.objects.filter(user=user, is_active=True).order_by("-started_at").first()
+            )
+            if not subscription:
+                self.message = "No active subscription found. Please upgrade your plan."
+                return False
 
         if required_tier and subscription.tier != required_tier:
             self.message = f"This action requires a {required_tier.capitalize()} plan. Please upgrade your plan."
-            return False
-
-        if required_user_type and subscription.user_type != required_user_type:
-            self.message = f"This action requires a {required_user_type.capitalize()} subscription."
             return False
 
         if required_feature and not subscription.has_feature(required_feature):
