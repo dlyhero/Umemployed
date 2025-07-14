@@ -59,6 +59,7 @@ jobs:
           --restart-policy Always \
           --cpu 1 \
           --memory 1.5 \
+          --os-type Linux \
           --command-line "celery -A umemployed worker --loglevel=info --concurrency=2" \
           --environment-variables \
             DJANGO_SETTINGS_MODULE=umemployed.settings \
