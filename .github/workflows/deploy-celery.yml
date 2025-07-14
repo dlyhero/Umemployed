@@ -112,6 +112,7 @@ jobs:
           --registry-password ${{ steps.acr-creds.outputs.acr_password }} \
           --cpu 1 \
           --memory 2 \
+          --os-type Linux \
           --restart-policy Always \
           --environment-variables \
             DEBUG=0 \
@@ -157,6 +158,7 @@ jobs:
           --registry-password ${{ steps.acr-creds.outputs.acr_password }} \
           --cpu 0.5 \
           --memory 1 \
+          --os-type Linux \
           --restart-policy Always \
           --environment-variables \
             DEBUG=0 \

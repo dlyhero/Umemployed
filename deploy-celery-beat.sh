@@ -155,6 +155,7 @@ az container create \
     --registry-password $ACR_PASSWORD \
     --cpu 0.5 \
     --memory 1 \
+    --os-type Linux \
     --restart-policy Always \
     --environment-variables \
         DEBUG=0 \
