@@ -133,8 +133,18 @@ jobs:
             AZURE_CONTAINER="${{ secrets.AZURE_CONTAINER }}" \
             STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
             STRIPE_PUBLISHABLE_KEY="${{ secrets.STRIPE_PUBLISHABLE_KEY }}" \
+            STRIPE_WEBHOOK_SECRET="${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
             AGORA_APP_ID="${{ secrets.AGORA_APP_ID }}" \
-            AGORA_APP_CERTIFICATE="${{ secrets.AGORA_APP_CERTIFICATE }}"
+            AGORA_APP_CERTIFICATE="${{ secrets.AGORA_APP_CERTIFICATE }}" \
+            GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+            GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            SOCIAL_AUTH_GOOGLE_OAUTH_KEY="${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH_KEY }}" \
+            SOCIAL_AUTH_GOOGLE_OAUTH_SECRET="${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH_SECRET }}" \
+            SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI="${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI }}" \
+            SITE_URL="${{ secrets.SITE_URL }}" \
+            FRONTEND_BASE_URL="${{ secrets.FRONTEND_BASE_URL }}" \
+            WEBSITE_CONTENTAZUREFILECONNECTIONSTRING="${{ secrets.WEBSITE_CONTENTAZUREFILECONNECTIONSTRING }}" \
+            WEBSITE_CONTENTSHARE="${{ secrets.WEBSITE_CONTENTSHARE }}"
 
     - name: Deploy Celery Beat Container
       run: |
@@ -176,7 +186,21 @@ jobs:
             LLAMA_API_KEY="${{ secrets.LLAMA_API_KEY }}" \
             AZURE_ACCOUNT_NAME="${{ secrets.AZURE_ACCOUNT_NAME }}" \
             AZURE_ACCOUNT_KEY="${{ secrets.AZURE_ACCOUNT_KEY }}" \
-            AZURE_CONTAINER="${{ secrets.AZURE_CONTAINER }}"
+            AZURE_CONTAINER="${{ secrets.AZURE_CONTAINER }}" \
+            STRIPE_SECRET_KEY="${{ secrets.STRIPE_SECRET_KEY }}" \
+            STRIPE_PUBLISHABLE_KEY="${{ secrets.STRIPE_PUBLISHABLE_KEY }}" \
+            STRIPE_WEBHOOK_SECRET="${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
+            AGORA_APP_ID="${{ secrets.AGORA_APP_ID }}" \
+            AGORA_APP_CERTIFICATE="${{ secrets.AGORA_APP_CERTIFICATE }}" \
+            GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+            GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            SOCIAL_AUTH_GOOGLE_OAUTH_KEY="${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH_KEY }}" \
+            SOCIAL_AUTH_GOOGLE_OAUTH_SECRET="${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH_SECRET }}" \
+            SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI="${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI }}" \
+            SITE_URL="${{ secrets.SITE_URL }}" \
+            FRONTEND_BASE_URL="${{ secrets.FRONTEND_BASE_URL }}" \
+            WEBSITE_CONTENTAZUREFILECONNECTIONSTRING="${{ secrets.WEBSITE_CONTENTAZUREFILECONNECTIONSTRING }}" \
+            WEBSITE_CONTENTSHARE="${{ secrets.WEBSITE_CONTENTSHARE }}"
 
     - name: Verify Deployment
       run: |
