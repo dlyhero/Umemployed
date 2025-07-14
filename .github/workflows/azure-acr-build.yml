@@ -63,11 +63,11 @@ jobs:
           --command-line "celery -A umemployed worker --loglevel=info --concurrency=2" \
           --environment-variables \
             DJANGO_SETTINGS_MODULE=umemployed.settings \
-            AZURE_DB_NAME="${{ secrets.DB_NAME }}" \
-            AZURE_DB_USER="${{ secrets.DB_USER }}" \
-            AZURE_DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            AZURE_DB_HOST="${{ secrets.DB_HOST }}" \
-            AZURE_DB_PORT="${{ secrets.DB_PORT }}" \
+            AZURE_DB_NAME="${{ secrets.AZURE_DB_NAME }}" \
+            AZURE_DB_USER="${{ secrets.AZURE_DB_USER }}" \
+            AZURE_DB_PASSWORD="${{ secrets.AZURE_DB_PASSWORD }}" \
+            AZURE_DB_HOST="${{ secrets.AZURE_DB_HOST }}" \
+            AZURE_DB_PORT="${{ secrets.AZURE_DB_PORT }}" \
             REDIS_URL="${{ secrets.REDIS_URL }}" \
             REDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" \
             SECRET_KEY="${{ secrets.SECRET_KEY }}" \
