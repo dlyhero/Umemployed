@@ -10,7 +10,7 @@
 ### 1. Question Pool System
 - Create a pre-generated pool of common questions for popular skills
 - Use AI-generated questions as primary, pool questions as fallback
-- Reduces AI calls while maintaining quality
+- Reduces AI calls while maintaining quality  .
 
 ### 2. Retry with Exponential Backoff
 - 1st attempt: AI generation (immediate)
