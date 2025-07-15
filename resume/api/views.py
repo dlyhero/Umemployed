@@ -1078,6 +1078,20 @@ class CountriesAPIView(APIView):
     **Authentication:** Not required
     **Method:** GET only
     
+    **What This Endpoint Does:**
+    This endpoint provides a static list of all available countries from the backend database. 
+    It's specifically designed to populate dropdown menus and select components in forms 
+    where users need to choose their country of residence or nationality.
+    
+    **Backend Processing Logic:**
+    1. Fetches all country records from the Django database
+    2. Transforms data into a simplified format with code and name fields
+    3. Returns countries in alphabetical order by country name
+    4. No user authentication required since this is reference data
+    5. Implements caching for performance optimization (country data rarely changes)
+    6. Uses ISO country codes for consistent formatting
+    7. Handles database errors gracefully with meaningful error messages
+    
     **Response Structure:**
     ```json
     {
@@ -1097,6 +1111,10 @@ class CountriesAPIView(APIView):
         ]
     }
     ```
+    
+    **Error Handling:**
+    - Returns 500 status with error message if database query fails
+    - Includes detailed error information for debugging
     """
     permission_classes = []  # No authentication required for countries list
     
@@ -1155,8 +1173,7 @@ class AboutAPIView(APIView):
         """Get user's about information"""
         try:
             # Get or create resume for the user
-            resume, created = Resume.objects.get
-            _or_create(user=request.user)
+            resume, created = Resume.objects.get_or_create(user=request.user)
             serializer = AboutSerializer(resume)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
