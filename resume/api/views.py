@@ -1097,19 +1097,6 @@ class CountriesAPIView(APIView):
         ]
     }
     ```
-    
-    **Usage Example:**
-    ```javascript
-    fetch('/api/resume/countries/')
-        .then(response => response.json())
-        .then(data => {
-            // data.countries contains array of country objects
-            const countryOptions = data.countries.map(country => ({
-                value: country.code,
-                label: country.name
-            }));
-        });
-    ```
     """
     permission_classes = []  # No authentication required for countries list
     
@@ -1155,31 +1142,6 @@ class AboutAPIView(APIView):
             "description": "Detailed..."   // Optional - Longer description
         }
     }
-    ```
-    
-    **Usage Examples:**
-    ```javascript
-    // GET - Retrieve user's about info
-    fetch('/api/resume/about/', {
-        headers: { 'Authorization': 'Bearer ' + token }
-    })
-    .then(response => response.json())
-    .then(data => console.log(data.about));
-    
-    // PATCH - Update specific fields
-    fetch('/api/resume/about/', {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-            about: {
-                firstName: "Jane",
-                bio: "Updated bio text..."
-            }
-        })
-    });
     ```
     
     **Notes:**
@@ -1292,32 +1254,6 @@ class PersonalDetailsAPIView(APIView):
     - "31 Dec, 1996" 
     - "31/12/1996"
     - "1996-12-31"
-    
-    **Usage Examples:**
-    ```javascript
-    // GET - Retrieve personal details
-    fetch('/api/resume/personal-details/', {
-        headers: { 'Authorization': 'Bearer ' + token }
-    })
-    .then(response => response.json())
-    .then(data => console.log(data.personalDetails));
-    
-    // PATCH - Update specific fields
-    fetch('/api/resume/personal-details/', {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-            personalDetails: {
-                email: "updated@example.com",
-                mobile: "+1-555-999-8888",
-                jobTitle: "Lead Developer"
-            }
-        })
-    });
-    ```
     
     **Notes:**
     - All fields are optional for updates
@@ -1482,36 +1418,6 @@ class ExperiencesAPIView(APIView):
     - "2020-Present" → Start: 2020, End: null (current job)
     - "2018-2021" → Start: 2018, End: 2021
     
-    **Usage Examples:**
-    ```javascript
-    // GET - Retrieve all experiences
-    fetch('/api/resume/experiences/', {
-        headers: { 'Authorization': 'Bearer ' + token }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // data.experiences contains array of experience objects
-        data.experiences.forEach(exp => {
-            console.log(`${exp.title} at ${exp.company} (${exp.period})`);
-        });
-    });
-    
-    // POST - Add new experience
-    fetch('/api/resume/experiences/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-            title: "Software Engineer",
-            company: "Microsoft",
-            period: "2022-Present",
-            description: "Developing cloud solutions..."
-        })
-    });
-    ```
-    
     **Notes:**
     - Experiences are returned in reverse chronological order (newest first)
     - Logo field currently returns a default placeholder
@@ -1629,36 +1535,6 @@ class EducationAPIView(APIView):
       - PhD/Doctorate: 4 years duration
     - Format: "StartYear-EndYear" (e.g., "2016-20" for 2016-2020)
     
-    **Usage Examples:**
-    ```javascript
-    // GET - Retrieve all education records
-    fetch('/api/resume/education/', {
-        headers: { 'Authorization': 'Bearer ' + token }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // data.education contains array of education objects
-        data.education.forEach(edu => {
-            console.log(`${edu.degree} from ${edu.university} (${edu.period})`);
-        });
-    });
-    
-    // POST - Add new education record
-    fetch('/api/resume/education/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-            degree: "Bachelor of Engineering",
-            university: "MIT",
-            period: "2018-22",
-            description: "Focused on software engineering and algorithms"
-        })
-    });
-    ```
-    
     **Notes:**
     - Education records are ordered by graduation year (newest first)
     - Period is auto-calculated if not provided in POST request
@@ -1732,7 +1608,7 @@ class SkillsPagination(PageNumberPagination):
 
 class SkillsAPIView(APIView):
     """
-    API endpoint for managing user's skills with pagination and search functionality.
+    API endpoint for managing user's skills with pagination, search, and job title filtering.
     
     **Endpoint:** `/api/resume/skills/`
     **Authentication:** Required
@@ -1748,21 +1624,25 @@ class SkillsAPIView(APIView):
             "skills": [
                 {
                     "id": 1,
-                    "name": "JavaScript"
+                    "name": "JavaScript",
+                    "is_user_skill": true,              // User already has this skill
+                    "categories": ["Frontend Development"]
                 },
                 {
                     "id": 2,
-                    "name": "React"
+                    "name": "React",
+                    "is_user_skill": false,             // Suggested skill based on job title
+                    "categories": ["Frontend Development"]
                 },
                 {
                     "id": 3,
-                    "name": "Python"
-                },
-                {
-                    "id": 4,
-                    "name": "Django"
+                    "name": "Python",
+                    "is_user_skill": true,
+                    "categories": ["Backend Development", "Data Science"]
                 }
-            ]
+            ],
+            "filter_applied": "job_relevant",           // Which filter was applied
+            "job_category": "Frontend Development"      // User's job category (if found)
         }
     }
     ```
@@ -1778,56 +1658,27 @@ class SkillsAPIView(APIView):
     - `page`: Page number (default: 1)
     - `page_size`: Items per page (default: 20, max: 100)
     - `search`: Search skills by name (case-insensitive)
+    - `filter`: Filter type (default: 'job_relevant')
+      - `job_relevant`: User's skills + skills relevant to their job title
+      - `user_only`: Only user's existing skills
+      - `all`: All available skills in the system
     
-    **Usage Examples:**
-    ```javascript
-    // GET - Retrieve skills (first page)
-    fetch('/api/resume/skills/', {
-        headers: { 'Authorization': 'Bearer ' + token }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(`Total skills: ${data.count}`);
-        console.log('Skills on this page:', data.results.skills);
-        
-        // Check if there are more pages
-        if (data.next) {
-            console.log('More skills available on next page');
-        }
-    });
+    **Filter Types Explained:**
+    1. **job_relevant** (default): Shows user's current skills plus suggested skills based on their job title category. This reduces noise by showing only relevant skills.
+    2. **user_only**: Shows only skills the user has already added to their profile.
+    3. **all**: Shows every skill in the system (useful for browsing/discovery).
     
-    // GET - Search skills
-    fetch('/api/resume/skills/?search=java&page=1&page_size=10', {
-        headers: { 'Authorization': 'Bearer ' + token }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Returns skills containing "java" (JavaScript, Java, etc.)
-        console.log('Matching skills:', data.results.skills);
-    });
+    **Job Title Matching:**
+    - First checks ContactInfo.job_title (structured job title linked to SkillCategory)
+    - Falls back to Resume.job_title (text field matched against SkillCategory names)
+    - If no job title found, defaults to showing only user's existing skills
     
-    // GET - Custom page size
-    fetch('/api/resume/skills/?page_size=50', {
-        headers: { 'Authorization': 'Bearer ' + token }
-    });
-    
-    // POST - Add new skill
-    fetch('/api/resume/skills/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-            name: "TypeScript"
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Returns updated paginated skills list
-        console.log('Updated skills:', data.results.skills);
-    });
-    ```
+    **API Usage:**
+    - GET `/api/resume/skills/` - Get job-relevant skills (default)
+    - GET `/api/resume/skills/?filter=user_only` - Get only user's skills
+    - GET `/api/resume/skills/?filter=all&search=java` - Search all skills
+    - GET `/api/resume/skills/?search=react&filter=job_relevant` - Search job-relevant skills
+    - POST `/api/resume/skills/` with `{"name": "TypeScript"}` - Add new skill
     
     **Pagination Settings:**
     - Default page size: 20 skills per page
@@ -1837,45 +1688,112 @@ class SkillsAPIView(APIView):
     **Search Functionality:**
     - Case-insensitive search across skill names
     - Partial matching (e.g., "java" matches "JavaScript", "Java")
-    - Works with pagination
+    - Works with all filter types
+    - Combines with pagination
+    
+    **Smart Filtering Benefits:**
+    - Reduces noise by showing relevant skills first
+    - Helps users discover skills they might need for their job
+    - Distinguishes between owned and suggested skills
+    - Shows skill categories for context
     
     **Notes:**
     - Skills are ordered alphabetically by name
-    - Each skill has a unique ID for future CRUD operations
+    - User's existing skills are marked with `is_user_skill: true`
+    - Suggested skills are based on the same categories as user's job title
     - POST request returns the updated paginated skills list
-    - Empty search returns all skills
+    - Categories help users understand skill relevance
+    - Default page size: 20 skills per page
+    - Maximum page size: 100 skills per page
+    - Case-insensitive search across skill names
     """
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
-        """Get user's skills list with pagination and optional search"""
+        """Get user's skills list with pagination, search, and optional job title filtering"""
         try:
-            # Get all skills for the user
-            skills = Skill.objects.filter(user=request.user)
+            # Start with user's existing skills
+            user_skills = Skill.objects.filter(user=request.user)
+            
+            # Get filter type - 'user_only', 'job_relevant', or 'all' (default: 'job_relevant')
+            filter_type = request.query_params.get('filter', 'job_relevant')
+            
+            if filter_type == 'job_relevant':
+                # Get user's job title category ID from Resume or ContactInfo
+                user_job_category_id = None
+                
+                # First try to get from ContactInfo (more structured)
+                contact_info = ContactInfo.objects.filter(user=request.user).first()
+                if contact_info and contact_info.job_title_id:
+                    user_job_category_id = contact_info.job_title_id
+                else:
+                    # Fallback: try to match Resume job_title with SkillCategory
+                    resume = Resume.objects.filter(user=request.user).first()
+                    if resume and resume.job_title:
+                        job_category = SkillCategory.objects.filter(
+                            name__icontains=resume.job_title
+                        ).first()
+                        if job_category:
+                            user_job_category_id = job_category.id
+                
+                if user_job_category_id:
+                    # Get relevant skills from the same category using category ID
+                    relevant_skills = Skill.objects.filter(
+                        categories__id=user_job_category_id
+                    ).exclude(user=request.user)  # Exclude user's existing skills
+                    
+                    # Combine user skills with relevant skills from job category
+                    skills = user_skills.union(relevant_skills)
+                else:
+                    # If no job title found, just show user's skills
+                    skills = user_skills
+                    
+            elif filter_type == 'user_only':
+                # Show only user's existing skills
+                skills = user_skills
+            else:  # 'all'
+                # Show all available skills
+                all_skills = Skill.objects.all()
+                skills = all_skills
             
             # Apply search filter if provided
             search = request.query_params.get('search', None)
             if search:
                 skills = skills.filter(name__icontains=search)
             
-            # Order by name
-            skills = skills.order_by('name')
+            # Order by: user's skills first, then alphabetically
+            # Mark user's skills vs suggested skills
+            skills = skills.distinct().order_by('name')
             
             # Apply pagination
             paginator = SkillsPagination()
             paginated_skills = paginator.paginate_queryset(skills, request)
             
-            # Serialize the paginated data
+            # Serialize the paginated data with ownership indication
             skills_data = []
+            user_skill_ids = set(user_skills.values_list('id', flat=True))
+            
             for skill in paginated_skills:
                 skills_data.append({
                     "id": skill.id,
-                    "name": skill.name
+                    "name": skill.name,
+                    "is_user_skill": skill.id in user_skill_ids,  # Indicate if user already has this skill
+                    "categories": [cat.name for cat in skill.categories.all()]  # Show categories
                 })
             
             # Return paginated response
+            job_category_name = None
+            if 'user_job_category_id' in locals() and user_job_category_id:
+                try:
+                    job_category = SkillCategory.objects.get(id=user_job_category_id)
+                    job_category_name = job_category.name
+                except SkillCategory.DoesNotExist:
+                    pass
+            
             return paginator.get_paginated_response({
-                "skills": skills_data
+                "skills": skills_data,
+                "filter_applied": filter_type,
+                "job_category": job_category_name
             })
             
         except Exception as e:
@@ -1895,20 +1813,85 @@ class SkillsAPIView(APIView):
                 name=skill_data.get('name', '')
             )
             
-            # Return updated skills list with pagination
-            skills = Skill.objects.filter(user=request.user).order_by('name')
+            # Return updated skills list following the same filtering as GET
+            # Get filter type from query params (same as GET method)
+            filter_type = request.query_params.get('filter', 'job_relevant')
+            
+            # Start with user's existing skills
+            user_skills = Skill.objects.filter(user=request.user)
+            
+            if filter_type == 'job_relevant':
+                # Get user's job title category ID from Resume or ContactInfo
+                user_job_category_id = None
+                
+                # First try to get from ContactInfo (more structured)
+                contact_info = ContactInfo.objects.filter(user=request.user).first()
+                if contact_info and contact_info.job_title_id:
+                    user_job_category_id = contact_info.job_title_id
+                else:
+                    # Fallback: try to match Resume job_title with SkillCategory
+                    resume = Resume.objects.filter(user=request.user).first()
+                    if resume and resume.job_title:
+                        job_category = SkillCategory.objects.filter(
+                            name__icontains=resume.job_title
+                        ).first()
+                        if job_category:
+                            user_job_category_id = job_category.id
+                
+                if user_job_category_id:
+                    # Get relevant skills from the same category using category ID
+                    relevant_skills = Skill.objects.filter(
+                        categories__id=user_job_category_id
+                    ).exclude(user=request.user)  # Exclude user's existing skills
+                    
+                    # Combine user skills with relevant skills from job category
+                    skills = user_skills.union(relevant_skills)
+                else:
+                    # If no job title found, just show user's skills
+                    skills = user_skills
+                    
+            elif filter_type == 'user_only':
+                # Show only user's existing skills
+                skills = user_skills
+            else:  # 'all'
+                # Show all available skills
+                skills = Skill.objects.all()
+            
+            # Apply search filter if provided
+            search = request.query_params.get('search', None)
+            if search:
+                skills = skills.filter(name__icontains=search)
+                
+            # Order and apply pagination
+            skills = skills.distinct().order_by('name')
             paginator = SkillsPagination()
             paginated_skills = paginator.paginate_queryset(skills, request)
             
+            # Serialize with ownership indication
             skills_data = []
+            user_skill_ids = set(user_skills.values_list('id', flat=True))
+            
             for skill in paginated_skills:
                 skills_data.append({
                     "id": skill.id,
-                    "name": skill.name
+                    "name": skill.name,
+                    "is_user_skill": skill.id in user_skill_ids,
+                    "categories": [cat.name for cat in skill.categories.all()]
                 })
             
+            # Return paginated response with job category name
+            job_category_name = None
+            if 'user_job_category_id' in locals() and user_job_category_id:
+                try:
+                    job_category = SkillCategory.objects.get(id=user_job_category_id)
+                    job_category_name = job_category.name
+                except SkillCategory.DoesNotExist:
+                    pass
+            
             return paginator.get_paginated_response({
-                "skills": skills_data
+                "skills": skills_data,
+                "filter_applied": filter_type,
+                "job_category": job_category_name
             })
             
         except Exception as e:
