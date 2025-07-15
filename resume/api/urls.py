@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from . import views
-from .views import AboutAPIView, CountriesAPIView, PersonalDetailsAPIView
+from .views import AboutAPIView, CountriesAPIView, EducationAPIView, ExperiencesAPIView, PersonalDetailsAPIView, SkillsAPIView
 
 # Router for CRUD operations
 router = DefaultRouter()
@@ -94,6 +94,21 @@ urlpatterns = [
         views.PersonalDetailsAPIView.as_view(),
         name="personal_details_api",
     ),  # GET/PUT/PATCH user's personal details
+    path(
+        "experiences/",
+        views.ExperiencesAPIView.as_view(),
+        name="experiences_api",
+    ),  # GET/POST user's experiences list
+    path(
+        "education/",
+        views.EducationAPIView.as_view(),
+        name="education_api",
+    ),  # GET/POST user's education list
+    path(
+        "skills/",
+        views.SkillsAPIView.as_view(),
+        name="skills_api",
+    ),  # GET/POST user's skills list
 ]
 
 # Include router URLs

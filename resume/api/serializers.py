@@ -312,3 +312,98 @@ class PersonalDetailsSerializer(serializers.Serializer):
                 "jobTitle": data.get("jobTitle") or "",
             }
         }
+
+
+class ExperienceListSerializer(serializers.Serializer):
+    """
+    Serializer for user's experiences list for frontend.
+    """
+    def to_representation(self, instance):
+        """Custom representation to handle the experiences structure"""
+        # Get all experiences for the user
+        experiences = Experience.objects.filter(user=instance.user).order_by('-start_date')
+        
+        experiences_data = []
+        for exp in experiences:
+            # Calculate period from start_date and end_date
+            period = ""
+            if exp.start_date:
+                start_year = exp.start_date.year
+                if exp.end_date:
+                    end_year = exp.end_date.year
+                    period = f"{start_year}-{str(end_year)[2:]}"  # e.g., "2019-22"
+                else:
+                    period = f"{start_year}-Present"
+            
+            experiences_data.append({
+                "id": exp.id,
+                "period": period,
+                "logo": "/assets/default-company-logo.png",  # Default logo, can be customized
+                "title": exp.role or "",
+                "company": exp.company_name or "",
+                "description": f"Worked as {exp.role} at {exp.company_name}" if exp.role and exp.company_name else ""
+            })
+        
+        return {
+            "experiences": experiences_data
+        }
+
+
+class EducationListSerializer(serializers.Serializer):
+    """
+    Serializer for user's education list for frontend.
+    """
+    def to_representation(self, instance):
+        """Custom representation to handle the education structure"""
+        # Get all education records for the user
+        educations = Education.objects.filter(user=instance.user).order_by('-graduation_year')
+        
+        education_data = []
+        for edu in educations:
+            # Calculate period - assuming 4 years for bachelor's, 2 for diploma, etc.
+            period = ""
+            if edu.graduation_year:
+                # Estimate start year based on degree type
+                duration = 4  # Default duration
+                if 'diploma' in edu.degree.lower() or 'high school' in edu.degree.lower():
+                    duration = 2
+                elif 'master' in edu.degree.lower():
+                    duration = 2
+                elif 'phd' in edu.degree.lower() or 'doctorate' in edu.degree.lower():
+                    duration = 4
+                
+                start_year = edu.graduation_year - duration
+                period = f"{start_year}-{str(edu.graduation_year)[2:]}"  # e.g., "2013-17"
+            
+            education_data.append({
+                "id": edu.id,
+                "period": period,
+                "degree": edu.degree or "",
+                "university": edu.institution_name or "",
+                "description": f"Specialized in {edu.field_of_study}" if edu.field_of_study else ""
+            })
+        
+        return {
+            "education": education_data
+        }
+
+
+class SkillsListSerializer(serializers.Serializer):
+    """
+    Serializer for user's skills list for frontend.
+    """
+    def to_representation(self, instance):
+        """Custom representation to handle the skills structure"""
+        # Get all skills for the user
+        skills = Skill.objects.filter(user=instance.user).order_by('name')
+        
+        skills_data = []
+        for skill in skills:
+            skills_data.append({
+                "id": skill.id,
+                "name": skill.name
+            })
+        
+        return {
+            "skills": skills_data
+        }

@@ -50,8 +50,10 @@ from .serializers import (
     AboutSerializer,
     ContactInfoSerializer,
     CountriesSerializer,
+    EducationListSerializer,
     EducationSerializer,
     EnhancedResumeSerializer,
+    ExperienceListSerializer,
     ExperienceSerializer,
     LanguageSerializer,
     PersonalDetailsSerializer,
@@ -61,6 +63,7 @@ from .serializers import (
     SkillCategorySerializer,
     SkillListSerializer,
     SkillSerializer,
+    SkillsListSerializer,
     UserLanguageSerializer,
     WorkExperienceSerializer,
 )
@@ -1069,7 +1072,44 @@ from rest_framework.views import APIView
 
 class CountriesAPIView(APIView):
     """
-    API view to get list of countries for dropdown.
+    API endpoint to retrieve a list of all countries for dropdown selections.
+    
+    **Endpoint:** `GET /api/resume/countries/`
+    **Authentication:** Not required
+    **Method:** GET only
+    
+    **Response Structure:**
+    ```json
+    {
+        "countries": [
+            {
+                "code": "US",
+                "name": "United States"
+            },
+            {
+                "code": "CA", 
+                "name": "Canada"
+            },
+            {
+                "code": "GB",
+                "name": "United Kingdom"
+            }
+        ]
+    }
+    ```
+    
+    **Usage Example:**
+    ```javascript
+    fetch('/api/resume/countries/')
+        .then(response => response.json())
+        .then(data => {
+            // data.countries contains array of country objects
+            const countryOptions = data.countries.map(country => ({
+                value: country.code,
+                label: country.name
+            }));
+        });
+    ```
     """
     permission_classes = []  # No authentication required for countries list
     
@@ -1087,11 +1127,65 @@ class CountriesAPIView(APIView):
 
 class AboutAPIView(APIView):
     """
-    API view for user's about information.
-    Supports GET, PUT, PATCH operations.
+    API endpoint for managing user's about/bio information.
     
-    GET: Returns user's about information
-    PUT/PATCH: Updates user's about information
+    **Endpoint:** `/api/resume/about/`
+    **Authentication:** Required
+    **Methods:** GET, PUT, PATCH
+    
+    **GET Response Structure:**
+    ```json
+    {
+        "about": {
+            "firstName": "John",
+            "lastName": "Doe", 
+            "bio": "Experienced software engineer with 5+ years...",
+            "description": "Passionate about creating innovative solutions..."
+        }
+    }
+    ```
+    
+    **PUT/PATCH Request Structure:**
+    ```json
+    {
+        "about": {
+            "firstName": "John",           // Optional - User's first name
+            "lastName": "Doe",             // Optional - User's last name  
+            "bio": "New bio text...",      // Optional - Short bio/summary
+            "description": "Detailed..."   // Optional - Longer description
+        }
+    }
+    ```
+    
+    **Usage Examples:**
+    ```javascript
+    // GET - Retrieve user's about info
+    fetch('/api/resume/about/', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(response => response.json())
+    .then(data => console.log(data.about));
+    
+    // PATCH - Update specific fields
+    fetch('/api/resume/about/', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            about: {
+                firstName: "Jane",
+                bio: "Updated bio text..."
+            }
+        })
+    });
+    ```
+    
+    **Notes:**
+    - All fields in the about object are optional for updates
+    - firstName and lastName update the User model
+    - bio and description update the Resume model
     """
     permission_classes = [IsAuthenticated]
     
@@ -1099,7 +1193,8 @@ class AboutAPIView(APIView):
         """Get user's about information"""
         try:
             # Get or create resume for the user
-            resume, created = Resume.objects.get_or_create(user=request.user)
+            resume, created = Resume.objects.get
+            _or_create(user=request.user)
             serializer = AboutSerializer(resume)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -1154,11 +1249,81 @@ class AboutAPIView(APIView):
 
 class PersonalDetailsAPIView(APIView):
     """
-    API view for user's personal details.
-    Supports GET, PUT, PATCH operations.
+    API endpoint for managing user's personal details and contact information.
     
-    GET: Returns user's personal details
-    PUT/PATCH: Updates user's personal details
+    **Endpoint:** `/api/resume/personal-details/`
+    **Authentication:** Required
+    **Methods:** GET, PUT, PATCH
+    
+    **GET Response Structure:**
+    ```json
+    {
+        "personalDetails": {
+            "email": "john.doe@example.com",
+            "dob": "25th Dec, 1990",           // Formatted date of birth
+            "address": "123 Main Street",      // Street address
+            "city": "New York",                // City name
+            "country": "United States",        // Country name
+            "postalCode": "10001",            // Postal/ZIP code (not stored yet)
+            "mobile": "+1-234-567-8900",      // Phone number
+            "jobTitle": "Software Engineer"    // Current job title
+        }
+    }
+    ```
+    
+    **PUT/PATCH Request Structure:**
+    ```json
+    {
+        "personalDetails": {
+            "email": "new.email@example.com",     // Optional - Must be valid email
+            "dob": "31st Dec, 1996",              // Optional - Various formats accepted
+            "address": "456 Oak Avenue",          // Optional - Street address  
+            "city": "Los Angeles",                // Optional - City name
+            "country": "United States",           // Optional - Country name/code
+            "postalCode": "90210",               // Optional - Not stored in current model
+            "mobile": "+1-555-123-4567",         // Optional - Phone number
+            "jobTitle": "Senior Developer"        // Optional - Job title
+        }
+    }
+    ```
+    
+    **Date Format Support:**
+    - "31st Dec, 1996" (preferred)
+    - "31 Dec, 1996" 
+    - "31/12/1996"
+    - "1996-12-31"
+    
+    **Usage Examples:**
+    ```javascript
+    // GET - Retrieve personal details
+    fetch('/api/resume/personal-details/', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(response => response.json())
+    .then(data => console.log(data.personalDetails));
+    
+    // PATCH - Update specific fields
+    fetch('/api/resume/personal-details/', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            personalDetails: {
+                email: "updated@example.com",
+                mobile: "+1-555-999-8888",
+                jobTitle: "Lead Developer"
+            }
+        })
+    });
+    ```
+    
+    **Notes:**
+    - All fields are optional for updates
+    - Email validation is performed
+    - Country validation against django-countries
+    - postalCode field is not yet stored in the backend
     """
     permission_classes = [IsAuthenticated]
     
@@ -1266,5 +1431,488 @@ class PersonalDetailsAPIView(APIView):
         except Exception as e:
             return Response(
                 {"error": f"Failed to update personal details: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class ExperiencesAPIView(APIView):
+    """
+    API endpoint for managing user's work experiences.
+    
+    **Endpoint:** `/api/resume/experiences/`
+    **Authentication:** Required
+    **Methods:** GET, POST
+    
+    **GET Response Structure:**
+    ```json
+    {
+        "experiences": [
+            {
+                "id": 1,
+                "period": "2019-22",                           // Calculated from dates
+                "logo": "/assets/shree-logo-Bd9DHJ8p.png",    // Default company logo
+                "title": "Full Stack Developer",               // Job title/role
+                "company": "Shreethemes - India",             // Company name
+                "description": "It seems that only fragments of the original text remain..."
+            },
+            {
+                "id": 2,
+                "period": "2017-19",
+                "logo": "/assets/circle-logo-De1zeqcD.png", 
+                "title": "Back-end Developer",
+                "company": "CircleCI - U.S.A.",
+                "description": "Worked as Back-end Developer at CircleCI"
+            }
+        ]
+    }
+    ```
+    
+    **POST Request Structure:**
+    ```json
+    {
+        "title": "Senior Software Engineer",      // Required - Job title
+        "company": "Google Inc.",                 // Required - Company name
+        "period": "2020-23",                     // Optional - Format: "YYYY-YY" or "YYYY-Present"
+        "description": "Led development team..." // Optional - Job description
+    }
+    ```
+    
+    **Period Format Examples:**
+    - "2019-22" → Start: 2019, End: 2022
+    - "2020-Present" → Start: 2020, End: null (current job)
+    - "2018-2021" → Start: 2018, End: 2021
+    
+    **Usage Examples:**
+    ```javascript
+    // GET - Retrieve all experiences
+    fetch('/api/resume/experiences/', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // data.experiences contains array of experience objects
+        data.experiences.forEach(exp => {
+            console.log(`${exp.title} at ${exp.company} (${exp.period})`);
+        });
+    });
+    
+    // POST - Add new experience
+    fetch('/api/resume/experiences/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            title: "Software Engineer",
+            company: "Microsoft",
+            period: "2022-Present",
+            description: "Developing cloud solutions..."
+        })
+    });
+    ```
+    
+    **Notes:**
+    - Experiences are returned in reverse chronological order (newest first)
+    - Logo field currently returns a default placeholder
+    - Description is auto-generated if not provided
+    - Period parsing handles various date formats
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get user's experiences list"""
+        try:
+            # Get or create resume for the user to ensure consistency
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            serializer = ExperienceListSerializer(resume)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve experiences: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def post(self, request):
+        """Create a new experience"""
+        try:
+            experience_data = request.data
+            
+            # Parse period if provided (e.g., "2019-22" or "2019-Present")
+            start_date = None
+            end_date = None
+            if 'period' in experience_data:
+                period = experience_data['period']
+                try:
+                    if '-' in period:
+                        start_str, end_str = period.split('-')
+                        start_year = int(start_str)
+                        
+                        if end_str.lower() != 'present':
+                            # Handle short year format like "22" -> 2022
+                            if len(end_str) == 2:
+                                end_year = 2000 + int(end_str)
+                            else:
+                                end_year = int(end_str)
+                            end_date = f"{end_year}-12-31"  # Default to end of year
+                        
+                        start_date = f"{start_year}-01-01"  # Default to start of year
+                except:
+                    pass  # Keep dates as None if parsing fails
+            
+            # Create experience
+            experience = Experience.objects.create(
+                user=request.user,
+                company_name=experience_data.get('company', ''),
+                role=experience_data.get('title', ''),
+                start_date=start_date,
+                end_date=end_date
+            )
+            
+            # Return updated experiences list
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            serializer = ExperienceListSerializer(resume)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to create experience: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class EducationAPIView(APIView):
+    """
+    API endpoint for managing user's education records.
+    
+    **Endpoint:** `/api/resume/education/`
+    **Authentication:** Required
+    **Methods:** GET, POST
+    
+    **GET Response Structure:**
+    ```json
+    {
+        "education": [
+            {
+                "id": 1,
+                "period": "2013-17",                               // Calculated from graduation year
+                "degree": "Bachelor of Computer Science",          // Degree name
+                "university": "University of London",              // Institution name
+                "description": "Specialized in web development and software engineering..."
+            },
+            {
+                "id": 2,
+                "period": "2011-13",
+                "degree": "High School Diploma",
+                "university": "London Tech High School", 
+                "description": "Focus on mathematics and computer science fundamentals..."
+            }
+        ]
+    }
+    ```
+    
+    **POST Request Structure:**
+    ```json
+    {
+        "degree": "Master of Science in Computer Science",    // Required - Degree name
+        "university": "Stanford University",                  // Required - Institution name
+        "period": "2020-22",                                 // Optional - Format: "YYYY-YY"
+        "description": "Specialized in machine learning..."   // Optional - Field of study/description
+    }
+    ```
+    
+    **Period Calculation:**
+    - System estimates start year based on degree type:
+      - Bachelor's: 4 years duration
+      - Master's: 2 years duration  
+      - Diploma/High School: 2 years duration
+      - PhD/Doctorate: 4 years duration
+    - Format: "StartYear-EndYear" (e.g., "2016-20" for 2016-2020)
+    
+    **Usage Examples:**
+    ```javascript
+    // GET - Retrieve all education records
+    fetch('/api/resume/education/', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // data.education contains array of education objects
+        data.education.forEach(edu => {
+            console.log(`${edu.degree} from ${edu.university} (${edu.period})`);
+        });
+    });
+    
+    // POST - Add new education record
+    fetch('/api/resume/education/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            degree: "Bachelor of Engineering",
+            university: "MIT",
+            period: "2018-22",
+            description: "Focused on software engineering and algorithms"
+        })
+    });
+    ```
+    
+    **Notes:**
+    - Education records are ordered by graduation year (newest first)
+    - Period is auto-calculated if not provided in POST request
+    - Description field stores field of study or specialization
+    - System handles various degree types for duration estimation
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get user's education list"""
+        try:
+            # Get or create resume for the user to ensure consistency
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            serializer = EducationListSerializer(resume)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve education: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def post(self, request):
+        """Create a new education record"""
+        try:
+            education_data = request.data
+            
+            # Parse period if provided (e.g., "2013-17")
+            graduation_year = None
+            if 'period' in education_data:
+                period = education_data['period']
+                try:
+                    if '-' in period:
+                        start_str, end_str = period.split('-')
+                        # Handle short year format like "17" -> 2017
+                        if len(end_str) == 2:
+                            graduation_year = 2000 + int(end_str)
+                        else:
+                            graduation_year = int(end_str)
+                except:
+                    pass  # Keep graduation_year as None if parsing fails
+            
+            # Create education
+            education = Education.objects.create(
+                user=request.user,
+                institution_name=education_data.get('university', ''),
+                degree=education_data.get('degree', ''),
+                field_of_study=education_data.get('description', ''),
+                graduation_year=graduation_year or 2023  # Default year if not provided
+            )
+            
+            # Return updated education list
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            serializer = EducationListSerializer(resume)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to create education record: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class SkillsPagination(PageNumberPagination):
+    """
+    Custom pagination for SkillsAPIView.
+    """
+    page_size = 20
+    page_size_query_param = "page_size"
+    max_page_size = 100
+
+
+class SkillsAPIView(APIView):
+    """
+    API endpoint for managing user's skills with pagination and search functionality.
+    
+    **Endpoint:** `/api/resume/skills/`
+    **Authentication:** Required
+    **Methods:** GET, POST
+    
+    **GET Response Structure (Paginated):**
+    ```json
+    {
+        "count": 50,                                    // Total number of skills
+        "next": "http://localhost:8000/api/resume/skills/?page=2",  // Next page URL
+        "previous": null,                               // Previous page URL  
+        "results": {
+            "skills": [
+                {
+                    "id": 1,
+                    "name": "JavaScript"
+                },
+                {
+                    "id": 2,
+                    "name": "React"
+                },
+                {
+                    "id": 3,
+                    "name": "Python"
+                },
+                {
+                    "id": 4,
+                    "name": "Django"
+                }
+            ]
+        }
+    }
+    ```
+    
+    **POST Request Structure:**
+    ```json
+    {
+        "name": "Node.js"                              // Required - Skill name
+    }
+    ```
+    
+    **Query Parameters:**
+    - `page`: Page number (default: 1)
+    - `page_size`: Items per page (default: 20, max: 100)
+    - `search`: Search skills by name (case-insensitive)
+    
+    **Usage Examples:**
+    ```javascript
+    // GET - Retrieve skills (first page)
+    fetch('/api/resume/skills/', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(`Total skills: ${data.count}`);
+        console.log('Skills on this page:', data.results.skills);
+        
+        // Check if there are more pages
+        if (data.next) {
+            console.log('More skills available on next page');
+        }
+    });
+    
+    // GET - Search skills
+    fetch('/api/resume/skills/?search=java&page=1&page_size=10', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Returns skills containing "java" (JavaScript, Java, etc.)
+        console.log('Matching skills:', data.results.skills);
+    });
+    
+    // GET - Custom page size
+    fetch('/api/resume/skills/?page_size=50', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+    
+    // POST - Add new skill
+    fetch('/api/resume/skills/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            name: "TypeScript"
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Returns updated paginated skills list
+        console.log('Updated skills:', data.results.skills);
+    });
+    ```
+    
+    **Pagination Settings:**
+    - Default page size: 20 skills per page
+    - Maximum page size: 100 skills per page
+    - Configurable via `page_size` query parameter
+    
+    **Search Functionality:**
+    - Case-insensitive search across skill names
+    - Partial matching (e.g., "java" matches "JavaScript", "Java")
+    - Works with pagination
+    
+    **Notes:**
+    - Skills are ordered alphabetically by name
+    - Each skill has a unique ID for future CRUD operations
+    - POST request returns the updated paginated skills list
+    - Empty search returns all skills
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get user's skills list with pagination and optional search"""
+        try:
+            # Get all skills for the user
+            skills = Skill.objects.filter(user=request.user)
+            
+            # Apply search filter if provided
+            search = request.query_params.get('search', None)
+            if search:
+                skills = skills.filter(name__icontains=search)
+            
+            # Order by name
+            skills = skills.order_by('name')
+            
+            # Apply pagination
+            paginator = SkillsPagination()
+            paginated_skills = paginator.paginate_queryset(skills, request)
+            
+            # Serialize the paginated data
+            skills_data = []
+            for skill in paginated_skills:
+                skills_data.append({
+                    "id": skill.id,
+                    "name": skill.name
+                })
+            
+            # Return paginated response
+            return paginator.get_paginated_response({
+                "skills": skills_data
+            })
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve skills: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def post(self, request):
+        """Create a new skill"""
+        try:
+            skill_data = request.data
+            
+            # Create skill
+            skill = Skill.objects.create(
+                user=request.user,
+                name=skill_data.get('name', '')
+            )
+            
+            # Return updated skills list with pagination
+            skills = Skill.objects.filter(user=request.user).order_by('name')
+            paginator = SkillsPagination()
+            paginated_skills = paginator.paginate_queryset(skills, request)
+            
+            skills_data = []
+            for skill in paginated_skills:
+                skills_data.append({
+                    "id": skill.id,
+                    "name": skill.name
+                })
+            
+            return paginator.get_paginated_response({
+                "skills": skills_data
+            })
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to create skill: {str(e)}"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
