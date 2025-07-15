@@ -1570,10 +1570,13 @@ class SkillsAPIView(APIView):
                     # Get relevant skills from the same category using category ID
                     relevant_skills = Skill.objects.filter(
                         categories__id=user_job_category_id
-                    ).exclude(user=request.user)  # Exclude user's existing skills
+                    )
                     
-                    # Combine user skills with relevant skills from job category
-                    skills = user_skills.union(relevant_skills)
+                    # Combine user skills with relevant skills from job category using Q objects
+                    from django.db.models import Q
+                    skills = Skill.objects.filter(
+                        Q(user=request.user) | Q(categories__id=user_job_category_id)
+                    ).distinct()
                 else:
                     # If no job title found, just show user's skills
                     skills = user_skills
@@ -1583,17 +1586,15 @@ class SkillsAPIView(APIView):
                 skills = user_skills
             else:  # 'all'
                 # Show all available skills
-                all_skills = Skill.objects.all()
-                skills = all_skills
+                skills = Skill.objects.all()
             
             # Apply search filter if provided
             search = request.query_params.get('search', None)
             if search:
                 skills = skills.filter(name__icontains=search)
             
-            # Order by: user's skills first, then alphabetically
-            # Mark user's skills vs suggested skills
-            skills = skills.distinct().order_by('name')
+            # Order by name
+            skills = skills.order_by('name')
             
             # Apply pagination
             paginator = SkillsPagination()
@@ -1633,50 +1634,30 @@ class SkillsAPIView(APIView):
             )
     
     def post(self, request):
-        """Add existing skill to user's profile using skill ID"""
+        """Add existing skill to user's profile using skill ID (ManyToMany)"""
         try:
             skill_data = request.data
             skill_id = skill_data.get('skill_id')
-            
             if not skill_id:
-                return Response(
-                    {"error": "skill_id is required"}, 
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            
-            # Check if skill exists
+                return Response({"error": "skill_id is required"}, status=status.HTTP_400_BAD_REQUEST)
             try:
                 skill = Skill.objects.get(id=skill_id)
             except Skill.DoesNotExist:
-                return Response(
-                    {"error": "Skill not found"}, 
-                    status=status.HTTP_404_NOT_FOUND
-                )
-            
+                return Response({"error": "Skill not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Get or create the user's resume
+            resume, _ = Resume.objects.get_or_create(user=request.user)
             # Check if user already has this skill
-            if Skill.objects.filter(user=request.user, name=skill.name).exists():
-                return Response(
-                    {"error": "You already have this skill"}, 
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            
-            # Add skill to user's profile by creating a new UserSkill entry
-            Skill.objects.create(
-                user=request.user,
-                name=skill.name
-            )
-            
+            if resume.skills.filter(id=skill.id).exists():
+                return Response({"error": "You already have this skill"}, status=status.HTTP_400_BAD_REQUEST)
+            # Add the skill to the user's resume
+            resume.skills.add(skill)
+
             # Return updated skills list following the same filtering as GET
-            # Get filter type from query params (same as GET method)
             filter_type = request.query_params.get('filter', 'job_relevant')
-            
-            # Start with user's existing skills
-            user_skills = Skill.objects.filter(user=request.user)
-            
+            user_skills = resume.skills.all()
             if filter_type == 'job_relevant':
-                # Get user's job title category ID from Resume or ContactInfo
                 user_job_category_id = None
-                
                 # First try to get from ContactInfo (more structured)
                 contact_info = ContactInfo.objects.filter(user=request.user).first()
                 if contact_info and contact_info.job_title_id:
@@ -1693,12 +1674,10 @@ class SkillsAPIView(APIView):
                 
                 if user_job_category_id:
                     # Get relevant skills from the same category using category ID
-                    relevant_skills = Skill.objects.filter(
-                        categories__id=user_job_category_id
-                    ).exclude(user=request.user)  # Exclude user's existing skills
-                    
-                    # Combine user skills with relevant skills from job category
-                    skills = user_skills.union(relevant_skills)
+                    from django.db.models import Q
+                    skills = Skill.objects.filter(
+                        Q(user=request.user) | Q(categories__id=user_job_category_id)
+                    ).distinct()
                 else:
                     # If no job title found, just show user's skills
                     skills = user_skills
@@ -1716,7 +1695,7 @@ class SkillsAPIView(APIView):
                 skills = skills.filter(name__icontains=search)
                 
             # Order and apply pagination
-            skills = skills.distinct().order_by('name')
+            skills = skills.order_by('name')
             paginator = SkillsPagination()
             paginated_skills = paginator.paginate_queryset(skills, request)
             
