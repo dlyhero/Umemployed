@@ -1072,27 +1072,9 @@ from rest_framework.views import APIView
 
 class CountriesAPIView(APIView):
     """
-    API endpoint to retrieve a list of all countries for dropdown selections.
+    Get list of all countries for dropdown selections.
     
-    **Endpoint:** `GET /api/resume/countries/`
-    **Authentication:** Not required
-    **Method:** GET only
-    
-    **What This Endpoint Does:**
-    This endpoint provides a static list of all available countries from the backend database. 
-    It's specifically designed to populate dropdown menus and select components in forms 
-    where users need to choose their country of residence or nationality.
-    
-    **Backend Processing Logic:**
-    1. Fetches all country records from the Django database
-    2. Transforms data into a simplified format with code and name fields
-    3. Returns countries in alphabetical order by country name
-    4. No user authentication required since this is reference data
-    5. Implements caching for performance optimization (country data rarely changes)
-    6. Uses ISO country codes for consistent formatting
-    7. Handles database errors gracefully with meaningful error messages
-    
-    **Response Structure:**
+    **Response:**
     ```json
     {
         "countries": [
@@ -1103,18 +1085,10 @@ class CountriesAPIView(APIView):
             {
                 "code": "CA", 
                 "name": "Canada"
-            },
-            {
-                "code": "GB",
-                "name": "United Kingdom"
             }
         ]
     }
     ```
-    
-    **Error Handling:**
-    - Returns 500 status with error message if database query fails
-    - Includes detailed error information for debugging
     """
     permission_classes = []  # No authentication required for countries list
     
@@ -1132,40 +1106,21 @@ class CountriesAPIView(APIView):
 
 class AboutAPIView(APIView):
     """
-    API endpoint for managing user's about/bio information.
+    Manages user's about/bio information.
     
-    **Endpoint:** `/api/resume/about/`
-    **Authentication:** Required
-    **Methods:** GET, PUT, PATCH
-    
-    **GET Response Structure:**
+    **GET Response:**
     ```json
     {
         "about": {
             "firstName": "John",
             "lastName": "Doe", 
-            "bio": "Experienced software engineer with 5+ years...",
-            "description": "Passionate about creating innovative solutions..."
+            "bio": "Experienced software engineer...",
+            "description": "Passionate about creating..."
         }
     }
     ```
     
-    **PUT/PATCH Request Structure:**
-    ```json
-    {
-        "about": {
-            "firstName": "John",           // Optional - User's first name
-            "lastName": "Doe",             // Optional - User's last name  
-            "bio": "New bio text...",      // Optional - Short bio/summary
-            "description": "Detailed..."   // Optional - Longer description
-        }
-    }
-    ```
-    
-    **Notes:**
-    - All fields in the about object are optional for updates
-    - firstName and lastName update the User model
-    - bio and description update the Resume model
+    **PUT/PATCH Request:** Same structure as GET response
     """
     permission_classes = [IsAuthenticated]
     
@@ -1228,55 +1183,25 @@ class AboutAPIView(APIView):
 
 class PersonalDetailsAPIView(APIView):
     """
-    API endpoint for managing user's personal details and contact information.
+    Manages user's personal details and contact information.
     
-    **Endpoint:** `/api/resume/personal-details/`
-    **Authentication:** Required
-    **Methods:** GET, PUT, PATCH
-    
-    **GET Response Structure:**
+    **GET Response:**
     ```json
     {
         "personalDetails": {
             "email": "john.doe@example.com",
-            "dob": "25th Dec, 1990",           // Formatted date of birth
-            "address": "123 Main Street",      // Street address
-            "city": "New York",                // City name
-            "country": "United States",        // Country name
-            "postalCode": "10001",            // Postal/ZIP code (not stored yet)
-            "mobile": "+1-234-567-8900",      // Phone number
-            "jobTitle": "Software Engineer"    // Current job title
+            "dob": "25th Dec, 1990",
+            "address": "123 Main Street",
+            "city": "New York",
+            "country": "United States",
+            "postalCode": "10001",
+            "mobile": "+1-234-567-8900",
+            "jobTitle": "Software Engineer"
         }
     }
     ```
     
-    **PUT/PATCH Request Structure:**
-    ```json
-    {
-        "personalDetails": {
-            "email": "new.email@example.com",     // Optional - Must be valid email
-            "dob": "31st Dec, 1996",              // Optional - Various formats accepted
-            "address": "456 Oak Avenue",          // Optional - Street address  
-            "city": "Los Angeles",                // Optional - City name
-            "country": "United States",           // Optional - Country name/code
-            "postalCode": "90210",               // Optional - Not stored in current model
-            "mobile": "+1-555-123-4567",         // Optional - Phone number
-            "jobTitle": "Senior Developer"        // Optional - Job title
-        }
-    }
-    ```
-    
-    **Date Format Support:**
-    - "31st Dec, 1996" (preferred)
-    - "31 Dec, 1996" 
-    - "31/12/1996"
-    - "1996-12-31"
-    
-    **Notes:**
-    - All fields are optional for updates
-    - Email validation is performed
-    - Country validation against django-countries
-    - postalCode field is not yet stored in the backend
+    **PUT/PATCH Request:** Same structure as GET response
     """
     permission_classes = [IsAuthenticated]
     
@@ -1390,56 +1315,33 @@ class PersonalDetailsAPIView(APIView):
 
 class ExperiencesAPIView(APIView):
     """
-    API endpoint for managing user's work experiences.
+    Manages user's work experiences.
     
-    **Endpoint:** `/api/resume/experiences/`
-    **Authentication:** Required
-    **Methods:** GET, POST
-    
-    **GET Response Structure:**
+    **GET Response:**
     ```json
     {
         "experiences": [
             {
                 "id": 1,
-                "period": "2019-22",                           // Calculated from dates
-                "logo": "/assets/shree-logo-Bd9DHJ8p.png",    // Default company logo
-                "title": "Full Stack Developer",               // Job title/role
-                "company": "Shreethemes - India",             // Company name
-                "description": "It seems that only fragments of the original text remain..."
-            },
-            {
-                "id": 2,
-                "period": "2017-19",
-                "logo": "/assets/circle-logo-De1zeqcD.png", 
-                "title": "Back-end Developer",
-                "company": "CircleCI - U.S.A.",
-                "description": "Worked as Back-end Developer at CircleCI"
+                "period": "2019-22",
+                "logo": "/assets/shree-logo-Bd9DHJ8p.png",
+                "title": "Full Stack Developer",
+                "company": "Shreethemes - India",
+                "description": "Detailed job description..."
             }
         ]
     }
     ```
     
-    **POST Request Structure:**
+    **POST Request:**
     ```json
     {
-        "title": "Senior Software Engineer",      // Required - Job title
-        "company": "Google Inc.",                 // Required - Company name
-        "period": "2020-23",                     // Optional - Format: "YYYY-YY" or "YYYY-Present"
-        "description": "Led development team..." // Optional - Job description
+        "title": "Software Engineer",      // Required
+        "company": "Tech Corp",           // Required  
+        "period": "2020-22",             // Optional - Format: "YYYY-YY"
+        "description": "Job duties..."    // Optional
     }
     ```
-    
-    **Period Format Examples:**
-    - "2019-22" → Start: 2019, End: 2022
-    - "2020-Present" → Start: 2020, End: null (current job)
-    - "2018-2021" → Start: 2018, End: 2021
-    
-    **Notes:**
-    - Experiences are returned in reverse chronological order (newest first)
-    - Logo field currently returns a default placeholder
-    - Description is auto-generated if not provided
-    - Period parsing handles various date formats
     """
     permission_classes = [IsAuthenticated]
     
@@ -1506,57 +1408,32 @@ class ExperiencesAPIView(APIView):
 
 class EducationAPIView(APIView):
     """
-    API endpoint for managing user's education records.
+    Manages user's education records.
     
-    **Endpoint:** `/api/resume/education/`
-    **Authentication:** Required
-    **Methods:** GET, POST
-    
-    **GET Response Structure:**
+    **GET Response:**
     ```json
     {
         "education": [
             {
                 "id": 1,
-                "period": "2013-17",                               // Calculated from graduation year
-                "degree": "Bachelor of Computer Science",          // Degree name
-                "university": "University of London",              // Institution name
-                "description": "Specialized in web development and software engineering..."
-            },
-            {
-                "id": 2,
-                "period": "2011-13",
-                "degree": "High School Diploma",
-                "university": "London Tech High School", 
-                "description": "Focus on mathematics and computer science fundamentals..."
+                "period": "2013-17",
+                "degree": "Bachelor of Computer Science",
+                "university": "University of London",
+                "description": "Specialized in web development..."
             }
         ]
     }
     ```
     
-    **POST Request Structure:**
+    **POST Request:**
     ```json
     {
-        "degree": "Master of Science in Computer Science",    // Required - Degree name
-        "university": "Stanford University",                  // Required - Institution name
-        "period": "2020-22",                                 // Optional - Format: "YYYY-YY"
-        "description": "Specialized in machine learning..."   // Optional - Field of study/description
+        "degree": "Master of Science",        // Required
+        "university": "Stanford University",  // Required
+        "period": "2020-22",                 // Optional - Format: "YYYY-YY"
+        "description": "Specialized in ML..."  // Optional
     }
     ```
-    
-    **Period Calculation:**
-    - System estimates start year based on degree type:
-      - Bachelor's: 4 years duration
-      - Master's: 2 years duration  
-      - Diploma/High School: 2 years duration
-      - PhD/Doctorate: 4 years duration
-    - Format: "StartYear-EndYear" (e.g., "2016-20" for 2016-2020)
-    
-    **Notes:**
-    - Education records are ordered by graduation year (newest first)
-    - Period is auto-calculated if not provided in POST request
-    - Description field stores field of study or specialization
-    - System handles various degree types for duration estimation
     """
     permission_classes = [IsAuthenticated]
     
@@ -1625,104 +1502,40 @@ class SkillsPagination(PageNumberPagination):
 
 class SkillsAPIView(APIView):
     """
-    API endpoint for managing user's skills with pagination, search, and job title filtering.
+    Manages user's skills with pagination, search, and job title filtering.
     
-    **Endpoint:** `/api/resume/skills/`
-    **Authentication:** Required
-    **Methods:** GET, POST
+    **Key Point:** POST expects skill IDs, GET returns both id and name.
     
-    **GET Response Structure (Paginated):**
+    **GET Response:**
     ```json
     {
-        "count": 50,                                    // Total number of skills
-        "next": "http://localhost:8000/api/resume/skills/?page=2",  // Next page URL
-        "previous": null,                               // Previous page URL  
+        "count": 50,
         "results": {
             "skills": [
                 {
                     "id": 1,
                     "name": "JavaScript",
-                    "is_user_skill": true,              // User already has this skill
-                    "categories": ["Frontend Development"]
-                },
-                {
-                    "id": 2,
-                    "name": "React",
-                    "is_user_skill": false,             // Suggested skill based on job title
-                    "categories": ["Frontend Development"]
-                },
-                {
-                    "id": 3,
-                    "name": "Python",
                     "is_user_skill": true,
-                    "categories": ["Backend Development", "Data Science"]
+                    "categories": ["Frontend Development"]
                 }
             ],
-            "filter_applied": "job_relevant",           // Which filter was applied
-            "job_category": "Frontend Development"      // User's job category (if found)
+            "filter_applied": "job_relevant"
         }
     }
     ```
     
-    **POST Request Structure:**
+    **POST Request:**
     ```json
     {
-        "name": "Node.js"                              // Required - Skill name
+        "skill_id": 15    // Use skill ID, not name
     }
     ```
     
     **Query Parameters:**
     - `page`: Page number (default: 1)
     - `page_size`: Items per page (default: 20, max: 100)
-    - `search`: Search skills by name (case-insensitive)
-    - `filter`: Filter type (default: 'job_relevant')
-      - `job_relevant`: User's skills + skills relevant to their job title
-      - `user_only`: Only user's existing skills
-      - `all`: All available skills in the system
-    
-    **Filter Types Explained:**
-    1. **job_relevant** (default): Shows user's current skills plus suggested skills based on their job title category. This reduces noise by showing only relevant skills.
-    2. **user_only**: Shows only skills the user has already added to their profile.
-    3. **all**: Shows every skill in the system (useful for browsing/discovery).
-    
-    **Job Title Matching:**
-    - First checks ContactInfo.job_title (structured job title linked to SkillCategory)
-    - Falls back to Resume.job_title (text field matched against SkillCategory names)
-    - If no job title found, defaults to showing only user's existing skills
-    
-    **API Usage:**
-    - GET `/api/resume/skills/` - Get job-relevant skills (default)
-    - GET `/api/resume/skills/?filter=user_only` - Get only user's skills
-    - GET `/api/resume/skills/?filter=all&search=java` - Search all skills
-    - GET `/api/resume/skills/?search=react&filter=job_relevant` - Search job-relevant skills
-    - POST `/api/resume/skills/` with `{"name": "TypeScript"}` - Add new skill
-    
-    **Pagination Settings:**
-    - Default page size: 20 skills per page
-    - Maximum page size: 100 skills per page
-    - Configurable via `page_size` query parameter
-    
-    **Search Functionality:**
-    - Case-insensitive search across skill names
-    - Partial matching (e.g., "java" matches "JavaScript", "Java")
-    - Works with all filter types
-    - Combines with pagination
-    
-    **Smart Filtering Benefits:**
-    - Reduces noise by showing relevant skills first
-    - Helps users discover skills they might need for their job
-    - Distinguishes between owned and suggested skills
-    - Shows skill categories for context
-    
-    **Notes:**
-    - Skills are ordered alphabetically by name
-    - User's existing skills are marked with `is_user_skill: true`
-    - Suggested skills are based on the same categories as user's job title
-    - POST request returns the updated paginated skills list
-    - Categories help users understand skill relevance
-    - Default page size: 20 skills per page
-    - Maximum page size: 100 skills per page
-    - Case-insensitive search across skill names
+    - `search`: Search skills by name
+    - `filter`: 'job_relevant' (default), 'user_only', or 'all'
     """
     permission_classes = [IsAuthenticated]
     
@@ -1820,14 +1633,37 @@ class SkillsAPIView(APIView):
             )
     
     def post(self, request):
-        """Create a new skill"""
+        """Add existing skill to user's profile using skill ID"""
         try:
             skill_data = request.data
+            skill_id = skill_data.get('skill_id')
             
-            # Create skill
-            skill = Skill.objects.create(
+            if not skill_id:
+                return Response(
+                    {"error": "skill_id is required"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Check if skill exists
+            try:
+                skill = Skill.objects.get(id=skill_id)
+            except Skill.DoesNotExist:
+                return Response(
+                    {"error": "Skill not found"}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Check if user already has this skill
+            if Skill.objects.filter(user=request.user, name=skill.name).exists():
+                return Response(
+                    {"error": "You already have this skill"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Add skill to user's profile by creating a new UserSkill entry
+            Skill.objects.create(
                 user=request.user,
-                name=skill_data.get('name', '')
+                name=skill.name
             )
             
             # Return updated skills list following the same filtering as GET

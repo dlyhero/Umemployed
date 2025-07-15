@@ -2,6 +2,13 @@
 
 This documentation provides comprehensive information for integrating the Resume API endpoints into your Next.js frontend application.
 
+## ⚠️ Key Implementation Note
+
+**Skills API ID/Name Distinction:**
+- **GET responses** always include both `id` and `name` for skills
+- **POST requests** must use `skill_id` (integer), never skill names
+- This ensures data integrity and prevents duplicate skills
+
 ## Backend Architecture Overview
 
 ### Data Flow & Logic
@@ -695,14 +702,14 @@ This endpoint provides a comprehensive skills management system that helps users
 
 ### Backend Logic
 - **GET**: Retrieves paginated list of skills with user context and intelligent filtering
-- **POST**: Adds new skills to the user's profile or creates custom skills
+- **POST**: Adds existing skills to the user's profile using skill IDs (does not create new skills)
 - **Smart Skill Suggestions**: Uses job title analysis to suggest relevant skills from our database
 - **Category-based Filtering**: Groups skills by professional categories (Frontend, Backend, etc.)
 - **Search Functionality**: Allows real-time skill search across names and categories
 - **User Context**: Each skill shows whether the user already has it (`is_user_skill`)
 - **Pagination**: Handles large skill datasets efficiently with page-based results
 - **Skill Discovery**: Helps users find skills they might not know they need
-- **Custom Skills**: Allows users to add skills not in the predefined database
+- **ID-based Operations**: All skill additions use database IDs for data integrity
 - **Relevance Scoring**: Orders suggestions by relevance to user's profile/job title
 
 ### GET Response Structure (Paginated)
@@ -744,7 +751,7 @@ This endpoint provides a comprehensive skills management system that helps users
 ### POST Request Structure
 ```json
 {
-  "name": "Node.js"                              // Required - Skill name
+  "skill_id": 15                                 // Required - Skill ID from skills database
 }
 ```
 
@@ -793,7 +800,7 @@ export const useSkills = () => {
     }
   };
 
-  const addSkill = async (skillName) => {
+  const addSkill = async (skillId) => {
     try {
       const response = await fetch('/api/resume/skills/', {
         method: 'POST',
@@ -801,7 +808,7 @@ export const useSkills = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: skillName })
+        body: JSON.stringify({ skill_id: skillId })
       });
       
       if (!response.ok) throw new Error('Failed to add skill');
@@ -866,7 +873,6 @@ const SkillsManager = () => {
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('job_relevant');
-  const [newSkill, setNewSkill] = useState('');
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -876,19 +882,6 @@ const SkillsManager = () => {
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
     filterSkills(newFilter);
-  };
-
-  const handleAddSkill = async (e) => {
-    e.preventDefault();
-    if (!newSkill.trim()) return;
-    
-    try {
-      await addSkill(newSkill);
-      setNewSkill('');
-      alert('Skill added successfully!');
-    } catch (error) {
-      alert('Failed to add skill');
-    }
   };
 
   if (loading) return <div>Loading skills...</div>;
@@ -928,17 +921,6 @@ const SkillsManager = () => {
         </button>
       </div>
 
-      {/* Add Skill */}
-      <form onSubmit={handleAddSkill}>
-        <input
-          type="text"
-          placeholder="Add new skill..."
-          value={newSkill}
-          onChange={(e) => setNewSkill(e.target.value)}
-        />
-        <button type="submit">Add Skill</button>
-      </form>
-
       {/* Skills List */}
       <div>
         {skills.map((skill) => (
@@ -951,7 +933,7 @@ const SkillsManager = () => {
             {skill.is_user_skill ? (
               <span>✓ Owned</span>
             ) : (
-              <button onClick={() => addSkill(skill.name)}>
+              <button onClick={() => addSkill(skill.id)}>
                 Add to Profile
               </button>
             )}
