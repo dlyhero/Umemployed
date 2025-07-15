@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django_countries import countries
 
 from resume.models import (
     ContactInfo,
@@ -17,6 +18,21 @@ from resume.models import (
     UserProfile,
     WorkExperience,
 )
+from users.models import User
+
+
+class CountriesSerializer(serializers.Serializer):
+    """
+    Serializer for countries dropdown list.
+    """
+
+    def to_representation(self, instance):
+        """Return list of countries for dropdown"""
+        return {
+            "countries": [
+                {"code": code, "name": name} for code, name in countries
+            ]
+        }
 
 
 class SkillCategorySerializer(serializers.ModelSerializer):
@@ -236,3 +252,63 @@ class EnhancedResumeSerializer(serializers.ModelSerializer):
             "interests",
             "created_at",
         ]
+
+
+class AboutSerializer(serializers.Serializer):
+    """
+    Serializer for user's about information combining User and Resume models.
+    """
+
+    firstName = serializers.CharField(source="user.first_name", allow_blank=True, default="")
+    lastName = serializers.CharField(source="user.last_name", allow_blank=True, default="")
+    bio = serializers.CharField(source="description", allow_blank=True, default="")
+    description = serializers.CharField(allow_blank=True, default="")
+
+    def to_representation(self, instance):
+        """Custom representation to handle the about structure"""
+        data = super().to_representation(instance)
+        return {
+            "about": {
+                "firstName": data.get("firstName") or "",
+                "lastName": data.get("lastName") or "",
+                "bio": data.get("bio") or "",
+                "description": data.get("description") or "",
+            }
+        }
+
+
+class PersonalDetailsSerializer(serializers.Serializer):
+    """
+    Serializer for user's personal details combining User and Resume models.
+    """
+
+    email = serializers.EmailField(source="user.email")
+    dob = serializers.SerializerMethodField()
+    address = serializers.CharField(source="state", allow_blank=True, default="")
+    city = serializers.CharField(source="state", allow_blank=True, default="")  # Using state as city for now
+    country = serializers.CharField(allow_blank=True, default="")
+    postalCode = serializers.CharField(default="", allow_blank=True)  # Not in current model
+    mobile = serializers.CharField(source="phone", allow_blank=True, default="")
+    jobTitle = serializers.CharField(source="job_title", allow_blank=True, default="")
+
+    def get_dob(self, obj):
+        """Format date of birth as requested"""
+        if obj.date_of_birth:
+            return obj.date_of_birth.strftime("%dst %b, %Y").replace("1st", "1st").replace("2nd", "2nd").replace("3rd", "3rd").replace("st", "th")
+        return ""
+
+    def to_representation(self, instance):
+        """Custom representation to handle the personalDetails structure"""
+        data = super().to_representation(instance)
+        return {
+            "personalDetails": {
+                "email": data.get("email") or "",
+                "dob": data.get("dob") or "",
+                "address": data.get("address") or "",
+                "city": data.get("city") or "",
+                "country": data.get("country") or "",
+                "postalCode": data.get("postalCode") or "",
+                "mobile": data.get("mobile") or "",
+                "jobTitle": data.get("jobTitle") or "",
+            }
+        }

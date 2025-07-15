@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from . import views
-from .views import SkillCategoryListView, user_profile_details_api
+from .views import AboutAPIView, CountriesAPIView, PersonalDetailsAPIView
 
 # Router for CRUD operations
 router = DefaultRouter()
@@ -56,12 +56,6 @@ urlpatterns = [
         "profile-views/", views.profile_views_api, name="profile_views_api"
     ),  # Get all profile views for the user
     path(
-        "skill-categories/", SkillCategoryListView.as_view(), name="skill_category_list"
-    ),  # Fetch all skill categories
-    path(
-        "user-profile/<int:user_id>/", user_profile_details_api, name="user_profile_details_api"
-    ),  # Fetch user profile details
-    path(
         "enhance-resume/<int:job_id>/", views.enhance_resume_api, name="enhance_resume_api"
     ),  # Enhance resume for a job with job_id in URL
     path(
@@ -83,6 +77,23 @@ urlpatterns = [
         views.check_enhanced_resume_api,
         name="check_enhanced_resume_api",
     ),  # Check if the resume is enhanced for a specific job
+    
+    # New endpoints for frontend
+    path(
+        "countries/",
+        views.CountriesAPIView.as_view(),
+        name="countries_api",
+    ),  # GET list of countries for dropdown
+    path(
+        "about/",
+        views.AboutAPIView.as_view(),
+        name="about_api",
+    ),  # GET/PUT/PATCH user's about information
+    path(
+        "personal-details/",
+        views.PersonalDetailsAPIView.as_view(),
+        name="personal_details_api",
+    ),  # GET/PUT/PATCH user's personal details
 ]
 
 # Include router URLs

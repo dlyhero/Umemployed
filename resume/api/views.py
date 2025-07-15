@@ -9,6 +9,7 @@ from django.db.models import Max  # Import Max for querying the latest resume
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import PageNumberPagination
@@ -46,11 +47,14 @@ from resume.views import display_matching_jobs, update_resume, update_resume_vie
 from transactions.models import Subscription
 
 from .serializers import (
+    AboutSerializer,
     ContactInfoSerializer,
+    CountriesSerializer,
     EducationSerializer,
     EnhancedResumeSerializer,
     ExperienceSerializer,
     LanguageSerializer,
+    PersonalDetailsSerializer,
     ProfileViewSerializer,
     ResumeAnalysisSerializer,
     ResumeSerializer,
@@ -1057,3 +1061,210 @@ def resume_enhancement_status(request, task_id):
         )
     except Exception as e:
         return Response({"error": f"Failed to check task status: {str(e)}"}, status=500)
+
+
+# New endpoints for frontend
+from rest_framework.views import APIView
+
+
+class CountriesAPIView(APIView):
+    """
+    API view to get list of countries for dropdown.
+    """
+    permission_classes = []  # No authentication required for countries list
+    
+    def get(self, request):
+        """Get list of all countries"""
+        try:
+            serializer = CountriesSerializer(None)
+            return Response(serializer.to_representation(None), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve countries: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class AboutAPIView(APIView):
+    """
+    API view for user's about information.
+    Supports GET, PUT, PATCH operations.
+    
+    GET: Returns user's about information
+    PUT/PATCH: Updates user's about information
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get user's about information"""
+        try:
+            # Get or create resume for the user
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            serializer = AboutSerializer(resume)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve about information: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def put(self, request):
+        """Update user's about information (full update)"""
+        return self._update_about(request, partial=False)
+    
+    def patch(self, request):
+        """Update user's about information (partial update)"""
+        return self._update_about(request, partial=True)
+    
+    def _update_about(self, request, partial=True):
+        """Helper method to update about information"""
+        try:
+            # Get or create resume for the user
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            
+            # Extract data from request
+            about_data = request.data.get('about', {})
+            
+            # Update user fields
+            user = request.user
+            if 'firstName' in about_data:
+                user.first_name = about_data['firstName']
+            if 'lastName' in about_data:
+                user.last_name = about_data['lastName']
+            user.save()
+            
+            # Update resume fields
+            if 'bio' in about_data:
+                resume.description = about_data['bio']
+            if 'description' in about_data:
+                # You can choose to use either bio or description field
+                resume.description = about_data['description']
+            resume.save()
+            
+            # Return updated data
+            serializer = AboutSerializer(resume)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to update about information: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class PersonalDetailsAPIView(APIView):
+    """
+    API view for user's personal details.
+    Supports GET, PUT, PATCH operations.
+    
+    GET: Returns user's personal details
+    PUT/PATCH: Updates user's personal details
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get user's personal details"""
+        try:
+            # Get or create resume for the user
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            serializer = PersonalDetailsSerializer(resume)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve personal details: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def put(self, request):
+        """Update user's personal details (full update)"""
+        return self._update_personal_details(request, partial=False)
+    
+    def patch(self, request):
+        """Update user's personal details (partial update)"""
+        return self._update_personal_details(request, partial=True)
+    
+    def _update_personal_details(self, request, partial=True):
+        """Helper method to update personal details"""
+        try:
+            # Get or create resume for the user
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            
+            # Extract data from request
+            personal_data = request.data.get('personalDetails', {})
+            
+            # Update user fields
+            user = request.user
+            if 'email' in personal_data and personal_data['email']:
+                # Validate email format
+                from django.core.validators import validate_email
+                from django.core.exceptions import ValidationError as DjangoValidationError
+                try:
+                    validate_email(personal_data['email'])
+                    user.email = personal_data['email']
+                except DjangoValidationError:
+                    return Response(
+                        {"error": "Invalid email format"}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            user.save()
+            
+            # Update resume fields
+            if 'dob' in personal_data and personal_data['dob']:
+                # Parse date format like "31st Dec, 1996"
+                from datetime import datetime
+                try:
+                    dob_str = personal_data['dob'].strip()
+                    if dob_str:
+                        # Remove ordinal suffixes and normalize
+                        import re
+                        dob_clean = re.sub(r'(\d+)(st|nd|rd|th)', r'\1', dob_str)
+                        # Try multiple date formats
+                        for fmt in ['%d %b, %Y', '%d %B, %Y', '%d/%m/%Y', '%Y-%m-%d']:
+                            try:
+                                resume.date_of_birth = datetime.strptime(dob_clean, fmt).date()
+                                break
+                            except ValueError:
+                                continue
+                except Exception:
+                    pass  # Keep existing date if parsing fails
+            
+            if 'address' in personal_data:
+                resume.state = personal_data['address'] or ''
+            if 'city' in personal_data:
+                # For now, append city to state field since we don't have separate city field
+                city = personal_data['city'] or ''
+                if city and resume.state:
+                    resume.state = f"{city}, {resume.state}"
+                elif city:
+                    resume.state = city
+            if 'country' in personal_data:
+                # Validate country code/name against django-countries
+                from django_countries import countries
+                country_input = personal_data['country']
+                # Check if it's a valid country name or code
+                valid_country = None
+                for code, name in countries:
+                    if country_input == name or country_input == code:
+                        valid_country = name
+                        break
+                if valid_country:
+                    resume.country = valid_country
+                else:
+                    resume.country = country_input  # Save as-is if not found
+            if 'mobile' in personal_data:
+                resume.phone = personal_data['mobile'] or ''
+            if 'jobTitle' in personal_data:
+                resume.job_title = personal_data['jobTitle'] or ''
+            # Note: postalCode is not in current model, you might want to add it to Resume model
+            
+            resume.save()
+            
+            # Return updated data
+            serializer = PersonalDetailsSerializer(resume)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to update personal details: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
