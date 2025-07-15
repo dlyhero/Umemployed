@@ -79,20 +79,23 @@ if [ -f ".env" ]; then
         [[ $key =~ ^[[:space:]]*# ]] && continue
         [[ -z $key ]] && continue
         
-        # Remove leading/trailing whitespace and quotes
+        # Remove leading/trailing whitespace
         key=$(echo "$key" | xargs)
         value=$(echo "$value" | xargs)
         
-        # Remove quotes if present
+        # Remove quotes if present, but preserve special characters
         if [[ $value =~ ^\".*\"$ ]] || [[ $value =~ ^\'.*\'$ ]]; then
             value="${value:1:-1}"
         fi
         
-        # Export the variable
+        # Export the variable (use double quotes to preserve special chars)
         export "$key"="$value"
     done < <(grep -v '^[[:space:]]*#' .env | grep -v '^[[:space:]]*$')
     
     echo "   ✅ Environment variables loaded safely"
+    
+    # Debug: Show the actual password value (first few chars only for security)
+    echo "   🔍 AZURE_DB_PASSWORD starts with: ${AZURE_DB_PASSWORD:0:10}..."
 else
     echo "⚠️  No .env file found. Make sure environment variables are set externally."
 fi
@@ -146,6 +149,11 @@ az container create \
         DB_PASSWORD="$AZURE_DB_PASSWORD" \
         DB_HOST="$AZURE_DB_HOST" \
         DB_PORT="$AZURE_DB_PORT" \
+        AZURE_DB_NAME="$AZURE_DB_NAME" \
+        AZURE_DB_USER="$AZURE_DB_USER" \
+        AZURE_DB_PASSWORD="$AZURE_DB_PASSWORD" \
+        AZURE_DB_HOST="$AZURE_DB_HOST" \
+        AZURE_DB_PORT="$AZURE_DB_PORT" \
         REDIS_URL="$REDIS_URL" \
         REDIS_PASSWORD="$REDIS_PASSWORD" \
         SECRET_KEY="$SECRET_KEY" \
