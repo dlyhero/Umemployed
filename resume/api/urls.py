@@ -77,6 +77,11 @@ urlpatterns = [
         views.check_enhanced_resume_api,
         name="check_enhanced_resume_api",
     ),  # Check if the resume is enhanced for a specific job
+    path(
+        "user-profile/<int:user_id>/", 
+        views.user_profile_details_api, 
+        name="user_profile_details_api"
+    ),  # Fetch user profile details by user ID
     
     # New endpoints for frontend
     path(
