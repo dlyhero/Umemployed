@@ -750,8 +750,27 @@ This endpoint provides a comprehensive skills management system that helps users
 
 ### POST Request Structure
 ```json
+// Single skill
 {
-  "skill_id": 15                                 // Required - Skill ID from skills database
+  "skill_id": 15                                 // Add one skill by ID
+}
+
+// Multiple skills  
+{
+  "skill_ids": [15, 23, 45, 67]                 // Add multiple skills by IDs
+}
+```
+
+### POST Response Structure
+```json
+{
+  "message": "Successfully added 3 skill(s), 1 already owned",
+  "skills_added": ["JavaScript", "React", "Node.js"],
+  "skills_already_owned": ["Python"],
+  "results": {
+    "skills": [...],                             // Updated skills list
+    "filter_applied": "job_relevant"
+  }
 }
 ```
 
@@ -827,6 +846,33 @@ export const useSkills = () => {
     }
   };
 
+  const addMultipleSkills = async (skillIds) => {
+    try {
+      const response = await fetch('/api/resume/skills/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ skill_ids: skillIds })
+      });
+      
+      if (!response.ok) throw new Error('Failed to add skills');
+      
+      const data = await response.json();
+      setSkills(data.results.skills);
+      setPagination({
+        count: data.count,
+        next: data.next,
+        previous: data.previous
+      });
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
   const searchSkills = async (searchTerm) => {
     await fetchSkills({ search: searchTerm, page: 1 });
   };
@@ -849,6 +895,7 @@ export const useSkills = () => {
     loading, 
     error, 
     addSkill, 
+    addMultipleSkills,
     searchSkills, 
     filterSkills, 
     loadPage,
@@ -866,6 +913,7 @@ const SkillsManager = () => {
     pagination, 
     loading, 
     addSkill, 
+    addMultipleSkills,
     searchSkills, 
     filterSkills, 
     loadPage 
@@ -873,6 +921,7 @@ const SkillsManager = () => {
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('job_relevant');
+  const [selectedSkills, setSelectedSkills] = useState([]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -882,6 +931,26 @@ const SkillsManager = () => {
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
     filterSkills(newFilter);
+  };
+
+  const toggleSkillSelection = (skillId) => {
+    setSelectedSkills(prev => 
+      prev.includes(skillId) 
+        ? prev.filter(id => id !== skillId)
+        : [...prev, skillId]
+    );
+  };
+
+  const handleAddSelectedSkills = async () => {
+    if (selectedSkills.length === 0) return;
+    
+    try {
+      const result = await addMultipleSkills(selectedSkills);
+      setSelectedSkills([]);
+      alert(`${result.message}`);
+    } catch (error) {
+      alert('Failed to add skills');
+    }
   };
 
   if (loading) return <div>Loading skills...</div>;
@@ -921,6 +990,19 @@ const SkillsManager = () => {
         </button>
       </div>
 
+      {/* Bulk Actions */}
+      {selectedSkills.length > 0 && (
+        <div>
+          <span>{selectedSkills.length} skills selected</span>
+          <button onClick={handleAddSelectedSkills}>
+            Add Selected Skills
+          </button>
+          <button onClick={() => setSelectedSkills([])}>
+            Clear Selection
+          </button>
+        </div>
+      )}
+
       {/* Skills List */}
       <div>
         {skills.map((skill) => (
@@ -933,9 +1015,16 @@ const SkillsManager = () => {
             {skill.is_user_skill ? (
               <span>✓ Owned</span>
             ) : (
-              <button onClick={() => addSkill(skill.id)}>
-                Add to Profile
-              </button>
+              <>
+                <input
+                  type="checkbox"
+                  checked={selectedSkills.includes(skill.id)}
+                  onChange={() => toggleSkillSelection(skill.id)}
+                />
+                <button onClick={() => addSkill(skill.id)}>
+                  Add Single
+                </button>
+              </>
             )}
           </div>
         ))}

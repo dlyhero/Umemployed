@@ -1634,24 +1634,62 @@ class SkillsAPIView(APIView):
             )
     
     def post(self, request):
-        """Add existing skill to user's profile using skill ID (ManyToMany)"""
+        """Add existing skill(s) to user's profile using skill ID(s) (ManyToMany)"""
         try:
             skill_data = request.data
+            
+            # Support both single skill_id and multiple skill_ids
             skill_id = skill_data.get('skill_id')
-            if not skill_id:
-                return Response({"error": "skill_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-            try:
-                skill = Skill.objects.get(id=skill_id)
-            except Skill.DoesNotExist:
-                return Response({"error": "Skill not found"}, status=status.HTTP_404_NOT_FOUND)
-
+            skill_ids = skill_data.get('skill_ids', [])
+            
+            # Determine which format is being used
+            if skill_id is not None:
+                # Single skill format: {"skill_id": 15}
+                skill_ids_to_process = [skill_id]
+            elif skill_ids:
+                # Multiple skills format: {"skill_ids": [15, 23, 45]}
+                skill_ids_to_process = skill_ids
+            else:
+                return Response(
+                    {"error": "Either 'skill_id' or 'skill_ids' is required"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Validate skill IDs exist
+            skills_to_add = []
+            for sid in skill_ids_to_process:
+                try:
+                    skill = Skill.objects.get(id=sid)
+                    skills_to_add.append(skill)
+                except Skill.DoesNotExist:
+                    return Response(
+                        {"error": f"Skill with ID {sid} not found"}, 
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+            
             # Get or create the user's resume
             resume, _ = Resume.objects.get_or_create(user=request.user)
-            # Check if user already has this skill
-            if resume.skills.filter(id=skill.id).exists():
-                return Response({"error": "You already have this skill"}, status=status.HTTP_400_BAD_REQUEST)
-            # Add the skill to the user's resume
-            resume.skills.add(skill)
+            
+            # Check for duplicates and collect skills to actually add
+            skills_added = []
+            skills_already_owned = []
+            
+            for skill in skills_to_add:
+                if resume.skills.filter(id=skill.id).exists():
+                    skills_already_owned.append(skill.name)
+                else:
+                    resume.skills.add(skill)
+                    skills_added.append(skill.name)
+            
+            # Prepare response message
+            response_data = {
+                "message": f"Successfully added {len(skills_added)} skill(s)",
+                "skills_added": skills_added,
+            }
+            
+            if skills_already_owned:
+                response_data["skills_already_owned"] = skills_already_owned
+                response_data["message"] += f", {len(skills_already_owned)} already owned"
 
             # Return updated skills list following the same filtering as GET
             filter_type = request.query_params.get('filter', 'job_relevant')
