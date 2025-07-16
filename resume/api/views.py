@@ -1504,7 +1504,7 @@ class SkillsAPIView(APIView):
     """
     Manages user's skills with pagination, search, and job title filtering.
     
-    **Key Point:** POST expects skill IDs, GET returns both id and name.
+    **Key Point:** POST/DELETE expect skill IDs, GET returns both id and name.
     
     **GET Response:**
     ```json
@@ -1524,10 +1524,25 @@ class SkillsAPIView(APIView):
     }
     ```
     
-    **POST Request:**
+    **POST Request (Add Skills):**
     ```json
     {
-        "skill_id": 15    // Use skill ID, not name
+        "skill_id": 15    // Single skill
+    }
+    // OR
+    {
+        "skill_ids": [15, 23, 45]    // Multiple skills
+    }
+    ```
+    
+    **DELETE Request (Remove Skills):**
+    ```json
+    {
+        "skill_id": 15    // Single skill
+    }
+    // OR
+    {
+        "skill_ids": [15, 23, 45]    // Multiple skills
     }
     ```
     
@@ -1749,7 +1764,7 @@ class SkillsAPIView(APIView):
                     "categories": [cat.name for cat in skill.categories.all()]
                 })
             
-            # Return paginated response with job category name
+            # Return paginated response with added skills info
             job_category_name = None
             if 'user_job_category_id' in locals() and user_job_category_id:
                 try:
@@ -1758,14 +1773,170 @@ class SkillsAPIView(APIView):
                 except SkillCategory.DoesNotExist:
                     pass
             
-            return paginator.get_paginated_response({
+            paginated_response = paginator.get_paginated_response({
                 "skills": skills_data,
                 "filter_applied": filter_type,
                 "job_category": job_category_name
             })
             
+            # Add skills operation results to response
+            response_data["results"] = paginated_response.data["results"]
+            response_data["count"] = paginated_response.data["count"]
+            response_data["next"] = paginated_response.data["next"]
+            response_data["previous"] = paginated_response.data["previous"]
+            
+            return Response(response_data, status=status.HTTP_201_CREATED)
+            
         except Exception as e:
             return Response(
-                {"error": f"Failed to create skill: {str(e)}"}, 
+                {"error": f"Failed to add skill(s): {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def delete(self, request):
+        """Remove skill(s) from user's profile using skill ID(s)"""
+        try:
+            skill_data = request.data
+            
+            # Support both single skill_id and multiple skill_ids
+            skill_id = skill_data.get('skill_id')
+            skill_ids = skill_data.get('skill_ids', [])
+            
+            # Determine which format is being used
+            if skill_id is not None:
+                # Single skill format: {"skill_id": 15}
+                skill_ids_to_process = [skill_id]
+            elif skill_ids:
+                # Multiple skills format: {"skill_ids": [15, 23, 45]}
+                skill_ids_to_process = skill_ids
+            else:
+                return Response(
+                    {"error": "Either 'skill_id' or 'skill_ids' is required"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Get user's resume
+            try:
+                resume = Resume.objects.get(user=request.user)
+            except Resume.DoesNotExist:
+                return Response(
+                    {"error": "No resume found for user"}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Validate skill IDs and collect skills to remove
+            skills_to_remove = []
+            skills_not_found = []
+            skills_not_owned = []
+            
+            for sid in skill_ids_to_process:
+                try:
+                    skill = Skill.objects.get(id=sid)
+                    if resume.skills.filter(id=skill.id).exists():
+                        skills_to_remove.append(skill)
+                    else:
+                        skills_not_owned.append(skill.name)
+                except Skill.DoesNotExist:
+                    skills_not_found.append(sid)
+            
+            # Remove skills from user's profile
+            skills_removed = []
+            for skill in skills_to_remove:
+                resume.skills.remove(skill)
+                skills_removed.append(skill.name)
+            
+            # Prepare response message
+            response_data = {
+                "message": f"Successfully removed {len(skills_removed)} skill(s)",
+                "skills_removed": skills_removed,
+            }
+            
+            if skills_not_owned:
+                response_data["skills_not_owned"] = skills_not_owned
+                response_data["message"] += f", {len(skills_not_owned)} not owned"
+                
+            if skills_not_found:
+                response_data["skills_not_found"] = skills_not_found
+                response_data["message"] += f", {len(skills_not_found)} not found"
+            
+            # Return updated skills list (same logic as GET/POST)
+            filter_type = request.query_params.get('filter', 'job_relevant')
+            user_skills = resume.skills.all()
+            
+            if filter_type == 'job_relevant':
+                user_job_category_id = None
+                contact_info = ContactInfo.objects.filter(user=request.user).first()
+                if contact_info and contact_info.job_title_id:
+                    user_job_category_id = contact_info.job_title_id
+                else:
+                    resume_obj = Resume.objects.filter(user=request.user).first()
+                    if resume_obj and resume_obj.job_title:
+                        job_category = SkillCategory.objects.filter(
+                            name__icontains=resume_obj.job_title
+                        ).first()
+                        if job_category:
+                            user_job_category_id = job_category.id
+                
+                if user_job_category_id:
+                    from django.db.models import Q
+                    skills = Skill.objects.filter(
+                        Q(user=request.user) | Q(categories__id=user_job_category_id)
+                    ).distinct()
+                else:
+                    skills = user_skills
+                    
+            elif filter_type == 'user_only':
+                skills = user_skills
+            else:  # 'all'
+                skills = Skill.objects.all()
+            
+            # Apply search filter if provided
+            search = request.query_params.get('search', None)
+            if search:
+                skills = skills.filter(name__icontains=search)
+                
+            # Order and apply pagination
+            skills = skills.order_by('name')
+            paginator = SkillsPagination()
+            paginated_skills = paginator.paginate_queryset(skills, request)
+            
+            # Serialize with ownership indication
+            skills_data = []
+            user_skill_ids = set(user_skills.values_list('id', flat=True))
+            
+            for skill in paginated_skills:
+                skills_data.append({
+                    "id": skill.id,
+                    "name": skill.name,
+                    "is_user_skill": skill.id in user_skill_ids,
+                    "categories": [cat.name for cat in skill.categories.all()]
+                })
+            
+            # Return paginated response with removed skills info
+            job_category_name = None
+            if 'user_job_category_id' in locals() and user_job_category_id:
+                try:
+                    job_category = SkillCategory.objects.get(id=user_job_category_id)
+                    job_category_name = job_category.name
+                except SkillCategory.DoesNotExist:
+                    pass
+            
+            paginated_response = paginator.get_paginated_response({
+                "skills": skills_data,
+                "filter_applied": filter_type,
+                "job_category": job_category_name
+            })
+            
+            # Add skills operation results to response
+            response_data["results"] = paginated_response.data["results"]
+            response_data["count"] = paginated_response.data["count"]
+            response_data["next"] = paginated_response.data["next"]
+            response_data["previous"] = paginated_response.data["previous"]
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to remove skill(s): {str(e)}"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

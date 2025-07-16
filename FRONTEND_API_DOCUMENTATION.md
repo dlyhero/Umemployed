@@ -693,23 +693,24 @@ export const useEducation = () => {
 
 ## 6. Skills API
 
-### Endpoint: `GET|POST /api/resume/skills/`
+### Endpoint: `GET|POST|DELETE /api/resume/skills/`
 **Purpose:** Manage user's skills with pagination, search, and job title filtering  
 **Authentication:** Required
 
 ### What This Endpoint Does
-This endpoint provides a comprehensive skills management system that helps users build their skill profile. It combines user's existing skills with intelligent suggestions based on job titles and categories, making it easy to discover and add relevant skills to their resume.
+This endpoint provides a comprehensive skills management system that helps users build their skill profile. It combines user's existing skills with intelligent suggestions based on job titles and categories, making it easy to discover, add, and remove relevant skills from their resume.
 
 ### Backend Logic
 - **GET**: Retrieves paginated list of skills with user context and intelligent filtering
 - **POST**: Adds existing skills to the user's profile using skill IDs (does not create new skills)
+- **DELETE**: Removes skills from the user's profile using skill IDs
 - **Smart Skill Suggestions**: Uses job title analysis to suggest relevant skills from our database
 - **Category-based Filtering**: Groups skills by professional categories (Frontend, Backend, etc.)
 - **Search Functionality**: Allows real-time skill search across names and categories
 - **User Context**: Each skill shows whether the user already has it (`is_user_skill`)
 - **Pagination**: Handles large skill datasets efficiently with page-based results
 - **Skill Discovery**: Helps users find skills they might not know they need
-- **ID-based Operations**: All skill additions use database IDs for data integrity
+- **ID-based Operations**: All skill additions/removals use database IDs for data integrity
 - **Relevance Scoring**: Orders suggestions by relevance to user's profile/job title
 
 ### GET Response Structure (Paginated)
@@ -761,12 +762,31 @@ This endpoint provides a comprehensive skills management system that helps users
 }
 ```
 
-### POST Response Structure
+### DELETE Request Structure
+```json
+// Single skill
+{
+  "skill_id": 15                                 // Remove one skill by ID
+}
+
+// Multiple skills  
+{
+  "skill_ids": [15, 23, 45, 67]                 // Remove multiple skills by IDs
+}
+```
+
+### POST/DELETE Response Structure
 ```json
 {
   "message": "Successfully added 3 skill(s), 1 already owned",
-  "skills_added": ["JavaScript", "React", "Node.js"],
-  "skills_already_owned": ["Python"],
+  "skills_added": ["JavaScript", "React", "Node.js"],           // POST only
+  "skills_already_owned": ["Python"],                           // POST only
+  "skills_removed": ["Angular", "Vue.js"],                      // DELETE only
+  "skills_not_owned": ["TypeScript"],                           // DELETE only
+  "skills_not_found": [999],                                    // DELETE only
+  "count": 50,
+  "next": "http://localhost:8000/api/resume/skills/?page=2",
+  "previous": null,
   "results": {
     "skills": [...],                             // Updated skills list
     "filter_applied": "job_relevant"
@@ -858,6 +878,60 @@ export const useSkills = () => {
       });
       
       if (!response.ok) throw new Error('Failed to add skills');
+      
+      const data = await response.json();
+      setSkills(data.results.skills);
+      setPagination({
+        count: data.count,
+        next: data.next,
+        previous: data.previous
+      });
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const removeSkill = async (skillId) => {
+    try {
+      const response = await fetch('/api/resume/skills/', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ skill_id: skillId })
+      });
+      
+      if (!response.ok) throw new Error('Failed to remove skill');
+      
+      const data = await response.json();
+      setSkills(data.results.skills);
+      setPagination({
+        count: data.count,
+        next: data.next,
+        previous: data.previous
+      });
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const removeMultipleSkills = async (skillIds) => {
+    try {
+      const response = await fetch('/api/resume/skills/', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ skill_ids: skillIds })
+      });
+      
+      if (!response.ok) throw new Error('Failed to remove skills');
       
       const data = await response.json();
       setSkills(data.results.skills);
