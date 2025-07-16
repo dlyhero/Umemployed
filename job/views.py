@@ -38,7 +38,7 @@ from .models import (
     Skill,
     SkillQuestion,
 )
-from .tasks import send_new_job_email_task, send_recruiter_job_confirmation_email_task
+from messaging.tasks import send_new_job_email_task, send_recruiter_job_confirmation_email_task
 
 logger = logging.getLogger(__name__)
 

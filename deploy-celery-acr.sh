@@ -130,7 +130,12 @@ fi
 
 echo "✅ All environment variables validated!"
 
-# Create new container instance
+# Create new container instance with properly escaped environment variables
+echo "🔐 Creating container with secure environment variables..."
+
+# Escape special characters in password for Azure CLI
+ESCAPED_DB_PASSWORD=$(printf '%q' "$AZURE_DB_PASSWORD")
+
 az container create \
     --resource-group $RESOURCE_GROUP \
     --name $CONTAINER_INSTANCE_NAME \
@@ -141,32 +146,33 @@ az container create \
     --memory 2 \
     --os-type Linux \
     --restart-policy Always \
-    --environment-variables \
-        DEBUG=0 \
-        DJANGO_ALLOWED_HOSTS="*" \
-        DB_NAME="$AZURE_DB_NAME" \
-        DB_USER="$AZURE_DB_USER" \
+    --secure-environment-variables \
         DB_PASSWORD="$AZURE_DB_PASSWORD" \
-        DB_HOST="$AZURE_DB_HOST" \
-        DB_PORT="$AZURE_DB_PORT" \
-        AZURE_DB_NAME="$AZURE_DB_NAME" \
-        AZURE_DB_USER="$AZURE_DB_USER" \
         AZURE_DB_PASSWORD="$AZURE_DB_PASSWORD" \
-        AZURE_DB_HOST="$AZURE_DB_HOST" \
-        AZURE_DB_PORT="$AZURE_DB_PORT" \
-        REDIS_URL="$REDIS_URL" \
         REDIS_PASSWORD="$REDIS_PASSWORD" \
         SECRET_KEY="$SECRET_KEY" \
         OPENAI_API_KEY="$OPENAI_API_KEY" \
         GEMINI_API_KEY="$GEMINI_API_KEY" \
         LLAMA_API_KEY="$LLAMA_API_KEY" \
-        AZURE_ACCOUNT_NAME="$AZURE_ACCOUNT_NAME" \
         AZURE_ACCOUNT_KEY="$AZURE_ACCOUNT_KEY" \
-        AZURE_CONTAINER="$AZURE_CONTAINER" \
         STRIPE_SECRET_KEY="$STRIPE_SECRET_KEY" \
         STRIPE_PUBLISHABLE_KEY="$STRIPE_PUBLISHABLE_KEY" \
-        AGORA_APP_ID="$AGORA_APP_ID" \
-        AGORA_APP_CERTIFICATE="$AGORA_APP_CERTIFICATE"
+        AGORA_APP_CERTIFICATE="$AGORA_APP_CERTIFICATE" \
+    --environment-variables \
+        DEBUG=0 \
+        DJANGO_ALLOWED_HOSTS="*" \
+        DB_NAME="$AZURE_DB_NAME" \
+        DB_USER="$AZURE_DB_USER" \
+        DB_HOST="$AZURE_DB_HOST" \
+        DB_PORT="$AZURE_DB_PORT" \
+        AZURE_DB_NAME="$AZURE_DB_NAME" \
+        AZURE_DB_USER="$AZURE_DB_USER" \
+        AZURE_DB_HOST="$AZURE_DB_HOST" \
+        AZURE_DB_PORT="$AZURE_DB_PORT" \
+        REDIS_URL="$REDIS_URL" \
+        AZURE_ACCOUNT_NAME="$AZURE_ACCOUNT_NAME" \
+        AZURE_CONTAINER="$AZURE_CONTAINER" \
+        AGORA_APP_ID="$AGORA_APP_ID"
 
 echo "✅ Container Instance created successfully!"
 
