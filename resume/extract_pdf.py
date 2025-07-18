@@ -190,9 +190,14 @@ def extract_text(request, file_path):
         return Response({"error": "An error occurred while processing the resume."}, status=500)
 
 
-def extract_technical_skills(request, extracted_text, job_title):
+def extract_technical_skills(user_or_request, extracted_text, job_title):
     """
     Extracts technical skills from the resume text using OpenAI.
+    
+    Args:
+        user_or_request: Either a User object (for Celery tasks) or request object (for web requests)
+        extracted_text: The extracted text from the resume
+        job_title: The job title to focus on
     """
     conversation = [
         {
@@ -205,11 +210,20 @@ def extract_technical_skills(request, extracted_text, job_title):
         # Log the input being sent to OpenAI
         logger.info("Sending the following prompt to OpenAI: %s", conversation)
 
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=conversation,
-            timeout=15,  # Set a timeout for the OpenAI API call
-        )
+        # Try with a shorter timeout first, then fallback to longer timeout if needed
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=conversation,
+                timeout=20,  # Set a timeout for the OpenAI API call
+            )
+        except Exception as e:
+            logger.warning(f"First attempt failed with 20s timeout: {str(e)}. Retrying with 40s timeout...")
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=conversation,
+                timeout=40,  # Fallback timeout
+            )
 
         response_content = response.choices[0].message.content.strip()
         if not response_content:
@@ -222,7 +236,15 @@ def extract_technical_skills(request, extracted_text, job_title):
         technical_skills = response_dict.get("Technical Skills", [])
         print(technical_skills)
 
-        resume_doc = ResumeDoc.objects.filter(user=request.user).first()
+        # Handle both user object (from Celery) and request object (from web)
+        if hasattr(user_or_request, 'user'):
+            # It's a request object
+            user = user_or_request.user
+        else:
+            # It's a user object
+            user = user_or_request
+            
+        resume_doc = ResumeDoc.objects.filter(user=user).first()
         if resume_doc:
             for skill in technical_skills:
                 skill_obj, created = Skill.objects.get_or_create(name=skill)
@@ -241,9 +263,13 @@ def extract_technical_skills(request, extracted_text, job_title):
         return []
 
 
-def extract_resume_details(request, extracted_text):
+def extract_resume_details(user_or_request, extracted_text):
     """
     Extracts details such as contact information, work experience, and education from the extracted text.
+    
+    Args:
+        user_or_request: Either a User object (for Celery tasks) or request object (for web requests)
+        extracted_text: The extracted text from the resume
     """
     try:
         if not extracted_text.strip():
@@ -275,7 +301,12 @@ def extract_resume_details(request, extracted_text):
         # Log the input sent to the OpenAI API
         logger.info("Sending the following prompt to OpenAI API: %s", conversation)
 
-        response = client.chat.completions.create(model="gpt-4", messages=conversation, timeout=120)
+        # Try with a shorter timeout first, then fallback to longer timeout if needed
+        try:
+            response = client.chat.completions.create(model="gpt-4", messages=conversation, timeout=30)
+        except Exception as e:
+            logger.warning(f"First attempt failed with 30s timeout: {str(e)}. Retrying with 60s timeout...")
+            response = client.chat.completions.create(model="gpt-4", messages=conversation, timeout=60)
 
         response_content = response.choices[0].message.content.strip()
         if not response_content or "Sorry" in response_content:
@@ -305,13 +336,62 @@ def extract_resume_details(request, extracted_text):
 
     except Exception as e:
         logger.error("Unexpected error while extracting resume details: %s", e)
-        return {
-            "Name": "Unknown",
-            "Email": "unknown@example.com",
-            "Phone": "0000000000",
-            "Work Experience": [],
-            "Education": [],
-        }
+        logger.info("Falling back to basic text extraction...")
+        
+        # Fallback: Try to extract basic information using simple text parsing
+        try:
+            fallback_details = extract_basic_details_fallback(extracted_text)
+            return fallback_details
+        except Exception as fallback_error:
+            logger.error("Fallback extraction also failed: %s", fallback_error)
+            return {
+                "Name": "Unknown",
+                "Email": "unknown@example.com",
+                "Phone": "0000000000",
+                "Work Experience": [],
+                "Education": [],
+            }
+
+
+def extract_basic_details_fallback(extracted_text):
+    """
+    Fallback function to extract basic details using simple text parsing
+    when OpenAI API fails.
+    """
+    import re
+    
+    details = {
+        "Name": "Unknown",
+        "Email": "unknown@example.com", 
+        "Phone": "0000000000",
+        "Work Experience": [],
+        "Education": [],
+    }
+    
+    # Extract email
+    email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    email_match = re.search(email_pattern, extracted_text)
+    if email_match:
+        details["Email"] = email_match.group()
+    
+    # Extract phone number
+    phone_pattern = r'(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})'
+    phone_match = re.search(phone_pattern, extracted_text)
+    if phone_match:
+        details["Phone"] = ''.join(phone_match.groups())
+    
+    # Try to extract name from first few lines
+    lines = extracted_text.split('\n')[:5]
+    for line in lines:
+        line = line.strip()
+        if line and not re.search(r'@|phone|email|resume|cv', line.lower()):
+            # Simple heuristic: if line has 2-3 words and no special chars, it might be a name
+            words = line.split()
+            if 2 <= len(words) <= 3 and all(word.isalpha() for word in words):
+                details["Name"] = line
+                break
+    
+    return details
 
 
 def get_case_insensitive(d, key, default=None):

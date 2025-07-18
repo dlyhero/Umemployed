@@ -229,17 +229,48 @@ def upload_resume_api(request):
 
         logger.info("Extracted text received in API: %s", extracted_text[:500])
 
-        # Step 2: Extract and save details using extract_resume_details and parse_and_save_details
-        extracted_details = extract_resume_details(request, extracted_text)
-        parse_and_save_details(extracted_details, user)
-
-        # Step 3: Extract technical skills and associate them with the ResumeDoc
-        job_title = resume.job_title if resume.job_title else "Others"
-        technical_skills = extract_technical_skills(request, extracted_text, job_title)
-
-        # Save the extracted text and skills to the ResumeDoc
+        # Save the extracted text immediately
         resume_doc.extracted_text = extracted_text
         resume_doc.save()
+
+        # Step 2: Extract and save details using extract_resume_details and parse_and_save_details
+        # Set a reasonable timeout for the entire processing
+        import threading
+        import time
+        
+        extracted_details = {
+            "Name": "Unknown",
+            "Email": "unknown@example.com",
+            "Phone": "0000000000",
+            "Work Experience": [],
+            "Education": [],
+        }
+        
+        technical_skills = []
+        
+        # Process with timeout
+        def process_resume():
+            nonlocal extracted_details, technical_skills
+            try:
+                extracted_details = extract_resume_details(request, extracted_text)
+                parse_and_save_details(extracted_details, user)
+            except Exception as e:
+                logger.error(f"Error extracting resume details: {str(e)}")
+            
+            try:
+                job_title = resume.job_title if resume.job_title else "Others"
+                technical_skills = extract_technical_skills(request, extracted_text, job_title)
+            except Exception as e:
+                logger.error(f"Error extracting technical skills: {str(e)}")
+        
+        # Run processing in a thread with timeout
+        processing_thread = threading.Thread(target=process_resume)
+        processing_thread.start()
+        processing_thread.join(timeout=90)  # 90 second timeout
+        
+        if processing_thread.is_alive():
+            logger.warning("Resume processing timed out, returning basic results")
+            # The thread will continue running in background, but we return what we have
 
         return Response(
             {

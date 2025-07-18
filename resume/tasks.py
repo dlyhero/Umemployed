@@ -16,6 +16,72 @@ logger = logging.getLogger(__name__)
 @shared_task(
     bind=True, autoretry_for=(Exception,), retry_kwargs={"max_retries": 3, "countdown": 60}
 )
+def process_resume_upload_task(self, user_id, resume_doc_id, extracted_text):
+    """
+    Celery task to process resume upload asynchronously.
+    
+    This task handles the time-consuming OpenAI API calls for resume analysis
+    to prevent timeout issues in the web request.
+    
+    Args:
+        user_id: ID of the user
+        resume_doc_id: ID of the ResumeDoc record
+        extracted_text: Extracted text from the resume
+        
+    Returns:
+        dict: Status and result information
+    """
+    try:
+        from .extract_pdf import extract_resume_details, parse_and_save_details, extract_technical_skills
+        
+        # Get user and resume doc objects
+        user = User.objects.get(id=user_id)
+        resume_doc = ResumeDoc.objects.get(id=resume_doc_id, user=user)
+        
+        # Step 1: Extract resume details using OpenAI
+        logger.info(f"Starting resume details extraction for user {user_id}")
+        extracted_details = extract_resume_details(user, extracted_text)
+        
+        # Step 2: Parse and save details to database
+        logger.info(f"Parsing and saving resume details for user {user_id}")
+        parse_and_save_details(extracted_details, user)
+        
+        # Step 3: Extract technical skills
+        logger.info(f"Extracting technical skills for user {user_id}")
+        job_title = "Others"  # Default job title
+        technical_skills = extract_technical_skills(user, extracted_text, job_title)
+        
+        # Step 4: Update resume doc with extracted text and skills
+        resume_doc.extracted_text = extracted_text
+        resume_doc.save()
+        
+        logger.info(f"Resume processing completed successfully for user {user_id}")
+        
+        return {
+            "status": "success",
+            "extracted_details": extracted_details,
+            "technical_skills": technical_skills,
+            "message": "Resume processed successfully"
+        }
+        
+    except User.DoesNotExist:
+        logger.error(f"User with ID {user_id} not found")
+        return {"status": "failed", "error": "User not found"}
+    except ResumeDoc.DoesNotExist:
+        logger.error(f"ResumeDoc with ID {resume_doc_id} not found for user {user_id}")
+        return {"status": "failed", "error": "Resume document not found"}
+    except Exception as e:
+        logger.error(f"Unexpected error in resume processing: {str(e)}")
+        
+        # If this is a retry, we'll let Celery handle it
+        if self.request.retries < self.max_retries:
+            raise self.retry(countdown=60, exc=e)
+        return {"status": "failed", "error": str(e)}
+
+
+@shared_task(
+    bind=True, autoretry_for=(Exception,), retry_kwargs={"max_retries": 3, "countdown": 60}
+)
 def enhance_resume_task(self, user_id, job_id, resume_text, task_record_id):
     """
     Celery task to enhance a resume using AI.

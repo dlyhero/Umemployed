@@ -19,11 +19,11 @@ Manual deployments are slow and time-consuming. With GitHub Actions, your Celery
 #### 1. Set Up GitHub Repository Secrets
 ```bash
 # First, edit the script to add your GitHub username and repo name
-nano setup-github-secrets.sh
+nano scripts/deployment/setup-github-secrets.sh
 
 # Then run the script to set up all secrets securely
-chmod +x setup-github-secrets.sh
-./setup-github-secrets.sh
+chmod +x scripts/deployment/setup-github-secrets.sh
+./scripts/deployment/setup-github-secrets.sh
 ```
 
 This script will:
@@ -93,7 +93,7 @@ gh run view RUN_ID --repo YOUR_USERNAME/YOUR_REPO
 
 ### 1. Deploy Celery Worker
 ```bash
-./deploy-celery-acr.sh
+./scripts/deployment/deploy-celery-acr.sh
 ```
 
 This script will:
@@ -104,7 +104,7 @@ This script will:
 
 ### 2. Deploy Celery Beat (Scheduler)
 ```bash
-./deploy-celery-beat.sh
+./scripts/deployment/deploy-celery-beat.sh
 ```
 
 This script will:
@@ -114,8 +114,8 @@ This script will:
 
 ### 3. Monitor Your Containers
 ```bash
-./monitor-celery.sh          # Check status
-./monitor-celery.sh --logs   # Check status + recent logs
+./scripts/development/monitor-celery.sh          # Check status
+./scripts/development/monitor-celery.sh --logs   # Check status + recent logs
 ```
 
 ## 📊 What Gets Deployed
@@ -148,10 +148,10 @@ All containers are configured with:
 ### Check Container Status
 ```bash
 # Quick status check
-./monitor-celery.sh
+./scripts/development/monitor-celery.sh
 
 # Status with recent logs
-./monitor-celery.sh --logs
+./scripts/development/monitor-celery.sh --logs
 ```
 
 ### View Full Logs

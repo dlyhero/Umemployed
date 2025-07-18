@@ -4,7 +4,7 @@
 
 ### 1. Edit GitHub repository info
 ```bash
-nano setup-github-secrets.sh
+nano scripts/deployment/setup-github-secrets.sh
 # Change: REPO_OWNER and REPO_NAME to your GitHub username and repo
 ```
 
@@ -16,7 +16,7 @@ gh auth login  # Follow prompts to login
 
 ### 3. Set up all secrets automatically
 ```bash
-./setup-github-secrets.sh
+./scripts/deployment/setup-github-secrets.sh
 ```
 
 ## ⚡ Daily Workflow (Automatic!)
@@ -50,15 +50,15 @@ gh run list
 gh run view [RUN_ID]
 
 # Check container status
-./monitor-celery.sh
+./scripts/development/monitor-celery.sh
 ```
 
 ## 🔧 Manual Override (if needed)
 
 If GitHub Actions is down or you need immediate deployment:
 ```bash
-./deploy-celery-acr.sh      # Deploy worker
-./deploy-celery-beat.sh     # Deploy beat scheduler
+./scripts/deployment/deploy-celery-acr.sh      # Deploy worker
+./scripts/deployment/deploy-celery-beat.sh     # Deploy beat scheduler
 ```
 
 ## 🎉 Benefits
@@ -79,12 +79,12 @@ If GitHub Actions is down or you need immediate deployment:
 
 ### Manual deployment needed?
 ```bash
-./deploy-celery-acr.sh --force
+./scripts/deployment/deploy-celery-acr.sh --force
 ```
 
 ### Check container health
 ```bash
-./monitor-celery.sh --logs
+./scripts/development/monitor-celery.sh --logs
 ```
 
 ---

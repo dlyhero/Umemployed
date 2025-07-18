@@ -63,12 +63,12 @@ required_vars=("DB_PASSWORD" "REDIS_URL" "SECRET_KEY" "OPENAI_API_KEY" ...)
 
 ### What Was Changed:
 
-1. **`deploy-celery-acr.sh`**:
+1. **`scripts/deployment/deploy-celery-acr.sh`**:
    - Added environment variable loading
    - Added validation for required variables
    - Replaced all hardcoded values with `$VARIABLE_NAME`
 
-2. **`deploy-celery-beat.sh`**:
+2. **`scripts/deployment/deploy-celery-beat.sh`**:
    - Same security improvements as worker script
    - Environment variable validation
 
@@ -76,7 +76,7 @@ required_vars=("DB_PASSWORD" "REDIS_URL" "SECRET_KEY" "OPENAI_API_KEY" ...)
    - Uses `${{ secrets.VARIABLE_NAME }}` syntax
    - No hardcoded credentials
 
-4. **`setup-github-secrets.sh`**:
+4. **`scripts/deployment/setup-github-secrets.sh`**:
    - Automated script to securely set all GitHub secrets
    - Creates Azure service principal with minimal permissions
 
@@ -85,7 +85,7 @@ required_vars=("DB_PASSWORD" "REDIS_URL" "SECRET_KEY" "OPENAI_API_KEY" ...)
 ### Local Development:
 ```bash
 # Your .env file remains the same - all secrets there
-./deploy-celery-acr.sh      # Loads from .env
+./scripts/deployment/deploy-celery-acr.sh      # Loads from .env
 ```
 
 ### GitHub Actions (Automated):
@@ -99,7 +99,7 @@ git push origin main        # Uses GitHub Secrets automatically
 export AZURE_DB_PASSWORD="your-password"
 export REDIS_URL="your-redis-url"
 # ... set all variables
-./deploy-celery-acr.sh
+./scripts/deployment/deploy-celery-acr.sh
 ```
 
 ## 📋 **Verification Checklist**

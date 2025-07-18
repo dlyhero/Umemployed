@@ -142,14 +142,14 @@ if [ $? -ne 0 ]; then
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo -e "${YELLOW}Running tests with -k to skip collection errors...${NC}"
-        run_step "Running tests (with skips)" "$PROJECT_ROOT/run_tests.sh -v -k 'not error'"
+        run_step "Running tests (with skips)" "$PROJECT_ROOT/scripts/development/run_tests.sh -v -k 'not error'"
     else
         echo -e "${YELLOW}Skipping tests due to collection errors.${NC}"
-        echo -e "${YELLOW}You can fix the errors and run tests manually with: ./run_tests.sh -v${NC}"
+        echo -e "${YELLOW}You can fix the errors and run tests manually with: ./scripts/development/run_tests.sh -v${NC}"
     fi
 else
     echo -e "${GREEN}✓ No test collection errors found.${NC}"
-    run_step "Running tests" "$PROJECT_ROOT/run_tests.sh -v"
+    run_step "Running tests" "$PROJECT_ROOT/scripts/development/run_tests.sh -v"
 fi
 
 # 5. Check for missing migrations

@@ -1,187 +1,143 @@
-# UmEmployed API Documentation Index
+# Umemployed
 
-## 📚 Complete Documentation Suite
+A modern platform connecting job seekers with recruiters, featuring resume management, job listings, and recruitment tools.
 
-This directory contains comprehensive documentation for the UmEmployed platform APIs and frontend integration.
+## Overview
 
----
+Umemployed is a comprehensive employment platform that streamlines the job search and recruitment process. The platform serves both job seekers and recruiters with specialized features for each user type.
 
-## 🎯 Main Documentation Files
+### Key Features
 
-### 1. **Complete API Guide** 📋
-**File**: `complete_api_guide.md`
-**Purpose**: Comprehensive API documentation covering all endpoints
-**Contents**:
-- Job Management API (Creation, Updates, Management)
-- Messaging API (Conversations, Messages, Reactions)
-- Postman testing collection
-- Frontend development guidance
-- Error handling examples
+- **For Job Seekers**:
+  - Profile and resume management
+  - Job search and application
+  - Skill assessment
+  - Interview scheduling
 
-### 2. **Messaging API Review & Fixes** 🔧
-**File**: `messaging_api_review_summary.md`
-**Purpose**: Technical review of messaging views implementation
-**Contents**:
-- Issues found and fixed in messaging views
-- Database schema updates
-- Security improvements
-- Testing results
+- **For Recruiters**:
+  - Company profile management
+  - Job posting and management
+  - Candidate search and filtering
+  - Interview scheduling
 
-### 3. **Frontend Messaging Integration Guide** 🎨
-**File**: `frontend_messaging_integration_guide.md`
-**Purpose**: Complete frontend implementation guide for messaging
-**Contents**:
-- TypeScript interfaces and types
-- Redux store setup and state management
-- React components with examples
-- Real-time WebSocket integration
-- Performance optimizations
-- Error handling strategies
+## Tech Stack
 
-### 4. **Job Creation & Update Flow** 📝
-**File**: `job_creation_and_update_flow.md`
-**Purpose**: Detailed documentation of job management workflows
-**Contents**:
-- 4-step job creation process (with AI)
-- Job update endpoints (without AI)
-- Recruiter management features
+- **Backend**: Django REST Framework
+- **Database**: PostgreSQL (production), SQLite (development)
+- **Task Queue**: Celery with Redis
+- **Real-time Communication**: Django Channels
+- **Authentication**: JWT with SimpleJWT
+- **Frontend**: Separate React/Next.js application
+- **Deployment**: Docker, Azure App Service
 
-### 5. **Swagger Schema Fixes** 🔍
-**File**: `swagger_fix_summary.md`
-**Purpose**: Documentation of Swagger/DRF-YASG compatibility fixes
-**Contents**:
-- Fixed swagger_fake_view issues
-- Enhanced API documentation generation
+## Setup and Installation
 
----
+### Prerequisites
 
-## 🚀 Ready-to-Use Resources
+- Python 3.8+
+- Redis
+- PostgreSQL (for production)
 
-### Postman Collection
-**File**: `../postman/UmEmployed_API_Collection.json`
-**Purpose**: Complete Postman collection for API testing
-**Features**:
-- All API endpoints configured
-- Environment variables setup
-- Test scripts included
-- Authentication handling
+### Local Development Setup
 
-### Test Scripts
-**Location**: `../scripts/`
-**Files**:
-- `test_messaging_api.py` - Comprehensive messaging API tests
-- `test_job_api_endpoints.py` - Job API endpoint validation
-- `test_swagger_compatibility.py` - Swagger schema validation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/umemployed.git
+   cd umemployed
+   ```
 
----
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv myenv
+   source myenv/bin/activate  # On Windows: myenv\Scripts\activate
+   ```
 
-## 🎯 API Features Documented
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Job Management
-- ✅ Job creation flow (4 steps with AI processing)
-- ✅ Job update flow (4 steps without AI processing)
-- ✅ Recruiter job management
-- ✅ Public job browsing and search
-- ✅ Job applications and saved jobs
+4. Copy the example environment file and configure your environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-### Messaging System
-- ✅ Conversation management
-- ✅ Real-time messaging
-- ✅ Message reactions (like, love, laugh, wow, sad, angry)
-- ✅ Read status tracking
-- ✅ Bulk message operations
-- ✅ Search functionality
+5. Run database migrations:
+   ```bash
+   python manage.py migrate
+   ```
 
-### Authentication & Security
-- ✅ JWT token authentication
-- ✅ Permission-based access control
-- ✅ User authorization checks
-- ✅ Data validation and error handling
+6. Start the development server:
+   ```bash
+   python manage.py runserver
+   ```
 
----
+7. Start Celery worker (in a separate terminal):
+   ```bash
+   celery -A umemployed worker -l info
+   ```
 
-## 🛠️ Implementation Status
+### Docker Setup
 
-### Backend API ✅ COMPLETE
-- All endpoints implemented and tested
-- Proper error handling and validation
-- Security measures in place
-- Swagger documentation compatible
+To run the application using Docker:
 
-### Frontend Integration 📖 DOCUMENTED
-- Complete TypeScript interfaces
-- Redux state management patterns
-- React component examples
-- Real-time WebSocket integration
-- Performance optimization strategies
+```bash
+docker-compose up -d
+```
 
-### Testing ✅ COMPREHENSIVE
-- API endpoint testing scripts
-- Postman collection for manual testing
-- Error case validation
-- Security testing scenarios
+## API Documentation
 
----
+API documentation is available at `/api/docs/` when the server is running.
 
-## 📖 How to Use This Documentation
+## Testing
 
-### For Backend Developers
-1. Start with `complete_api_guide.md` for API overview
-2. Review `messaging_api_review_summary.md` for implementation details
-3. Use test scripts in `../scripts/` for validation
+Run the test suite with:
 
-### For Frontend Developers
-1. Read `complete_api_guide.md` for API understanding
-2. Follow `frontend_messaging_integration_guide.md` for implementation
-3. Use Postman collection for API testing during development
+```bash
+pytest
+```
 
-### For QA/Testing
-1. Import `../postman/UmEmployed_API_Collection.json` into Postman
-2. Run test scripts in `../scripts/` for automated testing
-3. Follow test scenarios in documentation files
+## Deployment
 
-### For Product/Project Managers
-1. Review `complete_api_guide.md` for feature overview
-2. Check `job_creation_and_update_flow.md` for workflow understanding
-3. Use documentation to plan frontend development sprints
+The application is configured for deployment to Azure App Service using GitHub Actions. See the `.github/workflows/` directory for deployment configuration.
 
----
+## Project Structure
 
-## 🔄 Recent Updates (July 2025)
+```
+umemployed/
+├── api/                  # API endpoints and serializers
+├── asseessments/         # Assessment module
+├── company/              # Company management module
+├── dashboard/            # User dashboard module
+├── job/                  # Job listing and search module
+├── messages/             # User messaging module
+├── messaging/            # Additional messaging features
+├── notifications/        # Notification system
+├── resume/               # Resume management module
+├── social_features/      # Social networking features
+├── static/               # Static files
+├── templates/            # HTML templates
+├── transactions/         # Payment and subscription module
+├── umemployed/           # Project configuration
+├── users/                # User management module
+├── videochat/            # Video conferencing module
+└── website/              # Public website pages
+```
 
-### Messaging System Enhancements
-- ✅ Added `is_read` field to track message read status
-- ✅ Enhanced serializers with username fields
-- ✅ Improved reaction system with validation
-- ✅ Fixed Django ORM syntax errors
-- ✅ Added comprehensive error handling
+## Contributing
 
-### API Documentation Improvements
-- ✅ Updated response examples with enhanced data
-- ✅ Added frontend integration patterns
-- ✅ Comprehensive error handling documentation
-- ✅ Real-time features documentation
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin feature/my-new-feature`
+5. Submit a pull request
 
-### Testing & Validation
-- ✅ All messaging endpoints tested and working
-- ✅ Swagger schema compatibility verified
-- ✅ Security measures validated
-- ✅ Performance considerations documented
+## License
 
----
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 📞 Support & Maintenance
+## Acknowledgments
 
-This documentation is designed to be:
-- **Self-contained**: All information needed for implementation
-- **Up-to-date**: Reflects current API implementation
-- **Practical**: Includes working code examples
-- **Comprehensive**: Covers all aspects from API to frontend
-
-For updates or questions about the API implementation, refer to the specific documentation files or the test scripts for validation examples.
-
----
-
-**Last Updated**: July 9, 2025
-**API Version**: Current
-**Status**: Production Ready ✅
+This project was inspired by the need to simplify the job search process. Special thanks to the Django community for their excellent documentation and support.
+# Deployment test Mon 14 Jul 2025 01:11:57 AM WAT
