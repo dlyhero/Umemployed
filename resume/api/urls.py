@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from . import views
-from .views import AboutAPIView, CountriesAPIView, EducationAPIView, ExperiencesAPIView, PersonalDetailsAPIView, SkillsAPIView
+from .views import AboutAPIView, CountriesAPIView, EducationAPIView, ExperiencesAPIView, PersonalDetailsAPIView, SkillsAPIView, UserLocationAPIView, UserImagesAPIView
 
 # Router for CRUD operations
 router = DefaultRouter()
@@ -90,6 +90,16 @@ urlpatterns = [
         name="countries_api",
     ),  # GET list of countries for dropdown
     path(
+        "skill-categories/",
+        views.SkillCategoryListView.as_view(),
+        name="skill_categories_api",
+    ),  # GET list of job titles/skill categories for dropdown
+    path(
+        "states/",
+        views.StatesAPIView.as_view(),
+        name="states_api",
+    ),  # GET list of US states for dropdown
+    path(
         "about/",
         views.AboutAPIView.as_view(),
         name="about_api",
@@ -99,6 +109,16 @@ urlpatterns = [
         views.PersonalDetailsAPIView.as_view(),
         name="personal_details_api",
     ),  # GET/PUT/PATCH user's personal details
+    path(
+        "user-location/",
+        views.UserLocationAPIView.as_view(),
+        name="user_location_api",
+    ),  # GET/POST/PATCH user's country and city
+    path(
+        "user-images/",
+        views.UserImagesAPIView.as_view(),
+        name="user_images_api",
+    ),  # GET/POST/DELETE user's profile and cover images
     path(
         "experiences/",
         views.ExperiencesAPIView.as_view(),
@@ -114,6 +134,16 @@ urlpatterns = [
         views.SkillsAPIView.as_view(),
         name="skills_api",
     ),  # GET/POST user's skills list
+    path(
+        "languages-list/",
+        views.LanguageListView.as_view(),
+        name="languages_list_api",
+    ),  # GET list of all available languages for dropdown
+    path(
+        "proficiency-levels/",
+        views.ProficiencyChoicesAPIView.as_view(),
+        name="proficiency_levels_api",
+    ),  # GET list of all proficiency levels for dropdown
 ]
 
 # Include router URLs

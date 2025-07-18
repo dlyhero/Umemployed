@@ -100,6 +100,9 @@ class Resume(models.Model):
     profile_image = models.ImageField(
         upload_to="resume/images", blank=True, default="resume/images/default.jpg"
     )
+    cover_image = models.ImageField(
+        upload_to="resume/covers", blank=True, null=True
+    )
     cv = models.FileField(
         upload_to="resume/cv", default="resume/cv/Nyuydine_CV_Resume.pdf", blank=True
     )

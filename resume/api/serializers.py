@@ -78,7 +78,19 @@ class EducationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Education
-        fields = "__all__"
+        fields = ["id", "user", "institution_name", "field_of_study", "degree", "graduation_year"]
+        read_only_fields = ["id", "user"]
+    
+    def validate_graduation_year(self, value):
+        """Validate graduation year is reasonable"""
+        from datetime import datetime
+        current_year = datetime.now().year
+        
+        if value < 1900 or value > current_year + 10:
+            raise serializers.ValidationError(
+                f"Graduation year must be between 1900 and {current_year + 10}"
+            )
+        return value
 
 
 class ExperienceSerializer(serializers.ModelSerializer):
@@ -97,10 +109,30 @@ class ResumeSerializer(serializers.ModelSerializer):
     Serializer for the Resume model.
     Converts Resume model instances to JSON and validates input data.
     """
+    
+    skills = serializers.SerializerMethodField()
+    profile_image_url = serializers.SerializerMethodField()
+    cover_image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Resume
         fields = "__all__"
+    
+    def get_skills(self, obj):
+        """Return skills as objects with id and name"""
+        return [{"id": skill.id, "name": skill.name} for skill in obj.skills.all()]
+    
+    def get_profile_image_url(self, obj):
+        """Return profile image URL"""
+        if obj.profile_image:
+            return obj.profile_image.url
+        return None
+    
+    def get_cover_image_url(self, obj):
+        """Return cover image URL"""
+        if obj.cover_image:
+            return obj.cover_image.url
+        return None
 
 
 class ResumeDocSerializer(serializers.ModelSerializer):
@@ -259,10 +291,18 @@ class AboutSerializer(serializers.Serializer):
     Serializer for user's about information combining User and Resume models.
     """
 
-    firstName = serializers.CharField(source="user.first_name", allow_blank=True, default="")
-    lastName = serializers.CharField(source="user.last_name", allow_blank=True, default="")
+    firstName = serializers.SerializerMethodField()
+    lastName = serializers.SerializerMethodField()
     bio = serializers.CharField(source="description", allow_blank=True, default="")
     description = serializers.CharField(allow_blank=True, default="")
+    
+    def get_firstName(self, obj):
+        """Get user's first name"""
+        return getattr(obj.user, 'first_name', '') or ''
+    
+    def get_lastName(self, obj):
+        """Get user's last name"""
+        return getattr(obj.user, 'last_name', '') or ''
 
     def to_representation(self, instance):
         """Custom representation to handle the about structure"""
@@ -284,8 +324,9 @@ class PersonalDetailsSerializer(serializers.Serializer):
 
     email = serializers.EmailField(source="user.email")
     dob = serializers.SerializerMethodField()
-    address = serializers.CharField(source="state", allow_blank=True, default="")
-    city = serializers.CharField(source="state", allow_blank=True, default="")  # Using state as city for now
+    address = serializers.CharField(allow_blank=True, default="")  # Separate address field
+    city = serializers.CharField(allow_blank=True, default="")  # Separate city field
+    state = serializers.CharField(source="state", allow_blank=True, default="")  # State field
     country = serializers.CharField(allow_blank=True, default="")
     postalCode = serializers.CharField(default="", allow_blank=True)  # Not in current model
     mobile = serializers.CharField(source="phone", allow_blank=True, default="")
@@ -306,6 +347,7 @@ class PersonalDetailsSerializer(serializers.Serializer):
                 "dob": data.get("dob") or "",
                 "address": data.get("address") or "",
                 "city": data.get("city") or "",
+                "state": data.get("state") or "",
                 "country": data.get("country") or "",
                 "postalCode": data.get("postalCode") or "",
                 "mobile": data.get("mobile") or "",

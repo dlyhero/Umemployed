@@ -16,6 +16,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from job.models import Job  # Import Job model
@@ -538,17 +539,25 @@ class LanguageViewSet(ModelViewSet):
     def perform_create(self, serializer):
         # Automatically set the user_profile to the currently authenticated user's profile
         user_profile = getattr(self.request.user, "userprofile", None)
-        if user_profile:
-            serializer.save(user_profile=user_profile)
-        else:
-            raise serializers.ValidationError("User profile not found.")
+        if not user_profile:
+            # Create UserProfile if it doesn't exist
+            from resume.models import UserProfile
+            user_profile = UserProfile.objects.create(
+                user=self.request.user,
+                country="US"  # Default country
+            )
+        serializer.save(user_profile=user_profile)
 
     def perform_update(self, serializer):
         user_profile = getattr(self.request.user, "userprofile", None)
-        if user_profile:
-            serializer.save(user_profile=user_profile)
-        else:
-            raise serializers.ValidationError("User profile not found.")
+        if not user_profile:
+            # Create UserProfile if it doesn't exist
+            from resume.models import UserProfile
+            user_profile = UserProfile.objects.create(
+                user=self.request.user,
+                country="US"  # Default country
+            )
+        serializer.save(user_profile=user_profile)
 
 
 class LanguageListView(ListAPIView):
@@ -559,6 +568,49 @@ class LanguageListView(ListAPIView):
     queryset = Language.objects.all()
     serializer_class = LanguageSerializer
     permission_classes = [AllowAny]
+
+
+class ProficiencyChoicesAPIView(APIView):
+    """
+    Get list of all proficiency levels for language dropdown selections.
+    
+    **Response:**
+    ```json
+    {
+        "proficiency_levels": [
+            {
+                "value": "beginner",
+                "label": "Beginner"
+            },
+            {
+                "value": "intermediate", 
+                "label": "Intermediate"
+            },
+            {
+                "value": "advanced",
+                "label": "Advanced"
+            },
+            {
+                "value": "native",
+                "label": "Native"
+            }
+        ]
+    }
+    ```
+    """
+    permission_classes = []  # No authentication required for proficiency choices
+    
+    def get(self, request):
+        from resume.models import UserLanguage
+        
+        proficiency_choices = [
+            {"value": choice[0], "label": choice[1]} 
+            for choice in UserLanguage.PROFICIENCY_CHOICES
+        ]
+        
+        return Response({
+            "proficiency_levels": proficiency_choices
+        })
 
 
 @api_view(["GET"])
@@ -842,7 +894,7 @@ def enhance_resume_api(request, job_id):
         f"ENSURE THE FINAL RESUME INCLUDES ONLY THE FOLLOWING SECTIONS: {section_str},\n"
         "FORMAT OUTPUT USING ATS-COMPATIBLE STRUCTURE: clean headings, no graphics/tables, consistent formatting,\n"
         "INTEGRATE RELEVANT KEYWORDS, SKILLS, TOOLS, AND PHRASES DIRECTLY FROM THE JOB DESCRIPTION,\n"
-        "PRESERVE THE CANDIDATE’S ORIGINAL ACCOMPLISHMENTS WHILE REPHRASING TO ALIGN WITH JOB REQUIREMENTS,\n"
+        "PRESERVE THE CANDIDATE'S ORIGINAL ACCOMPLISHMENTS WHILE REPHRASING TO ALIGN WITH JOB REQUIREMENTS,\n"
         "MAINTAIN PROFESSIONAL, CONCISE LANGUAGE FOCUSED ON IMPACT AND RESULTS,\n"
         "FOR THE 'skills' SECTION, GROUP/CATEGORIZE THE SKILLS INTO RELEVANT CATEGORIES (e.g., 'Programming Languages', 'Machine Learning', 'Software', etc.) "
         "AND RETURN THEM AS AN OBJECT WHERE EACH KEY IS A CATEGORY AND THE VALUE IS A LIST OF SKILLS IN THAT CATEGORY. "
@@ -855,7 +907,7 @@ def enhance_resume_api(request, job_id):
         "UNDERSTAND: READ AND COMPREHEND BOTH THE PARSED RESUME AND JOB DESCRIPTION,\n"
         "BASICS: IDENTIFY THE JOB TITLE, KEY RESPONSIBILITIES, REQUIRED SKILLS, AND INDUSTRY CONTEXT,\n"
         "BREAK DOWN: DECONSTRUCT THE JOB DESCRIPTION INTO A LIST OF DESIRED QUALIFICATIONS, TOOLS, AND EXPERIENCES,\n"
-        "ANALYZE: COMPARE THE JOB REQUIREMENTS TO THE CANDIDATE’S EXPERIENCE, IDENTIFYING ALIGNMENT AND GAPS,\n"
+        "ANALYZE: COMPARE THE JOB REQUIREMENTS TO THE CANDIDATE'S EXPERIENCE, IDENTIFYING ALIGNMENT AND GAPS,\n"
         "BUILD: REWRITE THE SUMMARY TO EMPHASIZE RELEVANT SKILLS, TOOLS, AND INDUSTRY EXPERIENCE\n"
         "REWRITE EACH BULLET IN THE EXPERIENCE SECTION TO HIGHLIGHT MATCHING SKILLS AND IMPACT,\n"
         "EDGE CASES: IF A MATCHING TOOL/SKILL IS MISSING, PRIORITIZE GENERAL BUT RELATED TRANSFERABLE LANGUAGE,\n"
@@ -1135,6 +1187,97 @@ class CountriesAPIView(APIView):
             )
 
 
+class StatesAPIView(APIView):
+    """
+    Get list of US states for dropdown selections with "Not in US" option at top.
+    
+    **Response:**
+    ```json
+    {
+        "states": [
+            {
+                "code": "NOT_US",
+                "name": "Not in US"
+            },
+            {
+                "code": "NY",
+                "name": "New York"
+            },
+            {
+                "code": "CA", 
+                "name": "California"
+            }
+        ]
+    }
+    ```
+    """
+    permission_classes = []  # No authentication required for states list
+    
+    def get(self, request):
+        """Get list of US states with 'Not in US' option at top"""
+        try:
+            us_states = [
+                {"code": "NOT_US", "name": "Not in US"},  # Always at top for international users
+                {"code": "AL", "name": "Alabama"},
+                {"code": "AK", "name": "Alaska"},
+                {"code": "AZ", "name": "Arizona"},
+                {"code": "AR", "name": "Arkansas"},
+                {"code": "CA", "name": "California"},
+                {"code": "CO", "name": "Colorado"},
+                {"code": "CT", "name": "Connecticut"},
+                {"code": "DE", "name": "Delaware"},
+                {"code": "FL", "name": "Florida"},
+                {"code": "GA", "name": "Georgia"},
+                {"code": "HI", "name": "Hawaii"},
+                {"code": "ID", "name": "Idaho"},
+                {"code": "IL", "name": "Illinois"},
+                {"code": "IN", "name": "Indiana"},
+                {"code": "IA", "name": "Iowa"},
+                {"code": "KS", "name": "Kansas"},
+                {"code": "KY", "name": "Kentucky"},
+                {"code": "LA", "name": "Louisiana"},
+                {"code": "ME", "name": "Maine"},
+                {"code": "MD", "name": "Maryland"},
+                {"code": "MA", "name": "Massachusetts"},
+                {"code": "MI", "name": "Michigan"},
+                {"code": "MN", "name": "Minnesota"},
+                {"code": "MS", "name": "Mississippi"},
+                {"code": "MO", "name": "Missouri"},
+                {"code": "MT", "name": "Montana"},
+                {"code": "NE", "name": "Nebraska"},
+                {"code": "NV", "name": "Nevada"},
+                {"code": "NH", "name": "New Hampshire"},
+                {"code": "NJ", "name": "New Jersey"},
+                {"code": "NM", "name": "New Mexico"},
+                {"code": "NY", "name": "New York"},
+                {"code": "NC", "name": "North Carolina"},
+                {"code": "ND", "name": "North Dakota"},
+                {"code": "OH", "name": "Ohio"},
+                {"code": "OK", "name": "Oklahoma"},
+                {"code": "OR", "name": "Oregon"},
+                {"code": "PA", "name": "Pennsylvania"},
+                {"code": "RI", "name": "Rhode Island"},
+                {"code": "SC", "name": "South Carolina"},
+                {"code": "SD", "name": "South Dakota"},
+                {"code": "TN", "name": "Tennessee"},
+                {"code": "TX", "name": "Texas"},
+                {"code": "UT", "name": "Utah"},
+                {"code": "VT", "name": "Vermont"},
+                {"code": "VA", "name": "Virginia"},
+                {"code": "WA", "name": "Washington"},
+                {"code": "WV", "name": "West Virginia"},
+                {"code": "WI", "name": "Wisconsin"},
+                {"code": "WY", "name": "Wyoming"},
+                {"code": "DC", "name": "District of Columbia"},
+            ]
+            return Response({"states": us_states}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve states: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 class AboutAPIView(APIView):
     """
     Manages user's about/bio information.
@@ -1196,12 +1339,16 @@ class AboutAPIView(APIView):
             # Update resume fields
             if 'bio' in about_data:
                 resume.description = about_data['bio']
-            if 'description' in about_data:
-                # You can choose to use either bio or description field
+            elif 'description' in about_data:
+                # Only use description if bio is not provided
                 resume.description = about_data['description']
             resume.save()
             
-            # Return updated data
+            # Refresh the user object to get updated data
+            user.refresh_from_db()
+            resume.refresh_from_db()
+            
+            # Return updated data - pass both user and resume to ensure proper serialization
             serializer = AboutSerializer(resume)
             return Response(serializer.data, status=status.HTTP_200_OK)
             
@@ -1302,15 +1449,32 @@ class PersonalDetailsAPIView(APIView):
                 except Exception:
                     pass  # Keep existing date if parsing fails
             
+            # Handle address field (can be used for street address)
             if 'address' in personal_data:
-                resume.state = personal_data['address'] or ''
+                # For now, we'll store address in a separate field if needed
+                # You might want to add an address field to the Resume model
+                pass
+            
+            # Handle city field
             if 'city' in personal_data:
-                # For now, append city to state field since we don't have separate city field
+                # Store city information - you might want to add a city field to Resume model
+                # For now, we'll combine city and state if both are provided
                 city = personal_data['city'] or ''
-                if city and resume.state:
+                if city and resume.state and resume.state != "NOT_US":
                     resume.state = f"{city}, {resume.state}"
                 elif city:
                     resume.state = city
+            
+            # Handle state field - this is the main state field from dropdown
+            if 'state' in personal_data:
+                state_value = personal_data['state'] or ''
+                if state_value == "NOT_US":
+                    # User selected "Not in US" - clear state field
+                    resume.state = ""
+                else:
+                    # User selected a US state - save the state name
+                    resume.state = state_value
+            
             if 'country' in personal_data:
                 # Validate country code/name against django-countries
                 from django_countries import countries
@@ -1340,6 +1504,308 @@ class PersonalDetailsAPIView(APIView):
         except Exception as e:
             return Response(
                 {"error": f"Failed to update personal details: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class UserLocationAPIView(APIView):
+    """
+    Manages user's country and city information.
+    
+    **GET Response:**
+    ```json
+    {
+        "location": {
+            "country": "US",
+            "country_name": "United States",
+            "city": "New York"
+        }
+    }
+    ```
+    
+    **POST/PATCH Request:**
+    ```json
+    {
+        "country": "CA",
+        "city": "Toronto"
+    }
+    ```
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get user's current country and city"""
+        try:
+            # Try to get from ContactInfo first
+            contact_info = ContactInfo.objects.filter(user=request.user).first()
+            if contact_info:
+                return Response({
+                    "location": {
+                        "country": contact_info.country.code,
+                        "country_name": contact_info.country.name,
+                        "city": contact_info.city or ""
+                    }
+                }, status=status.HTTP_200_OK)
+            
+            # Fallback to Resume model
+            resume = Resume.objects.filter(user=request.user).first()
+            if resume:
+                return Response({
+                    "location": {
+                        "country": resume.country or "",
+                        "country_name": resume.country or "",
+                        "city": resume.state or ""  # Resume uses state field for city
+                    }
+                }, status=status.HTTP_200_OK)
+            
+            # Return empty if no data found
+            return Response({
+                "location": {
+                    "country": "",
+                    "country_name": "",
+                    "city": ""
+                }
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve location: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def post(self, request):
+        """Create or update user's country and city"""
+        return self._update_location(request, partial=False)
+    
+    def patch(self, request):
+        """Update user's country and city (partial update)"""
+        return self._update_location(request, partial=True)
+    
+    def _update_location(self, request, partial=True):
+        """Helper method to update location information"""
+        try:
+            location_data = request.data.get('location', request.data)
+            country_code = location_data.get('country', '').strip()
+            city = location_data.get('city', '').strip()
+            
+            # Validate country code
+            if country_code:
+                from django_countries import countries
+                valid_countries = [code for code, name in countries]
+                if country_code not in valid_countries:
+                    return Response(
+                        {"error": f"Invalid country code: {country_code}"}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            
+            # Update ContactInfo (preferred)
+            contact_info, created = ContactInfo.objects.get_or_create(
+                user=request.user,
+                defaults={
+                    'name': f"{request.user.first_name or ''} {request.user.last_name or ''}".strip(),
+                    'email': request.user.email,
+                    'phone': '',
+                    'country': country_code or 'US',
+                    'city': city
+                }
+            )
+            
+            if not created:
+                # Update existing ContactInfo
+                if country_code:
+                    contact_info.country = country_code
+                if city:
+                    contact_info.city = city
+                contact_info.save()
+            
+            # Also update Resume model for consistency
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            if country_code:
+                resume.country = country_code
+            if city:
+                resume.state = city  # Resume uses state field for city
+            resume.save()
+            
+            # Return updated location
+            return Response({
+                "location": {
+                    "country": contact_info.country.code,
+                    "country_name": contact_info.country.name,
+                    "city": contact_info.city or ""
+                }
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to update location: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class UserImagesAPIView(APIView):
+    """
+    Manages user's profile and cover images.
+    
+    **GET Response:**
+    ```json
+    {
+        "images": {
+            "profile_image": "/media/resume/images/profile_123.jpg",
+            "cover_image": "/media/resume/covers/cover_123.jpg"
+        }
+    }
+    ```
+    
+    **POST Request (Upload Profile Image):**
+    ```
+    Content-Type: multipart/form-data
+    profile_image: [file]
+    ```
+    
+    **POST Request (Upload Cover Image):**
+    ```
+    Content-Type: multipart/form-data
+    cover_image: [file]
+    ```
+    
+    **DELETE Request:**
+    ```
+    DELETE /api/resume/user-images/?type=profile_image
+    DELETE /api/resume/user-images/?type=cover_image
+    ```
+    """
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+    
+    def get(self, request):
+        """Get user's current images"""
+        try:
+            # Get or create resume for the user
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            
+            return Response({
+                "images": {
+                    "profile_image": resume.profile_image.url if resume.profile_image else None,
+                    "cover_image": resume.cover_image.url if resume.cover_image else None
+                }
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve images: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def post(self, request):
+        """Upload profile or cover image"""
+        try:
+            # Get or create resume for the user
+            resume, created = Resume.objects.get_or_create(user=request.user)
+            
+            # Check which image is being uploaded
+            if 'profile_image' in request.FILES:
+                image_file = request.FILES['profile_image']
+                # Validate image file
+                if not image_file.content_type.startswith('image/'):
+                    return Response(
+                        {"error": "File must be an image"}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                
+                # Save profile image
+                resume.profile_image = image_file
+                resume.save()
+                
+                return Response({
+                    "message": "Profile image uploaded successfully",
+                    "profile_image": resume.profile_image.url
+                }, status=status.HTTP_200_OK)
+                
+            elif 'cover_image' in request.FILES:
+                image_file = request.FILES['cover_image']
+                # Validate image file
+                if not image_file.content_type.startswith('image/'):
+                    return Response(
+                        {"error": "File must be an image"}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                
+                # Save cover image
+                resume.cover_image = image_file
+                resume.save()
+                
+                return Response({
+                    "message": "Cover image uploaded successfully",
+                    "cover_image": resume.cover_image.url
+                }, status=status.HTTP_200_OK)
+                
+            else:
+                return Response(
+                    {"error": "No image file provided. Use 'profile_image' or 'cover_image' field."}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to upload image: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def delete(self, request):
+        """Delete profile or cover image"""
+        try:
+            # Get resume for the user
+            resume = Resume.objects.filter(user=request.user).first()
+            if not resume:
+                return Response(
+                    {"error": "No resume found for user"}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Check which image to delete
+            image_type = request.query_params.get('type', '').lower()
+            
+            if image_type == 'profile_image':
+                if resume.profile_image:
+                    # Delete the file from storage
+                    resume.profile_image.delete(save=False)
+                    resume.profile_image = None
+                    resume.save()
+                    return Response(
+                        {"message": "Profile image deleted successfully"}, 
+                        status=status.HTTP_200_OK
+                    )
+                else:
+                    return Response(
+                        {"error": "No profile image to delete"}, 
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+                    
+            elif image_type == 'cover_image':
+                if resume.cover_image:
+                    # Delete the file from storage
+                    resume.cover_image.delete(save=False)
+                    resume.cover_image = None
+                    resume.save()
+                    return Response(
+                        {"message": "Cover image deleted successfully"}, 
+                        status=status.HTTP_200_OK
+                    )
+                else:
+                    return Response(
+                        {"error": "No cover image to delete"}, 
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+                    
+            else:
+                return Response(
+                    {"error": "Invalid image type. Use 'profile_image' or 'cover_image'."}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to delete image: {str(e)}"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
