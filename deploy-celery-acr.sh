@@ -147,8 +147,8 @@ az container create \
     --os-type Linux \
     --restart-policy Always \
     --secure-environment-variables \
-        DB_PASSWORD="$AZURE_DB_PASSWORD" \
-        AZURE_DB_PASSWORD="$AZURE_DB_PASSWORD" \
+        DB_PASSWORD='$AZURE_DB_PASSWORD' \
+        AZURE_DB_PASSWORD='$AZURE_DB_PASSWORD' \
         REDIS_PASSWORD="$REDIS_PASSWORD" \
         SECRET_KEY="$SECRET_KEY" \
         OPENAI_API_KEY="$OPENAI_API_KEY" \

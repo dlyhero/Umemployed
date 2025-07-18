@@ -119,7 +119,7 @@ jobs:
             DJANGO_ALLOWED_HOSTS="*" \
             AZURE_DB_NAME="${{ secrets.DB_NAME }}" \
             AZURE_DB_USER="${{ secrets.DB_USER }}" \
-            AZURE_DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            AZURE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
             AZURE_DB_HOST="${{ secrets.DB_HOST }}" \
             AZURE_DB_PORT="${{ secrets.DB_PORT }}" \
             REDIS_URL="${{ secrets.REDIS_URL }}" \
@@ -175,7 +175,7 @@ jobs:
             DJANGO_ALLOWED_HOSTS="*" \
             AZURE_DB_NAME="${{ secrets.DB_NAME }}" \
             AZURE_DB_USER="${{ secrets.DB_USER }}" \
-            AZURE_DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            AZURE_DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
             AZURE_DB_HOST="${{ secrets.DB_HOST }}" \
             AZURE_DB_PORT="${{ secrets.DB_PORT }}" \
             REDIS_URL="${{ secrets.REDIS_URL }}" \

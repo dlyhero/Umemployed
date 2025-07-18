@@ -162,7 +162,7 @@ az container create \
         DJANGO_ALLOWED_HOSTS="*" \
         DB_NAME="$AZURE_DB_NAME" \
         DB_USER="$AZURE_DB_USER" \
-        DB_PASSWORD="$AZURE_DB_PASSWORD" \
+        DB_PASSWORD='$AZURE_DB_PASSWORD' \
         DB_HOST="$AZURE_DB_HOST" \
         DB_PORT="$AZURE_DB_PORT" \
         REDIS_URL="$REDIS_URL" \

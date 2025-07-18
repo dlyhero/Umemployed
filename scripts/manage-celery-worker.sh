@@ -71,7 +71,7 @@ case "$1" in
           DJANGO_SETTINGS_MODULE=umemployed.settings \
           AZURE_DB_NAME="$AZURE_DB_NAME" \
           AZURE_DB_USER="$AZURE_DB_USER" \
-          AZURE_DB_PASSWORD="$AZURE_DB_PASSWORD" \
+          AZURE_DB_PASSWORD='$AZURE_DB_PASSWORD' \
           AZURE_DB_HOST="$AZURE_DB_HOST" \
           AZURE_DB_PORT="5432" \
           REDIS_URL="$REDIS_URL" \
