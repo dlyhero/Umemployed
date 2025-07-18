@@ -497,12 +497,12 @@ class CreateJobStep4APIView(APIView):
         job.is_available = True  # Set is_available to True
         job.save()
 
-        # Notify recruiter that job is now available
-        Notification.objects.create(
-            user=request.user,
-            notification_type=Notification.NEW_JOB_POSTED,
-            message=f"Your job '{job.title}' is now available and visible to candidates.",
-        )
+        # Initialize progress tracking for question generation
+        progress = {}
+        for skill in skills:
+            progress[str(skill.id)] = False
+        job.questions_generation_progress = progress
+        job.save()
 
         # Generate questions for the selected skills using smart generation
         for skill in skills:
@@ -512,6 +512,12 @@ class CreateJobStep4APIView(APIView):
             {
                 "job": JobSerializer(job).data,
                 "message": "Job creation step 4 completed. Smart question generation started in background.",
+                "progress": {
+                    "total_skills": len(skills),
+                    "completed_skills": 0,
+                    "percentage": 0,
+                    "status": "processing"
+                }
             },
             status=status.HTTP_200_OK,
         )
@@ -1362,12 +1368,26 @@ class JobCreationProgressAPIView(APIView):
             "total_skills": 3,
             "completed_skills": 1,
             "percentage": 33.33,
+            "status": "processing",
             "skills_status": {
-                "Python": true,
-                "JavaScript": false,
-                "React": false
+                "Python": {
+                    "complete": true,
+                    "status": "ai_success",
+                    "questions_count": 5,
+                    "ai_attempts": 1,
+                    "source": "ai_generated"
+                },
+                "JavaScript": {
+                    "complete": false,
+                    "status": "in_progress",
+                    "questions_count": 0,
+                    "ai_attempts": 0,
+                    "source": "pending"
+                }
             }
-        }
+        },
+        "estimated_completion": "2-5 minutes",
+        "next_steps": "Question generation in progress..."
     }
     """
     permission_classes = [IsAuthenticated]
@@ -1392,8 +1412,11 @@ class JobCreationProgressAPIView(APIView):
                     "total_skills": 0,
                     "completed_skills": 0,
                     "percentage": 100,
+                    "status": "no_skills",
                     "skills_status": {}
-                }
+                },
+                "estimated_completion": "Immediate",
+                "next_steps": "No skills required for this job"
             })
 
         # Get detailed status for each skill
@@ -1403,30 +1426,69 @@ class JobCreationProgressAPIView(APIView):
         
         completed_skills = 0
         skills_status = {}
+        processing_skills = 0
+        failed_skills = 0
         
         for skill in skills:
             status_obj = status_map.get(skill.id)
             if status_obj:
-                is_complete = status_obj.status in ['ai_success', 'fallback_used', 'skipped']
+                is_complete = status_obj.status in ['ai_success', 'fallback_used', 'generic_used', 'experience_based']
+                is_processing = status_obj.status in ['in_progress', 'pending']
+                is_failed = status_obj.status in ['ai_failed', 'manual_required']
+                
                 skills_status[skill.name] = {
                     "complete": is_complete,
                     "status": status_obj.status,
                     "questions_count": status_obj.questions_generated,
                     "ai_attempts": status_obj.ai_attempts,
-                    "source": status_obj.status
+                    "source": status_obj.status,
+                    "error_message": status_obj.error_message if status_obj.error_message else None
                 }
+                
                 if is_complete:
                     completed_skills += 1
+                elif is_processing:
+                    processing_skills += 1
+                elif is_failed:
+                    failed_skills += 1
             else:
                 skills_status[skill.name] = {
                     "complete": False,
                     "status": "pending",
                     "questions_count": 0,
                     "ai_attempts": 0,
-                    "source": "pending"
+                    "source": "pending",
+                    "error_message": None
                 }
+                processing_skills += 1
 
         percentage = (completed_skills / total_skills) * 100
+        
+        # Determine overall status
+        if job.job_creation_is_complete:
+            status = "complete"
+        elif failed_skills > 0 and completed_skills == 0:
+            status = "failed"
+        elif processing_skills > 0:
+            status = "processing"
+        elif completed_skills == total_skills:
+            status = "complete"
+        else:
+            status = "pending"
+        
+        # Estimate completion time
+        if status == "complete":
+            estimated_completion = "Complete"
+            next_steps = "Job is ready for candidates"
+        elif status == "failed":
+            estimated_completion = "Manual intervention required"
+            next_steps = "Some skills failed to generate questions. Contact support."
+        elif processing_skills > 0:
+            estimated_completion = f"{2 * processing_skills}-{5 * processing_skills} minutes"
+            next_steps = f"Generating questions for {processing_skills} skills..."
+        else:
+            estimated_completion = "Unknown"
+            next_steps = "Waiting for question generation to start..."
 
         return Response({
             "job_id": job.id,
@@ -1434,7 +1496,94 @@ class JobCreationProgressAPIView(APIView):
             "progress": {
                 "total_skills": total_skills,
                 "completed_skills": completed_skills,
+                "processing_skills": processing_skills,
+                "failed_skills": failed_skills,
                 "percentage": round(percentage, 2),
+                "status": status,
                 "skills_status": skills_status
-            }
+            },
+            "estimated_completion": estimated_completion,
+            "next_steps": next_steps
         })
+
+
+class RetryQuestionGenerationAPIView(APIView):
+    """
+    Endpoint to retry question generation for failed skills.
+    
+    Method: POST
+    URL: /api/jobs/<job_id>/retry-questions/
+    Request Body:
+    {
+        "skill_ids": [1, 2, 3]  // Optional: specific skills to retry. If not provided, retries all failed skills
+    }
+    Response:
+    - 200 OK: Returns the retry status and updated progress.
+    - 404 Not Found: If the job does not exist or the user is unauthorized.
+    - 400 Bad Request: Returns validation errors.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, job_id):
+        job = Job.objects.filter(id=job_id, user=request.user).first()
+        if not job:
+            return Response(
+                {"error": "Job not found or unauthorized."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Check if job is already complete
+        if job.job_creation_is_complete:
+            return Response(
+                {"error": "Job is already complete. No retry needed."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        skill_ids = request.data.get("skill_ids", [])
+        
+        # Get failed skills
+        from job.models import SkillGenerationStatus
+        failed_statuses = ['ai_failed', 'manual_required']
+        
+        if skill_ids:
+            # Retry specific skills
+            failed_skills = SkillGenerationStatus.objects.filter(
+                job=job,
+                skill_id__in=skill_ids,
+                status__in=failed_statuses
+            )
+        else:
+            # Retry all failed skills
+            failed_skills = SkillGenerationStatus.objects.filter(
+                job=job,
+                status__in=failed_statuses
+            )
+
+        if not failed_skills.exists():
+            return Response(
+                {"error": "No failed skills found to retry."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Reset status and retry
+        retried_count = 0
+        for status_obj in failed_skills:
+            status_obj.status = 'pending'
+            status_obj.ai_attempts = 0
+            status_obj.error_message = None
+            status_obj.save()
+            
+            # Start new generation task
+            smart_generate_questions_task.delay(
+                job.id, 
+                status_obj.skill.id, 
+                job.level, 
+                5
+            )
+            retried_count += 1
+
+        return Response({
+            "message": f"Retry initiated for {retried_count} skills",
+            "retried_skills": list(failed_skills.values_list('skill__name', flat=True)),
+            "job_id": job.id
+        }, status=status.HTTP_200_OK)

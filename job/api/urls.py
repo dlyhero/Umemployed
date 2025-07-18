@@ -89,6 +89,9 @@ urlpatterns = [
     path(
         "<int:job_id>/creation-progress/", views.JobCreationProgressAPIView.as_view(), name="job_creation_progress"
     ),  # Check job creation progress
+    path(
+        "<int:job_id>/retry-questions/", views.RetryQuestionGenerationAPIView.as_view(), name="retry_question_generation"
+    ),  # Retry failed question generation
     # Job options
     path(
         "job-options/", views.JobOptionsAPIView.as_view(), name="job_options"

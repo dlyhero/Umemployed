@@ -199,8 +199,22 @@ def send_job_completion_notifications(job_id):
     try:
         from .models import Job
         from messaging.tasks import send_recruiter_job_confirmation_email_task, send_new_job_email_task
+        from notifications.models import Notification
+        from notifications.utils import notify_user
         
         job_instance = Job.objects.get(id=job_id)
+        
+        # Double-check that the job is actually complete
+        if not job_instance.job_creation_is_complete:
+            logger.warning(f"Job {job_id} is not complete yet, skipping notifications")
+            return
+        
+        # Send in-app notification to recruiter
+        Notification.objects.create(
+            user=job_instance.user,
+            notification_type=Notification.NEW_JOB_POSTED,
+            message=f"Your job '{job_instance.title}' is now complete and available to candidates!",
+        )
         
         # Send email to recruiter
         send_recruiter_job_confirmation_email_task.delay(
@@ -211,18 +225,32 @@ def send_job_completion_notifications(job_id):
             job_id=job_instance.id,
         )
 
-        # Send email to users about the new job
-        send_new_job_email_task.delay(
-            email=job_instance.user.email,
-            full_name=job_instance.user.get_full_name(),
-            job_title=job_instance.title,
-            job_link=f"https://umemployed.com/jobs/{job_instance.id}/",
-            job_description=job_instance.description,
-            company_name=job_instance.company.name,
-            job_id=job_instance.id,
-        )
+        # Notify users with matching skills about the new job
+        from users.models import User
+        matching_users = User.objects.filter(
+            skills__in=job_instance.requirements.all()
+        ).distinct()
         
-        logger.info(f"Sent completion notifications for job '{job_instance.title}' (ID: {job_id})")
+        for user in matching_users:
+            # Send in-app notification
+            notify_user(
+                user, 
+                f"A new job matching your skills has been posted: {job_instance.title}",
+                "new_job_posted"
+            )
+            
+            # Send email notification
+            send_new_job_email_task.delay(
+                email=user.email,
+                full_name=user.get_full_name(),
+                job_title=job_instance.title,
+                job_link=f"https://umemployed.com/jobs/{job_instance.id}/",
+                job_description=job_instance.description,
+                company_name=job_instance.company.name,
+                job_id=job_instance.id,
+            )
+        
+        logger.info(f"Sent completion notifications for job '{job_instance.title}' (ID: {job_id}) to {len(matching_users)} users")
         
     except Job.DoesNotExist:
         logger.error(f"Job with ID {job_id} not found for notification sending")
