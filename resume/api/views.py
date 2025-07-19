@@ -5,7 +5,7 @@ import os  # Add this import for accessing environment variables
 import openai  # Assuming you use OpenAI or similar for AI enhancement
 from azure.storage.blob import BlobServiceClient
 from django.conf import settings
-from django.db.models import Max  # Import Max for querying the latest resume
+from django.db.models import Max, Count, Case, When, IntegerField, Q  # Import for optimized queries
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -1492,7 +1492,64 @@ class PersonalDetailsAPIView(APIView):
             if 'mobile' in personal_data:
                 resume.phone = personal_data['mobile'] or ''
             if 'jobTitle' in personal_data:
-                resume.job_title = personal_data['jobTitle'] or ''
+                job_title = personal_data['jobTitle'] or ''
+                resume.job_title = job_title
+                
+                # Always try to find and save the corresponding SkillCategory
+                if job_title:
+                    try:
+                        # First try exact match (case-insensitive)
+                        job_category = SkillCategory.objects.filter(name__iexact=job_title).first()
+                        
+                        if not job_category:
+                            # Try partial match (case-insensitive)
+                            job_category = SkillCategory.objects.filter(name__icontains=job_title).first()
+                        
+                        if not job_category:
+                            # Try to find by common variations
+                            variations = [
+                                job_title,
+                                job_title.replace(' ', ''),
+                                job_title.lower(),
+                                job_title.title(),
+                                job_title.upper()
+                            ]
+                            for variation in variations:
+                                job_category = SkillCategory.objects.filter(name__iexact=variation).first()
+                                if job_category:
+                                    break
+                        
+                        if job_category:
+                            resume.category = job_category
+                            print(f"✅ Found existing category: {job_category.name} for job title: {job_title}")
+                        else:
+                            # Create a new category if none found
+                            job_category, created = SkillCategory.objects.get_or_create(
+                                name=job_title,
+                                defaults={'name': job_title}
+                            )
+                            resume.category = job_category
+                            if created:
+                                print(f"✅ Created new category: {job_category.name} for job title: {job_title}")
+                            else:
+                                print(f"✅ Using existing category: {job_category.name} for job title: {job_title}")
+                    except Exception as e:
+                        # Log the error but don't fail the request
+                        print(f"❌ Error saving job category for '{job_title}': {str(e)}")
+                        # Try to create a simple category as fallback
+                        try:
+                            job_category, created = SkillCategory.objects.get_or_create(
+                                name=job_title,
+                                defaults={'name': job_title}
+                            )
+                            resume.category = job_category
+                            print(f"✅ Fallback: Created category: {job_category.name}")
+                        except Exception as fallback_error:
+                            print(f"❌ Fallback also failed: {str(fallback_error)}")
+                else:
+                    # Clear category if job title is empty
+                    resume.category = None
+                    print("ℹ️ Cleared category (empty job title)")
             # Note: postalCode is not in current model, you might want to add it to Resume model
             
             resume.save()
@@ -1990,33 +2047,42 @@ class EducationAPIView(APIView):
 
 class SkillsPagination(PageNumberPagination):
     """
-    Custom pagination for SkillsAPIView.
+    Optimized pagination for SkillsAPIView with better defaults.
     """
-    page_size = 10
+    page_size = 20  # Increased from 10 for better UX
     page_size_query_param = "page_size"
     max_page_size = 100
 
 
 class SkillsAPIView(APIView):
     """
-    Manages user's skills with pagination, search, and job title filtering.
+    Optimized skills management with efficient pagination, search, and filtering.
     
-    **Key Point:** POST/DELETE expect skill IDs, GET returns both id and name.
+    **Performance Optimizations:**
+    - Database-level pagination (LIMIT/OFFSET)
+    - Efficient queries with select_related/prefetch_related
+    - Cached user skill IDs to avoid N+1 queries
+    - Search with database indexes
+    - Category filtering at database level
     
     **GET Response:**
     ```json
     {
-        "count": 50,
+        "count": 150,
+        "next": "http://api.example.com/skills/?page=2",
+        "previous": null,
         "results": {
             "skills": [
                 {
                     "id": 1,
                     "name": "JavaScript",
                     "is_user_skill": true,
-                    "categories": ["Frontend Development"]
+                    "categories": ["Frontend Development", "Web Development"]
                 }
             ],
-            "filter_applied": "job_relevant"
+            "filter_applied": "job_relevant",
+            "job_category": "Software Development",
+            "search_term": "java"
         }
     }
     ```
@@ -2046,97 +2112,140 @@ class SkillsAPIView(APIView):
     **Query Parameters:**
     - `page`: Page number (default: 1)
     - `page_size`: Items per page (default: 20, max: 100)
-    - `search`: Search skills by name
-    - `filter`: 'job_relevant' (default), 'user_only', or 'all'
+    - `search`: Search skills by name (case-insensitive)
+    - `filter`: 'job_relevant' (default), 'user_only', 'all', or 'category:<id>'
+    - `category`: Filter by specific category ID
+    - `sort`: 'name' (default), 'popularity', 'relevance'
     """
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
-        """Get user's skills list with pagination, search, and optional job title filtering"""
+        """Get user's skills with optimized pagination and filtering"""
         try:
-            # Start with user's existing skills
-            user_skills = Skill.objects.filter(user=request.user)
-            
-            # Get filter type - 'user_only', 'job_relevant', or 'all' (default: 'job_relevant')
+            # Get query parameters
             filter_type = request.query_params.get('filter', 'job_relevant')
+            search = request.query_params.get('search', '').strip()
+            category_id = request.query_params.get('category')
+            sort_by = request.query_params.get('sort', 'name')
             
-            if filter_type == 'job_relevant':
-                # Get user's job title category ID from Resume or ContactInfo
-                user_job_category_id = None
-                
-                # First try to get from ContactInfo (more structured)
-                contact_info = ContactInfo.objects.filter(user=request.user).first()
-                if contact_info and contact_info.job_title_id:
-                    user_job_category_id = contact_info.job_title_id
+            # Get user's resume and their skills
+            user_resume = Resume.objects.filter(user=request.user).first()
+            user_skill_ids = set()
+            
+            if user_resume:
+                user_skill_ids = set(user_resume.skills.values_list('id', flat=True))
+            
+            # Build base queryset with optimizations
+            skills = Skill.objects.prefetch_related('categories')
+            
+            # Apply filters based on type
+            if filter_type == 'user_only':
+                # Only user's skills (from their resume)
+                if user_resume:
+                    skills = user_resume.skills.prefetch_related('categories')
                 else:
-                    # Fallback: try to match Resume job_title with SkillCategory
-                    resume = Resume.objects.filter(user=request.user).first()
-                    if resume and resume.job_title:
-                        job_category = SkillCategory.objects.filter(
-                            name__icontains=resume.job_title
-                        ).first()
-                        if job_category:
-                            user_job_category_id = job_category.id
+                    skills = Skill.objects.none()
+                
+            elif filter_type == 'job_relevant':
+                # Get user's job category
+                user_job_category_id = self._get_user_job_category_id(request.user)
                 
                 if user_job_category_id:
-                    # Get relevant skills from the same category using category ID
-                    relevant_skills = Skill.objects.filter(
-                        categories__id=user_job_category_id
-                    )
-                    
-                    # Combine user skills with relevant skills from job category using Q objects
+                    # User skills + relevant skills from job category
                     from django.db.models import Q
-                    skills = Skill.objects.filter(
-                        Q(user=request.user) | Q(categories__id=user_job_category_id)
-                    ).distinct()
+                    if user_resume:
+                        # Get user's skills and relevant skills from job category
+                        user_skills = user_resume.skills.all()
+                        relevant_skills = Skill.objects.filter(categories__id=user_job_category_id)
+                        skills = (user_skills | relevant_skills).distinct().prefetch_related('categories')
+                    else:
+                        # No user skills yet, just show relevant skills
+                        skills = Skill.objects.filter(categories__id=user_job_category_id).prefetch_related('categories')
                 else:
-                    # If no job title found, just show user's skills
-                    skills = user_skills
+                    # No job category found, show user's skills only
+                    if user_resume:
+                        skills = user_resume.skills.prefetch_related('categories')
+                    else:
+                        skills = Skill.objects.none()
                     
-            elif filter_type == 'user_only':
-                # Show only user's existing skills
-                skills = user_skills
-            else:  # 'all'
-                # Show all available skills
-                skills = Skill.objects.all()
+            elif filter_type.startswith('category:'):
+                # Filter by specific category
+                try:
+                    cat_id = int(filter_type.split(':')[1])
+                    skills = skills.filter(categories__id=cat_id)
+                except (ValueError, IndexError):
+                    skills = skills.none()
+                    
+            elif filter_type == 'all':
+                # All skills (no additional filtering)
+                pass
+                
+            # Apply category filter if specified
+            if category_id:
+                try:
+                    skills = skills.filter(categories__id=int(category_id))
+                except ValueError:
+                    skills = skills.none()
             
-            # Apply search filter if provided
-            search = request.query_params.get('search', None)
+            # Apply search filter
             if search:
                 skills = skills.filter(name__icontains=search)
             
-            # Order by name
-            skills = skills.order_by('name')
+            # Apply sorting
+            if sort_by == 'popularity':
+                # Sort by number of users who have this skill (through resume)
+                skills = skills.annotate(
+                    user_count=models.Count('resume__user', distinct=True)
+                ).order_by('-user_count', 'name')
+            elif sort_by == 'relevance':
+                # Sort by relevance to user's job category
+                user_job_category_id = self._get_user_job_category_id(request.user)
+                if user_job_category_id:
+                    from django.db.models import Q, Case, When, IntegerField
+                    skills = skills.annotate(
+                        relevance=Case(
+                            When(categories__id=user_job_category_id, then=1),
+                            default=0,
+                            output_field=IntegerField(),
+                        )
+                    ).order_by('-relevance', 'name')
+                else:
+                    skills = skills.order_by('name')
+            else:  # 'name' (default)
+                skills = skills.order_by('name')
             
-            # Apply pagination
+            # Apply pagination at database level
             paginator = SkillsPagination()
             paginated_skills = paginator.paginate_queryset(skills, request)
             
-            # Serialize the paginated data with ownership indication
+            # Build response data efficiently
             skills_data = []
-            user_skill_ids = set(user_skills.values_list('id', flat=True))
-            
             for skill in paginated_skills:
                 skills_data.append({
                     "id": skill.id,
                     "name": skill.name,
-                    "is_user_skill": skill.id in user_skill_ids,  # Indicate if user already has this skill
-                    "categories": [cat.name for cat in skill.categories.all()]  # Show categories
+                    "is_user_skill": skill.id in user_skill_ids,
+                    "categories": [cat.name for cat in skill.categories.all()]
                 })
             
-            # Return paginated response
+            # Get additional context
             job_category_name = None
-            if 'user_job_category_id' in locals() and user_job_category_id:
-                try:
-                    job_category = SkillCategory.objects.get(id=user_job_category_id)
-                    job_category_name = job_category.name
-                except SkillCategory.DoesNotExist:
-                    pass
+            if filter_type == 'job_relevant':
+                user_job_category_id = self._get_user_job_category_id(request.user)
+                if user_job_category_id:
+                    try:
+                        job_category = SkillCategory.objects.get(id=user_job_category_id)
+                        job_category_name = job_category.name
+                    except SkillCategory.DoesNotExist:
+                        pass
             
+            # Return optimized response
             return paginator.get_paginated_response({
                 "skills": skills_data,
                 "filter_applied": filter_type,
-                "job_category": job_category_name
+                "job_category": job_category_name,
+                "search_term": search if search else None,
+                "total_user_skills": len(user_skill_ids)
             })
             
         except Exception as e:
@@ -2144,6 +2253,28 @@ class SkillsAPIView(APIView):
                 {"error": f"Failed to retrieve skills: {str(e)}"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+    
+    def _get_user_job_category_id(self, user):
+        """Helper method to get user's job category ID efficiently"""
+        # First try Resume.category (most reliable since we save it properly)
+        resume = Resume.objects.filter(user=user).select_related('category').first()
+        if resume and resume.category_id:
+            return resume.category_id
+        
+        # Fallback to ContactInfo.job_title
+        contact_info = ContactInfo.objects.filter(user=user).select_related('job_title').first()
+        if contact_info and contact_info.job_title_id:
+            return contact_info.job_title_id
+        
+        # Last fallback: try to match Resume.job_title with SkillCategory
+        if resume and resume.job_title:
+            job_category = SkillCategory.objects.filter(
+                name__icontains=resume.job_title
+            ).first()
+            if job_category:
+                return job_category.id
+        
+        return None
     
     def post(self, request):
         """Add existing skill(s) to user's profile using skill ID(s) (ManyToMany)"""
@@ -2435,5 +2566,441 @@ class SkillsAPIView(APIView):
         except Exception as e:
             return Response(
                 {"error": f"Failed to remove skill(s): {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class SkillCategoriesAPIView(APIView):
+    """
+    Optimized endpoint for skill categories with usage statistics.
+    
+    **GET Response:**
+    ```json
+    {
+        "categories": [
+            {
+                "id": 1,
+                "name": "Frontend Development",
+                "skill_count": 25,
+                "user_count": 150,
+                "is_user_category": true
+            }
+        ],
+        "user_job_category": {
+            "id": 1,
+            "name": "Software Development"
+        }
+    }
+    ```
+    
+    **Query Parameters:**
+    - `include_stats`: Include skill and user counts (default: true)
+    - `user_only`: Show only categories user has skills in (default: false)
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get skill categories with optional statistics"""
+        try:
+            include_stats = request.query_params.get('include_stats', 'true').lower() == 'true'
+            user_only = request.query_params.get('user_only', 'false').lower() == 'true'
+            
+            # Base queryset
+            categories = SkillCategory.objects.all()
+            
+            # Apply user filter if requested
+            if user_only:
+                categories = categories.filter(skill__user=request.user).distinct()
+            
+            # Add statistics if requested
+            if include_stats:
+                categories = categories.annotate(
+                    skill_count=Count('skill', distinct=True),
+                    user_count=Count('skill__resume__user', distinct=True)
+                )
+            
+            # Get user's skill category IDs for highlighting
+            user_category_ids = set(
+                SkillCategory.objects.filter(skill__user=request.user).values_list('id', flat=True)
+            )
+            
+            # Get user's job category
+            user_job_category = None
+            user_job_category_id = self._get_user_job_category_id(request.user)
+            if user_job_category_id:
+                try:
+                    user_job_category = SkillCategory.objects.get(id=user_job_category_id)
+                except SkillCategory.DoesNotExist:
+                    pass
+            
+            # Build response data
+            categories_data = []
+            for category in categories:
+                category_data = {
+                    "id": category.id,
+                    "name": category.name,
+                    "is_user_category": category.id in user_category_ids
+                }
+                
+                if include_stats:
+                    category_data.update({
+                        "skill_count": getattr(category, 'skill_count', 0),
+                        "user_count": getattr(category, 'user_count', 0)
+                    })
+                
+                categories_data.append(category_data)
+            
+            # Sort by name
+            categories_data.sort(key=lambda x: x['name'])
+            
+            response_data = {
+                "categories": categories_data,
+                "total_categories": len(categories_data),
+                "user_categories_count": len(user_category_ids)
+            }
+            
+            if user_job_category:
+                response_data["user_job_category"] = {
+                    "id": user_job_category.id,
+                    "name": user_job_category.name
+                }
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve categories: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def _get_user_job_category_id(self, user):
+        """Helper method to get user's job category ID efficiently"""
+        # First try Resume.category (most reliable since we save it properly)
+        resume = Resume.objects.filter(user=user).select_related('category').first()
+        if resume and resume.category_id:
+            return resume.category_id
+        
+        # Fallback to ContactInfo.job_title
+        contact_info = ContactInfo.objects.filter(user=user).select_related('job_title').first()
+        if contact_info and contact_info.job_title_id:
+            return contact_info.job_title_id
+        
+        # Last fallback: try to match Resume.job_title with SkillCategory
+        if resume and resume.job_title:
+            job_category = SkillCategory.objects.filter(
+                name__icontains=resume.job_title
+            ).first()
+            if job_category:
+                return job_category.id
+        
+        return None
+
+
+class SkillCategoryListView(APIView):
+    """
+    Fetches all items in the SkillCategory model, sorted alphabetically.
+
+    Response:
+        [
+            {
+                "id": 1,
+                "name": "Backend Development"
+            },
+            {
+                "id": 2,
+                "name": "Frontend Development"
+            },
+            ...
+        ]
+    """
+
+    def get(self, request):
+        skill_categories = SkillCategory.objects.all().order_by("name")  # Sort alphabetically
+        serializer = SkillCategorySerializer(skill_categories, many=True)
+        return Response(serializer.data)
+
+
+class SimpleSkillsAPIView(APIView):
+    """
+    Simplified skills API focused on the two main use cases:
+    1. job_relevant: Skills suggestions based on user's job category
+    2. user_only: Skills the user has already saved
+    
+    **GET Response:**
+    ```json
+    {
+        "skills": [
+            {
+                "id": 1,
+                "name": "JavaScript",
+                "is_user_skill": true,
+                "categories": ["Frontend Development"]
+            }
+        ],
+        "filter_applied": "job_relevant",
+        "total_count": 25
+    }
+    ```
+    
+    **Query Parameters:**
+    - `filter`: 'job_relevant' (default) or 'user_only'
+    - `search`: Search skills by name (optional)
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get skills with simple filtering"""
+        try:
+            filter_type = request.query_params.get('filter', 'job_relevant')
+            search = request.query_params.get('search', '').strip()
+            
+            # Get user's resume and their skills
+            user_resume = Resume.objects.filter(user=request.user).first()
+            user_skill_ids = set()
+            
+            if user_resume:
+                user_skill_ids = set(user_resume.skills.values_list('id', flat=True))
+            
+            # Apply filters based on type
+            if filter_type == 'user_only':
+                # Only user's saved skills
+                if user_resume:
+                    skills = user_resume.skills.prefetch_related('categories')
+                else:
+                    skills = Skill.objects.none()
+                    
+            elif filter_type == 'job_relevant':
+                # Get user's job category
+                user_job_category_id = self._get_user_job_category_id(request.user)
+                
+                if user_job_category_id:
+                    # Get relevant skills from job category
+                    relevant_skills = Skill.objects.filter(
+                        categories__id=user_job_category_id
+                    ).prefetch_related('categories')
+                    
+                    # If user has skills, combine them with relevant skills
+                    if user_resume and user_resume.skills.exists():
+                        user_skills = user_resume.skills.prefetch_related('categories')
+                        skills = (user_skills | relevant_skills).distinct()
+                    else:
+                        skills = relevant_skills
+                else:
+                    # No job category found, show user's skills only
+                    if user_resume:
+                        skills = user_resume.skills.prefetch_related('categories')
+                    else:
+                        skills = Skill.objects.none()
+            else:
+                return Response(
+                    {"error": "Invalid filter type. Use 'job_relevant' or 'user_only'"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Apply search filter
+            if search:
+                skills = skills.filter(name__icontains=search)
+            
+            # Order by name
+            skills = skills.order_by('name')
+            
+            # Build response data
+            skills_data = []
+            for skill in skills:
+                skills_data.append({
+                    "id": skill.id,
+                    "name": skill.name,
+                    "is_user_skill": skill.id in user_skill_ids,
+                    "categories": [cat.name for cat in skill.categories.all()]
+                })
+            
+            # Get job category name for context
+            job_category_name = None
+            if filter_type == 'job_relevant':
+                user_job_category_id = self._get_user_job_category_id(request.user)
+                if user_job_category_id:
+                    try:
+                        job_category = SkillCategory.objects.get(id=user_job_category_id)
+                        job_category_name = job_category.name
+                    except SkillCategory.DoesNotExist:
+                        pass
+            
+            return Response({
+                "skills": skills_data,
+                "filter_applied": filter_type,
+                "job_category": job_category_name,
+                "search_term": search if search else None,
+                "total_count": len(skills_data),
+                "user_skills_count": len(user_skill_ids)
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to retrieve skills: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def _get_user_job_category_id(self, user):
+        """Helper method to get user's job category ID efficiently"""
+        # Try ContactInfo first (more structured)
+        contact_info = ContactInfo.objects.filter(user=user).select_related('job_title').first()
+        if contact_info and contact_info.job_title_id:
+            return contact_info.job_title_id
+        
+        # Fallback to Resume job_title matching
+        resume = Resume.objects.filter(user=user).first()
+        if resume and resume.job_title:
+            job_category = SkillCategory.objects.filter(
+                name__icontains=resume.job_title
+            ).first()
+            if job_category:
+                return job_category.id
+        
+        return None
+
+
+class JobCategoryStatusAPIView(APIView):
+    """
+    Check the synchronization status between job title and category.
+    
+    **GET Response:**
+    ```json
+    {
+        "status": "synced",
+        "job_title": "Software Engineer",
+        "category": {
+            "id": 5,
+            "name": "Software Engineer"
+        },
+        "message": "Job title and category are properly synchronized"
+    }
+    ```
+    
+    **POST Request (Force Sync):**
+    ```json
+    {
+        "force_sync": true
+    }
+    ```
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Check current job title and category status"""
+        try:
+            resume = Resume.objects.filter(user=request.user).select_related('category').first()
+            
+            if not resume:
+                return Response({
+                    "status": "no_resume",
+                    "job_title": None,
+                    "category": None,
+                    "message": "No resume found for user"
+                }, status=status.HTTP_404_NOT_FOUND)
+            
+            job_title = resume.job_title
+            category = resume.category
+            
+            # Determine status
+            if not job_title:
+                status = "no_job_title"
+                message = "No job title set"
+            elif not category:
+                status = "no_category"
+                message = "Job title exists but no category is set"
+            elif category.name == job_title:
+                status = "synced"
+                message = "Job title and category are properly synchronized"
+            else:
+                status = "mismatch"
+                message = f"Job title '{job_title}' doesn't match category '{category.name}'"
+            
+            response_data = {
+                "status": status,
+                "job_title": job_title,
+                "category": {
+                    "id": category.id,
+                    "name": category.name
+                } if category else None,
+                "message": message
+            }
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to check status: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def post(self, request):
+        """Force sync job title with category"""
+        try:
+            resume = Resume.objects.filter(user=request.user).first()
+            
+            if not resume:
+                return Response({
+                    "error": "No resume found for user"
+                }, status=status.HTTP_404_NOT_FOUND)
+            
+            if not resume.job_title:
+                return Response({
+                    "error": "No job title to sync"
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            job_title = resume.job_title
+            
+            # Try to find or create category
+            job_category = None
+            
+            # Exact match
+            job_category = SkillCategory.objects.filter(name__iexact=job_title).first()
+            
+            if not job_category:
+                # Partial match
+                job_category = SkillCategory.objects.filter(name__icontains=job_title).first()
+            
+            if not job_category:
+                # Try variations
+                variations = [
+                    job_title,
+                    job_title.replace(' ', ''),
+                    job_title.lower(),
+                    job_title.title(),
+                    job_title.upper()
+                ]
+                for variation in variations:
+                    job_category = SkillCategory.objects.filter(name__iexact=variation).first()
+                    if job_category:
+                        break
+            
+            if not job_category:
+                # Create new category
+                job_category, created = SkillCategory.objects.get_or_create(
+                    name=job_title,
+                    defaults={'name': job_title}
+                )
+                action = "created"
+            else:
+                action = "found"
+            
+            # Update resume
+            resume.category = job_category
+            resume.save()
+            
+            return Response({
+                "status": "synced",
+                "job_title": job_title,
+                "category": {
+                    "id": job_category.id,
+                    "name": job_category.name
+                },
+                "action": action,
+                "message": f"Successfully {action} category '{job_category.name}' for job title '{job_title}'"
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to sync: {str(e)}"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

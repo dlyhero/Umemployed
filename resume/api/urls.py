@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from . import views
-from .views import AboutAPIView, CountriesAPIView, EducationAPIView, ExperiencesAPIView, PersonalDetailsAPIView, SkillsAPIView, UserLocationAPIView, UserImagesAPIView
+from .views import AboutAPIView, CountriesAPIView, EducationAPIView, ExperiencesAPIView, PersonalDetailsAPIView, SkillsAPIView, UserLocationAPIView, UserImagesAPIView, SkillCategoriesAPIView, SimpleSkillsAPIView, JobCategoryStatusAPIView
 
 # Router for CRUD operations
 router = DefaultRouter()
@@ -95,6 +95,11 @@ urlpatterns = [
         name="skill_categories_api",
     ),  # GET list of job titles/skill categories for dropdown
     path(
+        "skill-categories-optimized/",
+        views.SkillCategoriesAPIView.as_view(),
+        name="skill_categories_optimized_api",
+    ),  # GET optimized skill categories with stats
+    path(
         "states/",
         views.StatesAPIView.as_view(),
         name="states_api",
@@ -133,7 +138,17 @@ urlpatterns = [
         "skills/",
         views.SkillsAPIView.as_view(),
         name="skills_api",
-    ),  # GET/POST user's skills list
+    ),  # GET/POST/DELETE user's skills with pagination
+    path(
+        "skills-simple/",
+        views.SimpleSkillsAPIView.as_view(),
+        name="skills_simple_api",
+    ),  # GET simple skills (job_relevant/user_only only)
+    path(
+        "job-category-status/",
+        views.JobCategoryStatusAPIView.as_view(),
+        name="job_category_status_api",
+    ),  # GET/POST check and sync job title with category
     path(
         "languages-list/",
         views.LanguageListView.as_view(),
