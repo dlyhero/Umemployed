@@ -18,8 +18,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
-from job.models import Job  # Import Job model
+from job.models import Job, Application, Rating, SavedJob, Shortlist  # Import Application and other models
 from notifications.models import Notification  # Add this import
 from resume.extract_pdf import (  # Import existing functions
     extract_resume_details,
@@ -3004,3 +3006,72 @@ class JobCategoryStatusAPIView(APIView):
                 {"error": f"Failed to sync: {str(e)}"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class UserStatsAPIView(APIView):
+    """
+    API view to retrieve user statistics.
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Get User Statistics",
+        operation_description="Retrieve user statistics including profile views, applications, job matches, and skill endorsements.",
+        responses={
+            200: openapi.Response(
+                description="User statistics retrieved successfully",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'profile_views': openapi.Schema(type=openapi.TYPE_INTEGER, description="Total profile views"),
+                        'applications': openapi.Schema(type=openapi.TYPE_INTEGER, description="Total job applications"),
+                        'job_matches': openapi.Schema(type=openapi.TYPE_INTEGER, description="Number of matching jobs"),
+                        'skill_endorsements': openapi.Schema(type=openapi.TYPE_INTEGER, description="Total skill endorsements"),
+                    }
+                )
+            ),
+        },
+    )
+    def get(self, request):
+        """
+        Get user statistics.
+        """
+        user = request.user
+        
+        # 1. Profile views
+        profile_views = ProfileView.objects.filter(user=user).count()
+        
+        # 2. Applications (number of jobs user has applied for)
+        applications = Application.objects.filter(user=user).count()
+        
+        # 3. Job matches (using existing algorithm)
+        try:
+            user_resume = Resume.objects.get(user=user)
+            user_skills = set(user_resume.skills.all())
+            
+            # Get all available jobs
+            available_jobs = Job.objects.filter(job_creation_is_complete=True, is_available=True)
+            
+            matching_jobs = []
+            for job in available_jobs:
+                job_skills = set(job.requirements.all())
+                if job_skills:  # Only calculate if job has requirements
+                    match_percentage, _ = Application.calculate_skill_match(user_skills, job_skills)
+                    if match_percentage >= 10.0:  # Threshold for matching
+                        matching_jobs.append(job)
+            
+            job_matches = len(matching_jobs)
+        except Resume.DoesNotExist:
+            job_matches = 0
+        
+        # 4. Skill endorsements (interesting field)
+        skill_endorsements = Rating.objects.filter(candidate=user).count()
+        
+        stats = {
+            'profile_views': profile_views,
+            'applications': applications,
+            'job_matches': job_matches,
+            'skill_endorsements': skill_endorsements,
+        }
+        
+        return Response(stats, status=status.HTTP_200_OK)

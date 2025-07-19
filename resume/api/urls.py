@@ -159,6 +159,7 @@ urlpatterns = [
         views.ProficiencyChoicesAPIView.as_view(),
         name="proficiency_levels_api",
     ),  # GET list of all proficiency levels for dropdown
+    path("user-stats/", views.UserStatsAPIView.as_view(), name="user-stats"),
 ]
 
 # Include router URLs
